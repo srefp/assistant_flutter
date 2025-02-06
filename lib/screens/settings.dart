@@ -93,13 +93,10 @@ class _SettingsState extends State<Settings> with PageMixin {
     const spacer = SizedBox(height: 10.0);
     const biggerSpacer = SizedBox(height: 40.0);
 
-    const supportedLocales = FluentLocalizations.supportedLocales;
-    final currentLocale =
-        appTheme.locale ?? Localizations.maybeLocaleOf(context);
     return ScaffoldPage.scrollable(
-      header: const PageHeader(title: WinText('Settings')),
+      header: const PageHeader(title: WinText('设置')),
       children: [
-        WinText('Theme mode', style: FluentTheme.of(context).typography.subtitle),
+        WinText('主题模式', style: FluentTheme.of(context).typography.subtitle),
         spacer,
         ...List.generate(ThemeMode.values.length, (index) {
           final mode = ThemeMode.values[index];
@@ -112,59 +109,20 @@ class _SettingsState extends State<Settings> with PageMixin {
                   appTheme.mode = mode;
 
                   if (kIsWindowEffectsSupported) {
-                    // some window effects require on [dark] to look good.
-                    // appTheme.setEffect(WindowEffect.disabled, context);
                     appTheme.setEffect(appTheme.windowEffect, context);
                   }
                 }
               },
-              content: WinText('$mode'.replaceAll('ThemeMode.', '')),
+              content: WinText({
+                'system': '系统',
+                'light': '明亮',
+                'dark': '黑暗'
+              }['$mode'.replaceAll('ThemeMode.', '')]!),
             ),
           );
         }),
         biggerSpacer,
-        WinText(
-          'Navigation Pane Display Mode',
-          style: FluentTheme.of(context).typography.subtitle,
-        ),
-        spacer,
-        ...List.generate(PaneDisplayMode.values.length, (index) {
-          final mode = PaneDisplayMode.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8.0),
-            child: RadioButton(
-              checked: appTheme.displayMode == mode,
-              onChanged: (value) {
-                if (value) appTheme.displayMode = mode;
-              },
-              content: WinText(
-                mode.toString().replaceAll('PaneDisplayMode.', ''),
-              ),
-            ),
-          );
-        }),
-        biggerSpacer,
-        WinText('Navigation Indicator',
-            style: FluentTheme.of(context).typography.subtitle),
-        spacer,
-        ...List.generate(NavigationIndicators.values.length, (index) {
-          final mode = NavigationIndicators.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8.0),
-            child: RadioButton(
-              checked: appTheme.indicator == mode,
-              onChanged: (value) {
-                if (value) appTheme.indicator = mode;
-              },
-              content: WinText(
-                mode.toString().replaceAll('NavigationIndicators.', ''),
-              ),
-            ),
-          );
-        }),
-        biggerSpacer,
-        WinText('Accent Color',
-            style: FluentTheme.of(context).typography.subtitle),
+        WinText('主题', style: FluentTheme.of(context).typography.subtitle),
         spacer,
         Wrap(children: [
           Tooltip(
@@ -182,13 +140,8 @@ class _SettingsState extends State<Settings> with PageMixin {
         if (kIsWindowEffectsSupported) ...[
           biggerSpacer,
           WinText(
-            'Window Transparency',
+            '窗口透明方式',
             style: FluentTheme.of(context).typography.subtitle,
-          ),
-          description(
-            content: WinText(
-              'Running on ${defaultTargetPlatform.toString().replaceAll('TargetPlatform.', '')}',
-            ),
           ),
           spacer,
           ...List.generate(currentWindowEffects.length, (index) {
@@ -204,70 +157,20 @@ class _SettingsState extends State<Settings> with PageMixin {
                   }
                 },
                 content: WinText(
-                  mode.toString().replaceAll('WindowEffect.', ''),
+                  {
+                    'disabled': '禁用',
+                    'solid': '固体',
+                    'transparent': '透明',
+                    'aero': '埃尔柔',
+                    'acrylic': '阿克瑞里克',
+                    'mica': '米卡',
+                    'tabbed': 'TAB'
+                  }[mode.toString().replaceAll('WindowEffect.', '')]!,
                 ),
               ),
             );
           }),
         ],
-        biggerSpacer,
-        WinText(
-          'Text Direction',
-          style: FluentTheme.of(context).typography.subtitle,
-        ),
-        spacer,
-        ...List.generate(TextDirection.values.length, (index) {
-          final direction = TextDirection.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8.0),
-            child: RadioButton(
-              checked: appTheme.textDirection == direction,
-              onChanged: (value) {
-                if (value) {
-                  appTheme.textDirection = direction;
-                }
-              },
-              content: WinText(
-                '$direction'
-                    .replaceAll('TextDirection.', '')
-                    .replaceAll('rtl', 'Right to left')
-                    .replaceAll('ltr', 'Left to right'),
-              ),
-            ),
-          );
-        }).reversed,
-        biggerSpacer,
-        WinText('Locale', style: FluentTheme.of(context).typography.subtitle),
-        description(
-          content: const WinText(
-            'The locale used by the fluent_ui widgets, such as TimePicker and '
-            'DatePicker. This does not reflect the language of this showcase app.',
-          ),
-        ),
-        spacer,
-        Wrap(
-          spacing: 15.0,
-          runSpacing: 10.0,
-          children: List.generate(
-            supportedLocales.length,
-            (index) {
-              final locale = supportedLocales[index];
-
-              return Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 8.0),
-                child: RadioButton(
-                  checked: currentLocale == locale,
-                  onChanged: (value) {
-                    if (value) {
-                      appTheme.locale = locale;
-                    }
-                  },
-                  content: WinText('$locale'),
-                ),
-              );
-            },
-          ),
-        ),
       ],
     );
   }

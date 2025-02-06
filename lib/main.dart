@@ -1,4 +1,4 @@
-import 'package:assistant/screens/home.dart';
+import 'package:assistant/screens/auto_tp.dart';
 import 'package:assistant/screens/settings.dart';
 import 'package:assistant/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
@@ -44,7 +44,9 @@ void main() async {
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
-      await windowManager.setMinimumSize(const Size(500, 600));
+      await windowManager.setSize(const Size(1200, 900));
+      await windowManager.setMinimumSize(const Size(800, 600));
+      await windowManager.setAlignment(Alignment.center);
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
@@ -122,7 +124,7 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
     },
     routes: <GoRoute>[
       /// Home
-      GoRoute(path: '/', builder: (context, state) => const HomePage()),
+      GoRoute(path: '/', builder: (context, state) => const AutoTpPage()),
 
       /// Settings
       GoRoute(path: '/settings', builder: (context, state) => const Settings()),
@@ -146,9 +148,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   bool value = false;
-
-  // int index = 0;
-
   final viewKey = GlobalKey(debugLabel: 'Navigation View Key');
   final searchKey = GlobalKey(debugLabel: 'Search Bar Key');
   final searchFocusNode = FocusNode();
@@ -158,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     PaneItem(
       key: const ValueKey('/'),
       icon: const Icon(FluentIcons.home),
-      title: Text('首页'),
+      title: Text('首页', style: TextStyle(fontFamily: fontFamily),),
       body: const SizedBox.shrink(),
       onTap: () {
         if (GoRouterState.of(context).uri.toString() != '/') {
@@ -173,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     PaneItem(
       key: const ValueKey('/settings'),
       icon: const Icon(FluentIcons.settings),
-      title: Text('设置'),
+      title: Text('设置', style: TextStyle(fontFamily: fontFamily),),
       body: const SizedBox.shrink(),
       onTap: () {
         if (GoRouterState.of(context).uri.toString() != '/settings') {
@@ -182,7 +181,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       },
     ),
   ];
-
 
   @override
   void initState() {
@@ -214,9 +212,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         return 0;
       }
       return originalItems
-          .where((element) => element.key != null)
-          .toList()
-          .length +
+              .where((element) => element.key != null)
+              .toList()
+              .length +
           indexFooter;
     } else {
       return indexOriginal;
@@ -228,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final localizations = FluentLocalizations.of(context);
 
     final appTheme = context.watch<AppTheme>();
-    final theme = FluentTheme.of(context);
+    appTheme.setEffect(appTheme.windowEffect, context);
     if (widget.shellContext != null) {
       if (router.canPop() == false) {
         setState(() {});
@@ -238,17 +236,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       key: viewKey,
       appBar: NavigationAppBar(
         automaticallyImplyLeading: false,
+        height: 50,
         leading: () {
           final enabled = widget.shellContext != null && router.canPop();
 
           final onPressed = enabled
               ? () {
-            if (router.canPop()) {
-              context.pop();
-              setState(() {});
-            }
-          }
+                  if (router.canPop()) {
+                    context.pop();
+                    setState(() {});
+                  }
+                }
               : null;
+          if (!enabled) {
+            return null;
+          }
           return NavigationPaneTheme(
             data: NavigationPaneTheme.of(context).merge(NavigationPaneThemeData(
               unselectedIconColor: WidgetStateProperty.resolveWith((states) {
@@ -264,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             child: Builder(
               builder: (context) => PaneItem(
                 icon: const Center(child: Icon(FluentIcons.back, size: 12.0)),
-                title: WinText(localizations.backButtonTooltip),
+                title: Text(localizations.backButtonTooltip),
                 body: const SizedBox.shrink(),
                 enabled: enabled,
               ).build(
@@ -291,29 +293,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           );
         }(),
         actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 8.0),
-              child: ToggleSwitch(
-                content: const WinText('Dark Mode'),
-                checked: FluentTheme.of(context).brightness.isDark,
-                onChanged: (v) {
-                  if (v) {
-                    appTheme.mode = ThemeMode.dark;
-                  } else {
-                    appTheme.mode = ThemeMode.light;
-                  }
-                },
-              ),
-            ),
-          ),
           if (!kIsWeb) const WindowButtons(),
         ]),
       ),
       paneBodyBuilder: (item, child) {
         final name =
-        item?.key is ValueKey ? (item!.key as ValueKey).value : null;
+            item?.key is ValueKey ? (item!.key as ValueKey).value : null;
         return FocusTraversalGroup(
           key: ValueKey('body$name'),
           child: widget.child,
@@ -321,29 +306,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       },
       pane: NavigationPane(
         selected: _calculateSelectedIndex(context),
-        header: SizedBox(
-          height: kOneLineTileHeight,
-          child: ShaderMask(
-            shaderCallback: (rect) {
-              final color = appTheme.color.defaultBrushFor(
-                theme.brightness,
-              );
-              return LinearGradient(
-                colors: [
-                  color,
-                  color,
-                ],
-              ).createShader(rect);
-            },
-            child: const FlutterLogo(
-              style: FlutterLogoStyle.horizontal,
-              size: 80.0,
-              textColor: Colors.white,
-              duration: Duration.zero,
-            ),
-          ),
-        ),
-        displayMode: appTheme.displayMode,
+        displayMode: PaneDisplayMode.compact,
         indicator: () {
           switch (appTheme.indicator) {
             case NavigationIndicators.end:
@@ -359,7 +322,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             focusNode: searchFocusNode,
             controller: searchController,
             unfocusedColor: Colors.transparent,
-            // also need to include sub items from [PaneItemExpander] items
             items: <PaneItem>[
               ...originalItems
                   .whereType<PaneItemExpander>()
@@ -372,7 +334,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               ...originalItems
                   .where(
                     (item) => item is PaneItem && item is! PaneItemExpander,
-              )
+                  )
                   .cast<PaneItem>(),
             ].map((item) {
               final text = (item.title as Text).data!;
@@ -399,7 +361,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 icon: const Icon(FluentIcons.search),
               ),
             ),
-            placeholder: 'Search',
+            placeholder: '搜索',
+            style: TextStyle(fontFamily: fontFamily),
           );
         }),
         autoSuggestBoxReplacement: const Icon(FluentIcons.search),
@@ -451,7 +414,7 @@ class WindowButtons extends StatelessWidget {
 
     return SizedBox(
       width: 138,
-      height: 50,
+      height: 36,
       child: WindowCaption(
         brightness: theme.brightness,
         backgroundColor: Colors.transparent,
