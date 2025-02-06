@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../components/win_text.dart';
+
 class CardHighlight extends StatefulWidget {
   const CardHighlight({
     super.key,
@@ -92,7 +94,7 @@ class _CardHighlightState extends State<CardHighlight>
                           : const Row(children: [
                               Icon(FluentIcons.copy),
                               SizedBox(width: 6.0),
-                              Text('Copy')
+                              WinText('Copy')
                             ]),
                       onPressed: () {
                         Clipboard.setData(
@@ -106,7 +108,7 @@ class _CardHighlightState extends State<CardHighlight>
                     ),
                   )
                 : null,
-            header: widget.header ?? const Text('Source code'),
+            header: widget.header ?? const WinText('Source code'),
             headerShape: (open) {
               return const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(

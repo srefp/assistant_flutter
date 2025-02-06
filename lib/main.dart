@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'components/win_text.dart';
+
 const String version = '2025.1.6';
 const String appTitle = '耕地机 v$version';
 
@@ -156,8 +158,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     PaneItem(
       key: const ValueKey('/'),
       icon: const Icon(FluentIcons.home),
-      title: const Text('Home'),
+      title: Text('首页'),
       body: const SizedBox.shrink(),
+      onTap: () {
+        if (GoRouterState.of(context).uri.toString() != '/') {
+          context.go('/');
+        }
+      },
     ),
   ];
 
@@ -166,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     PaneItem(
       key: const ValueKey('/settings'),
       icon: const Icon(FluentIcons.settings),
-      title: const Text('Settings'),
+      title: Text('设置'),
       body: const SizedBox.shrink(),
       onTap: () {
         if (GoRouterState.of(context).uri.toString() != '/settings') {
@@ -257,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             child: Builder(
               builder: (context) => PaneItem(
                 icon: const Center(child: Icon(FluentIcons.back, size: 12.0)),
-                title: Text(localizations.backButtonTooltip),
+                title: WinText(localizations.backButtonTooltip),
                 body: const SizedBox.shrink(),
                 enabled: enabled,
               ).build(
@@ -273,13 +280,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           if (kIsWeb) {
             return const Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(appTitle),
+              child: WinText(appTitle),
             );
           }
           return const DragToMoveArea(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(appTitle),
+              child: WinText(appTitle),
             ),
           );
         }(),
@@ -289,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             child: Padding(
               padding: const EdgeInsetsDirectional.only(end: 8.0),
               child: ToggleSwitch(
-                content: const Text('Dark Mode'),
+                content: const WinText('Dark Mode'),
                 checked: FluentTheme.of(context).brightness.isDark,
                 onChanged: (v) {
                   if (v) {
@@ -368,10 +375,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               )
                   .cast<PaneItem>(),
             ].map((item) {
-              assert(item.title is Text);
               final text = (item.title as Text).data!;
               return AutoSuggestBoxItem(
                 label: text,
+                child: WinText(text),
                 value: text,
                 onSelected: () {
                   item.onTap?.call();
@@ -410,18 +417,19 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         context: context,
         builder: (_) {
           return ContentDialog(
-            title: const Text('Confirm close'),
-            content: const Text('Are you sure you want to close this window?'),
+            title: const WinText('确认关闭'),
+            content: const WinText('确定要关闭耕地机吗？'),
             actions: [
               FilledButton(
-                child: const Text('Yes'),
+                child: const WinText('确认'),
                 onPressed: () {
+                  windowManager.hide();
                   Navigator.pop(context);
                   windowManager.destroy();
                 },
               ),
               Button(
-                child: const Text('No'),
+                child: const WinText('取消'),
                 onPressed: () {
                   Navigator.pop(context);
                 },

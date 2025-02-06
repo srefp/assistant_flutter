@@ -6,6 +6,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:provider/provider.dart';
 
+import '../components/win_text.dart';
 import '../theme.dart';
 import '../widgets/page.dart';
 
@@ -96,9 +97,9 @@ class _SettingsState extends State<Settings> with PageMixin {
     final currentLocale =
         appTheme.locale ?? Localizations.maybeLocaleOf(context);
     return ScaffoldPage.scrollable(
-      header: const PageHeader(title: Text('Settings')),
+      header: const PageHeader(title: WinText('Settings')),
       children: [
-        Text('Theme mode', style: FluentTheme.of(context).typography.subtitle),
+        WinText('Theme mode', style: FluentTheme.of(context).typography.subtitle),
         spacer,
         ...List.generate(ThemeMode.values.length, (index) {
           final mode = ThemeMode.values[index];
@@ -117,12 +118,12 @@ class _SettingsState extends State<Settings> with PageMixin {
                   }
                 }
               },
-              content: Text('$mode'.replaceAll('ThemeMode.', '')),
+              content: WinText('$mode'.replaceAll('ThemeMode.', '')),
             ),
           );
         }),
         biggerSpacer,
-        Text(
+        WinText(
           'Navigation Pane Display Mode',
           style: FluentTheme.of(context).typography.subtitle,
         ),
@@ -136,14 +137,14 @@ class _SettingsState extends State<Settings> with PageMixin {
               onChanged: (value) {
                 if (value) appTheme.displayMode = mode;
               },
-              content: Text(
+              content: WinText(
                 mode.toString().replaceAll('PaneDisplayMode.', ''),
               ),
             ),
           );
         }),
         biggerSpacer,
-        Text('Navigation Indicator',
+        WinText('Navigation Indicator',
             style: FluentTheme.of(context).typography.subtitle),
         spacer,
         ...List.generate(NavigationIndicators.values.length, (index) {
@@ -155,14 +156,14 @@ class _SettingsState extends State<Settings> with PageMixin {
               onChanged: (value) {
                 if (value) appTheme.indicator = mode;
               },
-              content: Text(
+              content: WinText(
                 mode.toString().replaceAll('NavigationIndicators.', ''),
               ),
             ),
           );
         }),
         biggerSpacer,
-        Text('Accent Color',
+        WinText('Accent Color',
             style: FluentTheme.of(context).typography.subtitle),
         spacer,
         Wrap(children: [
@@ -180,12 +181,12 @@ class _SettingsState extends State<Settings> with PageMixin {
         ]),
         if (kIsWindowEffectsSupported) ...[
           biggerSpacer,
-          Text(
+          WinText(
             'Window Transparency',
             style: FluentTheme.of(context).typography.subtitle,
           ),
           description(
-            content: Text(
+            content: WinText(
               'Running on ${defaultTargetPlatform.toString().replaceAll('TargetPlatform.', '')}',
             ),
           ),
@@ -202,7 +203,7 @@ class _SettingsState extends State<Settings> with PageMixin {
                     appTheme.setEffect(mode, context);
                   }
                 },
-                content: Text(
+                content: WinText(
                   mode.toString().replaceAll('WindowEffect.', ''),
                 ),
               ),
@@ -210,7 +211,7 @@ class _SettingsState extends State<Settings> with PageMixin {
           }),
         ],
         biggerSpacer,
-        Text(
+        WinText(
           'Text Direction',
           style: FluentTheme.of(context).typography.subtitle,
         ),
@@ -226,7 +227,7 @@ class _SettingsState extends State<Settings> with PageMixin {
                   appTheme.textDirection = direction;
                 }
               },
-              content: Text(
+              content: WinText(
                 '$direction'
                     .replaceAll('TextDirection.', '')
                     .replaceAll('rtl', 'Right to left')
@@ -236,9 +237,9 @@ class _SettingsState extends State<Settings> with PageMixin {
           );
         }).reversed,
         biggerSpacer,
-        Text('Locale', style: FluentTheme.of(context).typography.subtitle),
+        WinText('Locale', style: FluentTheme.of(context).typography.subtitle),
         description(
-          content: const Text(
+          content: const WinText(
             'The locale used by the fluent_ui widgets, such as TimePicker and '
             'DatePicker. This does not reflect the language of this showcase app.',
           ),
@@ -261,7 +262,7 @@ class _SettingsState extends State<Settings> with PageMixin {
                       appTheme.locale = locale;
                     }
                   },
-                  content: Text('$locale'),
+                  content: WinText('$locale'),
                 ),
               );
             },

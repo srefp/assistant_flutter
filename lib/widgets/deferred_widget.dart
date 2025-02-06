@@ -6,6 +6,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../components/win_text.dart';
+
 typedef LibraryLoader = Future<void> Function();
 typedef DeferredWidgetBuilder = Widget Function();
 
@@ -105,10 +107,10 @@ class DeferredLoadingPlaceholder extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('$name is installing.',
+            WinText('$name is installing.',
                 style: Theme.of(context).textTheme.headlineMedium),
             Container(height: 10),
-            Text(
+            WinText(
                 '$name is a deferred component which are downloaded and installed at runtime.',
                 style: Theme.of(context).textTheme.bodyLarge),
             Container(height: 20),

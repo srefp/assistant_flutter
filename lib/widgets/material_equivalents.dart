@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as m;
 
+import '../components/win_text.dart';
+
 class MaterialEquivalents extends StatefulWidget {
   const MaterialEquivalents({super.key});
 
@@ -38,40 +40,40 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
   Widget build(BuildContext context) {
     List<List<Widget>> children = [
       [
-        const Text('Button'),
+        const WinText('Button'),
         Button(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
         m.OutlinedButton(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
       ],
       [
-        const Text('HyperlinkButton'),
+        const WinText('HyperlinkButton'),
         HyperlinkButton(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
         m.TextButton(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
       ],
       [
-        const Text('FilledButton'),
+        const WinText('FilledButton'),
         FilledButton(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
         m.ElevatedButton(
-          child: const Text('Content'),
+          child: const WinText('Content'),
           onPressed: () {},
         ),
       ],
       [
-        const Text('IconButton'),
+        const WinText('IconButton'),
         IconButton(
           icon: const Icon(FluentIcons.graph_symbol),
           onPressed: () {},
@@ -82,7 +84,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('Checkbox'),
+        const WinText('Checkbox'),
         Checkbox(
           checked: comboboxChecked,
           onChanged: (v) =>
@@ -95,7 +97,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('RadioButton'),
+        const WinText('RadioButton'),
         RadioButton(
           checked: radioChecked,
           onChanged: (v) => setState(() => radioChecked = v),
@@ -107,7 +109,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('ToggleSwitch'),
+        const WinText('ToggleSwitch'),
         ToggleSwitch(
           checked: switchChecked,
           onChanged: (v) => setState(() => switchChecked = v),
@@ -118,7 +120,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('Slider'),
+        const WinText('Slider'),
         Slider(
           value: sliderValue,
           max: 100,
@@ -131,44 +133,44 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('ProgressRing'),
+        const WinText('ProgressRing'),
         const RepaintBoundary(child: ProgressRing()),
         const RepaintBoundary(child: m.CircularProgressIndicator()),
       ],
       [
-        const Text('ProgressBar'),
+        const WinText('ProgressBar'),
         const RepaintBoundary(child: ProgressBar()),
         const RepaintBoundary(child: m.LinearProgressIndicator()),
       ],
       [
-        const Text('ComboBox'),
+        const WinText('ComboBox'),
         ComboBox<String>(
           items: comboboxItems
-              .map((e) => ComboBoxItem(value: e, child: Text(e)))
+              .map((e) => ComboBoxItem(value: e, child: WinText(e)))
               .toList(),
           value: comboboxItem,
           onChanged: (value) => setState(() => comboboxItem = value),
         ),
         m.DropdownButton<String>(
           items: comboboxItems
-              .map((e) => m.DropdownMenuItem(value: e, child: Text(e)))
+              .map((e) => m.DropdownMenuItem(value: e, child: WinText(e)))
               .toList(),
           value: comboboxItem,
           onChanged: (value) => setState(() => comboboxItem = value),
         ),
       ],
       [
-        const Text('DropDownButton'),
+        const WinText('DropDownButton'),
         DropDownButton(
           items: comboboxItems
               .map(
                 (e) => MenuFlyoutItem(
-                  text: Text(e),
+                  text: WinText(e),
                   onPressed: () => setState(() => dropdownItem = e),
                 ),
               )
               .toList(),
-          title: Text(dropdownItem),
+          title: WinText(dropdownItem),
         ),
         m.PopupMenuButton<String>(
           key: popupKey,
@@ -177,7 +179,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
                 .map(
                   (e) => m.PopupMenuItem(
                     value: e,
-                    child: Text(e),
+                    child: WinText(e),
                   ),
                 )
                 .toList();
@@ -186,7 +188,7 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
           initialValue: dropdownItem,
           position: m.PopupMenuPosition.under,
           child: m.TextButton(
-            child: Text(dropdownItem),
+            child: WinText(dropdownItem),
             onPressed: () {
               popupKey.currentState?.showButtonMenu();
             },
@@ -194,18 +196,18 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('TextBox'),
+        const WinText('TextBox'),
         TextBox(controller: fieldController),
         m.TextField(controller: fieldController),
       ],
       [
-        const Text('TimePicker'),
+        const WinText('TimePicker'),
         TimePicker(
           selected: time,
           onChanged: (value) => setState(() => time),
         ),
         m.TextButton(
-          child: const Text('Show Picker'),
+          child: const WinText('Show Picker'),
           onPressed: () async {
             final newTime = await m.showTimePicker(
               context: context,
@@ -228,13 +230,13 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('DatePicker'),
+        const WinText('DatePicker'),
         DatePicker(
           selected: time,
           onChanged: (value) => setState(() => time),
         ),
         m.TextButton(
-          child: const Text('Show Picker'),
+          child: const WinText('Show Picker'),
           onPressed: () async {
             final newTime = await m.showDatePicker(
               context: context,
@@ -249,27 +251,27 @@ class _MaterialEquivalentsState extends State<MaterialEquivalents> {
         ),
       ],
       [
-        const Text('ListTile'),
+        const WinText('ListTile'),
         ListTile(
           leading: const Icon(FluentIcons.graph_symbol),
-          title: const Text('Content'),
+          title: const WinText('Content'),
           onPressed: () {},
         ),
         m.ListTile(
           leading: const Icon(FluentIcons.graph_symbol),
-          title: const Text('Content'),
+          title: const WinText('Content'),
           onTap: () {},
         ),
       ],
       [
-        const Text('Tooltip'),
+        const WinText('Tooltip'),
         const Tooltip(
           message: 'A fluent-styled tooltip',
-          child: Text('Hover'),
+          child: WinText('Hover'),
         ),
         const m.Tooltip(
           message: 'A material-styled tooltip',
-          child: Text('Hover'),
+          child: WinText('Hover'),
         ),
       ],
     ];

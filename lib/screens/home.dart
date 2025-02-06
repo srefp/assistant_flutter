@@ -1,10 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:url_launcher/link.dart';
 
+import '../components/win_text.dart';
 import '../widgets/changelog.dart';
 import '../widgets/material_equivalents.dart';
 import '../widgets/page.dart';
-import '../widgets/sponsor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> with PageMixin {
 
     return ScaffoldPage.scrollable(
       header: PageHeader(
-        title: const Text('Fluent UI for Flutter Showcase App'),
+        title: const WinText('Fluent UI for Flutter Showcase App'),
         commandBar: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Link(
             uri: Uri.parse('https://github.com/bdlukaa/fluent_ui'),
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> with PageMixin {
                   items: ['Item 1', 'Item 2']
                       .map((e) => ComboBoxItem(
                             value: e,
-                            child: Text(e),
+                            child: WinText(e),
                           ))
                       .toList(),
                   isExpanded: true,
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> with PageMixin {
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.srcATop,
-                child: const Text(
+                child: const WinText(
                   'ABCDEFGH',
                   style: TextStyle(fontSize: 24, shadows: [
                     Shadow(offset: Offset(1, 1)),
@@ -157,13 +157,13 @@ class _HomePageState extends State<HomePage> with PageMixin {
           icon: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              WinText(
                 'What\'s new on 4.0.0',
                 style: theme.typography.body
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
-              Text('June 21, 2022', style: theme.typography.caption),
-              Text(
+              WinText('June 21, 2022', style: theme.typography.caption),
+              WinText(
                 'A native look-and-feel out of the box',
                 style: theme.typography.bodyLarge,
               ),
@@ -172,46 +172,13 @@ class _HomePageState extends State<HomePage> with PageMixin {
         ),
         const SizedBox(height: 22.0),
         Row(children: [
-          Text('SPONSORS', style: theme.typography.bodyStrong),
+          WinText('SPONSORS', style: theme.typography.bodyStrong),
           const SizedBox(width: 4.0),
           const Icon(FluentIcons.heart_fill, size: 16.0),
         ]),
         const SizedBox(height: 4.0),
-        Wrap(
-          spacing: 10.0,
-          runSpacing: 10.0,
-          children: <Widget>[
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const SponsorDialog(),
-                );
-              },
-              icon: Column(children: [
-                SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: ShaderMask(
-                    shaderCallback: (rect) {
-                      return LinearGradient(
-                        colors: [
-                          Colors.white.withValues(alpha: 0.8),
-                          ...Colors.accentColors,
-                        ],
-                      ).createShader(rect);
-                    },
-                    blendMode: BlendMode.srcATop,
-                    child: const Icon(FluentIcons.diamond_user, size: 60),
-                  ),
-                ),
-                const Text('Become a Sponsor!'),
-              ]),
-            ),
-          ],
-        ),
-        Text('CONTRIBUTORS', style: theme.typography.bodyStrong),
-        subtitle(content: const Text('Equivalents with the material library')),
+        WinText('CONTRIBUTORS', style: theme.typography.bodyStrong),
+        subtitle(content: const WinText('Equivalents with the material library')),
         const MaterialEquivalents(),
       ],
     );
@@ -241,7 +208,7 @@ class SponsorButton extends StatelessWidget {
           shape: BoxShape.circle,
         ),
       ),
-      Text(username),
+      WinText(username),
     ]);
   }
 }
