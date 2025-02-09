@@ -93,9 +93,11 @@ class _SettingsState extends State<Settings> with PageMixin {
     const spacer = SizedBox(height: 10.0);
     const biggerSpacer = SizedBox(height: 40.0);
 
-    return ScaffoldPage.scrollable(
-      header: const PageHeader(title: WinText('设置')),
+    return ListView(
+      padding: EdgeInsets.all(20),
       children: [
+        WinText('设置', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+        SizedBox(height: 12),
         WinText('主题模式', style: FluentTheme.of(context).typography.subtitle),
         spacer,
         ...List.generate(ThemeMode.values.length, (index) {

@@ -5,12 +5,23 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:assistant/ssh/ssh_connector.dart';
+import 'package:assistant/util/asset_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:assistant/main.dart';
 
 void main() {
+  test('ssh', () async {
+    String key = await readAsset('assets/ssh_key/Microstar.AWS.3430.SFTP.ppk');
+    print('key: ' + key);
+  });
+
+  test('shell', () async {
+    executeSSH('pwd');
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

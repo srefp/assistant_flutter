@@ -1,5 +1,7 @@
+import 'package:assistant/routes/routes.dart';
 import 'package:assistant/screens/auto_tp.dart';
 import 'package:assistant/screens/settings.dart';
+import 'package:assistant/screens/ssh_operation.dart';
 import 'package:assistant/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
@@ -35,6 +37,7 @@ void main() async {
 
   if (isDesktop) {
     await flutter_acrylic.Window.initialize();
+
     if (defaultTargetPlatform == TargetPlatform.windows) {
       await flutter_acrylic.Window.hideWindowControls();
     }
@@ -47,9 +50,16 @@ void main() async {
       await windowManager.setSize(const Size(1200, 900));
       await windowManager.setMinimumSize(const Size(800, 600));
       await windowManager.setAlignment(Alignment.center);
+
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
+
+      await flutter_acrylic.Window.setEffect(
+        effect: flutter_acrylic.WindowEffect.mica,
+        color: Colors.transparent,
+        dark: PlatformDispatcher.instance.platformBrightness.isDark,
+      );
     });
   }
 
@@ -86,6 +96,7 @@ class MyApp extends StatelessWidget {
             focusTheme: FocusThemeData(
               glowFactor: is10footScreen(context) ? 2.0 : 0.0,
             ),
+            fontFamily: fontFamily,
           ),
           locale: appTheme.locale,
           builder: (context, child) {
@@ -123,11 +134,18 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       );
     },
     routes: <GoRoute>[
-      /// Home
-      GoRoute(path: '/', builder: (context, state) => const AutoTpPage()),
+      /// Auto Tp
+      GoRoute(
+          path: Routes.autoTp, builder: (context, state) => const AutoTpPage()),
+
+      /// SSH Operation
+      GoRoute(
+          path: Routes.sshOperation,
+          builder: (context, state) => const SshOperation()),
 
       /// Settings
-      GoRoute(path: '/settings', builder: (context, state) => const Settings()),
+      GoRoute(
+          path: Routes.settings, builder: (context, state) => const Settings()),
     ],
   ),
 ]);
@@ -155,13 +173,30 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   late final List<NavigationPaneItem> originalItems = [
     PaneItem(
-      key: const ValueKey('/'),
+      key: const ValueKey(Routes.autoTp),
       icon: const Icon(FluentIcons.home),
-      title: Text('首页', style: TextStyle(fontFamily: fontFamily),),
+      title: Text(
+        '首页',
+        style: TextStyle(fontFamily: fontFamily),
+      ),
       body: const SizedBox.shrink(),
       onTap: () {
-        if (GoRouterState.of(context).uri.toString() != '/') {
-          context.go('/');
+        if (GoRouterState.of(context).uri.toString() != Routes.autoTp) {
+          context.go(Routes.autoTp);
+        }
+      },
+    ),
+    PaneItem(
+      key: const ValueKey(Routes.sshOperation),
+      icon: const Icon(FluentIcons.connect_virtual_machine),
+      title: Text(
+        'SSH连接',
+        style: TextStyle(fontFamily: fontFamily),
+      ),
+      body: const SizedBox.shrink(),
+      onTap: () {
+        if (GoRouterState.of(context).uri.toString() != Routes.sshOperation) {
+          context.go(Routes.sshOperation);
         }
       },
     ),
@@ -170,13 +205,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   late final List<NavigationPaneItem> footerItems = [
     PaneItemSeparator(),
     PaneItem(
-      key: const ValueKey('/settings'),
+      key: const ValueKey(Routes.settings),
       icon: const Icon(FluentIcons.settings),
-      title: Text('设置', style: TextStyle(fontFamily: fontFamily),),
+      title: Text(
+        '设置',
+        style: TextStyle(fontFamily: fontFamily),
+      ),
       body: const SizedBox.shrink(),
       onTap: () {
-        if (GoRouterState.of(context).uri.toString() != '/settings') {
-          context.go('/settings');
+        if (GoRouterState.of(context).uri.toString() != Routes.settings) {
+          context.go(Routes.settings);
         }
       },
     ),
@@ -224,9 +262,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   Widget build(BuildContext context) {
     final localizations = FluentLocalizations.of(context);
-
     final appTheme = context.watch<AppTheme>();
-    appTheme.setEffect(appTheme.windowEffect, context);
     if (widget.shellContext != null) {
       if (router.canPop() == false) {
         setState(() {});
