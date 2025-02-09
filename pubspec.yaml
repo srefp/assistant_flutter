@@ -44,6 +44,9 @@ dependencies:
   flutter_markdown: ^0.6.13
   flutter_auto_gui: ^0.0.3
   dartssh2: ^2.11.0
+  get_storage: ^2.1.1
+  path: ^1.8.2
+  flutter_svg: ^2.0.0+1
   flutter_syntax_view:
     git:
       url: https://github.com/YehudaKremer/flutter_syntax_view.git
@@ -75,6 +78,7 @@ flutter:
   assets:
     - assets/ssh_key/Microstar.AWS.3430.ppk
     - assets/ssh_key/Microstar.AWS.3430.SFTP.ppk
+    - assets/image/logo.svg
   fonts:
     - family: deluge
       fonts:

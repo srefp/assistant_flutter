@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartssh2/dartssh2.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 import '../util/asset_loader.dart';
 
@@ -8,9 +9,9 @@ Future<void> executeSSH(String shellScript) async {
 
   final key = await readAsset('assets/ssh_key/Microstar.AWS.3430.ppk');
 
-  print(key);
+  debugPrint(key);
 
-  print('开始连接');
+  debugPrint('开始连接');
 
   final client = SSHClient(
     await SSHSocket.connect('ec2-3-104-152-22.ap-southeast-2.compute.amazonaws.com', 22),
@@ -18,13 +19,13 @@ Future<void> executeSSH(String shellScript) async {
     identities: SSHKeyPair.fromPem(key),
   );
 
-  print('连接成功');
+  debugPrint('连接成功');
 
   final res = await client.run(shellScript);
-  print(utf8.decode(res));
+  debugPrint(utf8.decode(res));
 
   final uptime = await client.run('uptime');
-  print(utf8.decode(uptime));
+  debugPrint(utf8.decode(uptime));
 
   client.close();
 }

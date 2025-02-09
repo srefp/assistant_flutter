@@ -45,7 +45,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
           '自动传送',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 12),
+        SizedBox(height: 16),
         IconCard(
           icon: Icons.play_arrow_rounded,
           title: '耕地机，启动！',

@@ -6,6 +6,8 @@ import 'package:assistant/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
+import 'package:flutter_svg/svg.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:system_theme/system_theme.dart';
@@ -47,20 +49,16 @@ void main() async {
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
+      await windowManager.setAlignment(Alignment.center);
       await windowManager.setSize(const Size(1200, 900));
       await windowManager.setMinimumSize(const Size(800, 600));
-      await windowManager.setAlignment(Alignment.center);
 
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
-
-      await flutter_acrylic.Window.setEffect(
-        effect: flutter_acrylic.WindowEffect.mica,
-        color: Colors.transparent,
-        dark: PlatformDispatcher.instance.platformBrightness.isDark,
-      );
     });
+
+    await GetStorage.init();
   }
 
   runApp(const MyApp());
@@ -261,8 +259,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = FluentLocalizations.of(context);
-    final appTheme = context.watch<AppTheme>();
     if (widget.shellContext != null) {
       if (router.canPop() == false) {
         setState(() {});
@@ -273,47 +269,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       appBar: NavigationAppBar(
         automaticallyImplyLeading: false,
         height: 50,
-        leading: () {
-          final enabled = widget.shellContext != null && router.canPop();
 
-          final onPressed = enabled
-              ? () {
-                  if (router.canPop()) {
-                    context.pop();
-                    setState(() {});
-                  }
-                }
-              : null;
-          if (!enabled) {
-            return null;
-          }
-          return NavigationPaneTheme(
-            data: NavigationPaneTheme.of(context).merge(NavigationPaneThemeData(
-              unselectedIconColor: WidgetStateProperty.resolveWith((states) {
-                if (states.isDisabled) {
-                  return ButtonThemeData.buttonColor(context, states);
-                }
-                return ButtonThemeData.uncheckedInputColor(
-                  FluentTheme.of(context),
-                  states,
-                ).basedOnLuminance();
-              }),
-            )),
-            child: Builder(
-              builder: (context) => PaneItem(
-                icon: const Center(child: Icon(FluentIcons.back, size: 12.0)),
-                title: Text(localizations.backButtonTooltip),
-                body: const SizedBox.shrink(),
-                enabled: enabled,
-              ).build(
-                context,
-                false,
-                onPressed,
-                displayMode: PaneDisplayMode.compact,
-              ),
-            ),
-          );
-        }(),
         title: () {
           if (kIsWeb) {
             return const Align(
@@ -321,10 +277,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               child: WinText(appTitle),
             );
           }
-          return const DragToMoveArea(
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: WinText(appTitle),
+          return DragToMoveArea(
+            child: SizedBox(
+              height: 50,
+              child: Row(
+                children: [
+                  SizedBox(width: 14),
+                  SvgPicture.asset(
+                    'assets/image/logo.svg',
+                    height: 18,
+                  ),
+                  SizedBox(width: 8),
+                  const WinText(appTitle, style: TextStyle(fontSize: 13),),
+                ],
+              ),
             ),
           );
         }(),
@@ -343,14 +309,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       pane: NavigationPane(
         selected: _calculateSelectedIndex(context),
         displayMode: PaneDisplayMode.compact,
-        indicator: () {
-          switch (appTheme.indicator) {
-            case NavigationIndicators.end:
-              return const EndNavigationIndicator();
-            case NavigationIndicators.sticky:
-              return const StickyNavigationIndicator();
-          }
-        }(),
         items: originalItems,
         autoSuggestBox: Builder(builder: (context) {
           return AutoSuggestBox(

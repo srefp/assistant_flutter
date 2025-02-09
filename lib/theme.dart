@@ -1,20 +1,20 @@
+import 'package:assistant/config/setting_config.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:system_theme/system_theme.dart';
 
-import 'package:fluent_ui/fluent_ui.dart';
-
 enum NavigationIndicators { sticky, end }
 
 class AppTheme extends ChangeNotifier {
-  AccentColor? _color;
+  AccentColor? _color = SettingConfig.to.getAccentColor();
   AccentColor get color => _color ?? systemAccentColor;
   set color(AccentColor color) {
     _color = color;
     notifyListeners();
   }
 
-  ThemeMode _mode = ThemeMode.system;
+  ThemeMode _mode = SettingConfig.to.getThemeMode();
   ThemeMode get mode => _mode;
   set mode(ThemeMode mode) {
     _mode = mode;
@@ -28,22 +28,15 @@ class AppTheme extends ChangeNotifier {
     notifyListeners();
   }
 
-  NavigationIndicators _indicator = NavigationIndicators.sticky;
-  NavigationIndicators get indicator => _indicator;
-  set indicator(NavigationIndicators indicator) {
-    _indicator = indicator;
-    notifyListeners();
-  }
-
-  WindowEffect _windowEffect = WindowEffect.mica;
+  WindowEffect _windowEffect = SettingConfig.to.getTransparentMode();
   WindowEffect get windowEffect => _windowEffect;
   set windowEffect(WindowEffect windowEffect) {
     _windowEffect = windowEffect;
     notifyListeners();
   }
 
-  void setEffect(WindowEffect effect, BuildContext context) {
-    Window.setEffect(
+  Future<void> setEffect(WindowEffect effect, BuildContext context) async {
+    await Window.setEffect(
       effect: effect,
       color: [
         WindowEffect.solid,

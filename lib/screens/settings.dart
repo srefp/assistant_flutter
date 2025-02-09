@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:assistant/config/setting_config.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
@@ -96,8 +97,13 @@ class _SettingsState extends State<Settings> with PageMixin {
     return ListView(
       padding: EdgeInsets.all(20),
       children: [
-        WinText('设置', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-        SizedBox(height: 12),
+        WinText(
+          '设置',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16),
+        WinText('菜单', style: FluentTheme.of(context).typography.subtitle),
+        spacer,
         WinText('主题模式', style: FluentTheme.of(context).typography.subtitle),
         spacer,
         ...List.generate(ThemeMode.values.length, (index) {
@@ -106,12 +112,27 @@ class _SettingsState extends State<Settings> with PageMixin {
             padding: const EdgeInsetsDirectional.only(bottom: 8.0),
             child: RadioButton(
               checked: appTheme.mode == mode,
-              onChanged: (value) {
+              onChanged: (value) async {
                 if (value) {
                   appTheme.mode = mode;
+                  SettingConfig.to.save(SettingConfig.keyThemeMode, mode.index);
 
                   if (kIsWindowEffectsSupported) {
-                    appTheme.setEffect(appTheme.windowEffect, context);
+                    final transitionEffect =
+                        appTheme.windowEffect == WindowEffect.mica
+                            ? WindowEffect.tabbed
+                            : WindowEffect.mica;
+
+                    final windowEffect = appTheme.windowEffect;
+                    appTheme.windowEffect = transitionEffect;
+                    await appTheme.setEffect(appTheme.windowEffect, context);
+
+                    await Future.delayed(Duration(milliseconds: 140));
+
+                    appTheme.windowEffect = windowEffect;
+                    if (context.mounted) {
+                      await appTheme.setEffect(appTheme.windowEffect, context);
+                    }
                   }
                 }
               },
@@ -129,13 +150,13 @@ class _SettingsState extends State<Settings> with PageMixin {
         Wrap(children: [
           Tooltip(
             message: accentColorNames[0],
-            child: _buildColorBlock(appTheme, systemAccentColor),
+            child: _buildColorBlock(appTheme, systemAccentColor, 0),
           ),
           ...List.generate(Colors.accentColors.length, (index) {
             final color = Colors.accentColors[index];
             return Tooltip(
               message: accentColorNames[index + 1],
-              child: _buildColorBlock(appTheme, color),
+              child: _buildColorBlock(appTheme, color, index + 1),
             );
           }),
         ]),
@@ -155,6 +176,8 @@ class _SettingsState extends State<Settings> with PageMixin {
                 onChanged: (value) {
                   if (value) {
                     appTheme.windowEffect = mode;
+                    SettingConfig.to.save(SettingConfig.keyTransparentMode, mode.index);
+
                     appTheme.setEffect(mode, context);
                   }
                 },
@@ -163,10 +186,10 @@ class _SettingsState extends State<Settings> with PageMixin {
                     'disabled': '禁用',
                     'solid': '固体',
                     'transparent': '透明',
-                    'aero': '埃尔柔',
-                    'acrylic': '阿克瑞里克',
+                    'aero': 'aero',
+                    'acrylic': 'acrylic',
                     'mica': '米卡',
-                    'tabbed': 'TAB'
+                    'tabbed': 'tabbed'
                   }[mode.toString().replaceAll('WindowEffect.', '')]!,
                 ),
               ),
@@ -177,12 +200,13 @@ class _SettingsState extends State<Settings> with PageMixin {
     );
   }
 
-  Widget _buildColorBlock(AppTheme appTheme, AccentColor color) {
+  Widget _buildColorBlock(AppTheme appTheme, AccentColor color, int index) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Button(
         onPressed: () {
           appTheme.color = color;
+          SettingConfig.to.save(SettingConfig.keyAccentColorName, index);
         },
         style: ButtonStyle(
           padding: const WidgetStatePropertyAll(EdgeInsets.zero),

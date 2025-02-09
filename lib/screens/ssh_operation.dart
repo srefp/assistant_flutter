@@ -14,7 +14,7 @@ class SshOperation extends StatelessWidget {
           'SSH连接',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 12),
+        SizedBox(height: 16),
         Row(
           children: [
             SizedBox(

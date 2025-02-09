@@ -14,8 +14,7 @@ import 'package:assistant/main.dart';
 
 void main() {
   test('ssh', () async {
-    String key = await readAsset('assets/ssh_key/Microstar.AWS.3430.SFTP.ppk');
-    print('key: ' + key);
+    await readAsset('assets/ssh_key/Microstar.AWS.3430.SFTP.ppk');
   });
 
   test('shell', () async {
