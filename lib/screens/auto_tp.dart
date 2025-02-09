@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/icon_card.dart';
+import 'package:assistant/components/title_with_sub.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +53,24 @@ class _AutoTpPageState extends State<AutoTpPage> {
           icon: Icons.play_arrow_rounded,
           title: '耕地机，启动！',
           subTitle: "启动后才能使用各项功能",
-        )
+          content: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Expanded(
+                flex: 1,
+                child: TitleWithSub(
+                    title: '路线文件夹',
+                    subTitle:
+                        '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
+              ),
+              ButtonWithIcon(
+                text: '打开路线目录',
+                icon: FluentIcons.folder,
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

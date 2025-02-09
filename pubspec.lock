@@ -158,7 +158,7 @@ packages:
     source: hosted
     version: "0.0.3"
   flutter_auto_gui_windows:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_auto_gui_windows
       sha256: "8493d57c564ffdf0c042fa53b801da3feb03cb7654f8eac5f9043dc0cd6a24b5"

@@ -1,4 +1,4 @@
-import 'package:assistant/components/win_text.dart';
+import 'package:assistant/components/title_with_sub.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 /// 带icon、标题、副标题的tile
@@ -23,14 +23,9 @@ class IconCard extends StatelessWidget {
         icon,
         size: 30,
       ),
-      header: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          WinText(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-          WinText(subTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w200)),
-          const SizedBox(height: 10),
-        ],
+      header: TitleWithSub(
+        title: title,
+        subTitle: subTitle,
       ),
       content: content,
     );

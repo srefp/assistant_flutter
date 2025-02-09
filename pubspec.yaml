@@ -47,6 +47,7 @@ dependencies:
   get_storage: ^2.1.1
   path: ^1.8.2
   flutter_svg: ^2.0.0+1
+  flutter_auto_gui_windows: ^0.0.3
   flutter_syntax_view:
     git:
       url: https://github.com/YehudaKremer/flutter_syntax_view.git
