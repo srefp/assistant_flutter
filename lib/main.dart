@@ -2,6 +2,7 @@ import 'package:assistant/routes/routes.dart';
 import 'package:assistant/screens/auto_tp.dart';
 import 'package:assistant/screens/settings.dart';
 import 'package:assistant/screens/ssh_operation.dart';
+import 'package:assistant/screens/test.dart';
 import 'package:assistant/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
@@ -141,6 +142,11 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
           path: Routes.sshOperation,
           builder: (context, state) => const SshOperation()),
 
+      /// Test
+      GoRoute(
+          path: Routes.test,
+          builder: (context, state) => const Test()),
+
       /// Settings
       GoRoute(
           path: Routes.settings, builder: (context, state) => const Settings()),
@@ -195,6 +201,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       onTap: () {
         if (GoRouterState.of(context).uri.toString() != Routes.sshOperation) {
           context.go(Routes.sshOperation);
+        }
+      },
+    ),
+    PaneItem(
+      key: const ValueKey(Routes.test),
+      icon: const Icon(FluentIcons.test_plan),
+      title: Text(
+        '测试',
+        style: TextStyle(fontFamily: fontFamily),
+      ),
+      body: const SizedBox.shrink(),
+      onTap: () {
+        if (GoRouterState.of(context).uri.toString() != Routes.test) {
+          context.go(Routes.test);
         }
       },
     ),
