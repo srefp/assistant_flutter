@@ -1,9 +1,7 @@
 import 'package:assistant/auto_gui/km_util.dart';
-import 'package:assistant/components/code_editor.dart';
 import 'package:assistant/screens/virtual_screen.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
 
 import '../components/win_text.dart';
 
@@ -32,9 +30,6 @@ class Test extends StatelessWidget {
                   showToast('已复制坐标: ${virtualPos[0]}, ${virtualPos[1]}');
                 },
               ),
-            ),
-            SizedBox(
-              height: 600,
             ),
           ],
         ),

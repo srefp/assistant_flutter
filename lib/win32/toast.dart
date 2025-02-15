@@ -3,14 +3,14 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 // 定义定时器 ID
-const TIMER_ID = 1;
+const timerId = 1;
 
 Future<void> showToast(String message, {int delay = 3000}) async {
   // 获取当前鼠标位置
   final point = calloc<POINT>();
   GetCursorPos(point);
-  final x = point.ref.x; // 修正获取 x 坐标的方式
-  final y = point.ref.y; // 修正获取 y 坐标的方式
+  final x = point.ref.x;
+  final y = point.ref.y;
 
   // 获取屏幕分辨率
   final screenWidth = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSCREEN);
@@ -34,17 +34,20 @@ Future<void> showToast(String message, {int delay = 3000}) async {
 
   // 注册窗口类
   final hInstance = GetModuleHandle(nullptr);
-  final wc = calloc<WNDCLASS>(); // 使用 calloc 分配内存
-  wc.ref.style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW; // 使用新的常量
-  wc.ref.lpfnWndProc = Pointer.fromFunction(windowProcedure, 0); // 添加异常返回值
+  final wc = calloc<WNDCLASS>();
+  wc.ref.style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW;
+  wc.ref.lpfnWndProc = Pointer.fromFunction(windowProcedure, 0);
   wc.ref.hInstance = hInstance;
   wc.ref.hCursor = LoadCursor(NULL, IDC_ARROW);
   wc.ref.lpszClassName = TEXT('MousePositionWindow');
 
+  // 尝试注销之前的窗口类
+  UnregisterClass(TEXT('MousePositionWindow'), hInstance);
   RegisterClass(wc);
 
   // 创建窗口
-  final hWnd = CreateWindow(
+  final hWnd = CreateWindowEx(
+    WINDOW_EX_STYLE.WS_EX_TOOLWINDOW,
     TEXT('MousePositionWindow'),
     TEXT('Mouse Position'),
     WINDOW_STYLE.WS_POPUP,
@@ -55,7 +58,7 @@ Future<void> showToast(String message, {int delay = 3000}) async {
     NULL,
     NULL,
     hInstance,
-    message.toNativeUtf16().cast(), // 传递 message
+    message.toNativeUtf16().cast(),
   );
 
   // 显示窗口
@@ -65,65 +68,86 @@ Future<void> showToast(String message, {int delay = 3000}) async {
   UpdateWindow(hWnd);
 
   // 设置定时器
-  SetTimer(hWnd, TIMER_ID, delay, nullptr);
+  SetTimer(hWnd, timerId, delay, nullptr);
 
-  // 消息循环
+  // 异步消息循环
   final msg = calloc<MSG>();
-  while (GetMessage(msg, NULL, 0, 0) != 0) {
-    TranslateMessage(msg);
-    DispatchMessage(msg);
-  }
 
-  calloc.free(msg); // 释放内存
-  calloc.free(wc); // 释放内存
-  calloc.free(point); // 释放内存
+  try {
+    // 异步等待窗口关闭
+    await Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      while (PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
+        TranslateMessage(msg);
+        DispatchMessage(msg);
+      }
+
+      // 手动设置鼠标光标为正常箭头
+      SetCursor(LoadCursor(NULL, IDC_ARROW));
+      return IsWindow(hWnd) != 0;
+    });
+  } finally {
+    // 确保资源在任何情况下都被释放
+    if (IsWindow(hWnd) != 0) {
+      DestroyWindow(hWnd);
+    }
+    KillTimer(hWnd, timerId);
+    calloc.free(msg);
+    calloc.free(wc);
+    calloc.free(point);
+  }
 }
 
 String? message;
 
 // 窗口过程函数
 int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
-
+  if (msg == WM_CREATE) {
+    final createStruct = Pointer.fromAddress(lParam).cast<CREATESTRUCT>();
+    message = createStruct.ref.lpCreateParams.cast<Utf16>().toDartString();
+  }
   switch (msg) {
-    case WM_CREATE:
-      final createStruct = Pointer.fromAddress(lParam).cast<CREATESTRUCT>();
-      message = createStruct.ref.lpCreateParams.cast<Utf16>().toDartString();
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;
     case WM_TIMER:
-      if (wParam == TIMER_ID) {
+      if (wParam == timerId) {
         // 定时器触发，关闭窗口
-        DestroyWindow(hWnd);
+        if (DestroyWindow(hWnd) == 0) {
+          throw Exception('窗口销毁失败');
+        }
+        // 销毁定时器
+        KillTimer(hWnd, timerId);
       }
+      return 0;
     case WM_PAINT:
       final ps = calloc<PAINTSTRUCT>();
       final hdc = BeginPaint(hWnd, ps);
 
       // 加载字体文件
-      final fontPath = 'assets/font/MiSans-Regular.ttf'; // 假设字体文件名为 MiSans.ttf
+      final fontPath = 'assets/font/MiSans-Regular.ttf';
       final fontCount = AddFontResourceEx(TEXT(fontPath), 0x10, nullptr);
       if (fontCount == 0) {
         throw Exception('字体加载失败');
       }
 
-      // 分配并初始化 LOGFONT 结构
       final logFont = calloc<LOGFONT>();
 
       // 设置字体属性
       logFont.ref
-        ..lfHeight = -24 // 字体高度（负数表示逻辑单位高度）
-        ..lfWidth = 0    // 宽度（0 表示自动计算宽高比）
-        ..lfEscapement = 0 // 文本倾斜角度（0.1度单位）
+        ..lfHeight = -24
+        ..lfWidth = 0
+        ..lfEscapement = 0
         ..lfOrientation = 0
-        ..lfItalic = FALSE   // 是否斜体
+        ..lfItalic = FALSE
         ..lfUnderline = FALSE
         ..lfStrikeOut = FALSE
-        ..lfCharSet = FONT_CHARSET.DEFAULT_CHARSET; // 字符集
-      logFont.ref.lfFaceName = 'MiSans'; // 设置字体名称
+        ..lfCharSet = FONT_CHARSET.DEFAULT_CHARSET;
+      logFont.ref.lfFaceName = 'MiSans';
       // 创建字体
       final hFont = CreateFontIndirect(logFont);
-      free(logFont); // 释放 LOGFONT 内存
+      free(logFont);
 
       if (hFont == NULL) {
         throw Exception('字体创建失败');
@@ -131,8 +155,6 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
 
       // 选择字体
       SelectObject(hdc, hFont);
-
-      print('message3: $message');
 
       // 显示鼠标位置信息
       final text = ' $message ';
@@ -150,12 +172,11 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
 
       EndPaint(hWnd, ps);
       calloc.free(ps);
+
+      // 删除字体对象
+      DeleteObject(hFont);
+
       return 0;
   }
   return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-
-void main() {
-  showToast('');
 }
