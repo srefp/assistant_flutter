@@ -5,7 +5,7 @@ import 'package:win32/win32.dart';
 // 定义定时器 ID
 const TIMER_ID = 1;
 
-void showToast(String message, {int delay = 3000}) {
+Future<void> showToast(String message, {int delay = 3000}) async {
   // 获取当前鼠标位置
   final point = calloc<POINT>();
   GetCursorPos(point);
@@ -55,7 +55,7 @@ void showToast(String message, {int delay = 3000}) {
     NULL,
     NULL,
     hInstance,
-    nullptr,
+    message.toNativeUtf16().cast(), // 传递 message
   );
 
   // 显示窗口
@@ -79,14 +79,15 @@ void showToast(String message, {int delay = 3000}) {
   calloc.free(point); // 释放内存
 }
 
+String? message;
+
 // 窗口过程函数
 int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
-  String message = '';
-  if (msg == WM_CREATE) {
-    final createStruct = Pointer.fromAddress(lParam).cast<CREATESTRUCT>();
-    message = createStruct.ref.lpCreateParams.cast<Utf16>().toDartString();
-  }
+
   switch (msg) {
+    case WM_CREATE:
+      final createStruct = Pointer.fromAddress(lParam).cast<CREATESTRUCT>();
+      message = createStruct.ref.lpCreateParams.cast<Utf16>().toDartString();
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;
@@ -130,6 +131,8 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
 
       // 选择字体
       SelectObject(hdc, hFont);
+
+      print('message3: $message');
 
       // 显示鼠标位置信息
       final text = ' $message ';

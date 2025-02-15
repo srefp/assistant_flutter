@@ -1,5 +1,6 @@
 import 'package:assistant/routes/routes.dart';
 import 'package:assistant/screens/auto_tp.dart';
+import 'package:assistant/screens/script_editor.dart';
 import 'package:assistant/screens/settings.dart';
 import 'package:assistant/screens/ssh_operation.dart';
 import 'package:assistant/screens/test.dart';
@@ -142,6 +143,11 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
           path: Routes.sshOperation,
           builder: (context, state) => const SshOperation()),
 
+      /// SSH Operation
+      GoRoute(
+          path: Routes.scriptEditor,
+          builder: (context, state) => const ScriptEditor()),
+
       /// Test
       GoRoute(
           path: Routes.test,
@@ -201,6 +207,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       onTap: () {
         if (GoRouterState.of(context).uri.toString() != Routes.sshOperation) {
           context.go(Routes.sshOperation);
+        }
+      },
+    ),
+    PaneItem(
+      key: const ValueKey(Routes.scriptEditor),
+      icon: const Icon(FluentIcons.code_edit),
+      title: Text(
+        'SSH连接',
+        style: TextStyle(fontFamily: fontFamily),
+      ),
+      body: const SizedBox.shrink(),
+      onTap: () {
+        if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
+          context.go(Routes.scriptEditor);
         }
       },
     ),
