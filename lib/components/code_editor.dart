@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
@@ -84,6 +85,8 @@ class _CodeEditorState extends State<CodeEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final lines = calcLines(text);
+
     return CodeTheme(
       data: CodeThemeData(
         styles: darculaTheme,
@@ -94,36 +97,35 @@ class _CodeEditorState extends State<CodeEditor> {
         key: const Key("scriptEditorVerticalScrollbarKey"),
         controller: _vCtrl,
         child: SingleChildScrollView(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double boxHeight = 2500;
-              final double boxWidth = calculateText(text);
-              return Scrollbar(
-                key: const Key("scriptEditorHorizontalScrollbarKey"),
-                thumbVisibility: true,
+          child: LayoutBuilder(builder: (context, constraints) {
+            final double boxHeight = 2500;
+            final double boxWidth = calculateText(text);
+            return Scrollbar(
+              key: const Key("scriptEditorHorizontalScrollbarKey"),
+              thumbVisibility: true,
+              controller: _hCtrl,
+              child: SingleChildScrollView(
                 controller: _hCtrl,
-                child: SingleChildScrollView(
-                  controller: _hCtrl,
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    height: constraints.maxHeight,
-                    width: max(boxWidth, constraints.maxWidth),
-                    child: SingleChildScrollView(
-                      controller: _vCtrl,
-                      child: SizedBox(
-                        height: boxHeight,
-                        child: CodeField(
-                          textStyle: TextStyle(fontSize: 16, fontFamily: fontFamily),
-                          controller: controller,
-                          minLines: 36,
-                        ),
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  height: constraints.maxHeight,
+                  width: max(boxWidth, constraints.maxWidth),
+                  child: SingleChildScrollView(
+                    controller: _vCtrl,
+                    child: SizedBox(
+                      height: boxHeight,
+                      child: CodeField(
+                        textStyle:
+                            TextStyle(fontSize: 16, fontFamily: fontFamily),
+                        controller: controller,
+                        minLines: 36,
                       ),
                     ),
                   ),
                 ),
-              );
-            }
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -133,10 +135,19 @@ class _CodeEditorState extends State<CodeEditor> {
     final textPainter = TextPainter(
       textAlign: TextAlign.left,
       textDirection: TextDirection.ltr,
-      text: TextSpan(text: text, style: TextStyle(fontSize: 16, fontFamily: fontFamily)),
-    );
-    textPainter.layout();
+      text: TextSpan(
+          text: text, style: TextStyle(fontSize: 16, fontFamily: fontFamily)),
+    )..layout();
 
     return textPainter.width;
+  }
+
+  calcLines(String text) {
+    final lines = <TextSpan>[];
+    lines.addAll([
+      for (final line in text.split('\n'))
+        TextSpan(
+            style: TextStyle(fontSize: 16, fontFamily: fontFamily), text: line),
+    ]);
   }
 }

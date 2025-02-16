@@ -63,7 +63,7 @@ dependencies:
   flutter_js: ^0.8.1
   hotkey_manager: ^0.2.3
   tray_manager: ^0.3.2
-  single_child_two_dimensional_scroll_view: ^0.0.3
+  adaptive_scrollbar: ^2.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
