@@ -91,43 +91,19 @@ class _CodeEditorState extends State<CodeEditor> {
       data: CodeThemeData(
         styles: darculaTheme,
       ),
-      child: Scrollbar(
-        thumbVisibility: true,
-        notificationPredicate: (ScrollNotification notification) => notification.depth == 1,
-        key: const Key("scriptEditorVerticalScrollbarKey"),
-        controller: _vCtrl,
-        child: SingleChildScrollView(
-          child: LayoutBuilder(builder: (context, constraints) {
-            final double boxHeight = 2500;
-            final double boxWidth = calculateText(text);
-            return Scrollbar(
-              key: const Key("scriptEditorHorizontalScrollbarKey"),
-              thumbVisibility: true,
-              controller: _hCtrl,
-              child: SingleChildScrollView(
-                controller: _hCtrl,
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  height: constraints.maxHeight,
-                  width: max(boxWidth, constraints.maxWidth),
-                  child: SingleChildScrollView(
-                    controller: _vCtrl,
-                    child: SizedBox(
-                      height: boxHeight,
-                      child: CodeField(
-                        textStyle:
-                            TextStyle(fontSize: 16, fontFamily: fontFamily),
-                        controller: controller,
-                        minLines: 36,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Scrollbar(
+          controller: _vCtrl,
+          child: SingleChildScrollView(
+            controller: _vCtrl,
+            child: CodeField(
+              textStyle: TextStyle(fontSize: 16, fontFamily: fontFamily),
+              controller: controller,
+              minLines: 36,
+            ),
+          ),
+        );
+      }),
     );
   }
 
