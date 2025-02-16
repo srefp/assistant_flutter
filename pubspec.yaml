@@ -34,7 +34,7 @@ dependencies:
     path: C:/Users/1/Documents/GitHub/fluent_ui
   provider: ^6.0.5
   system_theme: ^2.3.1
-  window_manager: ^0.3.0
+  window_manager: ^0.4.3
   flutter_acrylic: ^1.0.0+2
   url_strategy: ^0.2.0
   url_launcher: ^6.1.7
@@ -60,6 +60,8 @@ dependencies:
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
   flutter_js: ^0.8.1
+  hotkey_manager: ^0.2.3
+  tray_manager: ^0.3.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -86,6 +88,8 @@ flutter:
     - assets/ssh_key/Microstar.AWS.3430.ppk
     - assets/ssh_key/Microstar.AWS.3430.SFTP.ppk
     - assets/image/logo.svg
+    - assets/image/logo.ico
+    - assets/image/logo.png
   fonts:
     - family: deluge
       fonts:

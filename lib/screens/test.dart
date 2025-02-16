@@ -25,9 +25,7 @@ class Test extends StatelessWidget {
               child: Button(
                 child: WinText('弹出消息框'),
                 onPressed: () {
-                  List<int> point = getMousePosition();
-                  List<int> virtualPos = getVirtualPos(point);
-                  showToast('已复制坐标: ${virtualPos[0]}, ${virtualPos[1]}');
+                  showCoordinate();
                 },
               ),
             ),

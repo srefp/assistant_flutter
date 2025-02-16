@@ -17,8 +17,8 @@ Future<void> showToast(String message, {int delay = 3000}) async {
   final screenHeight = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSCREEN);
 
   // 窗口的宽度和高度
-  const windowWidth = 200;
-  const windowHeight = 100;
+  const windowWidth = 325;
+  const windowHeight = 45;
 
   // 计算窗口的位置
   var windowX = x;
