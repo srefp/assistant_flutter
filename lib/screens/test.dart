@@ -1,6 +1,4 @@
 import 'package:assistant/auto_gui/km_util.dart';
-import 'package:assistant/screens/virtual_screen.dart';
-import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../components/win_text.dart';

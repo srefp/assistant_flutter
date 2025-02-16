@@ -1,8 +1,6 @@
 import 'package:assistant/auto_gui/km_util.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:window_manager/window_manager.dart';
 
 /// 快捷键
 class KeyItem {

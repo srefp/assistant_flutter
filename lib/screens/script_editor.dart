@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../components/code_editor.dart';
+import '../components/editor.dart';
 
 class ScriptEditor extends StatelessWidget {
   const ScriptEditor({super.key});
@@ -8,7 +8,7 @@ class ScriptEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CodeEditor(),
+      body: Editor(),
     );
   }
 }
