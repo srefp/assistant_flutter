@@ -1,10 +1,12 @@
+import 'dart:math';
+
+import 'package:assistant/components/win_text.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
 import 'package:highlight/languages/javascript.dart';
 
-final controller = CodeController(
-  text: '''const material = '鸟蛋';
+const text = '''const material = '鸟蛋';
 const byeByeList = ['非常感谢！祝你抽卡不歪，十连双金！'];
 
 // 打招呼
@@ -61,13 +63,24 @@ press('return', 20);
 // 感谢
 cp(byeByeList[randInt(0, byeByeList.length)], 200);
 press('return', 120);
-  ''', // Initial code
+  ''';
+
+final controller = CodeController(
+  text: text, // Initial code
   language: javascript,
 );
 
 /// 代码编辑器
-class CodeEditor extends StatelessWidget {
+class CodeEditor extends StatefulWidget {
   const CodeEditor({super.key});
+
+  @override
+  State<CodeEditor> createState() => _CodeEditorState();
+}
+
+class _CodeEditorState extends State<CodeEditor> {
+  final ScrollController _hCtrl = ScrollController();
+  final ScrollController _vCtrl = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +88,55 @@ class CodeEditor extends StatelessWidget {
       data: CodeThemeData(
         styles: darculaTheme,
       ),
-      child: SingleChildScrollView(
-        child: CodeField(
-          controller: controller,
-          minLines: 36,
+      child: Scrollbar(
+        thumbVisibility: true,
+        notificationPredicate: (ScrollNotification notification) => notification.depth == 1,
+        key: const Key("scriptEditorVerticalScrollbarKey"),
+        controller: _vCtrl,
+        child: SingleChildScrollView(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double boxHeight = 2500;
+              final double boxWidth = calculateText(text);
+              return Scrollbar(
+                key: const Key("scriptEditorHorizontalScrollbarKey"),
+                thumbVisibility: true,
+                controller: _hCtrl,
+                child: SingleChildScrollView(
+                  controller: _hCtrl,
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    width: max(boxWidth, constraints.maxWidth),
+                    child: SingleChildScrollView(
+                      controller: _vCtrl,
+                      child: SizedBox(
+                        height: boxHeight,
+                        child: CodeField(
+                          textStyle: TextStyle(fontSize: 16, fontFamily: fontFamily),
+                          controller: controller,
+                          minLines: 36,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+          ),
         ),
       ),
     );
+  }
+
+  double calculateText(String text) {
+    final textPainter = TextPainter(
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+      text: TextSpan(text: text, style: TextStyle(fontSize: 16, fontFamily: fontFamily)),
+    );
+    textPainter.layout();
+
+    return textPainter.width;
   }
 }
