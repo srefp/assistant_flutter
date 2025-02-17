@@ -82,9 +82,8 @@ abstract class TaskManager {
               int? mainHandle;
               // Callback for each window found
               int enumWindowsProc(int hWnd, int lParam) {
-                final pidPtr = calloc<Uint32>();
+                final pidPtr = arena<Uint32>();
                 GetWindowThreadProcessId(hWnd, pidPtr);
-                calloc.free(pidPtr);
 
                 if (pidPtr.value == pid) {
                   if (GetParent(hWnd) == NULL && IsWindowVisible(hWnd) != FALSE) {
@@ -110,7 +109,7 @@ abstract class TaskManager {
                 name: name,
                 pid: pid,
                 description: description,
-                mainWindowHandle: mainHandle
+                mainWindowHandle: mainHandle,
               );
               tasks.add(task);
             }

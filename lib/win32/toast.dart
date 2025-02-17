@@ -1,4 +1,5 @@
 import 'dart:ffi';
+
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
@@ -63,8 +64,17 @@ Future<void> showToast(String message, {int delay = 3000}) async {
 
   // 显示窗口
   ShowWindow(hWnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+
+  // 设置窗口扩展样式为 WS_EX_TRANSPARENT
+  SetWindowLongPtr(
+      hWnd,
+      WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+      GetWindowLongPtr(hWnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE) |
+          WINDOW_EX_STYLE.WS_EX_TRANSPARENT);
+
   // 将窗口置于最顶层
-  SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+  SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0,
+      SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
   UpdateWindow(hWnd);
 
   // 设置定时器
@@ -78,7 +88,8 @@ Future<void> showToast(String message, {int delay = 3000}) async {
     await Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 100));
 
-      while (PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
+      while (PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) !=
+          0) {
         TranslateMessage(msg);
         DispatchMessage(msg);
       }
@@ -126,7 +137,7 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
       final hdc = BeginPaint(hWnd, ps);
 
       // 加载字体文件
-      final fontPath = 'assets/font/MiSans-Regular.ttf';
+      final fontPath = 'data/flutter_assets/assets/font/MiSans-Regular.ttf';
       final fontCount = AddFontResourceEx(TEXT(fontPath), 0x10, nullptr);
       if (fontCount == 0) {
         throw Exception('字体加载失败');
@@ -166,7 +177,8 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
       final textHeight = rect.ref.bottom - rect.ref.top;
 
       // 调整窗口大小以适应文本
-      SetWindowPos(hWnd, NULL, 0, 0, textWidth + 20, textHeight + 20, SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+      SetWindowPos(hWnd, NULL, 0, 0, textWidth + 20, textHeight + 20,
+          SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
 
       TextOut(hdc, 10, 10, TEXT(text), text.length);
 

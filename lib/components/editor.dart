@@ -2,15 +2,9 @@ import 'dart:math';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
-import 'package:flutter_highlight/themes/atom-one-dark-reasonable.dart';
-import 'package:flutter_highlight/themes/atom-one-light.dart';
-import 'package:flutter_highlight/themes/dracula.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/dart.dart';
 import 'package:re_highlight/languages/javascript.dart';
-import 'package:re_highlight/styles/base16/github.dart';
-import 'package:re_highlight/styles/github-dark-dimmed.dart';
-import 'package:re_highlight/styles/github-dark.dart';
 
 import 'find.dart';
 import 'menu.dart';
