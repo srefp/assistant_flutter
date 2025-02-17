@@ -1,0 +1,1 @@
+const windowNames = ["YuanShen", "GenshinImpact", "Genshin Impact Cloud Game"];
