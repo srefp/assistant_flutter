@@ -28,12 +28,17 @@ class ScreenManager {
         break;
       }
     }
-    return task?.mainWindowHandle;
+
+    if (task == null) {
+      return null;
+    }
+
+    int? mainHandle = TaskManager.getMainHandle(task.pid);
+    return mainHandle;
   }
 
-  // 根据窗口名称查找窗口句柄
+  // 根据进程名称查找窗口句柄
   Task? findWindowByTitle(String windowTitle, final List<Task>? currentTasks) {
-    // 调用 FindWindow 函数，第一个参数为类名（这里传 null 表示不指定类名），第二个参数为窗口名称
     final tasks = currentTasks ?? [];
     for (Task task in tasks) {
       if (task.name.contains(windowTitle)) {
