@@ -1,4 +1,4 @@
-import 'package:assistant/auto_gui/km_util.dart';
+import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
@@ -35,7 +35,7 @@ void initHotKey() async {
       modifiers: [HotKeyModifier.control],
       scope: HotKeyScope.system,
       callback: () {
-        showCoordinate();
+        KeyMouseUtil.showCoordinate();
       },
     ),
   ];

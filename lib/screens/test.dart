@@ -1,4 +1,4 @@
-import 'package:assistant/auto_gui/km_util.dart';
+import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -25,7 +25,7 @@ class Test extends StatelessWidget {
               child: Button(
                 child: WinText('弹出消息框'),
                 onPressed: () {
-                  showCoordinate();
+                  KeyMouseUtil.showCoordinate();
                 },
               ),
             ),
