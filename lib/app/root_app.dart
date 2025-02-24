@@ -1,177 +1,16 @@
-import 'dart:io';
-
 import 'package:assistant/components/win_text.dart';
-import 'package:assistant/main.dart';
-import 'package:assistant/util/hot_key.dart';
+import 'package:assistant/app/windows_app.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 
+import '../main.dart';
 import '../routes/routes.dart';
-import '../screens/auto_tp.dart';
-import '../screens/script_editor.dart';
-import '../screens/settings.dart';
-import '../screens/ssh_operation.dart';
-import '../screens/test.dart';
-import '../theme.dart';
 
-class WindowsApp extends StatefulWidget {
-  const WindowsApp({super.key});
-
-  @override
-  State<WindowsApp> createState() => _WindowsAppState();
-}
-
-final _appTheme = AppTheme();
-
-class _WindowsAppState extends State<WindowsApp> with TrayListener {
-  @override
-  void initState() {
-    super.initState();
-    trayManager.addListener(this);
-    _initSystemTray();
-    initHotKey();
-  }
-
-  @override
-  void dispose() {
-    trayManager.removeListener(this);
-    super.dispose();
-  }
-
-  @override
-  void onTrayIconRightMouseDown() {
-    // do something, for example pop up the menu
-    trayManager.popUpContextMenu();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: _appTheme,
-      builder: (context, child) {
-        final appTheme = context.watch<AppTheme>();
-        return FluentApp.router(
-          title: appTitle,
-          themeMode: appTheme.mode,
-          debugShowCheckedModeBanner: false,
-          color: appTheme.color,
-          darkTheme: FluentThemeData(
-            brightness: Brightness.dark,
-            accentColor: appTheme.color,
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-            ),
-          ),
-          theme: FluentThemeData(
-            accentColor: appTheme.color,
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-            ),
-            fontFamily: fontFamily,
-          ),
-          locale: appTheme.locale,
-          builder: (context, child) {
-            return Directionality(
-              textDirection: appTheme.textDirection,
-              child: NavigationPaneTheme(
-                data: NavigationPaneThemeData(
-                  backgroundColor: appTheme.windowEffect !=
-                      flutter_acrylic.WindowEffect.disabled
-                      ? Colors.transparent
-                      : null,
-                ),
-                child: child!,
-              ),
-            );
-          },
-          routeInformationParser: router.routeInformationParser,
-          routerDelegate: router.routerDelegate,
-          routeInformationProvider: router.routeInformationProvider,
-        );
-      },
-    );
-
-  }
-
-  void _initSystemTray() async{
-    await trayManager.setIcon(
-      Platform.isWindows
-          ? 'assets/image/logo.ico'
-          : 'assets/image/logo.png',
-    );
-    Menu menu = Menu(
-      items: [
-        MenuItem(
-          key: 'show_window',
-          label: 'Show Window',
-          onClick: (item){
-            windowManager.show();
-          },
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          key: 'exit_app',
-          label: 'Exit App',
-          onClick: (item){
-            windowManager.hide();
-            trayManager.destroy();
-            windowManager.destroy();
-          },
-        ),
-      ],
-    );
-    await trayManager.setContextMenu(menu);
-  }
-}
-
-final rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorKey = GlobalKey<NavigatorState>();
-final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
-  ShellRoute(
-    navigatorKey: _shellNavigatorKey,
-    builder: (context, state, child) {
-      return MyHomePage(
-        shellContext: _shellNavigatorKey.currentContext,
-        child: child,
-      );
-    },
-    routes: <GoRoute>[
-      /// Auto Tp
-      GoRoute(
-          path: Routes.autoTp, builder: (context, state) => const AutoTpPage()),
-
-      /// SSH Operation
-      GoRoute(
-          path: Routes.sshOperation,
-          builder: (context, state) => const SshOperation()),
-
-      /// SSH Operation
-      GoRoute(
-          path: Routes.scriptEditor,
-          builder: (context, state) => const ScriptEditor()),
-
-      /// Test
-      GoRoute(
-          path: Routes.test,
-          builder: (context, state) => const Test()),
-
-      /// Settings
-      GoRoute(
-          path: Routes.settings, builder: (context, state) => const Settings()),
-    ],
-  ),
-]);
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+class RootApp extends StatefulWidget {
+  const RootApp({
     super.key,
     required this.child,
     required this.shellContext,
@@ -181,10 +20,10 @@ class MyHomePage extends StatefulWidget {
   final BuildContext? shellContext;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RootApp> createState() => _RootAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WindowListener {
+class _RootAppState extends State<RootApp> {
   bool value = false;
   final viewKey = GlobalKey(debugLabel: 'Navigation View Key');
   final searchKey = GlobalKey(debugLabel: 'Search Bar Key');
@@ -206,20 +45,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         }
       },
     ),
-    // PaneItem(
-    //   key: const ValueKey(Routes.sshOperation),
-    //   icon: const Icon(FluentIcons.connect_virtual_machine),
-    //   title: Text(
-    //     'SSH连接',
-    //     style: TextStyle(fontFamily: fontFamily),
-    //   ),
-    //   body: const SizedBox.shrink(),
-    //   onTap: () {
-    //     if (GoRouterState.of(context).uri.toString() != Routes.sshOperation) {
-    //       context.go(Routes.sshOperation);
-    //     }
-    //   },
-    // ),
     PaneItem(
       key: const ValueKey(Routes.scriptEditor),
       icon: const Icon(FluentIcons.code_edit),
@@ -269,14 +94,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   ];
 
   @override
-  void initState() {
-    windowManager.addListener(this);
-    super.initState();
-  }
-
-  @override
   void dispose() {
-    windowManager.removeListener(this);
     searchController.dispose();
     searchFocusNode.dispose();
     super.dispose();
@@ -414,14 +232,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       ),
       onOpenSearch: searchFocusNode.requestFocus,
     );
-  }
-
-  @override
-  void onWindowClose() async {
-    bool isPreventClose = await windowManager.isPreventClose();
-    if (isPreventClose && mounted) {
-      windowManager.hide();
-    }
   }
 }
 

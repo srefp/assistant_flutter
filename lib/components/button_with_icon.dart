@@ -19,7 +19,8 @@ class ButtonWithIcon extends StatelessWidget {
       onPressed: onPressed,
       child: Row(
         children: [
-          Icon(icon),
+          Icon(icon, size: 18),
+          SizedBox(width: 6),
           WinText(text),
         ],
       ),

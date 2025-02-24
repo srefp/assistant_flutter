@@ -1,4 +1,5 @@
-import 'package:assistant/components/windows_app.dart';
+import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/util/path_manage.dart';
 import 'package:assistant/win32/window.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
@@ -10,17 +11,16 @@ import 'package:window_manager/window_manager.dart';
 const String version = '2025.1.6';
 const String appTitle = '耕地机 v$version';
 
-bool get isDesktop {
-  if (kIsWeb) return false;
-  return [
-    TargetPlatform.windows,
-    TargetPlatform.linux,
-    TargetPlatform.macOS,
-  ].contains(defaultTargetPlatform);
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initApp();
+
+  runApp(const WindowsApp());
+}
+
+/// 初始化应用
+Future<void> _initApp() async {
+   await initFileManagement();
   if (!kIsWeb &&
       [
         TargetPlatform.windows,
@@ -59,6 +59,13 @@ void main() async {
 
     await GetStorage.init();
   }
+}
 
-  runApp(const WindowsApp());
+bool get isDesktop {
+  if (kIsWeb) return false;
+  return [
+    TargetPlatform.windows,
+    TargetPlatform.linux,
+    TargetPlatform.macOS,
+  ].contains(defaultTargetPlatform);
 }

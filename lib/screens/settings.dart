@@ -1,9 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:assistant/components/config_row.dart';
 import 'package:assistant/config/setting_config.dart';
-import 'package:flutter/foundation.dart';
-
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:provider/provider.dart';
 
@@ -103,6 +103,41 @@ class _SettingsState extends State<Settings> with PageMixin {
         ),
         SizedBox(height: 16),
         WinText('菜单', style: FluentTheme.of(context).typography.subtitle),
+        ...[
+          ConfigRow(
+            title: '自动传送',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getAutoTpMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyAutoTpMenu, value);
+                })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '脚本编辑器',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getScriptMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyScriptMenu, value);
+                })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '日志查看',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getLogShow(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyLogShow, value);
+                })
+              },
+            ),
+          ),
+        ],
         spacer,
         WinText('主题模式', style: FluentTheme.of(context).typography.subtitle),
         spacer,
@@ -176,7 +211,8 @@ class _SettingsState extends State<Settings> with PageMixin {
                 onChanged: (value) {
                   if (value) {
                     appTheme.windowEffect = mode;
-                    SettingConfig.to.save(SettingConfig.keyTransparentMode, mode.index);
+                    SettingConfig.to
+                        .save(SettingConfig.keyTransparentMode, mode.index);
 
                     appTheme.setEffect(mode, context);
                   }

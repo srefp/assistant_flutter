@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 
 Future<String> readAsset(String filePath) async {
   return await rootBundle.loadString(filePath);
@@ -15,4 +16,11 @@ T? getItemFromArr<T>(
     }
   }
   return res;
+}
+
+const String assetsPath = 'data/flutter_assets/assets';
+
+/// 获取assets下的文件
+String getAssets(String str) {
+  return join(assetsPath, str);
 }

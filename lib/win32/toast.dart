@@ -137,7 +137,7 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
       final hdc = BeginPaint(hWnd, ps);
 
       // 加载字体文件
-      final fontPath = 'data/flutter_assets/assets/font/MiSans-Regular.ttf';
+      final fontPath = 'assets/font/MiSans-Regular.ttf';
       final fontCount = AddFontResourceEx(TEXT(fontPath), 0x10, nullptr);
       if (fontCount == 0) {
         throw Exception('字体加载失败');
