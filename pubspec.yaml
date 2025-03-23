@@ -73,6 +73,7 @@ dependencies:
   bot_toast: ^4.0.3
   fluttertoast: ^8.1.2
   lpinyin: ^2.0.3
+  image: ^4.1.2
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ flutter:
     - assets/image/logo.svg
     - assets/image/logo.ico
     - assets/image/logo.png
+    - assets/js/func.js
   fonts:
     - family: deluge
       fonts:

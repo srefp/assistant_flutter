@@ -4,6 +4,7 @@ import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,9 @@ class ScriptEditorModel with ChangeNotifier {
   /// js运行时
   late JavascriptRuntime jsRuntime;
 
+  /// js函数
+  late String jsFunction;
+
   late CodeLineEditingController controller;
   late Function(dynamic) saveFileContent;
   List<String> directories = [];
@@ -55,6 +59,13 @@ class ScriptEditorModel with ChangeNotifier {
       (_) => saveFile(controller.text),
       seconds: 2,
     );
+
+    // 加载js函数
+    loadJsFunction();
+  }
+
+  loadJsFunction() async {
+    jsFunction = await rootBundle.loadString('assets/js/func.js');
   }
 
   /// 运行js代码
@@ -64,9 +75,7 @@ class ScriptEditorModel with ChangeNotifier {
       code = controller.text;
     }
     code = '''
-    function log(info) {
-        sendMessage('log', JSON.stringify({'info': info}));
-    }
+    $jsFunction
     $code
     ''';
     jsRuntime.evaluate(code);
