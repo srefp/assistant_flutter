@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:assistant/notifier/script_editor_model.dart';
-import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:provider/provider.dart';

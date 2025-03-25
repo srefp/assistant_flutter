@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
+import 'package:assistant/win32/key_listen.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
-import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
-import 'log_model.dart';
+import '../win32/mouse_listen.dart';
 
 class ScriptEditorModel with ChangeNotifier {
   static final String directoryPath =
@@ -62,6 +62,12 @@ class ScriptEditorModel with ChangeNotifier {
 
     // 加载js函数
     loadJsFunction();
+
+    // 开启键盘监听
+    startKeyboardHook();
+
+    // 开启鼠标监听
+    startMouseHook();
   }
 
   loadJsFunction() async {
