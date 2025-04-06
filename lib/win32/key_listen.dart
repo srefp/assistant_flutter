@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
@@ -18,6 +19,11 @@ Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> SetListenCallback(
       .nativeFunction;
 }
 
+const left = 37;
+const up = 38;
+const right = 39;
+const down = 40;
+
 // 全局变量
 int keyboardHook = 0;
 final hookProcPointer = SetCallback((nCode, wParam, lParam) {
@@ -25,11 +31,36 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
   if (nCode >= 0) {
     final kbdStruct = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
     final vkCode = kbdStruct.ref.vkCode;
-    print(
-        'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
+    // print(
+    //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
+
+    if (vkCode == left) {
+      simulateMouseMove('left');
+    } else if (vkCode == up) {
+      simulateMouseMove('up');
+    } else if (vkCode == right) {
+      simulateMouseMove('right');
+    } else if (vkCode == down) {
+      simulateMouseMove('down');
+    }
   }
   return res;
 });
+
+const dist = 20;
+
+const directionDistances = {
+  'left': [-dist, 0],
+  'up': [0, -dist],
+  'right': [dist, 0],
+  'down': [0, dist],
+};
+
+void simulateMouseMove(String key) async {
+  final distance = directionDistances[key] ?? [0, 0];
+  print('开始移动: $distance');
+  await KeyMouseUtil.moveR3D(distance, 10, 5);
+}
 
 final threadProc = SetListenCallback((lpParam) {
   final msg = calloc<MSG>();

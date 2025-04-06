@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
 import 'package:re_editor/re_editor.dart';
+import 'package:win32/win32.dart';
 
 import '../win32/mouse_listen.dart';
 
@@ -68,6 +69,38 @@ class ScriptEditorModel with ChangeNotifier {
 
     // 开启鼠标监听
     startMouseHook();
+  }
+
+  @override
+  void dispose() {
+    // 热部署时会触发 dispose，此时取消监听
+    stopKeyboardHook();
+    stopMouseHook();
+    super.dispose();
+  }
+
+  /// 关闭键盘监听
+  void stopKeyboardHook() {
+    if (keyboardHook != 0) {
+      stopListenKeyboard(keyboardHook);
+      keyboardHook = 0;
+    }
+  }
+
+  /// 关闭鼠标监听
+  void stopMouseHook() {
+    if (mouseHook != 0) {
+      stopListenMouse(mouseHook);
+      mouseHook = 0;
+    }
+  }
+
+  void stopListenKeyboard(int hookId) {
+    UnhookWindowsHookEx(hookId);
+  }
+
+  void stopListenMouse(int hookId) {
+    UnhookWindowsHookEx(hookId);
   }
 
   loadJsFunction() async {

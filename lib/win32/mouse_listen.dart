@@ -36,11 +36,11 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
     final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
     final eventDesc = _getMouseEventType(wParam);
 
-    print('''
-鼠标事件: ${eventDesc.padRight(8)} 
-坐标: (${mouseStruct.ref.pt.x}, ${mouseStruct.ref.pt.y}) 
-时间: ${mouseStruct.ref.time}
-''');
+//     print('''
+// 鼠标事件: ${eventDesc.padRight(8)}
+// 坐标: (${mouseStruct.ref.pt.x}, ${mouseStruct.ref.pt.y})
+// 时间: ${mouseStruct.ref.time}
+// ''');
   }
   return result;
 });

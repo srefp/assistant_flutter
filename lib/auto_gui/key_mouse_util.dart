@@ -22,9 +22,23 @@ class KeyMouseUtil {
           MathUtil.smoothStepWithPrev(distance, index / step, prevDistance);
       prevDistance = [prevDistance[0] + pos[0], prevDistance[1] + pos[1]];
 
-      await Simulation.sendInput.mouse.moveMouseBy(pos);
+      simulateMouseMove(pos[0], pos[1]);
       await Future.delayed(Duration(milliseconds: millis));
     }
+  }
+
+  static void simulateMouseMove(int dx, int dy) {
+    final input = calloc<INPUT>();
+    input.ref.type = INPUT_TYPE.INPUT_MOUSE;
+    input.ref.mi.dx = dx;
+    input.ref.mi.dy = dy;
+    input.ref.mi.mouseData = 0;
+    input.ref.mi.dwFlags = MOUSE_EVENT_FLAGS.MOUSEEVENTF_MOVE;
+    input.ref.mi.time = 0;
+    input.ref.mi.dwExtraInfo = 0;
+
+    SendInput(1, input, sizeOf<INPUT>());
+    free(input);
   }
 
   static Future<void> moveR3DWithoutStep(List<int> distance) async {
@@ -33,10 +47,12 @@ class KeyMouseUtil {
 
   static Future<void> moveR(List<int> distance, int step, int millis) async {
     var initialPos = getCurLogicalPos();
+
     List<int> targetPos = [
       initialPos[0] + distance[0],
       initialPos[1] + distance[1]
     ];
+
     await move(targetPos, step, millis);
   }
 
@@ -84,9 +100,9 @@ class KeyMouseUtil {
         SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
     var point = getMousePos();
     return [
-      ((point[0] - currentRect.left) * factor / (currentRect.width - 1))
+      ((point[0] - currentRect.left) * factor / (currentRect.width))
           .toInt(),
-      ((point[1] - currentRect.top) * factor / (currentRect.height - 1)).toInt()
+      ((point[1] - currentRect.top) * factor / (currentRect.height)).toInt()
     ];
   }
 
@@ -94,8 +110,8 @@ class KeyMouseUtil {
     var currentRect =
         SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
     return [
-      (distance[0] * factor / (currentRect.width - 1)).toInt(),
-      (distance[1] * factor / (currentRect.height - 1)).toInt()
+      (distance[0] * factor / (currentRect.width - 1)).floor(),
+      (distance[1] * factor / (currentRect.height - 1)).floor()
     ];
   }
 
@@ -103,8 +119,8 @@ class KeyMouseUtil {
     var currentRect =
         SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
     return [
-      (distance[0] * (currentRect.width - 1) / factor).toInt(),
-      (distance[1] * (currentRect.height - 1) / factor).toInt()
+      (distance[0] * (currentRect.width - 1) / factor).ceil(),
+      (distance[1] * (currentRect.height - 1) / factor).ceil()
     ];
   }
 
@@ -112,8 +128,8 @@ class KeyMouseUtil {
     var currentRect =
         SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
     return [
-      ((pPos[0] - currentRect.left) * factor / (currentRect.width - 1)).toInt(),
-      ((pPos[1] - currentRect.top) * factor / (currentRect.height - 1)).toInt()
+      ((pPos[0] - currentRect.left) * factor / (currentRect.width - 1)).floor(),
+      ((pPos[1] - currentRect.top) * factor / (currentRect.height - 1)).floor()
     ];
   }
 
@@ -121,8 +137,8 @@ class KeyMouseUtil {
     var currentRect =
         SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
     return [
-      currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).toInt(),
-      currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).toInt()
+      currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).ceil(),
+      currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil()
     ];
   }
 

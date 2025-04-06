@@ -19,7 +19,23 @@ class Rect {
 }
 
 class SystemControl {
+
+  /// 获取整个屏幕的矩形
+  static Rect getScreenRect() {
+    final width = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSCREEN);
+    final height = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSCREEN);
+    if (width == 0 || height == 0) {
+      debugPrint('获取屏幕尺寸失败: ${GetLastError()}');
+      return Rect(0, 0, 0, 0);
+    }
+    return Rect(0, 0, width, height);
+  }
+
   static Rect getCaptureRect(int hWnd) {
+    if (hWnd == 0) {
+      return getScreenRect();
+    }
+
     var windowRect = getWindowRect(hWnd);
     var gameScreenRect = getGameScreenRect(hWnd);
     var left = windowRect.left;
