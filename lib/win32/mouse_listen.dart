@@ -2,19 +2,22 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
+import '../app/windows_app.dart';
+
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
 
 // 获取鼠标事件类型描述
 String _getMouseEventType(int msg) {
   return const {
-    WM_LBUTTONDOWN: '左键按下',
-    WM_LBUTTONUP: '左键释放',
-    WM_RBUTTONDOWN: '右键按下',
-    WM_RBUTTONUP: '右键释放',
-    WM_MOUSEMOVE: '鼠标移动',
-    WM_MOUSEWHEEL: '滚轮滚动',
-  }[msg] ?? '未知事件';
+        WM_LBUTTONDOWN: '左键按下',
+        WM_LBUTTONUP: '左键释放',
+        WM_RBUTTONDOWN: '右键按下',
+        WM_RBUTTONUP: '右键释放',
+        WM_MOUSEMOVE: '鼠标移动',
+        WM_MOUSEWHEEL: '滚轮滚动',
+      }[msg] ??
+      '未知事件';
 }
 
 Pointer<NativeFunction<HOOKPROC>> SetCallback(HookProc callback) {
@@ -41,10 +44,47 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 // 坐标: (${mouseStruct.ref.pt.x}, ${mouseStruct.ref.pt.y})
 // 时间: ${mouseStruct.ref.time}
 // ''');
+
+    List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
+    WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+
+    switch (wParam) {
+      case WM_LBUTTONDOWN:
+        WindowsApp.logModel
+            .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
+        break;
+      case WM_LBUTTONUP:
+        WindowsApp.logModel
+            .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
+        break;
+      case WM_RBUTTONDOWN:
+        WindowsApp.logModel.appendTemplate(
+            "mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
+        break;
+      case WM_RBUTTONUP:
+        WindowsApp.logModel
+            .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
+        break;
+      case WM_MOUSEWHEEL:
+        final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
+        final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
+        WindowsApp.logModel
+            .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
+        break;
+    }
   }
   return result;
 });
 
+/// 停止鼠标监听
+void stopMouseHook() {
+  if (mouseHook != 0) {
+    UnhookWindowsHookEx(mouseHook);
+    mouseHook = 0;
+  }
+}
+
+/// 启动鼠标监听
 void startMouseHook() async {
   final hModule = GetModuleHandle(nullptr);
 
@@ -56,7 +96,7 @@ void startMouseHook() async {
   );
 
   if (mouseHook == 0) {
-    print('鼠标钩子安装失败: ${GetLastError()}');
+    WindowsApp.logModel.append('鼠标钩子安装失败: ${GetLastError()}');
     return;
   }
 
@@ -64,7 +104,8 @@ void startMouseHook() async {
   final msg = calloc<MSG>();
   await Future.doWhile(() async {
     await Future.delayed(const Duration(milliseconds: 1));
-    while (PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
+    while (
+        PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
       TranslateMessage(msg);
       DispatchMessage(msg);
     }

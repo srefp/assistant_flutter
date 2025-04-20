@@ -4,6 +4,8 @@ import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
+import '../app/windows_app.dart';
+
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
 
@@ -34,14 +36,22 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
     // print(
     //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
 
+    WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+
     if (vkCode == left) {
       simulateMouseMove('left');
+      WindowsApp.logModel.append('moveR3D(${directionDistances['left']}, 10, 5);');
     } else if (vkCode == up) {
       simulateMouseMove('up');
+      WindowsApp.logModel.append('moveR3D(${directionDistances['up']}, 10, 5);');
     } else if (vkCode == right) {
       simulateMouseMove('right');
+      WindowsApp.logModel.append('moveR3D(${directionDistances['right']}, 10, 5);');
     } else if (vkCode == down) {
       simulateMouseMove('down');
+      WindowsApp.logModel.append('moveR3D(${directionDistances['down']}, 10, 5);');
+    } else {
+      WindowsApp.logModel.appendTemplate("${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
     }
   }
   return res;
@@ -58,7 +68,6 @@ const directionDistances = {
 
 void simulateMouseMove(String key) async {
   final distance = directionDistances[key] ?? [0, 0];
-  print('开始移动: $distance');
   await KeyMouseUtil.moveR3D(distance, 10, 5);
 }
 
@@ -73,6 +82,10 @@ final threadProc = SetListenCallback((lpParam) {
 });
 
 void startKeyboardHook() async {
+  if (keyboardHook != 0) {
+    return;
+  }
+
   // 必须通过 GetModuleHandle 获取当前实例
   final hModule = GetModuleHandle(nullptr);
 
@@ -84,7 +97,7 @@ void startKeyboardHook() async {
   );
 
   if (keyboardHook == 0) {
-    print('钩子安装失败: ${GetLastError()}');
+    WindowsApp.logModel.append('钩子安装失败: ${GetLastError()}');
     return;
   }
 

@@ -3,15 +3,11 @@ import 'dart:io';
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
-import 'package:assistant/win32/key_listen.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
 import 'package:re_editor/re_editor.dart';
-import 'package:win32/win32.dart';
-
-import '../win32/mouse_listen.dart';
 
 class ScriptEditorModel with ChangeNotifier {
   static final String directoryPath =
@@ -45,7 +41,7 @@ class ScriptEditorModel with ChangeNotifier {
   ScriptEditorModel() {
     jsRuntime = getJavascriptRuntime();
     jsRuntime.onMessage('log', (params) {
-      WindowsApp.logModel.append(params['info']);
+      WindowsApp.logModel.info(params['info']);
     });
 
     directories = loadDirectories(ScriptEditorModel.directoryPath);
@@ -63,44 +59,6 @@ class ScriptEditorModel with ChangeNotifier {
 
     // 加载js函数
     loadJsFunction();
-
-    // 开启键盘监听
-    startKeyboardHook();
-
-    // 开启鼠标监听
-    startMouseHook();
-  }
-
-  @override
-  void dispose() {
-    // 热部署时会触发 dispose，此时取消监听
-    stopKeyboardHook();
-    stopMouseHook();
-    super.dispose();
-  }
-
-  /// 关闭键盘监听
-  void stopKeyboardHook() {
-    if (keyboardHook != 0) {
-      stopListenKeyboard(keyboardHook);
-      keyboardHook = 0;
-    }
-  }
-
-  /// 关闭鼠标监听
-  void stopMouseHook() {
-    if (mouseHook != 0) {
-      stopListenMouse(mouseHook);
-      mouseHook = 0;
-    }
-  }
-
-  void stopListenKeyboard(int hookId) {
-    UnhookWindowsHookEx(hookId);
-  }
-
-  void stopListenMouse(int hookId) {
-    UnhookWindowsHookEx(hookId);
   }
 
   loadJsFunction() async {
