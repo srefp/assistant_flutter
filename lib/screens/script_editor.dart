@@ -62,17 +62,6 @@ class _ScriptEditorState extends State<ScriptEditor> {
                 SizedBox(
                   height: 34,
                   child: ButtonWithIcon(
-                    icon: Icons.save,
-                    text: '保存',
-                    onPressed: () {},
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  height: 34,
-                  child: ButtonWithIcon(
                     icon: Icons.add,
                     text: '添加',
                     onPressed: () {},

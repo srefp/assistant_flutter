@@ -44,25 +44,24 @@ class LogView extends StatelessWidget {
               height: 34,
               child: Row(
                 children: [
+                  Consumer<RecordModel>(builder: (context, model, child) {
+                    return SizedBox(
+                      height: 34,
+                      child: ButtonWithIcon(
+                        icon: model.isRecording ? Icons.stop : Icons.play_arrow,
+                        text: model.isRecording ? '停止录制' : '开始录制',
+                        onPressed: () {
+                          if (model.isRecording) {
+                            model.stopRecord();
+                          } else {
+                            model.startRecord();
+                          }
+                        },
+                      ),
+                    );
+                  }),
                   SizedBox(
                     width: 10,
-                  ),
-                  Consumer<RecordModel>(builder: (context, model, child) {
-                      return SizedBox(
-                        height: 34,
-                        child: ButtonWithIcon(
-                          icon: model.isRecording ? Icons.stop : Icons.play_arrow,
-                          text: model.isRecording ? '停止录制' : '开始录制',
-                          onPressed: () {
-                            if (model.isRecording) {
-                              model.stopRecord();
-                            } else {
-                              model.startRecord();
-                            }
-                          },
-                        ),
-                      );
-                    }
                   ),
                   SizedBox(
                     height: 34,
@@ -118,11 +117,9 @@ class LogView extends StatelessWidget {
                       'symbol': TextStyle(color: Color(0xffe0c46c)),
                       'selector-id': TextStyle(color: Color(0xffe0c46c)),
                       'selector-attr': TextStyle(color: Color(0xffe0c46c)),
-                      'selector-pseudo':
-                          TextStyle(color: Color(0xffe0c46c)),
+                      'selector-pseudo': TextStyle(color: Color(0xffe0c46c)),
                       'template-tag': TextStyle(color: Color(0xffe0c46c)),
-                      'template-variable':
-                          TextStyle(color: Color(0xffe0c46c)),
+                      'template-variable': TextStyle(color: Color(0xffe0c46c)),
                       'addition': TextStyle(color: Color(0xffe0c46c)),
                       'comment': TextStyle(color: Color(0xff7f7f7f)),
                       'deletion': TextStyle(color: Color(0xff7f7f7f)),
@@ -131,8 +128,7 @@ class LogView extends StatelessWidget {
                       'title.class_': TextStyle(color: Color(0xffdcbdfb)),
                       'title.class_.inherited__':
                           TextStyle(color: Color(0xffdcbdfb)),
-                      'title.function_':
-                          TextStyle(color: Color(0xffdcbdfb)),
+                      'title.function_': TextStyle(color: Color(0xffdcbdfb)),
                       'attr': TextStyle(color: Color(0xff6cb6ff)),
                       'operator': TextStyle(color: Color(0xff6cb6ff)),
                       'meta-string': TextStyle(color: Color(0xff96d0ff)),
