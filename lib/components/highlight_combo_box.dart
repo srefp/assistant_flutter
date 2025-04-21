@@ -1,21 +1,21 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/extensions/string_extension.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' show Material;
+import 'package:flutter/material.dart' show Material, Theme;
 
 import '../util/search_utils.dart';
 import 'highlight_text.dart';
 
 class HighlightComboBox extends StatefulWidget {
-  final String value;
+  final String? value;
   final List<String> items;
-  final ValueChanged<String>? onChange;
+  final ValueChanged<String>? onChanged;
 
   const HighlightComboBox({
     super.key,
     required this.value,
     required this.items,
-    this.onChange,
+    this.onChanged,
   });
 
   @override
@@ -30,23 +30,48 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
   final FocusNode _focusNode = FocusNode();
   String _hintText = '';
 
-  @override
-  void initState() {
-    super.initState();
+  void _initStateValues() {
     _controller = TextEditingController(text: widget.value);
     _focusNode.addListener(_onFocusChange);
     _filteredItems = widget.items;
   }
 
   @override
-  void dispose() {
+  void initState() {
+    super.initState();
+    _initStateValues();
+  }
+
+  void _updateWidgetValues() {
+    if (widget.value != null) {
+      setState(() {
+        _controller.text = widget.value!;
+        _hintText = '';
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant HighlightComboBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _updateWidgetValues();
+    }
+  }
+
+  void _disposeFocusNode() {
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
+  }
+
+  @override
+  void dispose() {
+    _disposeFocusNode();
     super.dispose();
   }
 
   void _onFocusChange() {
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       if (!_focusNode.hasFocus) {
         _controller.text = _hintText.isEmpty ? _controller.text : _hintText;
         setState(() {
@@ -86,38 +111,46 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
 
+    const double itemHeight = 44;
+    const double maxHeight = 400;
+    final double totalHeight = _filteredItems.length * itemHeight;
+    final double actualHeight =
+        totalHeight < maxHeight ? totalHeight : maxHeight;
+
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
         child: CompositedTransformFollower(
           link: _layerLink,
           showWhenUnlinked: false,
-          offset: Offset(0.0, size.height + 5.0),
+          offset: Offset(0.0, size.height),
           child: Material(
+            color: const Color(0xFF282828),
             elevation: 10,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _filteredItems.length,
-              itemBuilder: (context, index) {
-                final item = _filteredItems[index];
-                return ListTile(
-                  title: HighlightText(
-                    item,
-                    lightText: _controller.text,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _hintText = item;
-                      _controller.text = item;
-                    });
-                    _overlayEntry?.remove();
-                    _overlayEntry = null;
-                    if (widget.onChange != null) {
-                      widget.onChange!(item);
-                    }
-                  },
-                );
-              },
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: actualHeight,
+              ),
+              child: ListView(
+                  children: _filteredItems
+                      .map((item) => ListTile(
+                            title: HighlightText(
+                              item,
+                              lightText: _controller.text,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _hintText = item;
+                                _controller.text = item;
+                              });
+                              _overlayEntry?.remove();
+                              _overlayEntry = null;
+                              if (widget.onChanged != null) {
+                                widget.onChanged!(item);
+                              }
+                            },
+                          ))
+                      .toList()),
             ),
           ),
         ),
@@ -125,60 +158,37 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Focus(
-      focusNode: _focusNode,
-      child: CompositedTransformTarget(
-        link: _layerLink,
-        child: TextBox(
-          padding: EdgeInsetsDirectional.fromSTEB(10, 5, 6, 6),
-          controller: _controller,
-          style: TextStyle(
-            fontSize: 16,
-            fontFamily: fontFamily,
-          ),
-          onTap: () {
-            setState(() {
-              _hintText = _controller.text;
-            });
-            _controller.text = '';
-            filterBySearchText(context);
-            if (_overlayEntry == null) {
-              _overlayEntry = _createOverlayEntry();
-              Overlay.of(context).insert(_overlayEntry!);
-            }
-          },
-          onChanged: (value) {
-            setState(() {
-              filterBySearchText(context);
-            });
-          },
-          onSubmitted: (value) {
-            if (_filteredItems.isNotEmpty) {
-              setState(() {
-                _hintText = '';
-                _controller.text = _filteredItems[0];
-                if (widget.onChange != null) {
-                  widget.onChange!(_filteredItems[0]);
-                }
-              });
-            }
-          },
-          suffix: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Icon(
-              FluentIcons.chevron_down,
-              size: 8,
-            ),
-          ),
-          placeholder: _hintText,
-        ),
-      ),
-    );
+  void _handleTextBoxTap(BuildContext context) {
+    setState(() {
+      _hintText = _controller.text;
+    });
+    _controller.text = '';
+    _filterBySearchText(context);
+    if (_overlayEntry == null) {
+      _overlayEntry = _createOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    }
   }
 
-  void filterBySearchText(BuildContext context) {
+  void _handleTextBoxChange(BuildContext context) {
+    setState(() {
+      _filterBySearchText(context);
+    });
+  }
+
+  void _handleTextBoxSubmit() {
+    if (_filteredItems.isNotEmpty) {
+      setState(() {
+        _hintText = '';
+        _controller.text = _filteredItems[0];
+        if (widget.onChanged != null) {
+          widget.onChanged!(_filteredItems[0]);
+        }
+      });
+    }
+  }
+
+  void _filterBySearchText(BuildContext context) {
     if (_controller.text.isEmpty) {
       _filteredItems = widget.items;
     } else {
@@ -192,5 +202,41 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
     } else {
       _overlayEntry!.markNeedsBuild();
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      elevation: 10,
+      child: SizedBox(
+        height: 34,
+        child: Focus(
+          focusNode: _focusNode,
+          child: CompositedTransformTarget(
+            link: _layerLink,
+            child: TextBox(
+              padding: const EdgeInsetsDirectional.fromSTEB(10, 5, 6, 6),
+              controller: _controller,
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: fontFamily, // 注意：需要确保这个变量已定义
+              ),
+              onTap: () => _handleTextBoxTap(context),
+              onChanged: (value) => _handleTextBoxChange(context),
+              onSubmitted: (value) => _handleTextBoxSubmit(),
+              suffix: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(
+                  FluentIcons.chevron_down,
+                  size: 8,
+                ),
+              ),
+              placeholder: _hintText,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

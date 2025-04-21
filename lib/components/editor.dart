@@ -56,7 +56,6 @@ class Editor extends StatefulWidget {
 
 class _EditorState extends State<Editor> {
 
-
   @override
   void initState() {
     super.initState();
@@ -145,14 +144,6 @@ class _EditorState extends State<Editor> {
           ),
           controller: model.controller,
           wordWrap: false,
-          onChanged: (value) {
-            if (model.controller.text == model.fileContent) {
-              return;
-            }
-            model.fileContent = model.controller.text;
-            model.markAsUnsaved();
-            model.saveFileContent(value);
-          },
           indicatorBuilder:
               (context, editingController, chunkController, notifier) {
             return Row(

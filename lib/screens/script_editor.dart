@@ -1,7 +1,7 @@
-import 'package:assistant/components/win_text.dart';
+import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Icons;
 import 'package:provider/provider.dart';
 
 import '../components/button_with_icon.dart';
@@ -29,17 +29,11 @@ class _ScriptEditorState extends State<ScriptEditor> {
                   constraints: BoxConstraints(
                     minWidth: 100,
                   ),
+                  width: 100,
                   height: 34,
-                  child: ComboBox<String>(
+                  child: HighlightComboBox(
                     value: model.selectedDir,
-                    items: model.directories
-                        .map(
-                          (e) => ComboBoxItem<String>(
-                            value: e,
-                            child: WinText(e),
-                          ),
-                        )
-                        .toList(),
+                    items: model.directories,
                     onChanged: (value) {
                       model.selectDir(value);
                     },
@@ -52,17 +46,11 @@ class _ScriptEditorState extends State<ScriptEditor> {
                   constraints: BoxConstraints(
                     minWidth: 100,
                   ),
+                  width: 300,
                   height: 34,
-                  child: ComboBox<String>(
+                  child: HighlightComboBox(
                     value: model.selectedFile,
-                    items: model.files
-                        .map(
-                          (e) => ComboBoxItem<String>(
-                            value: e,
-                            child: WinText(e),
-                          ),
-                        )
-                        .toList(),
+                    items: model.files,
                     onChanged: (value) {
                       model.selectFile(value);
                     },

@@ -52,6 +52,16 @@ class ScriptEditorModel with ChangeNotifier {
 
     controller = CodeLineEditingController();
     controller.text = fileContent ?? '';
+
+    controller.addListener(() {
+      if (controller.text == fileContent) {
+        return;
+      }
+      fileContent = controller.text;
+      markAsUnsaved();
+      saveFileContent(fileContent);
+    });
+
     saveFileContent = debounce(
       (_) => saveFile(controller.text),
       seconds: 2,
@@ -103,6 +113,7 @@ class ScriptEditorModel with ChangeNotifier {
     if (selectedFile != null && selectedFile != null) {
       fileContent = File(join(directoryPath, selectedDir!, selectedFile!))
           .readAsStringSync();
+      controller.text = fileContent ?? '';
     }
 
     notifyListeners();
@@ -139,6 +150,7 @@ class ScriptEditorModel with ChangeNotifier {
       try {
         fileContent = File(join(directoryPath, selectedDir!, selectedFile!))
             .readAsStringSync();
+        controller.text = fileContent ?? '';
       } catch (_) {}
     }
   }
@@ -152,6 +164,7 @@ class ScriptEditorModel with ChangeNotifier {
       try {
         fileContent = File(join(directoryPath, selectedDir!, selectedFile!))
             .readAsStringSync();
+        controller.text = fileContent ?? '';
       } catch (_) {}
     }
   }
