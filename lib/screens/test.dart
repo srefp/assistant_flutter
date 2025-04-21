@@ -1,4 +1,5 @@
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -40,6 +41,13 @@ class Test extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(
+              width: 100,
+              child: HighlightComboBox(
+                value: '苹果',
+                items: ['苹果', '香蕉', '橙子', '葡萄', '草莓'],
+              ),
+            )
           ],
         ),
       ],
