@@ -37,7 +37,6 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 
   if (nCode >= 0) {
     final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
-    final eventDesc = _getMouseEventType(wParam);
 
 //     print('''
 // 鼠标事件: ${eventDesc.padRight(8)}
@@ -45,36 +44,75 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 // 时间: ${mouseStruct.ref.time}
 // ''');
 
-    List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
-    WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
-
-    switch (wParam) {
-      case WM_LBUTTONDOWN:
-        WindowsApp.logModel
-            .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
-        break;
-      case WM_LBUTTONUP:
-        WindowsApp.logModel
-            .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
-        break;
-      case WM_RBUTTONDOWN:
-        WindowsApp.logModel.appendTemplate(
-            "mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
-        break;
-      case WM_RBUTTONUP:
-        WindowsApp.logModel
-            .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
-        break;
-      case WM_MOUSEWHEEL:
-        final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
-        final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
-        WindowsApp.logModel
-            .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
-        break;
+    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+      recordRoute(mouseStruct, wParam, lParam);
+    } else {
+      recordScript(mouseStruct, wParam, lParam);
     }
   }
   return result;
 });
+
+void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
+  List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
+  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+
+  switch (wParam) {
+    case WM_LBUTTONDOWN:
+      WindowsApp.logModel
+          .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
+      break;
+    case WM_LBUTTONUP:
+      WindowsApp.logModel
+          .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
+      break;
+    case WM_RBUTTONDOWN:
+      WindowsApp.logModel
+          .appendTemplate("mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
+      break;
+    case WM_RBUTTONUP:
+      WindowsApp.logModel
+          .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
+      break;
+    case WM_MOUSEWHEEL:
+      final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
+      final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
+      WindowsApp.logModel
+          .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
+      break;
+  }
+}
+
+void recordScript(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
+  List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
+  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+  WindowsApp.logModel.outputAsScript();
+
+  switch (wParam) {
+    case WM_LBUTTONDOWN:
+      WindowsApp.logModel
+          .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
+      break;
+    case WM_LBUTTONUP:
+      WindowsApp.logModel
+          .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
+      break;
+    case WM_RBUTTONDOWN:
+      WindowsApp.logModel
+          .appendTemplate("mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
+      break;
+    case WM_RBUTTONUP:
+      WindowsApp.logModel
+          .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
+      break;
+    case WM_MOUSEWHEEL:
+      final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
+      final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
+      WindowsApp.logModel
+          .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
+      break;
+  }
+}
 
 /// 停止鼠标监听
 void stopMouseHook() {

@@ -15,7 +15,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../notifier/auto_tp_model.dart';
-import '../notifier/record_model.dart';
+import '../notifier/script_record_model.dart';
 import '../routes/routes.dart';
 import '../screens/auto_tp.dart';
 import '../screens/script_editor.dart';
@@ -29,7 +29,7 @@ class WindowsApp extends StatefulWidget {
   static final autoTpModel = AutoTpModel();
   static final scriptEditorModel = ScriptEditorModel();
   static final logModel = LogModel();
-  static final recordModel = RecordModel();
+  static final recordModel = ScriptRecordModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();

@@ -5,7 +5,7 @@ import '../app/windows_app.dart';
 import '../win32/key_listen.dart';
 import '../win32/mouse_listen.dart';
 
-class RecordModel extends ChangeNotifier {
+class ScriptRecordModel extends ChangeNotifier {
 
   bool isRecording = false;
 
@@ -37,6 +37,7 @@ class RecordModel extends ChangeNotifier {
     stopMouseHook();
 
     WindowsApp.logModel.appendDelay(getDelay());
+    WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel.info('停止录制');
     notifyListeners();
   }

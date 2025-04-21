@@ -1,30 +1,57 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
+import 'package:uuid/uuid.dart';
+
+import '../app/windows_app.dart';
 
 class LogModel extends ChangeNotifier {
   final logController = CodeLineEditingController();
 
   final List<Command> commands = [];
 
-  String prevOperation = '';
+  List<String> prevOperations = [];
 
   void appendTemplate(String text) {
-    prevOperation = text;
+    prevOperations.add(text);
+  }
+
+  void output() {
+    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+      outputAsRoute();
+    } else {
+      outputAsScript();
+    }
+  }
+
+  /// 输出为脚本
+  void outputAsScript() {
+    for (var element in prevOperations) {
+      logController.text += "$element\n";
+    }
+    prevOperations = [];
+  }
+
+  /// 输出为路线
+  void outputAsRoute() {
+    var script = '';
+    for (var element in prevOperations) {
+      script += "$element ";
+    }
+    logController.text += "name: \"${Uuid().v4()}\", script: \"$script\"\n";
+    prevOperations = [];
   }
 
   void appendDelay(int delay) {
-    if (prevOperation.isEmpty) {
+    if (prevOperations.isEmpty) {
       return;
     }
-    logController.text += "${Command(prevOperation, delay)}\n";
-    prevOperation = '';
+    prevOperations.last = prevOperations.last.replaceFirst('%s', delay.toString());
     notifyListeners();
   }
 
   void append(String text) {
     logController.text += "$text\n";
-    prevOperation = '';
     notifyListeners();
   }
 

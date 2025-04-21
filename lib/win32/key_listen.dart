@@ -36,26 +36,59 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
     // print(
     //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
 
-    WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
-
-    if (vkCode == left) {
-      simulateMouseMove('left');
-      WindowsApp.logModel.append('moveR3D(${directionDistances['left']}, 10, 5);');
-    } else if (vkCode == up) {
-      simulateMouseMove('up');
-      WindowsApp.logModel.append('moveR3D(${directionDistances['up']}, 10, 5);');
-    } else if (vkCode == right) {
-      simulateMouseMove('right');
-      WindowsApp.logModel.append('moveR3D(${directionDistances['right']}, 10, 5);');
-    } else if (vkCode == down) {
-      simulateMouseMove('down');
-      WindowsApp.logModel.append('moveR3D(${directionDistances['down']}, 10, 5);');
+    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+      recordRoute(vkCode, wParam);
     } else {
-      WindowsApp.logModel.appendTemplate("${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+      recordScript(vkCode, wParam);
     }
   }
   return res;
 });
+
+/// 记录路线
+void recordRoute(int vkCode, int wParam) {
+  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+
+  var key = getKeyName(vkCode);
+  if (key == 'm' && wParam == WM_KEYDOWN) {
+    WindowsApp.logModel.outputAsRoute();
+    WindowsApp.logModel.appendTemplate(
+        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+  } else {
+    WindowsApp.logModel.appendTemplate(
+        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+  }
+}
+
+/// 记录脚本
+void recordScript(int vkCode, int wParam) {
+  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+  WindowsApp.logModel.outputAsScript();
+
+  if (vkCode == left) {
+    simulateMouseMove('left');
+    WindowsApp.logModel.outputAsScript();
+    WindowsApp.logModel
+        .append('moveR3D(${directionDistances['left']}, 10, 5);');
+  } else if (vkCode == up) {
+    simulateMouseMove('up');
+    WindowsApp.logModel.outputAsScript();
+    WindowsApp.logModel.append('moveR3D(${directionDistances['up']}, 10, 5);');
+  } else if (vkCode == right) {
+    simulateMouseMove('right');
+    WindowsApp.logModel.outputAsScript();
+    WindowsApp.logModel
+        .append('moveR3D(${directionDistances['right']}, 10, 5);');
+  } else if (vkCode == down) {
+    simulateMouseMove('down');
+    WindowsApp.logModel.outputAsScript();
+    WindowsApp.logModel
+        .append('moveR3D(${directionDistances['down']}, 10, 5);');
+  } else {
+    WindowsApp.logModel.appendTemplate(
+        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+  }
+}
 
 const dist = 20;
 
@@ -159,12 +192,15 @@ String getKeyName(int vkCode) {
     case VIRTUAL_KEY.VK_RWIN:
       return 'Win(Right)';
     default:
-    // 处理字母和数字（A-Z, 0-9）
-      if (vkCode >= 0x30 && vkCode <= 0x39) { // 数字键 0-9
+      // 处理字母和数字（A-Z, 0-9）
+      if (vkCode >= 0x30 && vkCode <= 0x39) {
+        // 数字键 0-9
         return String.fromCharCode(vkCode);
-      } else if (vkCode >= 0x41 && vkCode <= 0x5A) { // 字母 A-Z
-        return String.fromCharCode(vkCode);
-      } else if (vkCode >= 0x60 && vkCode <= 0x69) { // 小键盘数字
+      } else if (vkCode >= 0x41 && vkCode <= 0x5A) {
+        // 字母 A-Z
+        return String.fromCharCode(vkCode).toLowerCase();
+      } else if (vkCode >= 0x60 && vkCode <= 0x69) {
+        // 小键盘数字
         return 'NumPad ${vkCode - 0x60}';
       }
       return '0x${vkCode.toRadixString(16).padLeft(2, '0')}';

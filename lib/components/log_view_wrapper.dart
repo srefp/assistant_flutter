@@ -1,6 +1,6 @@
 import 'package:assistant/config/setting_config.dart';
 import 'package:assistant/notifier/log_model.dart';
-import 'package:assistant/notifier/record_model.dart';
+import 'package:assistant/notifier/script_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
@@ -44,7 +44,7 @@ class LogView extends StatelessWidget {
               height: 34,
               child: Row(
                 children: [
-                  Consumer<RecordModel>(builder: (context, model, child) {
+                  Consumer<ScriptRecordModel>(builder: (context, model, child) {
                     return SizedBox(
                       height: 34,
                       child: ButtonWithIcon(
