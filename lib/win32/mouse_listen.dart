@@ -1,8 +1,11 @@
 import 'dart:ffi';
+import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
+import '../notifier/log_model.dart';
+import 'key_listen.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
@@ -54,62 +57,96 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 });
 
 void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
-  List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
-  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+  List<int> coords =
+      KeyMouseUtil.logicalPos([mouseStruct.ref.pt.x, mouseStruct.ref.pt.y]);
+  int delay = WindowsApp.recordModel.getDelay();
+  WindowsApp.logModel.appendDelay(delay);
 
   switch (wParam) {
     case WM_LBUTTONDOWN:
-      WindowsApp.logModel
-          .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mDown',
+          coords: coords,
+          template: 'mDown([${coords[0]}, ${coords[1]}], %s);',
+          prevDelay: delay));
       break;
     case WM_LBUTTONUP:
-      WindowsApp.logModel
-          .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mUp',
+          coords: coords,
+          template: 'mUp([${coords[0]}, ${coords[1]}], %s);',
+          prevDelay: delay));
       break;
     case WM_RBUTTONDOWN:
-      WindowsApp.logModel
-          .appendTemplate("mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mDownRight',
+          coords: coords,
+          template: "mDown('right', '[${coords[0]}, ${coords[1]}], %s);",
+          prevDelay: delay));
       break;
     case WM_RBUTTONUP:
-      WindowsApp.logModel
-          .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mUpRight',
+          coords: coords,
+          template: "mUp('right', '[${coords[0]}, ${coords[1]}], %s);",
+          prevDelay: delay));
       break;
     case WM_MOUSEWHEEL:
       final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
       final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
-      WindowsApp.logModel
-          .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'wheel',
+          template: "wheel(${wheelDelta > 32768 ? 1 : -1}, %s);",
+          prevDelay: delay));
       break;
   }
 }
 
 void recordScript(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
-  List<int> coords = [mouseStruct.ref.pt.x, mouseStruct.ref.pt.y];
-  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
+  List<int> coords =
+      KeyMouseUtil.logicalPos([mouseStruct.ref.pt.x, mouseStruct.ref.pt.y]);
+
+  int delay = WindowsApp.recordModel.getDelay();
+
+  WindowsApp.logModel.appendDelay(delay);
   WindowsApp.logModel.outputAsScript();
 
   switch (wParam) {
     case WM_LBUTTONDOWN:
-      WindowsApp.logModel
-          .appendTemplate('mDown([${coords[0]}, ${coords[1]}], %s);');
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mDown',
+          coords: coords,
+          template: 'mDown([${coords[0]}, ${coords[1]}], %s);',
+          prevDelay: delay));
       break;
     case WM_LBUTTONUP:
-      WindowsApp.logModel
-          .appendTemplate('mUp([${coords[0]}, ${coords[1]}], %s);');
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mUp',
+          coords: coords,
+          template: 'mUp([${coords[0]}, ${coords[1]}], %s);',
+          prevDelay: delay));
       break;
     case WM_RBUTTONDOWN:
-      WindowsApp.logModel
-          .appendTemplate("mDown('right', '[${coords[0]}, ${coords[1]}], %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mDownRight',
+          coords: coords,
+          template: "mDown('right', '[${coords[0]}, ${coords[1]}], %s);",
+          prevDelay: delay));
       break;
     case WM_RBUTTONUP:
-      WindowsApp.logModel
-          .appendTemplate("mUp('right', '[${coords[0]}, ${coords[1]}], %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'mUpRight',
+          coords: coords,
+          template: "mUp('right', '[${coords[0]}, ${coords[1]}], %s);",
+          prevDelay: delay));
       break;
     case WM_MOUSEWHEEL:
       final mouseStruct = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
       final wheelDelta = HIWORD(mouseStruct.ref.mouseData);
-      WindowsApp.logModel
-          .appendTemplate("wheel(${wheelDelta > 32768 ? 1 : -1}, %s);");
+      WindowsApp.logModel.appendOperation(Operation(
+          func: 'wheel',
+          template: "wheel(${wheelDelta > 32768 ? 1 : -1}, %s);",
+          prevDelay: delay));
       break;
   }
 }

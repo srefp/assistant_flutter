@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/notifier/log_model.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
@@ -52,11 +53,13 @@ void recordRoute(int vkCode, int wParam) {
   var key = getKeyName(vkCode);
   if (key == 'm' && wParam == WM_KEYDOWN) {
     WindowsApp.logModel.outputAsRoute();
-    WindowsApp.logModel.appendTemplate(
-        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+    final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
+    WindowsApp.logModel.appendOperation(Operation(
+        func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
   } else {
-    WindowsApp.logModel.appendTemplate(
-        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+    final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
+    WindowsApp.logModel.appendOperation(Operation(
+        func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
   }
 }
 
@@ -85,8 +88,11 @@ void recordScript(int vkCode, int wParam) {
     WindowsApp.logModel
         .append('moveR3D(${directionDistances['down']}, 10, 5);');
   } else {
-    WindowsApp.logModel.appendTemplate(
-        "${wParam == WM_KEYDOWN ? 'kDown' : 'kUp'}('${getKeyName(vkCode)}', %s);");
+    final func = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
+    WindowsApp.logModel.appendOperation(Operation(
+      func: func,
+      template: "$func('${getKeyName(vkCode)}', %s);",
+    ));
   }
 }
 
