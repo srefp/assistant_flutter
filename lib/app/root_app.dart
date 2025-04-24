@@ -1,11 +1,14 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/notifier/app_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../config/setting_config.dart';
 import '../main.dart';
 import '../routes/routes.dart';
 
@@ -30,50 +33,94 @@ class _RootAppState extends State<RootApp> {
   final searchFocusNode = FocusNode();
   final searchController = TextEditingController();
 
-  late final List<NavigationPaneItem> originalItems = [
-    PaneItem(
-      key: const ValueKey(Routes.autoTp),
-      icon: const Icon(FluentIcons.rocket),
-      title: Text(
-        '自动传送',
-        style: TextStyle(fontFamily: fontFamily),
-      ),
-      body: const SizedBox.shrink(),
-      onTap: () {
-        if (GoRouterState.of(context).uri.toString() != Routes.autoTp) {
-          context.go(Routes.autoTp);
-        }
-      },
-    ),
-    PaneItem(
-      key: const ValueKey(Routes.scriptEditor),
-      icon: const Icon(FluentIcons.code_edit),
-      title: Text(
-        '脚本',
-        style: TextStyle(fontFamily: fontFamily),
-      ),
-      body: const SizedBox.shrink(),
-      onTap: () {
-        if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
-          context.go(Routes.scriptEditor);
-        }
-      },
-    ),
-    PaneItem(
-      key: const ValueKey(Routes.test),
-      icon: const Icon(FluentIcons.test_case),
-      title: Text(
-        '测试',
-        style: TextStyle(fontFamily: fontFamily),
-      ),
-      body: const SizedBox.shrink(),
-      onTap: () {
-        if (GoRouterState.of(context).uri.toString() != Routes.test) {
-          context.go(Routes.test);
-        }
-      },
-    ),
-  ];
+  List<NavigationPaneItem> get originalItems {
+    final routes = <NavigationPaneItem>[];
+    if (SettingConfig.to.getAutoTpMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.autoTp),
+        icon: const Icon(FluentIcons.rocket),
+        title: Text(
+          '自动传送',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.autoTp) {
+            context.go(Routes.autoTp);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getConfigMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.config),
+        icon: const Icon(FluentIcons.configuration_solid),
+        title: Text(
+          '配置',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.config) {
+            context.go(Routes.config);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getConfigMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.record),
+        icon: const Icon(FluentIcons.record_routing),
+        title: Text(
+          '记录',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.record) {
+            context.go(Routes.record);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getScriptMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.scriptEditor),
+        icon: const Icon(FluentIcons.code_edit),
+        title: Text(
+          '脚本',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
+            context.go(Routes.scriptEditor);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getTestMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.test),
+        icon: const Icon(FluentIcons.test_case),
+        title: Text(
+          '测试',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.test) {
+            context.go(Routes.test);
+          }
+        },
+      ));
+    }
+    return routes;
+  }
 
   late final List<NavigationPaneItem> footerItems = [
     PaneItemSeparator(),
@@ -116,9 +163,9 @@ class _RootAppState extends State<RootApp> {
         return 0;
       }
       return originalItems
-          .where((element) => element.key != null)
-          .toList()
-          .length +
+              .where((element) => element.key != null)
+              .toList()
+              .length +
           indexFooter;
     } else {
       return indexOriginal;
@@ -132,106 +179,110 @@ class _RootAppState extends State<RootApp> {
         setState(() {});
       }
     }
-    return NavigationView(
-      key: viewKey,
-      appBar: NavigationAppBar(
-        automaticallyImplyLeading: false,
-        height: 50,
-
-        title: () {
-          if (kIsWeb) {
-            return const Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: WinText(appTitle),
-            );
-          }
-          return DragToMoveArea(
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  SizedBox(width: 14),
-                  SvgPicture.asset(
-                    'assets/image/logo.svg',
-                    height: 18,
-                  ),
-                  SizedBox(width: 8),
-                  const WinText(appTitle, style: TextStyle(fontSize: 13),),
-                ],
-              ),
-            ),
-          );
-        }(),
-        actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          if (!kIsWeb) const WindowButtons(),
-        ]),
-      ),
-      paneBodyBuilder: (item, child) {
-        final name =
-        item?.key is ValueKey ? (item!.key as ValueKey).value : null;
-        return FocusTraversalGroup(
-          key: ValueKey('body$name'),
-          child: widget.child,
-        );
-      },
-      pane: NavigationPane(
-        selected: _calculateSelectedIndex(context),
-        displayMode: PaneDisplayMode.compact,
-        items: originalItems,
-        autoSuggestBox: Builder(builder: (context) {
-          return AutoSuggestBox(
-            key: searchKey,
-            focusNode: searchFocusNode,
-            controller: searchController,
-            unfocusedColor: Colors.transparent,
-            items: <PaneItem>[
-              ...originalItems
-                  .whereType<PaneItemExpander>()
-                  .expand<PaneItem>((item) {
-                return [
-                  item,
-                  ...item.items.whereType<PaneItem>(),
-                ];
-              }),
-              ...originalItems
-                  .where(
-                    (item) => item is PaneItem && item is! PaneItemExpander,
-              )
-                  .cast<PaneItem>(),
-            ].map((item) {
-              final text = (item.title as Text).data!;
-              return AutoSuggestBoxItem(
-                label: text,
-                child: WinText(text),
-                value: text,
-                onSelected: () {
-                  item.onTap?.call();
-                  searchController.clear();
-                  searchFocusNode.unfocus();
-                  final view = NavigationView.of(context);
-                  if (view.compactOverlayOpen) {
-                    view.compactOverlayOpen = false;
-                  } else if (view.minimalPaneOpen) {
-                    view.minimalPaneOpen = false;
-                  }
-                },
+    return Consumer<AppModel>(builder: (context, model, child) {
+      return NavigationView(
+        key: viewKey,
+        appBar: NavigationAppBar(
+          automaticallyImplyLeading: false,
+          height: 50,
+          title: () {
+            if (kIsWeb) {
+              return const Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: WinText(appTitle),
               );
-            }).toList(),
-            trailingIcon: IgnorePointer(
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(FluentIcons.search),
+            }
+            return DragToMoveArea(
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  children: [
+                    SizedBox(width: 14),
+                    SvgPicture.asset(
+                      'assets/image/logo.svg',
+                      height: 18,
+                    ),
+                    SizedBox(width: 8),
+                    const WinText(
+                      appTitle,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            placeholder: '搜索',
-            style: TextStyle(fontFamily: fontFamily),
+            );
+          }(),
+          actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            if (!kIsWeb) const WindowButtons(),
+          ]),
+        ),
+        paneBodyBuilder: (item, child) {
+          final name =
+              item?.key is ValueKey ? (item!.key as ValueKey).value : null;
+          return FocusTraversalGroup(
+            key: ValueKey('body$name'),
+            child: widget.child,
           );
-        }),
-        autoSuggestBoxReplacement: const Icon(FluentIcons.search),
-        footerItems: footerItems,
-      ),
-      onOpenSearch: searchFocusNode.requestFocus,
-    );
+        },
+        pane: NavigationPane(
+          selected: _calculateSelectedIndex(context),
+          displayMode: PaneDisplayMode.compact,
+          items: originalItems,
+          autoSuggestBox: Builder(builder: (context) {
+            return AutoSuggestBox(
+              key: searchKey,
+              focusNode: searchFocusNode,
+              controller: searchController,
+              unfocusedColor: Colors.transparent,
+              items: <PaneItem>[
+                ...originalItems
+                    .whereType<PaneItemExpander>()
+                    .expand<PaneItem>((item) {
+                  return [
+                    item,
+                    ...item.items.whereType<PaneItem>(),
+                  ];
+                }),
+                ...originalItems
+                    .where(
+                      (item) => item is PaneItem && item is! PaneItemExpander,
+                    )
+                    .cast<PaneItem>(),
+              ].map((item) {
+                final text = (item.title as Text).data!;
+                return AutoSuggestBoxItem(
+                  label: text,
+                  child: WinText(text),
+                  value: text,
+                  onSelected: () {
+                    item.onTap?.call();
+                    searchController.clear();
+                    searchFocusNode.unfocus();
+                    final view = NavigationView.of(context);
+                    if (view.compactOverlayOpen) {
+                      view.compactOverlayOpen = false;
+                    } else if (view.minimalPaneOpen) {
+                      view.minimalPaneOpen = false;
+                    }
+                  },
+                );
+              }).toList(),
+              trailingIcon: IgnorePointer(
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(FluentIcons.search),
+                ),
+              ),
+              placeholder: '搜索',
+              style: TextStyle(fontFamily: fontFamily),
+            );
+          }),
+          autoSuggestBoxReplacement: const Icon(FluentIcons.search),
+          footerItems: footerItems,
+        ),
+        onOpenSearch: searchFocusNode.requestFocus,
+      );
+    });
   }
 }
 

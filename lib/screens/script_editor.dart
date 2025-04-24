@@ -7,14 +7,9 @@ import 'package:provider/provider.dart';
 import '../components/button_with_icon.dart';
 import '../components/editor.dart';
 
-class ScriptEditor extends StatefulWidget {
+class ScriptEditor extends StatelessWidget {
   const ScriptEditor({super.key});
 
-  @override
-  State<ScriptEditor> createState() => _ScriptEditorState();
-}
-
-class _ScriptEditorState extends State<ScriptEditor> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScriptEditorModel>(builder: (context, model, child) {

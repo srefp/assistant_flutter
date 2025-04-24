@@ -41,13 +41,6 @@ class Test extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(
-              width: 100,
-              child: HighlightComboBox(
-                value: '苹果',
-                items: ['苹果', '香蕉', '橙子', '葡萄', '草莓'],
-              ),
-            )
           ],
         ),
       ],

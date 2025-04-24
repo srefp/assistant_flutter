@@ -13,6 +13,8 @@ class SettingConfig with ConfigStorage {
   static const keyLogShow = 'logShow';
   static const keyAutoTpMenu = 'autoTpMenu';
   static const keyScriptMenu = 'scriptMenu';
+  static const keyTestMenu = 'testMenu';
+  static const keyConfigMenu = 'configMenu';
 
   ThemeMode getThemeMode() {
     final index = box.read(keyThemeMode);
@@ -38,27 +40,13 @@ class SettingConfig with ConfigStorage {
     return getItemFromArr(Colors.accentColors, index - 1);
   }
 
-  bool getLogShow() {
-    final index = box.read(keyLogShow);
-    if (index == null) {
-      return false;
-    }
-    return index;
-  }
+  bool getLogShow() => box.read(keyLogShow) ?? false;
 
-  bool getAutoTpMenu() {
-    final index = box.read(keyAutoTpMenu);
-    if (index == null) {
-      return true;
-    }
-    return index;
-  }
+  bool getAutoTpMenu() => box.read(keyAutoTpMenu) ?? true;
 
-  bool getScriptMenu() {
-    final index = box.read(keyScriptMenu);
-    if (index == null) {
-      return true;
-    }
-    return index;
-  }
+  bool getScriptMenu() => box.read(keyScriptMenu) ?? true;
+
+  bool getTestMenu() => box.read(keyTestMenu)?? false;
+
+  bool getConfigMenu() => box.read(keyConfigMenu)?? true;
 }

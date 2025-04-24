@@ -1,11 +1,12 @@
 import 'dart:ffi';
+
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/util/half_tp.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../notifier/log_model.dart';
-import 'key_listen.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
@@ -19,6 +20,7 @@ String _getMouseEventType(int msg) {
         WM_RBUTTONUP: '右键释放',
         WM_MOUSEMOVE: '鼠标移动',
         WM_MOUSEWHEEL: '滚轮滚动',
+        WM_XBUTTONDOWN: '鼠标X键按下',
       }[msg] ??
       '未知事件';
 }
@@ -28,10 +30,27 @@ Pointer<NativeFunction<HOOKPROC>> SetCallback(HookProc callback) {
       .nativeFunction;
 }
 
+int getXButtonWParam(int wParam) {
+  // 提取高字部分 (高 16 位)
+  return (wParam >> 16) & 0xFFFF;
+}
+
+const XBUTTON1 = 0x0001;
+const XBUTTON2 = 0x0002;
+
 // 全局钩子变量
 int mouseHook = 0;
 final hookProcPointer = SetCallback((nCode, wParam, lParam) {
   final result = CallNextHookEx(mouseHook, nCode, wParam, lParam);
+
+  // 获取按下的按钮
+  final button = getXButtonWParam(wParam);
+
+  if (button == XBUTTON1) {
+    print('XButton1 pressed');
+  } else if (button == XBUTTON2) {
+    print('XButton2 pressed');
+  }
 
   // 过滤鼠标移动事件
   if (wParam == WM_MOUSEMOVE) {
@@ -47,6 +66,15 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 // 时间: ${mouseStruct.ref.time}
 // ''');
 
+    switch (wParam) {
+      case WM_XBUTTONDOWN:
+        final mouseData = mouseStruct.ref.mouseData;
+        final xButton = (mouseData >> 16) & 0xFFFF; // 高位字
+
+        if (xButton == XBUTTON1) {
+          halfTp();
+        }
+    }
     if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
       recordRoute(mouseStruct, wParam, lParam);
     } else {

@@ -4,4 +4,6 @@ class Routes {
   static const settings = '/settings';
   static const sshOperation = '/ssh-operation';
   static const test = '/test';
+  static const config = '/config';
+  static const record = '/record';
 }

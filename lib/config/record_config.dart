@@ -11,6 +11,7 @@ class RecordConfig with ConfigStorage {
   static const keyOpenMapKey = "openMapKey";
   static const keyConfirmOperationKey = "confirmOperationKey";
   static const keyConfirmPosition = "confirmPosition";
+  static const keyHalfTpDelay = "halfTpDelay";
 
   bool getEnableDefaultDelay() => box.read(keyEnableDefaultDelay) ?? true;
 
@@ -29,5 +30,7 @@ class RecordConfig with ConfigStorage {
       box.read(keyConfirmOperationKey) ?? "enter";
 
   List<int> getConfirmPosition() =>
-      box.read(keyConfirmPosition) ?? [1000, 1000];
+      box.read(keyConfirmPosition) ?? [53704, 61376];
+
+  int getHalfTpDelay() => box.read(keyHalfTpDelay)?? 90;
 }

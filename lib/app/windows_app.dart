@@ -6,6 +6,8 @@ import 'package:assistant/components/win_text.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
+import 'package:assistant/screens/config_page.dart';
+import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/util/hot_key.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -14,7 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../notifier/app_model.dart';
 import '../notifier/auto_tp_model.dart';
+import '../notifier/config_model.dart';
 import '../notifier/script_record_model.dart';
 import '../routes/routes.dart';
 import '../screens/auto_tp.dart';
@@ -30,6 +34,8 @@ class WindowsApp extends StatefulWidget {
   static final scriptEditorModel = ScriptEditorModel();
   static final logModel = LogModel();
   static final recordModel = ScriptRecordModel();
+  static final appModel = AppModel();
+  static final configModel = ConfigModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -70,6 +76,16 @@ class _WindowsAppState extends State<WindowsApp>
 
   _getProviders() {
     return [
+      // APP配置
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.appModel,
+      ),
+
+      // 配置
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.configModel,
+      ),
+
       // 自动传送
       ChangeNotifierProvider(
         create: (context) => WindowsApp.autoTpModel,
@@ -197,6 +213,15 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
           child: ScriptEditor(),
         ),
       ),
+
+      /// Record
+      GoRoute(
+          path: Routes.record,
+          builder: (context, state) => const RecordPage()),
+
+      /// Config
+      GoRoute(
+          path: Routes.config, builder: (context, state) => const ConfigPage()),
 
       /// Test
       GoRoute(path: Routes.test, builder: (context, state) => const Test()),

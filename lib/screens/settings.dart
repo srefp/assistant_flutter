@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/config_row.dart';
 import 'package:assistant/config/setting_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -111,6 +112,7 @@ class _SettingsState extends State<Settings> with PageMixin {
               onChanged: (value) => {
                 setState(() {
                   SettingConfig.to.save(SettingConfig.keyAutoTpMenu, value);
+                  WindowsApp.appModel.changeMenu();
                 })
               },
             ),
@@ -122,7 +124,20 @@ class _SettingsState extends State<Settings> with PageMixin {
               onChanged: (value) => {
                 setState(() {
                   SettingConfig.to.save(SettingConfig.keyScriptMenu, value);
+                  WindowsApp.appModel.changeMenu();
                 })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '测试页面',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getTestMenu(),
+              onChanged: (value) {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyTestMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                });
               },
             ),
           ),
@@ -133,6 +148,7 @@ class _SettingsState extends State<Settings> with PageMixin {
               onChanged: (value) => {
                 setState(() {
                   SettingConfig.to.save(SettingConfig.keyLogShow, value);
+                  WindowsApp.appModel.changeMenu();
                 })
               },
             ),
