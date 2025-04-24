@@ -12,6 +12,19 @@ class Operation {
   String template;
   int prevDelay;
 
+  static Operation confirm = Operation(
+      func: "click",
+      coords: RecordConfig.to.getConfirmPosition(),
+      template:
+          "click(${RecordConfig.to.getConfirmPosition()[0]}, ${RecordConfig.to.getConfirmPosition()[1]}, %s);",
+      prevDelay: RecordConfig.to.getClickDelay());
+
+  static Operation openMap = Operation(
+      func: "press",
+      coords: [],
+      template: "press('${RecordConfig.to.getOpenMapKey()}', %s);",
+      prevDelay: RecordConfig.to.getOpenMapDelay());
+
   Operation({
     required this.func,
     this.coords = const [0, 0],
@@ -41,7 +54,13 @@ class LogModel extends ChangeNotifier {
     return dx.abs() + dy.abs();
   }
 
-  void appendOperation(Operation operation) {
+  void appendOperation(Operation operation, {bool route = true}) {
+    // 路线模式下，只记录键盘和鼠标点击操作
+    if (route &&
+        !['kDown', 'mDown', 'kUp', 'mUp', 'click'].contains(operation.func)) {
+      return;
+    }
+
     if (operation.func == 'kDown' || operation.func == 'mDown') {
       operationDown = true;
     } else {
@@ -56,28 +75,27 @@ class LogModel extends ChangeNotifier {
     final previousOperation = prevOperations[prevOperations.length - 1];
 
     // 如果前一个操作是Down，且两个操作之间的延迟小于300ms，则将两个操作合并
-    if (operation.func == 'kUp' &&
-        previousOperation.func == 'kDown' &&
-        operation.prevDelay < 300) {
+    if (operation.func == 'kUp' && previousOperation.func == 'kDown' && route) {
       previousOperation.template =
           previousOperation.template.replaceFirst('kDown', 'press');
       previousOperation.prevDelay = operation.prevDelay;
     } else if (operation.func == 'mUp' &&
         previousOperation.func == 'mDown' &&
-        operation.prevDelay < 300) {
-      if (getDiff(previousOperation.coords, operation.coords) < RecordConfig.to.getClickDiff()) {
+        route) {
+      if (getDiff(previousOperation.coords, operation.coords) <
+          RecordConfig.to.getClickDiff()) {
         // 归类为单击
+        final delay = RecordConfig.to.getEnableDefaultDelay()
+            ? RecordConfig.to.getClickDelay()
+            : operation.prevDelay;
         previousOperation.template =
-            previousOperation.template.replaceFirst('mDown', 'click');
-
-        if (RecordConfig.to.getEnableDefaultDelay()) {
-          previousOperation.prevDelay = RecordConfig.to.getClickDelay();
-        } else {
-          previousOperation.prevDelay = operation.prevDelay;
-        }
+            "click(${operation.coords[0]}, ${operation.coords[1]}, $delay);";
+        previousOperation.prevDelay = delay;
       } else {
         // 归类为拖动
-        int delay = RecordConfig.to.getEnableDefaultDelay() ? RecordConfig.to.getDragDelay(): operation.prevDelay;
+        final delay = RecordConfig.to.getEnableDefaultDelay()
+            ? RecordConfig.to.getDragDelay()
+            : operation.prevDelay;
         previousOperation.template =
             "drag([${previousOperation.coords[0]}, ${previousOperation.coords[1]}, ${operation.coords[0]}, ${operation.coords[1]}], 15, $delay);";
         previousOperation.prevDelay = delay;
@@ -112,10 +130,23 @@ class LogModel extends ChangeNotifier {
       return;
     }
     var script = '';
+
+    bool openMapKeyFound = false;
     for (var element in prevOperations) {
-      script += "$element ";
+      if (!openMapKeyFound &&
+          element.template
+              .contains("press('${RecordConfig.to.getOpenMapKey()}'")) {
+        element = Operation.openMap;
+        openMapKeyFound = true;
+      }
+      if (openMapKeyFound) {
+        script += "$element ";
+      }
     }
-    logController.text += "name: \"${Uuid().v4()}\", script: \"$script\"\n";
+
+    if (script.isNotEmpty) {
+      logController.text += "name: \"${Uuid().v4()}\", script: \"$script\"\n";
+    }
     prevOperations = [];
   }
 
@@ -125,10 +156,10 @@ class LogModel extends ChangeNotifier {
     }
     prevOperations.last.prevDelay = delay;
 
-    if (!operationDown) {
-      prevOperations.last.template =
-          prevOperations.last.template.replaceFirst('%s', delay.toString());
-    }
+    // if (!operationDown) {
+    //   prevOperations.last.template =
+    //       prevOperations.last.template.replaceFirst('%s', delay.toString());
+    // }
 
     notifyListeners();
   }

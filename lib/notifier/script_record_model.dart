@@ -37,7 +37,7 @@ class ScriptRecordModel extends ChangeNotifier {
     stopMouseHook();
 
     WindowsApp.logModel.appendDelay(getDelay());
-    WindowsApp.logModel.outputAsScript();
+    WindowsApp.logModel.output();
     WindowsApp.logModel.info('停止录制');
     notifyListeners();
   }

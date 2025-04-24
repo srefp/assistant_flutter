@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/config/record_config.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
@@ -51,11 +52,17 @@ void recordRoute(int vkCode, int wParam) {
   WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
 
   var key = getKeyName(vkCode);
-  if (key == 'm' && wParam == WM_KEYDOWN) {
-    WindowsApp.logModel.outputAsRoute();
+
+  // 开图键录制
+  if (key == RecordConfig.to.getOpenMapKey() && wParam == WM_KEYDOWN) {
     final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
         func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
+  } else if (key == RecordConfig.to.getConfirmOperationKey() &&
+      wParam == WM_KEYDOWN) {
+    simulateConfirmOperation();
+    WindowsApp.logModel.appendOperation(Operation.confirm);
+    WindowsApp.logModel.outputAsRoute();
   } else {
     final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
@@ -110,6 +117,11 @@ void simulateMouseMove(String key) async {
   await KeyMouseUtil.moveR3D(distance, 10, 5);
 }
 
+void simulateConfirmOperation() async {
+  final confirmPosition = RecordConfig.to.getConfirmPosition();
+  await KeyMouseUtil.clickAtPoint(confirmPosition);
+}
+
 final threadProc = SetListenCallback((lpParam) {
   final msg = calloc<MSG>();
   while (GetMessage(msg, NULL, 0, 0) != 0) {
@@ -158,45 +170,45 @@ void startKeyboardHook() async {
 String getKeyName(int vkCode) {
   switch (vkCode) {
     case VIRTUAL_KEY.VK_BACK:
-      return 'Backspace';
+      return 'backspace';
     case VIRTUAL_KEY.VK_TAB:
-      return 'Tab';
+      return 'tab';
     case VIRTUAL_KEY.VK_RETURN:
-      return 'Enter';
+      return 'enter';
     case VIRTUAL_KEY.VK_ESCAPE:
-      return 'Esc';
+      return 'esc';
     case VIRTUAL_KEY.VK_SPACE:
-      return 'Space';
+      return 'space';
     case VIRTUAL_KEY.VK_PRIOR:
-      return 'PageUp';
+      return 'pageup';
     case VIRTUAL_KEY.VK_NEXT:
-      return 'PageDown';
+      return 'pagedown';
     case VIRTUAL_KEY.VK_END:
-      return 'End';
+      return 'end';
     case VIRTUAL_KEY.VK_HOME:
-      return 'Home';
+      return 'home';
     case VIRTUAL_KEY.VK_LEFT:
-      return '←';
+      return 'left';
     case VIRTUAL_KEY.VK_UP:
-      return '↑';
+      return 'up';
     case VIRTUAL_KEY.VK_RIGHT:
-      return '→';
+      return 'right';
     case VIRTUAL_KEY.VK_DOWN:
-      return '↓';
+      return 'down';
     case VIRTUAL_KEY.VK_DELETE:
-      return 'Delete';
+      return 'delete';
     case VIRTUAL_KEY.VK_CAPITAL:
-      return 'CapsLock';
+      return 'capsLock';
     case VIRTUAL_KEY.VK_SHIFT:
-      return 'Shift';
+      return 'shift';
     case VIRTUAL_KEY.VK_CONTROL:
-      return 'Ctrl';
+      return 'ctrl';
     case VIRTUAL_KEY.VK_MENU:
-      return 'Alt';
+      return 'alt';
     case VIRTUAL_KEY.VK_LWIN:
-      return 'Win(Left)';
+      return 'win(Left)';
     case VIRTUAL_KEY.VK_RWIN:
-      return 'Win(Right)';
+      return 'win(Right)';
     default:
       // 处理字母和数字（A-Z, 0-9）
       if (vkCode >= 0x30 && vkCode <= 0x39) {

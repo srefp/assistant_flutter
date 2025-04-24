@@ -8,6 +8,9 @@ class RecordConfig with ConfigStorage {
   static const keyClickDelay = "clickDelay";
   static const keyDragDelay = "dragDelay";
   static const keyClickDiff = "clickDiff";
+  static const keyOpenMapKey = "openMapKey";
+  static const keyConfirmOperationKey = "confirmOperationKey";
+  static const keyConfirmPosition = "confirmPosition";
 
   bool getEnableDefaultDelay() => box.read(keyEnableDefaultDelay) ?? true;
 
@@ -19,4 +22,12 @@ class RecordConfig with ConfigStorage {
 
   /// 判断为单击的最大误差
   int getClickDiff() => box.read(keyClickDiff) ?? 500;
+
+  String getOpenMapKey() => box.read(keyOpenMapKey) ?? "m";
+
+  String getConfirmOperationKey() =>
+      box.read(keyConfirmOperationKey) ?? "enter";
+
+  List<int> getConfirmPosition() =>
+      box.read(keyConfirmPosition) ?? [1000, 1000];
 }
