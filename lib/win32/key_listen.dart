@@ -58,11 +58,6 @@ void recordRoute(int vkCode, int wParam) {
     final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
         func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
-  } else if (key == RecordConfig.to.getConfirmOperationKey() &&
-      wParam == WM_KEYDOWN) {
-    simulateConfirmOperation();
-    WindowsApp.logModel.appendOperation(Operation.confirm);
-    WindowsApp.logModel.outputAsRoute();
   } else {
     final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(

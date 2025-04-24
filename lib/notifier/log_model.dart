@@ -20,9 +20,9 @@ class Operation {
       prevDelay: RecordConfig.to.getClickDelay());
 
   static Operation openMap = Operation(
-      func: "press",
+      func: "openMap",
       coords: [],
-      template: "press('${RecordConfig.to.getOpenMapKey()}', %s);",
+      template: "openMap(%s);",
       prevDelay: RecordConfig.to.getOpenMapDelay());
 
   Operation({

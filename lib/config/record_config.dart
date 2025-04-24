@@ -17,7 +17,7 @@ class RecordConfig with ConfigStorage {
 
   int getOpenMapDelay() => box.read(keyOpenMapDelay) ?? 560;
 
-  int getClickDelay() => box.read(keyClickDelay) ?? 90;
+  int getClickDelay() => box.read(keyClickDelay) ?? 0;
 
   int getDragDelay() => box.read(keyDragDelay) ?? 100;
 

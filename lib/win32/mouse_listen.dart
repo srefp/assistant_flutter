@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/config/record_config.dart';
 import 'package:assistant/util/half_tp.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
@@ -43,15 +44,6 @@ int mouseHook = 0;
 final hookProcPointer = SetCallback((nCode, wParam, lParam) {
   final result = CallNextHookEx(mouseHook, nCode, wParam, lParam);
 
-  // 获取按下的按钮
-  final button = getXButtonWParam(wParam);
-
-  if (button == XBUTTON1) {
-    print('XButton1 pressed');
-  } else if (button == XBUTTON2) {
-    print('XButton2 pressed');
-  }
-
   // 过滤鼠标移动事件
   if (wParam == WM_MOUSEMOVE) {
     return result;
@@ -66,15 +58,6 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 // 时间: ${mouseStruct.ref.time}
 // ''');
 
-    switch (wParam) {
-      case WM_XBUTTONDOWN:
-        final mouseData = mouseStruct.ref.mouseData;
-        final xButton = (mouseData >> 16) & 0xFFFF; // 高位字
-
-        if (xButton == XBUTTON1) {
-          halfTp();
-        }
-    }
     if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
       recordRoute(mouseStruct, wParam, lParam);
     } else {
@@ -85,8 +68,23 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 });
 
 void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
+  final mouseData = mouseStruct.ref.mouseData;
+  final xButton = (mouseData >> 16) & 0xFFFF; // 高位字
   List<int> coords =
       KeyMouseUtil.logicalPos([mouseStruct.ref.pt.x, mouseStruct.ref.pt.y]);
+
+  if (xButton == XBUTTON2 && wParam == WM_XBUTTONDOWN) {
+    halfTp();
+
+    WindowsApp.logModel.appendOperation(Operation(
+        func: "click",
+        template:
+            "click([${coords[0]}, ${coords[1]}], ${RecordConfig.to.getClickDelay()});"));
+    WindowsApp.logModel.appendOperation(Operation.confirm);
+
+    WindowsApp.logModel.outputAsRoute();
+  }
+
   int delay = WindowsApp.recordModel.getDelay();
   WindowsApp.logModel.appendDelay(delay);
 
