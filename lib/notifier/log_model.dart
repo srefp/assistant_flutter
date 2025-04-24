@@ -1,3 +1,4 @@
+import 'package:assistant/config/record_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
@@ -63,11 +64,24 @@ class LogModel extends ChangeNotifier {
       previousOperation.prevDelay = operation.prevDelay;
     } else if (operation.func == 'mUp' &&
         previousOperation.func == 'mDown' &&
-        getDiff(previousOperation.coords, operation.coords) < 500 &&
         operation.prevDelay < 300) {
-      previousOperation.template =
-          previousOperation.template.replaceFirst('mDown', 'click');
-      previousOperation.prevDelay = operation.prevDelay;
+      if (getDiff(previousOperation.coords, operation.coords) < RecordConfig.to.getClickDiff()) {
+        // 归类为单击
+        previousOperation.template =
+            previousOperation.template.replaceFirst('mDown', 'click');
+
+        if (RecordConfig.to.getEnableDefaultDelay()) {
+          previousOperation.prevDelay = RecordConfig.to.getClickDelay();
+        } else {
+          previousOperation.prevDelay = operation.prevDelay;
+        }
+      } else {
+        // 归类为拖动
+        int delay = RecordConfig.to.getEnableDefaultDelay() ? RecordConfig.to.getDragDelay(): operation.prevDelay;
+        previousOperation.template =
+            "drag([${previousOperation.coords[0]}, ${previousOperation.coords[1]}, ${operation.coords[0]}, ${operation.coords[1]}], 15, $delay);";
+        previousOperation.prevDelay = delay;
+      }
     } else {
       prevOperations.add(operation);
     }
