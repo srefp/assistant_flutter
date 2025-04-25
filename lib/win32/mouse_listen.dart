@@ -74,13 +74,12 @@ void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
       KeyMouseUtil.logicalPos([mouseStruct.ref.pt.x, mouseStruct.ref.pt.y]);
 
   if (xButton == XBUTTON2 && wParam == WM_XBUTTONDOWN) {
-    halfTp();
+    tpc();
 
     WindowsApp.logModel.appendOperation(Operation(
-        func: "click",
+        func: "tpc",
         template:
-            "click([${coords[0]}, ${coords[1]}], ${RecordConfig.to.getClickDelay()});"));
-    WindowsApp.logModel.appendOperation(Operation.confirm);
+            "tpc('slow', [${coords[0]}, ${coords[1]}], 0});"));
 
     WindowsApp.logModel.outputAsRoute();
   }

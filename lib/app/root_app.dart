@@ -69,7 +69,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getConfigMenu()) {
+    if (SettingConfig.to.getRecordMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.record),
         icon: const Icon(FluentIcons.record_routing),

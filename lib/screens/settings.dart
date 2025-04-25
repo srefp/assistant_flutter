@@ -142,6 +142,18 @@ class _SettingsState extends State<Settings> with PageMixin {
             ),
           ),
           ConfigRow(
+            title: '记录',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getRecordMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyRecordMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
             title: '日志查看',
             content: ToggleSwitch(
               checked: SettingConfig.to.getLogShow(),

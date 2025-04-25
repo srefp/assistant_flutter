@@ -2,7 +2,6 @@ import 'package:assistant/config/record_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
-import 'package:uuid/uuid.dart';
 
 import '../app/windows_app.dart';
 
@@ -57,7 +56,7 @@ class LogModel extends ChangeNotifier {
   void appendOperation(Operation operation, {bool route = true}) {
     // 路线模式下，只记录键盘和鼠标点击操作
     if (route &&
-        !['kDown', 'mDown', 'kUp', 'mUp', 'click'].contains(operation.func)) {
+        !['kDown', 'mDown', 'kUp', 'mUp', 'click', 'tpc'].contains(operation.func)) {
       return;
     }
 
@@ -89,7 +88,7 @@ class LogModel extends ChangeNotifier {
             ? RecordConfig.to.getClickDelay()
             : operation.prevDelay;
         previousOperation.template =
-            "click(${operation.coords[0]}, ${operation.coords[1]}, $delay);";
+            "click([${operation.coords[0]}, ${operation.coords[1]}], $delay);";
         previousOperation.prevDelay = delay;
       } else {
         // 归类为拖动
@@ -145,7 +144,7 @@ class LogModel extends ChangeNotifier {
     }
 
     if (script.isNotEmpty) {
-      logController.text += "name: \"${Uuid().v4()}\", script: \"$script\"\n";
+      logController.text += "script: \"$script\"\n";
     }
     prevOperations = [];
   }

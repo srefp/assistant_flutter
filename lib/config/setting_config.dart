@@ -15,6 +15,7 @@ class SettingConfig with ConfigStorage {
   static const keyScriptMenu = 'scriptMenu';
   static const keyTestMenu = 'testMenu';
   static const keyConfigMenu = 'configMenu';
+  static const keyRecordMenu = 'recordMenu';
 
   ThemeMode getThemeMode() {
     final index = box.read(keyThemeMode);
@@ -49,4 +50,7 @@ class SettingConfig with ConfigStorage {
   bool getTestMenu() => box.read(keyTestMenu)?? false;
 
   bool getConfigMenu() => box.read(keyConfigMenu)?? true;
+
+  bool getRecordMenu() => box.read(keyRecordMenu)?? false;
+
 }
