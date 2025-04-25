@@ -8,7 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
-const String version = '2025.1.6';
+const String version = '2025.5';
 const String appTitle = '耕地机 v$version';
 
 void main() async {

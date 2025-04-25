@@ -7,6 +7,7 @@ class IconCard extends StatelessWidget {
   final String title;
   final String subTitle;
   final Widget content;
+  final Widget rightWidget;
 
   const IconCard({
     super.key,
@@ -14,20 +15,25 @@ class IconCard extends StatelessWidget {
     required this.title,
     this.subTitle = '',
     this.content = const SizedBox(),
+    this.rightWidget = const SizedBox(),
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expander(
-      leading: Icon(
-        icon,
-        size: 30,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Expander(
+        leading: Icon(
+          icon,
+          size: 30,
+        ),
+        header: TitleWithSub(
+          title: title,
+          subTitle: subTitle,
+          rightWidget: rightWidget,
+        ),
+        content: content,
       ),
-      header: TitleWithSub(
-        title: title,
-        subTitle: subTitle,
-      ),
-      content: content,
     );
   }
 }

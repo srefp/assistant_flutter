@@ -59,7 +59,9 @@ class ScriptEditor extends StatelessWidget {
                   child: ButtonWithIcon(
                     icon: Icons.add,
                     text: '添加',
-                    onPressed: () {},
+                    onPressed: () {
+                      model.showAddFileModel(context);
+                    },
                   ),
                 ),
                 SizedBox(

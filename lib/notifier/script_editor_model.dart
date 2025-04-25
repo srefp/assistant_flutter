@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/components/highlight_combo_box.dart';
+import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
 class ScriptEditorModel with ChangeNotifier {
@@ -70,6 +73,10 @@ class ScriptEditorModel with ChangeNotifier {
     // 加载js函数
     loadJsFunction();
   }
+
+  var fileType = 'lua';
+
+  TextEditingController nameController = TextEditingController();
 
   loadJsFunction() async {
     jsFunction = await rootBundle.loadString('assets/js/func.js');
@@ -182,6 +189,78 @@ class ScriptEditorModel with ChangeNotifier {
   void markAsUnsaved() {
     isUnsaved = true;
     notifyListeners();
+  }
+
+  /// 显示添加文件的模态框
+  void showAddFileModel(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            Consumer<ScriptEditorModel>(builder: (context, model, child) {
+              return ContentDialog(
+                title: WinText('新建文件'),
+                content: SizedBox(
+                  height: 160,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 8),
+                        child: Row(
+                          children: [
+                            WinText('类型：'),
+                            Expanded(
+                                child: HighlightComboBox(
+                                    value: model.fileType,
+                                    items: ['lua', 'js'])),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 8),
+                        child: Row(
+                          children: [
+                            WinText('名称：'),
+                            Expanded(
+                                child:
+                                    TextBox(controller: model.nameController)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  Button(
+                    child: const WinText('取消'),
+                    onPressed: () {
+                      Navigator.pop(context); // 关闭模态框
+                    },
+                  ),
+                  FilledButton(
+                    child: const WinText('确定'),
+                    onPressed: () {
+                      model.createFile();
+                      // 处理添加文件的逻辑
+                      Navigator.pop(context); // 关闭模态框
+                    },
+                  ),
+                ],
+              );
+            }));
+  }
+
+  /// 创建文件
+  void createFile() {
+    final fileName = '${nameController.text}.$fileType';
+    final filePath = join(directoryPath, selectedDir!, fileName);
+    final file = File(filePath);
+    if (!file.existsSync()) {
+      file.createSync();
+      files.add(fileName);
+      selectFile(fileName);
+    }
   }
 }
 

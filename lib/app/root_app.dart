@@ -52,18 +52,18 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getConfigMenu()) {
+    if (SettingConfig.to.getScriptMenu()) {
       routes.add(PaneItem(
-        key: const ValueKey(Routes.config),
-        icon: const Icon(FluentIcons.configuration_solid),
+        key: const ValueKey(Routes.scriptEditor),
+        icon: const Icon(FluentIcons.code_edit),
         title: Text(
-          '配置',
+          '脚本',
           style: TextStyle(fontFamily: fontFamily),
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.config) {
-            context.go(Routes.config);
+          if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
+            context.go(Routes.scriptEditor);
           }
         },
       ));
@@ -86,18 +86,18 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getScriptMenu()) {
+    if (SettingConfig.to.getConfigMenu()) {
       routes.add(PaneItem(
-        key: const ValueKey(Routes.scriptEditor),
-        icon: const Icon(FluentIcons.code_edit),
+        key: const ValueKey(Routes.config),
+        icon: const Icon(FluentIcons.configuration_solid),
         title: Text(
-          '脚本',
+          '配置',
           style: TextStyle(fontFamily: fontFamily),
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
-            context.go(Routes.scriptEditor);
+          if (GoRouterState.of(context).uri.toString() != Routes.config) {
+            context.go(Routes.config);
           }
         },
       ));
