@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
@@ -45,6 +46,19 @@ class ScriptEditorModel with ChangeNotifier {
     jsRuntime = getJavascriptRuntime();
     jsRuntime.onMessage('log', (params) {
       WindowsApp.logModel.info(params['info']);
+    });
+    jsRuntime.onMessage('click', (params) {
+      if (params['coords'] != null) {
+        KeyMouseUtil.clickAtPoint(params['coords']);
+      }
+    });
+    jsRuntime.onMessage('press', (params) {
+      if (params['coords']!= null) {
+        KeyMouseUtil.press(params['coords']);
+      }
+    });
+    jsRuntime.onMessage('wait', (param) async {
+      return await Future.delayed(Duration(milliseconds: param));
     });
 
     directories = loadDirectories(ScriptEditorModel.directoryPath);

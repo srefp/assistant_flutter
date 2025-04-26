@@ -318,4 +318,8 @@ class KeyMouseUtil {
     List<int> virtualPos = getVirtualPos(point);
     showToast('已复制坐标: ${virtualPos[0]}, ${virtualPos[1]}');
   }
+
+  static void press(param) {
+
+  }
 }

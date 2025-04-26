@@ -38,10 +38,12 @@ Future<void> _initApp() async {
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
       // 确保只有一个实例在运行
-      bool running = isAppRunning('耕地机');
-      if (running) {
-        await windowManager.destroy();
-        return;
+      if (!kDebugMode) {
+        bool running = isAppRunning('assistant');
+        if (running) {
+          await windowManager.destroy();
+          return;
+        }
       }
 
       await windowManager.setTitleBarStyle(
