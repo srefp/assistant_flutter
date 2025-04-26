@@ -1,3 +1,5 @@
+import 'package:win32/win32.dart';
+
 import '../constants/window.dart';
 import '../win32/models.dart';
 import '../win32/task_manager.dart';
@@ -48,3 +50,11 @@ class ScreenManager {
     return null;
   }
 }
+
+/// 判断游戏窗口是否置顶
+bool isGameActive()
+{
+  var hWnd = GetForegroundWindow();
+  return hWnd == ScreenManager.instance.hWnd;
+}
+

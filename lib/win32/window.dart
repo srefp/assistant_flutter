@@ -18,3 +18,17 @@ bool isAppRunning(String appUniqueName) {
 void setForegroundWindow() {
   windowManager.focus();
 }
+
+/// 将其他窗口置顶
+void setWindowTopmost(int hWnd) {
+  // 使用 SetWindowPos 函数将窗口置顶
+  SetWindowPos(
+    hWnd,
+    HWND_TOPMOST,
+    0,
+    0,
+    0,
+    0,
+    SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE,
+  );
+}
