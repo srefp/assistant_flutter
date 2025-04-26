@@ -46,40 +46,39 @@ abstract class TaskManager {
 
       for (final pid in processIds) {
         final hProcess = OpenProcess(
-          PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_INFORMATION |
-              PROCESS_ACCESS_RIGHTS.PROCESS_VM_READ,
+          PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_INFORMATION,
           FALSE,
           pid,
         );
 
-        if (hProcess != NULL) {
-          final hModule = arena<HMODULE>();
-          final cbNeededMod = arena<Uint32>();
+        final queryFunc = DynamicLibrary.process().lookupFunction<
+            Int32 Function(IntPtr hProcess, Uint32 dwFlags, Pointer<Utf16> lpExeName, Pointer<DWORD> lpdwSize),
+            int Function(int hProcess, int dwFlags, Pointer<Utf16> lpExeName, Pointer<DWORD> lpdwSize)
+        >('QueryFullProcessImageNameW');
 
-          if (EnumProcessModules(
-                  hProcess, hModule, sizeOf<HMODULE>(), cbNeededMod) !=
-              0) {
-            final moduleName = arena<WCHAR>(MAX_PATH).cast<Utf16>();
+        final buffer = arena<WCHAR>(MAX_PATH).cast<Utf16>();
+        final size = arena<DWORD>()..value = MAX_PATH;
 
-            if (GetModuleBaseName(
-                  hProcess,
-                  hModule.value,
-                  moduleName,
-                  MAX_PATH,
-                ) >
-                0) {
-              final name = moduleName.toDartString();
+        final success = queryFunc(
+          hProcess,
+          0,
+          buffer,
+          size,
+        );
 
-              final task = Task(
-                name: name,
-                pid: pid,
-              );
-              tasks.add(task);
-            }
-          }
+        String? processName;
+        if (success == 1) {
+          final fullPath = buffer.toDartString();
+          processName = fullPath.split(r'\').last;
 
-          CloseHandle(hProcess);
+          final task = Task(
+            name: processName,
+            pid: pid,
+          );
+          tasks.add(task);
         }
+
+        CloseHandle(hProcess);
       }
 
       return tasks;

@@ -23,4 +23,16 @@ class AutoTpConfig with ConfigStorage {
   static const tpMode = "优先开图";
   static const currentPositionName = "不在路线中";
   static const globalQm = false;
+  static const keyWindowTitles = "windowTitles";
+  static const keyCustomWindowTitle = "customWindowTitle";
+
+  List<String> get windowTitles {
+    if (customWindowTitle) {
+      return [box.read(keyWindowTitles)];
+    } else {
+      return ["YuanShen", "GenshinImpact", "Genshin Impact Cloud Game"];
+    }
+  }
+
+  bool get customWindowTitle => box.read(keyCustomWindowTitle) ?? false;
 }

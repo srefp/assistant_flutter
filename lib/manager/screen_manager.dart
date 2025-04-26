@@ -1,6 +1,6 @@
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:win32/win32.dart';
 
-import '../constants/window.dart';
 import '../win32/models.dart';
 import '../win32/task_manager.dart';
 
@@ -23,7 +23,7 @@ class ScreenManager {
 
   int? findWindowHandle(final List<Task>? tasks) {
     Task? task;
-    for (var value in windowNames) {
+    for (var value in AutoTpConfig.to.windowTitles) {
       task = findWindowByTitle(value, tasks);
 
       if (task != null) {
