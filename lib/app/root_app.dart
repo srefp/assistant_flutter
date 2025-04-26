@@ -12,6 +12,8 @@ import '../config/setting_config.dart';
 import '../main.dart';
 import '../routes/routes.dart';
 
+const double iconSize = 16;
+
 class RootApp extends StatefulWidget {
   const RootApp({
     super.key,
@@ -38,7 +40,7 @@ class _RootAppState extends State<RootApp> {
     if (SettingConfig.to.getAutoTpMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.autoTp),
-        icon: const Icon(FluentIcons.rocket),
+        icon: const Icon(FluentIcons.rocket, size: iconSize),
         title: Text(
           '自动传送',
           style: TextStyle(fontFamily: fontFamily),
@@ -55,7 +57,7 @@ class _RootAppState extends State<RootApp> {
     if (SettingConfig.to.getScriptMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.scriptEditor),
-        icon: const Icon(FluentIcons.code_edit),
+        icon: const Icon(FluentIcons.code_edit, size: iconSize),
         title: Text(
           '脚本',
           style: TextStyle(fontFamily: fontFamily),
@@ -72,7 +74,7 @@ class _RootAppState extends State<RootApp> {
     if (SettingConfig.to.getRecordMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.record),
-        icon: const Icon(FluentIcons.record_routing),
+        icon: const Icon(FluentIcons.record_routing, size: iconSize),
         title: Text(
           '记录',
           style: TextStyle(fontFamily: fontFamily),
@@ -89,9 +91,9 @@ class _RootAppState extends State<RootApp> {
     if (SettingConfig.to.getConfigMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.config),
-        icon: const Icon(FluentIcons.configuration_solid),
+        icon: const Icon(FluentIcons.keyboard_classic, size: iconSize),
         title: Text(
-          '配置',
+          '快捷键',
           style: TextStyle(fontFamily: fontFamily),
         ),
         body: const SizedBox.shrink(),
@@ -106,7 +108,7 @@ class _RootAppState extends State<RootApp> {
     if (SettingConfig.to.getTestMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.test),
-        icon: const Icon(FluentIcons.test_case),
+        icon: const Icon(FluentIcons.test_case, size: iconSize),
         title: Text(
           '测试',
           style: TextStyle(fontFamily: fontFamily),
@@ -126,7 +128,7 @@ class _RootAppState extends State<RootApp> {
     PaneItemSeparator(),
     PaneItem(
       key: const ValueKey(Routes.settings),
-      icon: const Icon(FluentIcons.settings),
+      icon: const Icon(FluentIcons.settings, size: iconSize),
       title: Text(
         '设置',
         style: TextStyle(fontFamily: fontFamily),
@@ -270,14 +272,14 @@ class _RootAppState extends State<RootApp> {
               trailingIcon: IgnorePointer(
                 child: IconButton(
                   onPressed: () {},
-                  icon: const Icon(FluentIcons.search),
+                  icon: const Icon(FluentIcons.search, size: iconSize),
                 ),
               ),
               placeholder: '搜索',
               style: TextStyle(fontFamily: fontFamily),
             );
           }),
-          autoSuggestBoxReplacement: const Icon(FluentIcons.search),
+          autoSuggestBoxReplacement: const Icon(FluentIcons.search, size: iconSize),
           footerItems: footerItems,
         ),
         onOpenSearch: searchFocusNode.requestFocus,
