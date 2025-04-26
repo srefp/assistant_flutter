@@ -15,12 +15,21 @@ final _api = FlutterAutoGuiWindows();
 ///
 /// 默认XButton2会输出tpc('slow', [12345, 12345]);，执行两个延迟90ms的单击操作。
 void tpc() async {
+  // 获取当前鼠标位置
+  var currentPos = await _api.position();
+
   await _api.click(clicks: 1);
   var point = RecordConfig.to.getConfirmPosition();
   var res = KeyMouseUtil.physicalPos(point);
   await _api.moveTo(point: Point(res[0], res[1]));
   await Future.delayed(Duration(milliseconds: 10));
   await _api.click(clicks: 1);
+  await Future.delayed(Duration(milliseconds: 80));
+  await _api.click(clicks: 1);
+
+  await Future.delayed(Duration(milliseconds: 30));
+  // 复位
+  await _api.moveTo(point: currentPos!);
 
   // await _api.click(clicks: 2);
   // var point = RecordConfig.to.getConfirmPosition();

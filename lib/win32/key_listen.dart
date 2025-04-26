@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/config/record_config.dart';
+import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
@@ -38,14 +39,34 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
     // print(
     //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
 
-    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
-      recordRoute(vkCode, wParam);
-    } else {
-      recordScript(vkCode, wParam);
+    if (WindowsApp.autoTpModel.isRunning && ScreenManager.instance.isGameActive()) {
+      listenKeyboard(vkCode, wParam);
+    }
+
+    if (WindowsApp.recordModel.isRecording) {
+      if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+        recordRoute(vkCode, wParam);
+      } else {
+        recordScript(vkCode, wParam);
+      }
     }
   }
   return res;
 });
+
+/// 监听操作
+void listenKeyboard(int vkCode, int wParam) {
+  if (wParam != WM_KEYDOWN) {
+    return;
+  }
+  final keyName = getKeyName(vkCode);
+  if (keyName == RecordConfig.to.getNextKey()) {
+    tpNext();
+  }
+}
+
+void tpNext() {
+}
 
 /// 记录路线
 void recordRoute(int vkCode, int wParam) {
@@ -127,6 +148,15 @@ final threadProc = SetListenCallback((lpParam) {
   return 0;
 });
 
+/// 关闭键盘监听
+void stopKeyboardHook() {
+  if (keyboardHook != 0) {
+    UnhookWindowsHookEx(keyboardHook);
+    keyboardHook = 0;
+  }
+}
+
+/// 启动键盘监听
 void startKeyboardHook() async {
   if (keyboardHook != 0) {
     return;

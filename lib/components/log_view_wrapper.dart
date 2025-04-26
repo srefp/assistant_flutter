@@ -4,7 +4,7 @@ import 'package:assistant/notifier/script_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
-import 'package:re_highlight/languages/ini.dart';
+import 'package:re_highlight/languages/javascript.dart';
 
 import 'button_with_icon.dart';
 
@@ -52,7 +52,7 @@ class LogView extends StatelessWidget {
                         if (model.isRecording) {
                           model.stopRecord();
                         } else {
-                          model.startRecord();
+                          model.startRecord(context);
                         }
                       },
                     ),
@@ -82,7 +82,7 @@ class LogView extends StatelessWidget {
                 textColor: const Color(0xffbcbec4),
                 codeTheme: CodeHighlightTheme(
                   languages: {
-                    'javascript': CodeHighlightThemeMode(mode: langIni)
+                    'javascript': CodeHighlightThemeMode(mode: langJavascript)
                   },
                   theme: {
                     'root': TextStyle(

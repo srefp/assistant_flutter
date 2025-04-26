@@ -14,7 +14,7 @@ class ConfigPage extends StatelessWidget {
           padding: EdgeInsets.all(20),
           children: [
             WinText(
-              '配置',
+              '快捷键',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),

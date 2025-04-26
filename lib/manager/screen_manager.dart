@@ -21,6 +21,13 @@ class ScreenManager {
     hWnd = findWindowHandle(tasks);
   }
 
+  /// 判断游戏窗口是否置顶
+  bool isGameActive()
+  {
+    var hWnd = GetForegroundWindow();
+    return hWnd == ScreenManager.instance.hWnd;
+  }
+
   int? findWindowHandle(final List<Task>? tasks) {
     Task? task;
     for (var value in AutoTpConfig.to.windowTitles) {
@@ -50,11 +57,3 @@ class ScreenManager {
     return null;
   }
 }
-
-/// 判断游戏窗口是否置顶
-bool isGameActive()
-{
-  var hWnd = GetForegroundWindow();
-  return hWnd == ScreenManager.instance.hWnd;
-}
-

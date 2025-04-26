@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:win32/win32.dart';
 import 'package:window_manager/window_manager.dart';
 
+/// 程序是否已经在运行
 bool isAppRunning(String appUniqueName) {
   final hWnd = FindWindow(nullptr, TEXT(appUniqueName));
   if (hWnd != NULL) {
@@ -15,8 +16,19 @@ bool isAppRunning(String appUniqueName) {
 }
 
 /// 将自己的窗口设置为前台窗口
-void setForegroundWindow() {
+void setSelfForeground() {
   windowManager.focus();
+}
+
+/// 将其他窗口设置为前台窗口
+void setForegroundWindow(int hWnd) {
+  // 使用 SetForegroundWindow 函数将窗口设置为前台窗口
+  SetForegroundWindow(hWnd);
+}
+
+/// 判断其他窗口是否处于前台
+bool isWindowForeground(int hWnd) {
+  return GetForegroundWindow() == hWnd;
 }
 
 /// 将其他窗口置顶

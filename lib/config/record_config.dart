@@ -12,6 +12,8 @@ class RecordConfig with ConfigStorage {
   static const keyConfirmOperationKey = "confirmOperationKey";
   static const keyConfirmPosition = "confirmPosition";
   static const keyHalfTpDelay = "halfTpDelay";
+  static const keyNextKey = "nextKey";
+  static const keyPrevKey = "prevKey";
 
   bool getEnableDefaultDelay() => box.read(keyEnableDefaultDelay) ?? true;
 
@@ -33,4 +35,6 @@ class RecordConfig with ConfigStorage {
       box.read(keyConfirmPosition) ?? [53704, 61376];
 
   int getHalfTpDelay() => box.read(keyHalfTpDelay)?? 90;
+
+  String getNextKey() => box.read(keyNextKey)?? "right";
 }

@@ -1,30 +1,16 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
-import 'package:assistant/config/record_config.dart';
-import 'package:assistant/util/half_tp.dart';
+import 'package:assistant/util/tpc.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
+import '../manager/screen_manager.dart';
 import '../notifier/log_model.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
-
-// 获取鼠标事件类型描述
-String _getMouseEventType(int msg) {
-  return const {
-        WM_LBUTTONDOWN: '左键按下',
-        WM_LBUTTONUP: '左键释放',
-        WM_RBUTTONDOWN: '右键按下',
-        WM_RBUTTONUP: '右键释放',
-        WM_MOUSEMOVE: '鼠标移动',
-        WM_MOUSEWHEEL: '滚轮滚动',
-        WM_XBUTTONDOWN: '鼠标X键按下',
-      }[msg] ??
-      '未知事件';
-}
 
 Pointer<NativeFunction<HOOKPROC>> SetCallback(HookProc callback) {
   return NativeCallable<HOOKPROC>.isolateLocal(callback, exceptionalReturn: 0)
@@ -58,14 +44,30 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
 // 时间: ${mouseStruct.ref.time}
 // ''');
 
-    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
-      recordRoute(mouseStruct, wParam, lParam);
-    } else {
-      recordScript(mouseStruct, wParam, lParam);
+    if (WindowsApp.autoTpModel.isRunning && ScreenManager.instance.isGameActive()) {
+      listenMouse(mouseStruct, wParam, lParam);
+    }
+
+    if (WindowsApp.recordModel.isRecording) {
+      if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+        recordRoute(mouseStruct, wParam, lParam);
+      } else {
+        recordScript(mouseStruct, wParam, lParam);
+      }
     }
   }
   return result;
 });
+
+/// 监听鼠标
+void listenMouse(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
+  final mouseData = mouseStruct.ref.mouseData;
+  final xButton = (mouseData >> 16) & 0xFFFF;
+
+  if (xButton == XBUTTON2 && wParam == WM_XBUTTONDOWN) {
+    tpc();
+  }
+}
 
 void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
   final mouseData = mouseStruct.ref.mouseData;
@@ -78,8 +80,7 @@ void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
 
     WindowsApp.logModel.appendOperation(Operation(
         func: "tpc",
-        template:
-            "tpc('slow', [${coords[0]}, ${coords[1]}], 0});"));
+        template: "tpc('slow', [${coords[0]}, ${coords[1]}], 0});"));
 
     WindowsApp.logModel.outputAsRoute();
   }

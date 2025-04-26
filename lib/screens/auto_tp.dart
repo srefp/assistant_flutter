@@ -60,10 +60,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
             rightWidget: SizedBox(
               height: 34,
               child: ButtonWithIcon(
-                icon: Icons.play_arrow,
-                text: '运行',
+                icon: model.isRunning ? Icons.stop : Icons.play_arrow,
+                text: model.isRunning ? '停止' : '运行',
                 onPressed: () {
-                  model.start();
+                  if (model.isRunning) {
+                    model.stop();
+                  } else {
+                    model.start();
+                  }
                 },
               ),
             ),
