@@ -3,11 +3,11 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/simulation.dart';
 import 'package:assistant/auto_gui/system_control.dart';
-import 'package:assistant/auto_gui/task_context.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../executor/route_executor.dart';
+import '../manager/screen_manager.dart';
 import '../screens/virtual_screen.dart';
 import '../win32/toast.dart';
 import 'math_util.dart';
@@ -97,7 +97,7 @@ class KeyMouseUtil {
 
   static List<int> getCurLogicalPos() {
     var currentRect =
-        SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
+        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     var point = getMousePos();
     return [
       ((point[0] - currentRect.left) * factor / (currentRect.width))
@@ -108,7 +108,7 @@ class KeyMouseUtil {
 
   static List<int> logicalDistance(List<int> distance) {
     var currentRect =
-        SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
+        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     return [
       (distance[0] * factor / (currentRect.width - 1)).floor(),
       (distance[1] * factor / (currentRect.height - 1)).floor()
@@ -117,7 +117,7 @@ class KeyMouseUtil {
 
   static List<int> physicalDistance(List<int> distance) {
     var currentRect =
-        SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
+        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     return [
       (distance[0] * (currentRect.width - 1) / factor).ceil(),
       (distance[1] * (currentRect.height - 1) / factor).ceil()
@@ -126,7 +126,7 @@ class KeyMouseUtil {
 
   static List<int> logicalPos(List<int> pPos) {
     var currentRect =
-        SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
+        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     return [
       ((pPos[0] - currentRect.left) * factor / (currentRect.width - 1)).floor(),
       ((pPos[1] - currentRect.top) * factor / (currentRect.height - 1)).floor()
@@ -135,7 +135,7 @@ class KeyMouseUtil {
 
   static List<int> physicalPos(List<int> lPos) {
     var currentRect =
-        SystemControl.getCaptureRect(TaskContext.instance().gameHandle);
+        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     return [
       currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).ceil(),
       currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil()

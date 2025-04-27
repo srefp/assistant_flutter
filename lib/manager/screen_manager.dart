@@ -14,7 +14,7 @@ class ScreenManager {
 
   ScreenManager._internal();
 
-  int? hWnd;
+  int hWnd = 0;
 
   refreshWindowHandle() {
     final tasks = TaskManager.tasks;
@@ -28,7 +28,7 @@ class ScreenManager {
     return hWnd == ScreenManager.instance.hWnd;
   }
 
-  int? findWindowHandle(final List<Task>? tasks) {
+  int findWindowHandle(final List<Task>? tasks) {
     Task? task;
     for (var value in AutoTpConfig.to.windowTitles) {
       task = findWindowByTitle(value, tasks);
@@ -39,11 +39,11 @@ class ScreenManager {
     }
 
     if (task == null) {
-      return null;
+      return 0;
     }
 
     int? mainHandle = TaskManager.getMainHandle(task.pid);
-    return mainHandle;
+    return mainHandle ?? 0;
   }
 
   // 根据进程名称查找窗口句柄

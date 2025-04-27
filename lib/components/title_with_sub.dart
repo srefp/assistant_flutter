@@ -29,12 +29,20 @@ class TitleWithSub extends StatelessWidget {
               const SizedBox(height: 10),
               HighlightText(
                 title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: fontFamily),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: fontFamily),
                 lightText: lightText,
               ),
               HighlightText(
                 subTitle,
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w200, fontFamily: fontFamily),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w200,
+                  color: Color(0xFF666666),
+                  fontFamily: fontFamily,
+                ),
                 lightText: lightText,
               ),
               const SizedBox(height: 10),

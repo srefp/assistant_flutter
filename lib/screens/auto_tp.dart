@@ -10,6 +10,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../components/coords_config_row.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
 import '../util/file_utils.dart';
@@ -44,6 +45,11 @@ class _AutoTpPageState extends State<AutoTpPage> {
         tryTimes++;
       });
     }
+
+    final divider = Container(
+      height: 1,
+      color: Color(0xFF666666),
+    );
 
     return Consumer<AutoTpModel>(builder: (context, model, child) {
       return ListView(
@@ -171,31 +177,33 @@ class _AutoTpPageState extends State<AutoTpPage> {
             subTitle: '设置键鼠操作的延迟',
             content: Column(
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 400,
-                      height: 34,
-                      child: TextBox(
-                        placeholder: '搜索延迟',
-                        style: TextStyle(fontFamily: fontFamily),
-                        onChanged: (value) =>
-                            model.searchDisplayedDelayConfigItems(value),
-                      ),
-                    )
-                  ],
-                ),
-                ListView.separated(
-                  separatorBuilder: (context, index) => Container(
-                    height: 1,
-                    color: Color(0xFF666666),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 400,
+                        height: 34,
+                        child: TextBox(
+                          controller: model.delaySearchController,
+                          placeholder: '搜索延迟',
+                          style: TextStyle(fontFamily: fontFamily),
+                          onChanged: (value) =>
+                              model.searchDisplayedDelayConfigItems(value),
+                        ),
+                      )
+                    ],
                   ),
+                ),
+                divider,
+                ListView.separated(
+                  separatorBuilder: (context, index) => divider,
                   itemCount: model.displayedDelayConfigItems.length,
                   itemBuilder: (context, index) {
                     final item = model.displayedDelayConfigItems[index];
                     return DelayConfigRow(
                       item: item,
-                      lightText: model.lightText,
+                      lightText: model.delayLightText,
                     );
                   },
                   shrinkWrap: true,
@@ -207,6 +215,41 @@ class _AutoTpPageState extends State<AutoTpPage> {
             icon: Icons.pin_drop,
             title: '关键位置标点',
             subTitle: '默认为16:9屏幕，其他比例屏幕需要自己标注',
+            content: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 400,
+                        height: 34,
+                        child: TextBox(
+                          controller: model.coordsSearchController,
+                          placeholder: '搜索标点',
+                          style: TextStyle(fontFamily: fontFamily),
+                          onChanged: (value) =>
+                              model.searchDisplayedCoordsConfigItems(value),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                divider,
+                ListView.separated(
+                  separatorBuilder: (context, index) => divider,
+                  itemCount: model.displayedCoordsConfigItems.length,
+                  itemBuilder: (context, index) {
+                    final item = model.displayedCoordsConfigItems[index];
+                    return CoordsConfigRow(
+                      item: item,
+                      lightText: model.coordsLightText,
+                    );
+                  },
+                  shrinkWrap: true,
+                ),
+              ],
+            ),
           ),
         ],
       );

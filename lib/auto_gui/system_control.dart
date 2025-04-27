@@ -16,6 +16,11 @@ class Rect {
     width = right - left;
     height = bottom - top;
   }
+
+  @override
+  String toString() {
+    return 'Rect(left: $left, top: $top, right: $right, bottom: $bottom, width: $width, height: $height)';
+  }
 }
 
 class SystemControl {

@@ -70,11 +70,11 @@ int windowProc(int hwnd, int msg, int wParam, int lParam) {
 // }
 
 // 定义回调函数，用于 EnumWindows 枚举窗口
-int enumWindowsCallback(int hwnd, int lParam) {
-  final titleLength = GetWindowTextLength(hwnd);
+int enumWindowsCallback(int hWnd, int lParam) {
+  final titleLength = GetWindowTextLength(hWnd);
   if (titleLength > 0) {
     final titlePtr = calloc<Utf16>(titleLength + 1);
-    GetWindowText(hwnd, titlePtr, titleLength + 1);
+    GetWindowText(hWnd, titlePtr, titleLength + 1);
     final title = titlePtr.toDartString();
     calloc.free(titlePtr);
 
@@ -84,7 +84,7 @@ int enumWindowsCallback(int hwnd, int lParam) {
 
     if (title == targetTitle) {
       // 找到匹配的窗口，打印窗口句柄
-      print('找到窗口，句柄: $hwnd');
+      print('找到窗口，句柄: $hWnd');
       return FALSE; // 停止枚举
     }
   }
