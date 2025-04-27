@@ -1,15 +1,19 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
+import 'highlight_text.dart';
+
 class TitleWithSub extends StatelessWidget {
   final String title;
   final String subTitle;
   final Widget rightWidget;
+  final String lightText;
 
   const TitleWithSub({
     super.key,
     required this.title,
     this.subTitle = '',
+    this.lightText = '',
     this.rightWidget = const SizedBox(),
   });
 
@@ -23,10 +27,16 @@ class TitleWithSub extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              WinText(title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-              WinText(subTitle,
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w200)),
+              HighlightText(
+                title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: fontFamily),
+                lightText: lightText,
+              ),
+              HighlightText(
+                subTitle,
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w200, fontFamily: fontFamily),
+                lightText: lightText,
+              ),
               const SizedBox(height: 10),
             ],
           ),

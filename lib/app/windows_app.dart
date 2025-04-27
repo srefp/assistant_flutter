@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:assistant/app/root_app.dart';
 import 'package:assistant/components/log_view_wrapper.dart';
 import 'package:assistant/components/win_text.dart';
+import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/util/hot_key.dart';
+import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:go_router/go_router.dart';
@@ -52,6 +54,7 @@ class _WindowsAppState extends State<WindowsApp>
     trayManager.addListener(this);
     _initSystemTray();
     initHotKey();
+    // verifyClient();
   }
 
   @override
@@ -188,6 +191,12 @@ class _WindowsAppState extends State<WindowsApp>
     );
     await trayManager.setContextMenu(menu);
   }
+
+  /// 验证客户端
+  void verifyClient() {
+    var response = Dio().get(VerificationConfig.to.verificationServer());
+    print(response);
+  }
 }
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -216,8 +225,7 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
 
       /// Record
       GoRoute(
-          path: Routes.record,
-          builder: (context, state) => const RecordPage()),
+          path: Routes.record, builder: (context, state) => const RecordPage()),
 
       /// Config
       GoRoute(

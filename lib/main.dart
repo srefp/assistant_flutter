@@ -1,12 +1,12 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/util/path_manage.dart';
-import 'package:assistant/win32/window.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:windows_single_instance/windows_single_instance.dart';
 
 const String version = '2025.5';
 const String innerVersion = '2025.5.1';
@@ -14,8 +14,11 @@ const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kDebugMode) {
+    await WindowsSingleInstance.ensureSingleInstance(args, appId);
+  }
   await _initApp();
 
   runApp(const WindowsApp());
@@ -40,15 +43,6 @@ Future<void> _initApp() async {
     }
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
-      // 确保只有一个实例在运行
-      if (!kDebugMode) {
-        bool running = isAppRunning('assistant');
-        if (running) {
-          await windowManager.destroy();
-          return;
-        }
-      }
-
       await windowManager.setTitleBarStyle(
         TitleBarStyle.hidden,
         windowButtonVisibility: false,

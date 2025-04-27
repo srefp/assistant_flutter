@@ -25,6 +25,12 @@ class AutoTpConfig with ConfigStorage {
   static const globalQm = false;
   static const keyWindowTitles = "windowTitles";
   static const keyCustomWindowTitle = "customWindowTitle";
+  static const keyTpcDelay = "tpcDelay";
+  static const keyTpcCooldown = "tpcCooldown";
+  static const keyTpcBackDelay = "tpcBackDelay";
+  static const keyBossDrawerDelay = "bossDrawerDelay";
+  static const keyTpCooldown = "tpCooldown";
+  static const keyTpcRetryDelay = "tpcRetryDelay";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -35,4 +41,18 @@ class AutoTpConfig with ConfigStorage {
   }
 
   bool get customWindowTitle => box.read(keyCustomWindowTitle) ?? false;
+
+  int getTpcDelay() => box.read(keyTpcDelay) ?? 10;
+
+  int getTpcRetryDelay() => box.read(keyTpcRetryDelay)?? 80;
+
+  int getTpcBackDelay() => box.read(keyTpcBackDelay) ?? 30;
+
+  int getTpcCooldown() => box.read(keyTpcCooldown) ?? 200;
+
+  int getBossDrawerDelay() => box.read(keyBossDrawerDelay) ?? 400;
+
+  int getTpCooldown() => box.read(keyTpCooldown)?? 3000;
+
+
 }

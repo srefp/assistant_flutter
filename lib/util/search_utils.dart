@@ -4,6 +4,30 @@ import 'package:assistant/extensions/pinyin_pos_map_extension.dart';
 
 import '../extensions/string_extension.dart';
 
+/// 根据多个字符串进行搜索
+bool searchTextList(String input, List<String?> contentList) {
+  final inputTextLower = input.toLowerCase();
+  for (var searchArea in contentList) {
+    if (searchArea == null) {
+      continue;
+    }
+    final textLower = searchArea.toLowerCase();
+    final pinyinShort = textLower.pinyinShort;
+    final pinyinAndPosMap = textLower.pinyinAndPosMap;
+    if (multiMatch(
+      textLower: textLower,
+      pinyinShort: pinyinShort,
+      pinyinAndPosMap: pinyinAndPosMap,
+      searchValue: inputTextLower,
+      start: 0,
+    )[0] !=
+        -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// 小写匹配、拼音首字母匹配、拼音匹配
 List<int> multiMatch({
   required String textLower,

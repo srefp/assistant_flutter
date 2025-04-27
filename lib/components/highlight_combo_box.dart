@@ -1,5 +1,4 @@
 import 'package:assistant/components/win_text.dart';
-import 'package:assistant/extensions/string_extension.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Material, Theme;
 
@@ -63,30 +62,6 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
     });
     _overlayEntry?.remove();
     _overlayEntry = null;
-  }
-
-  /// 根据多个字符串进行搜索
-  bool searchTextList(String input, List<String?> contentList) {
-    final inputTextLower = input.toLowerCase();
-    for (var searchArea in contentList) {
-      if (searchArea == null) {
-        continue;
-      }
-      final textLower = searchArea.toLowerCase();
-      final pinyinShort = textLower.pinyinShort;
-      final pinyinAndPosMap = textLower.pinyinAndPosMap;
-      if (multiMatch(
-            textLower: textLower,
-            pinyinShort: pinyinShort,
-            pinyinAndPosMap: pinyinAndPosMap,
-            searchValue: inputTextLower,
-            start: 0,
-          )[0] !=
-          -1) {
-        return true;
-      }
-    }
-    return false;
   }
 
   OverlayEntry _createOverlayEntry() {

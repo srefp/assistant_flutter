@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:assistant/components/button_with_icon.dart';
+import 'package:assistant/components/delay_config_row.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
@@ -71,23 +72,41 @@ class _AutoTpPageState extends State<AutoTpPage> {
                 },
               ),
             ),
-            content: Flex(
-              direction: Axis.horizontal,
+            content: ListView(
+              shrinkWrap: true,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: TitleWithSub(
-                      title: '路线文件夹',
-                      subTitle:
-                          '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TitleWithSub(
+                          title: '路线文件夹',
+                          subTitle:
+                              '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    ButtonWithIcon(
+                      text: '打开路线目录',
+                      icon: FluentIcons.open_folder_horizontal,
+                      onPressed: () {
+                        openRelativeOrAbsolute(getAssets('routes'));
+                      },
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    ButtonWithIcon(
+                      text: '重新加载路线',
+                      icon: FluentIcons.refresh,
+                      onPressed: () {
+                        openRelativeOrAbsolute(getAssets('routes'));
+                      },
+                    ),
+                  ],
                 ),
-                ButtonWithIcon(
-                  text: '打开路线目录',
-                  icon: FluentIcons.folder,
-                  onPressed: () {
-                    openRelativeOrAbsolute(getAssets('routes'));
-                  },
-                ),
+                Row(),
               ],
             ),
           ),
@@ -150,6 +169,39 @@ class _AutoTpPageState extends State<AutoTpPage> {
             icon: Icons.access_time_outlined,
             title: '延迟设置',
             subTitle: '设置键鼠操作的延迟',
+            content: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 400,
+                      height: 34,
+                      child: TextBox(
+                        placeholder: '搜索延迟',
+                        style: TextStyle(fontFamily: fontFamily),
+                        onChanged: (value) =>
+                            model.searchDisplayedDelayConfigItems(value),
+                      ),
+                    )
+                  ],
+                ),
+                ListView.separated(
+                  separatorBuilder: (context, index) => Container(
+                    height: 1,
+                    color: Color(0xFF666666),
+                  ),
+                  itemCount: model.displayedDelayConfigItems.length,
+                  itemBuilder: (context, index) {
+                    final item = model.displayedDelayConfigItems[index];
+                    return DelayConfigRow(
+                      item: item,
+                      lightText: model.lightText,
+                    );
+                  },
+                  shrinkWrap: true,
+                ),
+              ],
+            ),
           ),
           IconCard(
             icon: Icons.pin_drop,

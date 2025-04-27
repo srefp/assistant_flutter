@@ -4,7 +4,11 @@ import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:flutter_auto_gui_windows/flutter_auto_gui_windows.dart';
 
+import '../config/auto_tp_config.dart';
+
 final _api = FlutterAutoGuiWindows();
+
+bool allowTpc = true;
 
 /// 传送确认
 /// tpc('anchor', [12345, 12345]);
@@ -15,6 +19,13 @@ final _api = FlutterAutoGuiWindows();
 ///
 /// 默认XButton2会输出tpc('slow', [12345, 12345]);，执行两个延迟90ms的单击操作。
 void tpc() async {
+  if (!allowTpc) {
+    return;
+  }
+  allowTpc = false;
+  Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcCooldown()))
+      .then((value) => allowTpc = true);
+
   // 获取当前鼠标位置
   var currentPos = await _api.position();
 
@@ -22,12 +33,14 @@ void tpc() async {
   var point = RecordConfig.to.getConfirmPosition();
   var res = KeyMouseUtil.physicalPos(point);
   await _api.moveTo(point: Point(res[0], res[1]));
-  await Future.delayed(Duration(milliseconds: 10));
+  await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
   await _api.click(clicks: 1);
-  await Future.delayed(Duration(milliseconds: 80));
+  await Future.delayed(
+      Duration(milliseconds: AutoTpConfig.to.getTpcRetryDelay()));
   await _api.click(clicks: 1);
 
-  await Future.delayed(Duration(milliseconds: 30));
+  await Future.delayed(
+      Duration(milliseconds: AutoTpConfig.to.getTpcBackDelay()));
   // 复位
   await _api.moveTo(point: currentPos!);
 
