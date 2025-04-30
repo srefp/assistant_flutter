@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/delay_config_row.dart';
@@ -7,7 +8,7 @@ import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/util/asset_loader.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Scrollbar;
 import 'package:provider/provider.dart';
 
 import '../components/coords_config_row.dart';
@@ -53,6 +54,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
 
     return Consumer<AutoTpModel>(builder: (context, model, child) {
       return ListView(
+        controller: model.scrollController,
         padding: EdgeInsets.all(20),
         children: [
           WinText(
@@ -80,6 +82,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             ),
             content: ListView(
               shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
               children: [
                 Row(
                   children: [
@@ -195,18 +198,19 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     ],
                   ),
                 ),
-                divider,
-                ListView.separated(
-                  separatorBuilder: (context, index) => divider,
-                  itemCount: model.displayedDelayConfigItems.length,
-                  itemBuilder: (context, index) {
-                    final item = model.displayedDelayConfigItems[index];
-                    return DelayConfigRow(
-                      item: item,
-                      lightText: model.delayLightText,
-                    );
-                  },
-                  shrinkWrap: true,
+                Column(
+                  children: [
+                    for (var item in model.displayedDelayConfigItems)
+                      Column(
+                        children: [
+                          divider,
+                          DelayConfigRow(
+                            item: item,
+                            lightText: model.delayLightText,
+                          )
+                        ],
+                      )
+                  ],
                 ),
               ],
             ),
@@ -235,18 +239,19 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     ],
                   ),
                 ),
-                divider,
-                ListView.separated(
-                  separatorBuilder: (context, index) => divider,
-                  itemCount: model.displayedCoordsConfigItems.length,
-                  itemBuilder: (context, index) {
-                    final item = model.displayedCoordsConfigItems[index];
-                    return CoordsConfigRow(
-                      item: item,
-                      lightText: model.coordsLightText,
-                    );
-                  },
-                  shrinkWrap: true,
+                Column(
+                  children: [
+                    for (var item in model.displayedCoordsConfigItems)
+                      Column(
+                        children: [
+                          divider,
+                          CoordsConfigRow(
+                            item: item,
+                            lightText: model.coordsLightText,
+                          )
+                        ],
+                      )
+                  ],
                 ),
               ],
             ),

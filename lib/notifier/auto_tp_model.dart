@@ -276,6 +276,8 @@ class AutoTpModel extends ChangeNotifier {
   var displayedCoordsConfigItems = coordsConfigItems;
   final coordsSearchController = TextEditingController();
 
+  final scrollController = ScrollController();
+
   void searchDisplayedCoordsConfigItems(String searchValue) {
     coordsLightText = searchValue;
     if (searchValue.isEmpty) {
