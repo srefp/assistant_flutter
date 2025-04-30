@@ -40,7 +40,7 @@ class TitleWithSub extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w200,
-                  color: Color(0xFF666666),
+                  color: Color(0xFFAAAAAA),
                   fontFamily: fontFamily,
                 ),
                 lightText: lightText,
