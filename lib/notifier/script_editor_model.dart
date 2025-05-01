@@ -88,14 +88,12 @@ class ScriptEditorModel with ChangeNotifier {
       WindowsApp.logModel.info(params['info']);
     });
     jsRuntime.onMessage('click', (params) async {
-      return KeyMouseUtil.clickAtPoint(
+      await KeyMouseUtil.clickAtPoint(
           convertDynamicListToIntList(params['coords']), params['delay']);
     });
-    jsRuntime.onMessage('press', (params) async {
-
-    });
+    jsRuntime.onMessage('press', (params) async {});
     jsRuntime.onMessage('wait', (param) async {
-      return await Future.delayed(Duration(milliseconds: param));
+      await Future.delayed(Duration(milliseconds: param));
     });
 
     directories = loadDirectories(ScriptEditorModel.directoryPath);
@@ -150,20 +148,19 @@ class ScriptEditorModel with ChangeNotifier {
       code = controller.text;
     }
 
-    // 将code种的函数添加await
+    // 将code中的异步函数添加await
     for (var key in keys) {
       code = code.replaceAll('$key(', 'await $key(');
     }
 
-    print(code);
-
-    code = '''
-    (async function () { 
+    JsEvalResult result = await jsRuntime.evaluateAsync('''
     $jsFunction
+    (async function() {
     $code
     })();
-    ''';
-    await jsRuntime.evaluateAsync(code);
+    ''');
+    jsRuntime.executePendingJob();
+    await jsRuntime.handlePromise(result);
 
     isRunning = false;
     notifyListeners();

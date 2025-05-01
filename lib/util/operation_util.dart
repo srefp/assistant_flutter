@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 /// 防抖
 Function(dynamic) debounce(void Function(dynamic) fn, {int seconds = 1}) {
@@ -14,12 +15,12 @@ Function(dynamic) debounce(void Function(dynamic) fn, {int seconds = 1}) {
 }
 
 /// 节流
-Function(int) throttle(Future Function(int) func) {
+Function() throttle(Future Function() func) {
   bool enable = true;
-  return (int index) {
+  return () {
     if (enable) {
       enable = false;
-      func(index).then((_) {
+      func().then((_) {
         enable = true;
       });
     }
