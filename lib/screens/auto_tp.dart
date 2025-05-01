@@ -54,16 +54,16 @@ class _AutoTpPageState extends State<AutoTpPage> {
     return Consumer<AutoTpModel>(builder: (context, model, child) {
       return CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: WinText(
               '自动传送',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: SizedBox(height: 16),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.play_arrow_rounded,
               title: '耕地机，启动！',
@@ -92,7 +92,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         child: TitleWithSub(
                             title: '路线文件夹',
                             subTitle:
-                            '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
+                                '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
                       ),
                       SizedBox(
                         width: 12,
@@ -121,7 +121,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.rocket_launch_rounded,
               title: '自动传送',
@@ -144,7 +144,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.gamepad_outlined,
               title: '游戏键位',
@@ -170,21 +170,21 @@ class _AutoTpPageState extends State<AutoTpPage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.cases_rounded,
               title: '其他辅助',
               subTitle: '其他辅助功能',
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.fastfood,
               title: '一键吃药',
               subTitle: '自动吃预设的食物',
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.access_time_outlined,
               title: '延迟设置',
@@ -226,7 +226,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          CustomSliverBox(
             child: IconCard(
               icon: Icons.pin_drop,
               title: '关键位置标点',
@@ -271,5 +271,21 @@ class _AutoTpPageState extends State<AutoTpPage> {
         ],
       );
     });
+  }
+}
+
+class CustomSliverBox extends StatelessWidget {
+  final Widget child;
+
+  const CustomSliverBox({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverToBoxAdapter(
+        child: child,
+      ),
+    );
   }
 }
