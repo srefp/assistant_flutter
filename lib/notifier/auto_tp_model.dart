@@ -1,3 +1,4 @@
+import 'package:assistant/components/dialog.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../components/coords_config_row.dart';
@@ -6,6 +7,7 @@ import '../config/auto_tp_config.dart';
 import '../manager/screen_manager.dart';
 import '../model/tp_point.dart';
 import '../util/search_utils.dart';
+import '../win32/game_listen.dart';
 import '../win32/key_listen.dart';
 import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
@@ -311,15 +313,21 @@ class AutoTpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void start() {
+  void start(BuildContext context) {
+    ScreenManager.instance.refreshWindowHandle();
+    int? hWnd = ScreenManager.instance.hWnd;
+
+    if (hWnd == 0) {
+      dialog(context, title: '错误', content: '游戏窗口未启动!');
+      return;
+    }
+
     isRunning = true;
     startKeyboardHook();
     startMouseHook();
-    ScreenManager.instance.refreshWindowHandle();
-    int? hWnd = ScreenManager.instance.hWnd;
-    if (hWnd != 0) {
-      setForegroundWindow(hWnd);
-    }
+
+    setForegroundWindow(hWnd);
+    detectWindow();
 
     notifyListeners();
   }

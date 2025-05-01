@@ -70,10 +70,10 @@ class ScriptEditor extends StatelessWidget {
                 SizedBox(
                   height: 34,
                   child: ButtonWithIcon(
-                    icon: Icons.play_arrow,
-                    text: '运行',
+                    icon: model.isRunning ? Icons.stop : Icons.play_arrow,
+                    text: model.isRunning ? '停止' : '运行',
                     onPressed: () {
-                      model.runJs();
+                      model.isRunning ? model.stopJs() : model.runJs();
                     },
                   ),
                 ),

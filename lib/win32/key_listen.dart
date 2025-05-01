@@ -133,11 +133,6 @@ void simulateMouseMove(String key) async {
   await KeyMouseUtil.moveR3D(distance, 10, 5);
 }
 
-void simulateConfirmOperation() async {
-  final confirmPosition = RecordConfig.to.getConfirmPosition();
-  await KeyMouseUtil.clickAtPoint(confirmPosition);
-}
-
 final threadProc = SetListenCallback((lpParam) {
   final msg = calloc<MSG>();
   while (GetMessage(msg, NULL, 0, 0) != 0) {
@@ -180,7 +175,7 @@ void startKeyboardHook() async {
   // 必须运行消息循环
   final msg = calloc<MSG>();
   await Future.doWhile(() async {
-    await Future.delayed(const Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 2));
     while (
         PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
       TranslateMessage(msg);

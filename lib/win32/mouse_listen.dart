@@ -204,7 +204,7 @@ void startMouseHook() async {
   // 非阻塞消息循环（与键盘监听相同）
   final msg = calloc<MSG>();
   await Future.doWhile(() async {
-    await Future.delayed(const Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 2));
     while (
         PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
       TranslateMessage(msg);

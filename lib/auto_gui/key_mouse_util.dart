@@ -85,10 +85,11 @@ class KeyMouseUtil {
     await Simulation.sendInput.mouse.leftButtonClick();
   }
 
-  static Future<void> clickAtPoint(List<int> point) async {
+  static Future<void> clickAtPoint(List<int> point, int delay) async {
     var res = physicalPos(point);
     await Simulation.sendInput.mouse.move(res);
     await Simulation.sendInput.mouse.leftButtonClick();
+    return await Future.delayed(Duration(milliseconds: delay));
   }
 
   static Future<void> clickRight() async {
@@ -317,9 +318,5 @@ class KeyMouseUtil {
     List<int> point = getMousePos();
     List<int> virtualPos = getVirtualPos(point);
     showToast('已复制坐标: ${virtualPos[0]}, ${virtualPos[1]}');
-  }
-
-  static void press(param) {
-
   }
 }

@@ -13,6 +13,46 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
+import '../manager/screen_manager.dart';
+import '../util/data_converter.dart';
+import '../win32/window.dart';
+
+const tp = "tp";
+const tip = "tip";
+const wait = "wait";
+const move = "move";
+const moveR = "moveR";
+const moveR3D = "moveR3D";
+const drag = "drag";
+const mDown = "mDown";
+const mUp = "mUp";
+const click = "click";
+const kDown = "kDown";
+const kUp = "kUp";
+const press = "press";
+const cp = "cp";
+const wheel = "wheel";
+const openMap = "openMap";
+
+const keys = [
+  tp,
+  tip,
+  wait,
+  move,
+  moveR,
+  moveR3D,
+  drag,
+  mDown,
+  mUp,
+  click,
+  kDown,
+  kUp,
+  press,
+  cp,
+  wheel,
+  openMap
+];
+
 class ScriptEditorModel with ChangeNotifier {
   static final String directoryPath =
       'D:/srefp/file_management/data/flutter_assets/assets/routes';
@@ -47,15 +87,12 @@ class ScriptEditorModel with ChangeNotifier {
     jsRuntime.onMessage('log', (params) {
       WindowsApp.logModel.info(params['info']);
     });
-    jsRuntime.onMessage('click', (params) {
-      if (params['coords'] != null) {
-        KeyMouseUtil.clickAtPoint(params['coords']);
-      }
+    jsRuntime.onMessage('click', (params) async {
+      return KeyMouseUtil.clickAtPoint(
+          convertDynamicListToIntList(params['coords']), params['delay']);
     });
-    jsRuntime.onMessage('press', (params) {
-      if (params['coords']!= null) {
-        KeyMouseUtil.press(params['coords']);
-      }
+    jsRuntime.onMessage('press', (params) async {
+
     });
     jsRuntime.onMessage('wait', (param) async {
       return await Future.delayed(Duration(milliseconds: param));
@@ -96,17 +133,45 @@ class ScriptEditorModel with ChangeNotifier {
     jsFunction = await rootBundle.loadString('assets/js/func.js');
   }
 
+  bool isRunning = false;
+
   /// 运行js代码
-  void runJs() {
+  void runJs() async {
+    isRunning = true;
+    notifyListeners();
+
+    ScreenManager.instance.refreshWindowHandle();
+    int? hWnd = ScreenManager.instance.hWnd;
+    if (hWnd != 0) {
+      setForegroundWindow(hWnd);
+    }
     String code = controller.selectedText;
     if (code.isEmpty) {
       code = controller.text;
     }
+
+    // 将code种的函数添加await
+    for (var key in keys) {
+      code = code.replaceAll('$key(', 'await $key(');
+    }
+
+    print(code);
+
     code = '''
+    (async function () { 
     $jsFunction
     $code
+    })();
     ''';
-    jsRuntime.evaluate(code);
+    await jsRuntime.evaluateAsync(code);
+
+    isRunning = false;
+    notifyListeners();
+  }
+
+  stopJs() {
+    isRunning = false;
+    notifyListeners();
   }
 
   /// 选择目录
@@ -192,7 +257,6 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 保存文件
   saveFile(String text) {
-    print('保存文件了');
     File(join(directoryPath, selectedDir!, selectedFile!))
         .writeAsStringSync(text);
     isUnsaved = false;

@@ -77,7 +77,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     if (model.isRunning) {
                       model.stop();
                     } else {
-                      model.start();
+                      model.start(context);
                     }
                   },
                 ),

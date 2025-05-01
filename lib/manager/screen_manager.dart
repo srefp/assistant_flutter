@@ -16,14 +16,18 @@ class ScreenManager {
 
   int hWnd = 0;
 
+  /// 判断窗口是否存在
+  bool isWindowExist() {
+    return hWnd != 0;
+  }
+
   refreshWindowHandle() {
     final tasks = TaskManager.tasks;
     hWnd = findWindowHandle(tasks);
   }
 
   /// 判断游戏窗口是否置顶
-  bool isGameActive()
-  {
+  bool isGameActive() {
     var hWnd = GetForegroundWindow();
     return hWnd == ScreenManager.instance.hWnd;
   }
