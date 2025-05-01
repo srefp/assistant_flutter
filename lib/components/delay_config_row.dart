@@ -5,13 +5,13 @@ import '../config/auto_tp_config.dart';
 
 typedef ValueCallback = int Function();
 
-class DelayConfigItem {
+class IntConfigItem {
   final String title;
   final String subTitle;
   final String valueKey;
   final ValueCallback valueCallback;
 
-  DelayConfigItem({
+  IntConfigItem({
     required this.title,
     required this.subTitle,
     required this.valueKey,
@@ -19,11 +19,11 @@ class DelayConfigItem {
   });
 }
 
-class DelayConfigRow extends StatelessWidget {
-  final DelayConfigItem item;
+class IntConfigRow extends StatelessWidget {
+  final IntConfigItem item;
   final String lightText;
 
-  const DelayConfigRow({
+  const IntConfigRow({
     super.key,
     required this.item,
     this.lightText = '',

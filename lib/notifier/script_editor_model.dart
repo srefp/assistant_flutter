@@ -8,50 +8,14 @@ import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_js/flutter_js.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../manager/screen_manager.dart';
 import '../util/data_converter.dart';
+import '../util/js_executor.dart';
 import '../win32/window.dart';
-
-const tp = "tp";
-const tip = "tip";
-const wait = "wait";
-const move = "move";
-const moveR = "moveR";
-const moveR3D = "moveR3D";
-const drag = "drag";
-const mDown = "mDown";
-const mUp = "mUp";
-const click = "click";
-const kDown = "kDown";
-const kUp = "kUp";
-const press = "press";
-const cp = "cp";
-const wheel = "wheel";
-const openMap = "openMap";
-
-const keys = [
-  tp,
-  tip,
-  wait,
-  move,
-  moveR,
-  moveR3D,
-  drag,
-  mDown,
-  mUp,
-  click,
-  kDown,
-  kUp,
-  press,
-  cp,
-  wheel,
-  openMap
-];
 
 class ScriptEditorModel with ChangeNotifier {
   static final String directoryPath =
@@ -72,18 +36,11 @@ class ScriptEditorModel with ChangeNotifier {
   /// 文件是否修改且未保存
   bool isUnsaved = false;
 
-  /// js运行时
-  late JavascriptRuntime jsRuntime;
-
-  /// js函数
-  late String jsFunction;
-
   late CodeLineEditingController controller;
   late Function(dynamic) saveFileContent;
   List<String> directories = [];
 
   ScriptEditorModel() {
-    jsRuntime = getJavascriptRuntime();
     jsRuntime.onMessage('log', (params) {
       WindowsApp.logModel.info(params['info']);
     });
@@ -149,18 +106,7 @@ class ScriptEditorModel with ChangeNotifier {
     }
 
     // 将code中的异步函数添加await
-    for (var key in keys) {
-      code = code.replaceAll('$key(', 'await $key(');
-    }
-
-    JsEvalResult result = await jsRuntime.evaluateAsync('''
-    $jsFunction
-    (async function() {
-    $code
-    })();
-    ''');
-    jsRuntime.executePendingJob();
-    await jsRuntime.handlePromise(result);
+    await runScript(code);
 
     isRunning = false;
     notifyListeners();

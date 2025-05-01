@@ -5,13 +5,13 @@ import '../config/auto_tp_config.dart';
 
 typedef ValueCallback = String Function();
 
-class CoordsConfigItem {
+class StringConfigItem {
   final String title;
   final String subTitle;
   final String valueKey;
   final ValueCallback valueCallback;
 
-  CoordsConfigItem({
+  StringConfigItem({
     required this.title,
     required this.subTitle,
     required this.valueKey,
@@ -19,11 +19,11 @@ class CoordsConfigItem {
   });
 }
 
-class CoordsConfigRow extends StatelessWidget {
-  final CoordsConfigItem item;
+class StringConfigRow extends StatelessWidget {
+  final StringConfigItem item;
   final String lightText;
 
-  const CoordsConfigRow({
+  const StringConfigRow({
     super.key,
     required this.item,
     this.lightText = '',

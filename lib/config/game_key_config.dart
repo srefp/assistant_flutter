@@ -1,0 +1,15 @@
+import 'package:assistant/config/config_storage.dart';
+
+class GameKeyConfig with ConfigStorage {
+  static final GameKeyConfig to = GameKeyConfig();
+
+  static final String keyOpenMapKey = 'openMapKey';
+  static final String keyOpenBookKey = 'openBookKey';
+  static final String keyOnlineKey = 'onlineKey';
+
+  String getOpenMapKey() => box.read(keyOpenMapKey) ?? 'm';
+
+  String getOpenBookKey() => box.read(keyOpenBookKey) ?? 'f1';
+
+  String getOnlineKey() => box.read(keyOnlineKey) ?? 'f2';
+}

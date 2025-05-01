@@ -2,27 +2,7 @@ import 'config_storage.dart';
 
 class AutoTpConfig with ConfigStorage {
   static AutoTpConfig to = AutoTpConfig();
-  static const continuousMode = true;
-  static const openMapKey = 'm';
-  static const openBagKey = 'b';
-  static const qKey = 'q';
-  static const fKey = 'f';
-  static const bookKey = 'F1';
-  static const playersKey = 'F2';
-  static const tpCooldown = 3000;
-  static const halfTpCooldown = 20;
-  static const halfTpSleep = 90;
-  static const halfTpConfirmSleep = 60;
-  static const eatFoodCooldown = 20;
-  static const runSleep = 50;
-  static const qSleep = 10;
-  static const routeDir = "精英";
-  static const route = "-6";
-  static const autoFoodEnabled = true;
-  static const autoTpEnabled = true;
-  static const tpMode = "优先开图";
-  static const currentPositionName = "不在路线中";
-  static const globalQm = false;
+  static const keyAutoTpEnabled = "autoTpEnabled";
   static const keyWindowTitles = "windowTitles";
   static const keyCustomWindowTitle = "customWindowTitle";
   static const keyTpcDelay = "tpcDelay";
@@ -63,6 +43,14 @@ class AutoTpConfig with ConfigStorage {
   static const keyWheelIntervalDelay = "wheelIntervalDelay";
   static const keyWheelCompleteDelay = "wheelCompleteDelay";
   static const keyMultiSelectDelay = "multiSelectDelay";
+  static const keyMultiSelectFlowerDelay = "multiSelectFlowerDelay";
+  static const keyMultiSelectFlowerAfterDelay = "multiSelectFlowerAfterDelay";
+  static const keyFirstOpenBagDelay = "firstOpenBagDelay";
+  static const keyOpenBagDelay = "openBagDelay";
+  static const keyDragMoveStepDelay = "dragMoveStepDelay";
+  static const keyDragReleaseMouseDelay = "dragReleaseMouseDelay";
+  static const keyBookDragPixelNum = "bookDragPixelNum";
+  static const keyDragPixelNum = "dragPixelNum";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -119,6 +107,25 @@ class AutoTpConfig with ConfigStorage {
   int getWheelCompleteDelay() => box.read(keyWheelCompleteDelay) ?? 100;
 
   int getMultiSelectDelay() => box.read(keyMultiSelectDelay) ?? 720;
+
+  int getMultiSelectFlowerDelay() => box.read(keyMultiSelectFlowerDelay) ?? 750;
+
+  int getMultiSelectFlowerAfterDelay() =>
+      box.read(keyMultiSelectFlowerAfterDelay) ?? 160;
+
+  bool getAutoTpEnabled() => box.read(keyAutoTpEnabled) ?? true;
+
+  int getFirstOpenBagDelay() => box.read(keyFirstOpenBagDelay) ?? 700;
+
+  int getOpenBagDelay() => box.read(keyOpenBagDelay) ?? 500;
+
+  int getDragMoveStepDelay() => box.read(keyDragMoveStepDelay) ?? 60;
+
+  int getDragReleaseMouseDelay() => box.read(keyDragReleaseMouseDelay) ?? 60;
+
+  int getBookDragPixelNum() => box.read(keyBookDragPixelNum) ?? 5;
+
+  int getDragPixelNum() => box.read(keyDragPixelNum) ?? 20;
 
   String getCrusadePos() => box.read(keyCrusadePos) ?? "9884, 33238";
 

@@ -149,22 +149,38 @@ class _AutoTpPageState extends State<AutoTpPage> {
               icon: Icons.gamepad_outlined,
               title: '游戏键位',
               subTitle: '根据游戏键位修改耕地机键位，键位名称为英文全小写',
-              content: Flex(
-                direction: Axis.horizontal,
+              content: Column(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: TitleWithSub(
-                      title: '打开地图',
-                      subTitle: '打开地图后自动传送',
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 400,
+                          height: 34,
+                          child: TextBox(
+                            controller: model.gameKeySearchController,
+                            placeholder: '搜索键位',
+                            style: TextStyle(fontFamily: fontFamily),
+                            onChanged: (value) =>
+                                model.searchGameKeyConfigItems(value),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    width: 200,
-                    height: 46,
-                    child: TextBox(
-                      onChanged: (value) {},
-                    ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedGameKeyConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedGameKeyConfigItems[index];
+                      return StringConfigRow(
+                        item: item,
+                        lightText: model.gameKeyLightText,
+                      );
+                    },
+                    shrinkWrap: true,
                   ),
                 ],
               ),
@@ -215,7 +231,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedDelayConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedDelayConfigItems[index];
-                      return DelayConfigRow(
+                      return IntConfigRow(
                         item: item,
                         lightText: model.delayLightText,
                       );
@@ -257,7 +273,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedCoordsConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedCoordsConfigItems[index];
-                      return CoordsConfigRow(
+                      return StringConfigRow(
                         item: item,
                         lightText: model.coordsLightText,
                       );
