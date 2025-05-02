@@ -278,7 +278,7 @@ class AutoTpModel extends ChangeNotifier {
 
   AutoTpModel() {
     print('维护消息泵');
-    createMessageThread();
+    MessagePump.start();
   }
 
   var delayLightText = '';
