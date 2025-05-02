@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:isolate';
 
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
@@ -18,6 +19,19 @@ void messagePump() async {
     return true;
   });
   free(msg);
+}
+
+int threadHandle = 0;
+
+void createMessageThread() {
+  threadHandle = CreateThread(
+      nullptr,
+      0,
+      threadProc,
+      nullptr,
+      0,
+      nullptr
+  );
 }
 
 final threadProc = SetListenCallback((lpParam) {
