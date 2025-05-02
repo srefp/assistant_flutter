@@ -1,15 +1,113 @@
+import 'dart:ffi';
+
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:win32/win32.dart';
 
+import '../app/windows_app.dart';
 import '../win32/models.dart';
 import '../win32/task_manager.dart';
+
+// 窗口事件常量
+const EVENT_SYSTEM_MOVESIZEEND = 0x000B;
+const EVENT_OBJECT_DESTROY = 0x8001;
+const WINEVENT_OUTOFCONTEXT = 0x0000;
+const WINEVENT_SKIPOWNPROCESS = 0x0002;
+
+// 添加以下函数声明
+final _user32 = DynamicLibrary.open('user32.dll');
+
+typedef WinEventProc = Void Function(
+  IntPtr hWinEventHook,
+  Uint32 event,
+  IntPtr hwnd,
+  Int32 idObject,
+  Int32 idChild,
+  Uint32 dwEventThread,
+  Uint32 dwmsEventTime,
+);
+typedef WinEventProcDart = void Function(
+  int hWinEventHook,
+  int event,
+  int hwnd,
+  int idObject,
+  int idChild,
+  int dwEventThread,
+  int dwmsEventTime,
+);
+
+final SetWinEventHook = _user32.lookupFunction<
+    IntPtr Function(
+        Uint32 eventMin,
+        Uint32 eventMax,
+        IntPtr hmodWinEventProc,
+        Pointer<NativeFunction<WinEventProc>> lpfnWinEventProc,
+        Uint32 idProcess,
+        Uint32 idThread,
+        Uint32 dwFlags),
+    int Function(
+        int eventMin,
+        int eventMax,
+        int hmodWinEventProc,
+        Pointer<NativeFunction<WinEventProc>> lpfnWinEventProc,
+        int idProcess,
+        int idThread,
+        int dwFlags)>('SetWinEventHook');
+
+final UnhookWinEvent = _user32.lookupFunction<
+    Int32 Function(IntPtr hWinEventHook),
+    int Function(int hWinEventHook)>('UnhookWinEvent');
 
 class ScreenManager {
   static ScreenManager? _instance;
 
+  int _hook = 0; // 添加事件钩子引用
+
   static ScreenManager get instance {
     _instance ??= ScreenManager._internal();
     return _instance!;
+  }
+
+  // 添加窗口事件监听
+  void startListen() {
+    _hook = SetWinEventHook(
+        EVENT_SYSTEM_MOVESIZEEND,
+        // 窗口移动/调整大小事件
+        EVENT_OBJECT_DESTROY,
+        // 窗口销毁事件
+        0,
+        Pointer.fromFunction(_winEventProc),
+        0,
+        0,
+        WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+  }
+
+  // 停止监听
+  void stopListen() {
+    if (_hook != 0) {
+      UnhookWinEvent(_hook);
+      _hook = 0;
+    }
+  }
+
+  // 窗口事件回调处理
+  static void _winEventProc(int hWinEventHook, int event, int hwnd,
+      int idObject, int idChild, int dwEventThread, int dwmsEventTime) {
+    final instance = ScreenManager.instance;
+    // 仅处理目标窗口的事件
+    if (hwnd != instance.hWnd) return;
+
+    switch (event) {
+      case EVENT_SYSTEM_MOVESIZEEND:
+        instance.refreshWindowHandle();
+        print('窗口移动了');
+        // 触发窗口移动后的处理
+        break;
+      case EVENT_OBJECT_DESTROY:
+        instance.hWnd = 0; // 窗口已关闭
+        // 触发窗口关闭后的处理
+        WindowsApp.autoTpModel.stop();
+        break;
+    }
   }
 
   ScreenManager._internal();
@@ -24,6 +122,10 @@ class ScreenManager {
   refreshWindowHandle() {
     final tasks = TaskManager.tasks;
     hWnd = findWindowHandle(tasks);
+    if (hWnd == 0) {
+      // 添加窗口丢失处理
+      stopListen();
+    }
   }
 
   /// 判断游戏窗口是否置顶

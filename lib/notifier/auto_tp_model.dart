@@ -372,7 +372,8 @@ class AutoTpModel extends ChangeNotifier {
     startMouseHook();
 
     setForegroundWindow(hWnd);
-    detectWindow();
+
+    ScreenManager.instance.startListen();
 
     notifyListeners();
   }
@@ -381,6 +382,7 @@ class AutoTpModel extends ChangeNotifier {
     isRunning = false;
     stopKeyboardHook();
     stopMouseHook();
+    ScreenManager.instance.stopListen();
 
     notifyListeners();
   }
