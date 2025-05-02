@@ -133,16 +133,6 @@ void simulateMouseMove(String key) async {
   await KeyMouseUtil.moveR3D(distance, 10, 5);
 }
 
-final threadProc = SetListenCallback((lpParam) {
-  final msg = calloc<MSG>();
-  while (GetMessage(msg, NULL, 0, 0) != 0) {
-    TranslateMessage(msg);
-    DispatchMessage(msg);
-  }
-  free(msg);
-  return 0;
-});
-
 /// 关闭键盘监听
 void stopKeyboardHook() {
   if (keyboardHook != 0) {
@@ -171,19 +161,6 @@ void startKeyboardHook() async {
     WindowsApp.logModel.append('钩子安装失败: ${GetLastError()}');
     return;
   }
-
-  // 必须运行消息循环
-  final msg = calloc<MSG>();
-  await Future.doWhile(() async {
-    await Future.delayed(const Duration(milliseconds: 2));
-    while (
-        PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
-      TranslateMessage(msg);
-      DispatchMessage(msg);
-    }
-    return true;
-  });
-  free(msg);
 }
 
 // 键码映射函数

@@ -8,8 +8,8 @@ import '../config/auto_tp_config.dart';
 import '../manager/screen_manager.dart';
 import '../model/tp_point.dart';
 import '../util/search_utils.dart';
-import '../win32/game_listen.dart';
 import '../win32/key_listen.dart';
+import '../win32/message_pump.dart';
 import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
 
@@ -275,6 +275,11 @@ class AutoTpModel extends ChangeNotifier {
   int currentRouteIndex = 0;
   List<TpPoint> tpPoints = [];
   bool isRunning = false;
+
+  AutoTpModel() {
+    print('维护消息泵');
+    messagePump();
+  }
 
   var delayLightText = '';
   var displayedDelayConfigItems = delayConfigItems;

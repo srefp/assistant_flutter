@@ -9,7 +9,7 @@ class HotkeyConfig with ConfigStorage {
   static final String keyTpPrev = 'tpPrev';
   static final String keyQmTpNext = 'qmTpNext';
 
-  String getHalfTp() => box.read(keyHalfTp) ?? 'xbutton1';
+  String getHalfTp() => box.read(keyHalfTp) ?? 'xbutton2';
 
   String getEatFood() => box.read(keyEatFood) ?? 'tab';
 

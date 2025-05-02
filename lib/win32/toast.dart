@@ -79,35 +79,6 @@ Future<void> showToast(String message, {int delay = 3000}) async {
 
   // 设置定时器
   SetTimer(hWnd, timerId, delay, nullptr);
-
-  // 异步消息循环
-  final msg = calloc<MSG>();
-
-  try {
-    // 异步等待窗口关闭
-    await Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      while (PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) !=
-          0) {
-        TranslateMessage(msg);
-        DispatchMessage(msg);
-      }
-
-      // 手动设置鼠标光标为正常箭头
-      SetCursor(LoadCursor(NULL, IDC_ARROW));
-      return IsWindow(hWnd) != 0;
-    });
-  } finally {
-    // 确保资源在任何情况下都被释放
-    if (IsWindow(hWnd) != 0) {
-      DestroyWindow(hWnd);
-    }
-    KillTimer(hWnd, timerId);
-    calloc.free(msg);
-    calloc.free(wc);
-    calloc.free(point);
-  }
 }
 
 String? message;

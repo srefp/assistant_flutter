@@ -2,17 +2,17 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/util/tpc.dart';
-import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../manager/screen_manager.dart';
 import '../notifier/log_model.dart';
+import '../util/hotkey_util.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
 
-Pointer<NativeFunction<HOOKPROC>> SetCallback(HookProc callback) {
+Pointer<NativeFunction<HOOKPROC>> setCallback(HookProc callback) {
   return NativeCallable<HOOKPROC>.isolateLocal(callback, exceptionalReturn: 0)
       .nativeFunction;
 }
@@ -22,12 +22,12 @@ int getXButtonWParam(int wParam) {
   return (wParam >> 16) & 0xFFFF;
 }
 
-const XBUTTON1 = 0x0001;
-const XBUTTON2 = 0x0002;
+const xbutton1 = 0x0001;
+const xbutton2 = 0x0002;
 
 // 全局钩子变量
 int mouseHook = 0;
-final hookProcPointer = SetCallback((nCode, wParam, lParam) {
+final hookProcPointer = setCallback((nCode, wParam, lParam) {
   final result = CallNextHookEx(mouseHook, nCode, wParam, lParam);
 
   // 过滤鼠标移动事件
@@ -59,23 +59,13 @@ final hookProcPointer = SetCallback((nCode, wParam, lParam) {
   return result;
 });
 
-/// 监听鼠标
-void listenMouse(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
-  final mouseData = mouseStruct.ref.mouseData;
-  final xButton = (mouseData >> 16) & 0xFFFF;
-
-  if (xButton == XBUTTON2 && wParam == WM_XBUTTONDOWN) {
-    tpc();
-  }
-}
-
 void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
   final mouseData = mouseStruct.ref.mouseData;
   final xButton = (mouseData >> 16) & 0xFFFF; // 高位字
   List<int> coords =
       KeyMouseUtil.logicalPos([mouseStruct.ref.pt.x, mouseStruct.ref.pt.y]);
 
-  if (xButton == XBUTTON2 && wParam == WM_XBUTTONDOWN) {
+  if (xButton == xbutton2 && wParam == WM_XBUTTONDOWN) {
     tpc();
 
     WindowsApp.logModel.appendOperation(Operation(
@@ -200,17 +190,4 @@ void startMouseHook() async {
     WindowsApp.logModel.append('鼠标钩子安装失败: ${GetLastError()}');
     return;
   }
-
-  // 非阻塞消息循环（与键盘监听相同）
-  final msg = calloc<MSG>();
-  await Future.doWhile(() async {
-    await Future.delayed(const Duration(milliseconds: 2));
-    while (
-        PeekMessage(msg, NULL, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0) {
-      TranslateMessage(msg);
-      DispatchMessage(msg);
-    }
-    return true;
-  });
-  free(msg);
 }
