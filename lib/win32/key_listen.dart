@@ -4,7 +4,6 @@ import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
-import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
@@ -12,12 +11,12 @@ import '../app/windows_app.dart';
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
 
-Pointer<NativeFunction<HOOKPROC>> SetCallback(HookProc callback) {
+Pointer<NativeFunction<HOOKPROC>> setCallback(HookProc callback) {
   return NativeCallable<HOOKPROC>.isolateLocal(callback, exceptionalReturn: 0)
       .nativeFunction;
 }
 
-Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> SetListenCallback(
+Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> setListenCallback(
     ListenProc callback) {
   return NativeCallable<LPTHREAD_START_ROUTINE>.isolateLocal(callback,
           exceptionalReturn: 0)
@@ -31,7 +30,7 @@ const down = 40;
 
 // 全局变量
 int keyboardHook = 0;
-final hookProcPointer = SetCallback((nCode, wParam, lParam) {
+final hookProcPointer = setCallback((nCode, wParam, lParam) {
   int res = CallNextHookEx(keyboardHook, nCode, wParam, lParam);
   if (nCode >= 0) {
     final kbdStruct = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);

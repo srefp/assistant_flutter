@@ -277,8 +277,7 @@ class AutoTpModel extends ChangeNotifier {
   bool isRunning = false;
 
   AutoTpModel() {
-    print('维护消息泵');
-    MessagePump.start();
+    messagePump();
   }
 
   var delayLightText = '';

@@ -7,8 +7,17 @@ void setSelfForeground() {
   windowManager.focus();
 }
 
+bool isWindowMinimized(int hWnd) => IsIconic(hWnd) != 0;
+
 /// 将其他窗口设置为前台窗口
 void setForegroundWindow(int hWnd) {
+  // 如果窗口最小化则先恢复
+  if (isWindowMinimized(hWnd)) {
+    ShowWindow(hWnd, SHOW_WINDOW_CMD.SW_RESTORE);
+    BringWindowToTop(hWnd);
+    UpdateWindow(hWnd);
+  }
+
   // 使用 SetForegroundWindow 函数将窗口设置为前台窗口
   SetForegroundWindow(hWnd);
 }
