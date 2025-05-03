@@ -6,4 +6,5 @@ class Routes {
   static const test = '/test';
   static const config = '/config';
   static const record = '/record';
+  static const doc = '/doc';
 }

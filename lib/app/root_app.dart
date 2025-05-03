@@ -105,6 +105,26 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
+    if (SettingConfig.to.getDocMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.doc),
+        icon: const Icon(FluentIcons.file_h_t_m_l, size: iconSize),
+        title: Text(
+          '文档',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState
+              .of(context)
+              .uri
+              .toString() != Routes.doc) {
+            context.go(Routes.doc);
+          }
+        },
+      ));
+    }
+
     if (SettingConfig.to.getTestMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.test),

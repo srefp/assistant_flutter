@@ -5,9 +5,11 @@ import 'package:assistant/components/log_view_wrapper.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
+import 'package:assistant/notifier/doc_model.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/screens/config_page.dart';
+import 'package:assistant/screens/doc_page.dart';
 import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/util/hot_key.dart';
 import 'package:dio/dio.dart';
@@ -38,6 +40,7 @@ class WindowsApp extends StatefulWidget {
   static final recordModel = ScriptRecordModel();
   static final appModel = AppModel();
   static final configModel = ConfigModel();
+  static final docModel = DocModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -107,6 +110,11 @@ class _WindowsAppState extends State<WindowsApp>
       // 键盘录制器
       ChangeNotifierProvider(
         create: (context) => WindowsApp.recordModel,
+      ),
+
+      // 文档
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.docModel,
       ),
     ];
   }
@@ -230,6 +238,9 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       /// Config
       GoRoute(
           path: Routes.config, builder: (context, state) => const ConfigPage()),
+
+      /// Doc
+      GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),
 
       /// Test
       GoRoute(path: Routes.test, builder: (context, state) => const Test()),

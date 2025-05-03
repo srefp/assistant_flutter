@@ -12,10 +12,8 @@ dialog(
       builder: (context) => ContentDialog(
             title: WinText(title),
             content: child ??
-                Container(
-                  constraints: BoxConstraints(
-                    minHeight: 50,
-                  ),
+                SizedBox(
+                  height: 50,
                   child: Column(
                     children: [
                       WinText(content),
