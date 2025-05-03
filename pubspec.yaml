@@ -78,6 +78,8 @@ dependencies:
   windows_single_instance: ^1.0.1
   opencv_core: ^1.4.1
   flutter_markdown: ^0.7.7
+  sqflite_common_ffi: ^2.2.0+1
+  sqflite: ^2.2.4+1
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +104,8 @@ flutter:
     - assets/image/logo.png
     - assets/js/func.js
     - assets/doc/operation.md
+    - assets/route/-6.lua
+    - assets/route/肉 - 兽肉.lua
   fonts:
     - family: deluge
       fonts:

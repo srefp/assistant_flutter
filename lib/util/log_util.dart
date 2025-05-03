@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:path/path.dart';
 
 import '../components/win_text.dart';
-import '../config/date_utils.dart';
+import 'date_utils.dart';
 import 'file_utils.dart';
 
 /// 日志工具

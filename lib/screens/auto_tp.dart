@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/delay_config_row.dart';
+import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
@@ -137,19 +138,49 @@ class _AutoTpPageState extends State<AutoTpPage> {
               icon: Icons.rocket_launch_rounded,
               title: '自动传送',
               subTitle: '依据路线自动传送',
-              content: Flex(
-                direction: Axis.horizontal,
+              content: Column(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: TitleWithSub(
-                      title: '路线',
-                      subTitle: '重新选择路线起始位置置零',
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: TitleWithSub(
+                          title: '路线',
+                          subTitle: '重新选择路线起始位置置零',
+                        ),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        child: HighlightComboBox(
+                          value: model.currentRoute,
+                          items: model.routeNames,
+                          onChanged: (value) {
+                            model.selectRoute(value);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  ComboboxFormField(
-                    items: [],
-                    onChanged: (value) {},
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: TitleWithSub(
+                          title: '当前位置',
+                          subTitle: '支持选择你现在所在的位置',
+                        ),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        child: HighlightComboBox(
+                          value: model.currentPos,
+                          items: model.posList,
+                          onChanged: (value) {
+                            model.selectPos(value);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

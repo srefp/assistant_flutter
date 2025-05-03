@@ -2,6 +2,8 @@ import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/dao/crud.dart';
+import 'package:assistant/model/tp_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -10,6 +12,7 @@ import 'package:window_manager/window_manager.dart';
 import '../components/coords_config_row.dart';
 import '../components/delay_config_row.dart';
 import '../config/auto_tp_config.dart';
+import '../db/tp_route_db.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../model/tp_point.dart';
@@ -345,9 +348,45 @@ class AutoTpModel extends ChangeNotifier {
   int currentRouteIndex = 0;
   List<TpPoint> tpPoints = [];
   bool isRunning = false;
+  String? currentRoute;
+  List<TpRoute> routes = [];
+  List<String> routeNames = [];
+  String currentPos = '不在路线中';
+  List<String> posList = ['不在路线中'];
 
   AutoTpModel() {
     messagePump();
+    loadRoutes();
+  }
+
+  loadRoutes() async {
+    routes =
+        (await queryDb(TpRouteDb.tableName)).map(TpRoute.fromJson).toList();
+    routeNames = routes.map((e) => e.name).toList();
+    currentRoute = AutoTpConfig.to.getCurrentRoute();
+
+    notifyListeners();
+  }
+
+  selectRoute(final String routeName) {
+    for (var element in routes) {
+      if (element.name == routeName) {
+        currentRoute = element.name;
+        tpPoints = parseTpPoints(element.content);
+        AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
+        notifyListeners();
+      }
+    }
+  }
+
+  void selectPos(String value) {
+    currentPos = value;
+    notifyListeners();
+  }
+
+  parseTpPoints(String content) {
+    print('content: $content');
+    return <TpPoint>[];
   }
 
   var delayLightText = '';
@@ -460,4 +499,5 @@ class AutoTpModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
 }

@@ -95,7 +95,6 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
               offset: Offset(0.0, size.height),
               child: Material(
                 color: Color(0xFF282828),
-                elevation: 10,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: actualHeight,
@@ -138,7 +137,6 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
-      elevation: 10,
       child: SizedBox(
         height: 34,
         child: CompositedTransformTarget(

@@ -51,6 +51,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyDragReleaseMouseDelay = "dragReleaseMouseDelay";
   static const keyBookDragPixelNum = "bookDragPixelNum";
   static const keyDragPixelNum = "dragPixelNum";
+  static const keyCurrentRoute = "currentRoute";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -158,4 +159,6 @@ class AutoTpConfig with ConfigStorage {
   String getAreaRowSpacing() => box.read(keyAreaRowSpacing) ?? "6518";
 
   String getAreaColSpacing() => box.read(keyAreaColSpacing) ?? "9969";
+
+  String? getCurrentRoute() => box.read(keyCurrentRoute);
 }

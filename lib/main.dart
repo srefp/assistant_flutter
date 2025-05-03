@@ -1,4 +1,5 @@
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
@@ -27,7 +28,7 @@ void main(List<String> args) async {
 
 /// 初始化应用
 Future<void> _initApp() async {
-   await initFileManagement();
+  await initFileManagement();
   if (!kIsWeb &&
       [
         TargetPlatform.windows,
@@ -56,6 +57,9 @@ Future<void> _initApp() async {
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
     });
+
+    // 初始化数据库
+    await initWindowsDb();
 
     await GetStorage.init();
   }

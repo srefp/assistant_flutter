@@ -4,7 +4,7 @@ import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
 import 'package:lpinyin/lpinyin.dart';
 
-import '../config/date_utils.dart';
+import '../util/date_utils.dart';
 
 /// String扩展类
 extension StringExtension on String {
