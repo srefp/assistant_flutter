@@ -1,10 +1,16 @@
 import 'package:assistant/components/dialog.dart';
+import 'package:assistant/components/win_text.dart';
+import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:intl/intl.dart';
+import 'package:tray_manager/tray_manager.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../components/coords_config_row.dart';
 import '../components/delay_config_row.dart';
 import '../config/auto_tp_config.dart';
+import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../model/tp_point.dart';
 import '../util/search_utils.dart';
@@ -268,6 +274,70 @@ final coordsConfigItems = [
     valueCallback: AutoTpConfig.to.getAreaColSpacing,
   ),
 ];
+
+showOutDate(BuildContext context) {
+  if (DateTime.now().isAfter(outDate)) {
+    dialog(context, title: '通知', content: '请下载新版本的耕地机，该版本已停止使用!');
+    Future.delayed(const Duration(seconds: 5), () {
+      windowManager.hide();
+      trayManager.destroy();
+      windowManager.destroy();
+    });
+    return;
+  } else {
+    if (!AppConfig.to.getOutDateNotificationDisabled()) {
+      dialog(
+        context,
+        title: '注意',
+        child: OutOfDateNotification(),
+      );
+    }
+  }
+}
+
+class OutOfDateNotification extends StatefulWidget {
+  const OutOfDateNotification({
+    super.key,
+  });
+
+  @override
+  State<OutOfDateNotification> createState() => _OutOfDateNotificationState();
+}
+
+class _OutOfDateNotificationState extends State<OutOfDateNotification> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 80,
+      child: Column(
+        children: [
+          WinText(
+              '该版本耕地机为预览版本，到${DateFormat('yyyy-MM-dd HH:mm:ss').format(outDate)}停止使用!'),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Checkbox(
+                checked: AppConfig.to.getOutDateNotificationDisabled(),
+                onChanged: (value) {
+                  setState(() {
+                    AppConfig.to
+                        .save(AppConfig.keyOutDateNotificationDisabled, value);
+                  });
+                },
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              WinText('不再提醒'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class AutoTpModel extends ChangeNotifier {
   String? selectedDir;

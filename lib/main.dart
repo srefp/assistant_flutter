@@ -13,6 +13,7 @@ const String innerVersion = '2025.5.1';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
+final DateTime outDate = DateTime(2025, 6, 1);
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -28,6 +28,17 @@ class _AutoTpPageState extends State<AutoTpPage> {
   int tryTimes = 0;
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 1), () {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showOutDate(context);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appTheme = context.watch<AppTheme>();
 

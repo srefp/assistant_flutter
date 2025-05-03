@@ -8,6 +8,8 @@ class AppConfig with ConfigStorage {
   static const keyCurrentApp = 'currentApp';
   static const keyFirstInstall = 'firstInstall';
 
+  static const keyOutDateNotificationDisabled = 'outDateNotificationDisabled';
+
   String getDirPath() =>
       box.read(keyDirPath) ?? join('C:', 'Program Files', 'Assistant');
 
@@ -15,4 +17,8 @@ class AppConfig with ConfigStorage {
 
   /// 是否是第一次安装
   bool get firstInstall => box.read(keyFirstInstall) ?? true;
+
+  /// 是否提醒
+  bool getOutDateNotificationDisabled() =>
+      box.read(keyOutDateNotificationDisabled) ?? false;
 }
