@@ -1,7 +1,7 @@
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/util/js_executor.dart';
 
-import '../model/tp_point.dart';
+import '../util/route_util.dart';
 
 class RouteExecutor {
   static bool tpForbidden = false;
@@ -27,5 +27,4 @@ class RouteExecutor {
       await runScript(tpPoint.script!);
     }
   }
-
 }

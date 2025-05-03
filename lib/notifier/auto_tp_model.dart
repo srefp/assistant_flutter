@@ -4,6 +4,7 @@ import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/dao/crud.dart';
 import 'package:assistant/model/tp_route.dart';
+import 'package:assistant/util/route_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -15,7 +16,6 @@ import '../config/auto_tp_config.dart';
 import '../db/tp_route_db.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
-import '../model/tp_point.dart';
 import '../util/search_utils.dart';
 import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
@@ -373,6 +373,7 @@ class AutoTpModel extends ChangeNotifier {
       if (element.name == routeName) {
         currentRoute = element.name;
         tpPoints = parseTpPoints(element.content);
+        print('tpPoints: $tpPoints');
         AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
         notifyListeners();
       }
@@ -384,9 +385,9 @@ class AutoTpModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 解析路线内容
   parseTpPoints(String content) {
-    print('content: $content');
-    return <TpPoint>[];
+    return RouteUtil.parseFile(content);
   }
 
   var delayLightText = '';

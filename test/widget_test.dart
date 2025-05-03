@@ -8,7 +8,13 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('getDeviceInfo', () async {
-  });
+  final RegExp keyValuePairRegex = RegExp(
+      r'(\w+):\s*((?:"[^"]*")|(?:\[.*?\])|(?:-?\d+(?:\.\d+)?))(?:,\s*|$)'
+  );
 
+  test('regex', () async {
+    final matches = keyValuePairRegex.allMatches("boss: [1, 2], delay: 1, name: \"hhh\", script: \"click([12345, 12345]); wait(1);\"");
+    final res = matches.expand((match) => [match[1]!, match[2]!.replaceAll('"', '')]).toList();
+    print(res);
+  });
 }
