@@ -3,6 +3,7 @@ import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/dao/crud.dart';
+import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -16,6 +17,7 @@ import '../config/auto_tp_config.dart';
 import '../db/tp_route_db.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
+import '../util/js_executor.dart';
 import '../util/search_utils.dart';
 import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
@@ -355,6 +357,9 @@ class AutoTpModel extends ChangeNotifier {
   List<String> posList = ['不在路线中'];
 
   AutoTpModel() {
+    // 加载js函数
+    loadJsFunction();
+    registerJsFunc();
     messagePump();
     loadRoutes();
   }
@@ -365,6 +370,21 @@ class AutoTpModel extends ChangeNotifier {
     routeNames = routes.map((e) => e.name).toList();
     currentRoute = AutoTpConfig.to.getCurrentRoute();
 
+    if (currentRoute != null) {
+      for (var element in routes) {
+        if (element.name == currentRoute) {
+          tpPoints = parseTpPoints(element.content);
+          posList = ['不在路线中'];
+          for (var i = 0; i < tpPoints.length; i++) {
+            posList.add(tpPoints[i].name ?? '点位${i + 1}');
+          }
+        }
+      }
+    }
+
+    if (posList.isNotEmpty) {
+      currentPos = posList[AutoTpConfig.to.getRouteIndex()];
+    }
     notifyListeners();
   }
 
@@ -373,8 +393,16 @@ class AutoTpModel extends ChangeNotifier {
       if (element.name == routeName) {
         currentRoute = element.name;
         tpPoints = parseTpPoints(element.content);
-        print('tpPoints: $tpPoints');
         AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
+        posList = ['不在路线中'];
+        for (var i = 0; i < tpPoints.length; i++) {
+          posList.add(tpPoints[i].name ?? '点位${i + 1}');
+        }
+
+        if (posList.isNotEmpty) {
+          AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, 0);
+          currentPos = posList[0];
+        }
         notifyListeners();
       }
     }
@@ -382,6 +410,7 @@ class AutoTpModel extends ChangeNotifier {
 
   void selectPos(String value) {
     currentPos = value;
+    AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, posList.indexOf(value));
     notifyListeners();
   }
 
@@ -500,5 +529,4 @@ class AutoTpModel extends ChangeNotifier {
 
     notifyListeners();
   }
-
 }

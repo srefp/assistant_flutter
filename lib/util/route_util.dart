@@ -122,7 +122,7 @@ class RouteKeys {
 
 class RouteUtil {
   static final RegExp keyValuePairRegex = RegExp(
-      r'(\w+):\s*((?:"[^"]*")|(?:\[.*?\])|(?:-?\d+(?:\.\d+)?))(?:,\s*|$)'
+      r'(\w+):\s*((?:"[^"]*")|(?:\[.*?\])|(?:-?\d+(?:\.\d+)?))'
   );
 
   static final Map<String, List<int>> bossMap = {
@@ -195,10 +195,8 @@ class RouteUtil {
 
   static List<TpPoint> parseFile(String content) {
     List<TpPoint> res = [];
-    print('content:$content');
     List<String> lines = content.split('\n');
     for (String lineItem in lines) {
-      print('lineItem:$lineItem');
       String line = lineItem.trim();
       if (line.contains('--')) {
         line = line.substring(0, line.indexOf('--')).trim();
@@ -209,14 +207,16 @@ class RouteUtil {
       }
 
       // 使用 String 的 split 方法结合正则表达式
-      final matches = keyValuePairRegex.allMatches("boss: [1, 2], delay: 1, name: \"hhh\", script: \"click([12345, 12345]); wait(1);\"");
-      final values = matches.expand((match) => [match[1]!, match[2]!.replaceAll('"', '')]).toList();
+      final matches = keyValuePairRegex.allMatches(lineItem);
+      final values = matches.expand((match) => [match[1]!, match[2]!]).toList();
       List<String> keyValues = values.where((s) => s.isNotEmpty).toList();
       int len = keyValues.length;
       TpPoint tpPoint = TpPoint();
+
       for (int index = 0; index < len; index += 2) {
         String key = keyValues[index];
         String value = keyValues[index + 1];
+
         if (key == RouteKeys.id) {
           tpPoint.id = stringToString(value);
         } else if (key == RouteKeys.boss) {

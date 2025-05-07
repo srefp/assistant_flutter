@@ -1,13 +1,16 @@
+import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/util/js_executor.dart';
+import 'package:assistant/win32/toast.dart';
 
 import '../util/route_util.dart';
 
 class RouteExecutor {
   static bool tpForbidden = false;
+  static AutoTpConfig config = AutoTpConfig.to;
 
   static Future<void> tpNext(bool qm) async {
-    if (!AutoTpConfig.to.getAutoTpEnabled()) {
+    if (!config.getAutoTpEnabled()) {
       return;
     }
 
@@ -17,12 +20,38 @@ class RouteExecutor {
 
     tpForbidden = true;
 
-    Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpCooldown()), () {
-      tpForbidden = false;
-    });
+    try {
+      var tpPoints = WindowsApp.autoTpModel.tpPoints;
+      if (config.isContinuousMode()) {
+        var prevRouteIndex = config.getRouteIndex();
+        config.save(
+            AutoTpConfig.keyRouteIndex, prevRouteIndex % tpPoints.length);
+        if (prevRouteIndex != 0 && config.getRouteIndex() == 0) {
+          config.save(AutoTpConfig.keyRouteIndex, 1);
+        }
+      }
+
+      if (config.getRouteIndex() >= 0 &&
+          config.getRouteIndex() <= tpPoints.length) {
+        config.save(AutoTpConfig.keyRouteIndex, config.getRouteIndex() + 1);
+      }
+
+      if (config.getRouteIndex() > 0 &&
+          config.getRouteIndex() <= tpPoints.length) {
+        executeStep(tpPoints[config.getRouteIndex()], qm);
+      }
+    } catch (e) {
+      showToast('脚本执行出错了');
+    } finally {
+      Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpCooldown()),
+          () {
+        tpForbidden = false;
+      });
+    }
   }
 
   static Future<void> executeStep(TpPoint tpPoint, bool qmParam) async {
+    print('执行脚本：${tpPoint.script}');
     if (tpPoint.script != null) {
       await runScript(tpPoint.script!);
     }

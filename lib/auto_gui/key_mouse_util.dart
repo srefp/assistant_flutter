@@ -88,6 +88,7 @@ class KeyMouseUtil {
   static Future<void> clickAtPoint(List<int> point, int delay) async {
     var res = physicalPos(point);
     await Simulation.sendInput.mouse.move(res);
+    await Future.delayed(Duration(milliseconds: 2));
     await Simulation.sendInput.mouse.leftButtonClick();
     await Future.delayed(Duration(milliseconds: delay));
   }

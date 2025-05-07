@@ -34,7 +34,7 @@ class RecordConfig with ConfigStorage {
   List<int> getConfirmPosition() =>
       box.read(keyConfirmPosition) ?? [53704, 61376];
 
-  int getHalfTpDelay() => box.read(keyHalfTpDelay)?? 90;
+  int getHalfTpDelay() => box.read(keyHalfTpDelay) ?? 90;
 
-  String getNextKey() => box.read(keyNextKey)?? "right";
+  String getNextKey() => box.read(keyNextKey) ?? "right";
 }

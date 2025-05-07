@@ -52,6 +52,8 @@ class AutoTpConfig with ConfigStorage {
   static const keyBookDragPixelNum = "bookDragPixelNum";
   static const keyDragPixelNum = "dragPixelNum";
   static const keyCurrentRoute = "currentRoute";
+  static const keyContinuousMode = "continuousMode";
+  static const keyRouteIndex = "routeIndex";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -161,4 +163,8 @@ class AutoTpConfig with ConfigStorage {
   String getAreaColSpacing() => box.read(keyAreaColSpacing) ?? "9969";
 
   String? getCurrentRoute() => box.read(keyCurrentRoute);
+
+  bool isContinuousMode() => box.read(keyContinuousMode) ?? false;
+
+  int getRouteIndex() => box.read(keyRouteIndex) ?? 0;
 }

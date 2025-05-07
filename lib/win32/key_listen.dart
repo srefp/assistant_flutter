@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/config/record_config.dart';
+import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:win32/win32.dart';
@@ -60,11 +61,9 @@ void listenKeyboard(int vkCode, int wParam) {
   }
   final keyName = getKeyName(vkCode);
   if (keyName == RecordConfig.to.getNextKey()) {
-    tpNext();
+    print('keyName: $keyName');
+    RouteExecutor.tpNext(false);
   }
-}
-
-void tpNext() {
 }
 
 /// 记录路线

@@ -6,7 +6,7 @@ import 'package:win32/win32.dart';
 // 定义定时器 ID
 const timerId = 1;
 
-Future<void> showToast(String message, {int delay = 3000}) async {
+Future<void> showToast(String message, {int duration = 3000}) async {
   // 获取当前鼠标位置
   final point = calloc<POINT>();
   GetCursorPos(point);
@@ -78,7 +78,7 @@ Future<void> showToast(String message, {int delay = 3000}) async {
   UpdateWindow(hWnd);
 
   // 设置定时器
-  SetTimer(hWnd, timerId, delay, nullptr);
+  SetTimer(hWnd, timerId, duration, nullptr);
 }
 
 String? message;

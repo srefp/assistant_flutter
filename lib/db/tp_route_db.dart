@@ -33,8 +33,6 @@ class TpRouteDb {
 
     // 转义单引号（将单个'转义为两个''）
     content = content.replaceAll("'", "''");
-    // 转义双引号（将单个"转义为两个""，如果SQL需要的话）
-    content = content.replaceAll('"', '""');
     return content;
   }
 }

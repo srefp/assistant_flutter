@@ -33,6 +33,11 @@ async function wait(delay) {
     });
 }
 
+// 开图
+async function openMap() {
+    sendMessage('openMap');
+}
+
 // 复制粘贴
 function cp(text) {
     sendMessage('cp', JSON.stringify({'text': text}));
@@ -45,7 +50,7 @@ async function move(coords, delay) {
 
 // 按键
 async function press(key, delay) {
-    sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
+    await sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
 }
 
 // 图片

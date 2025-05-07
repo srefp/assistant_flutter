@@ -1,19 +1,15 @@
 import 'dart:io';
 
-import 'package:assistant/app/windows_app.dart';
-import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../manager/screen_manager.dart';
-import '../util/data_converter.dart';
 import '../util/js_executor.dart';
 import '../win32/window.dart';
 
@@ -41,18 +37,6 @@ class ScriptEditorModel with ChangeNotifier {
   List<String> directories = [];
 
   ScriptEditorModel() {
-    jsRuntime.onMessage('log', (params) {
-      WindowsApp.logModel.info(params['info']);
-    });
-    jsRuntime.onMessage('click', (params) async {
-      await KeyMouseUtil.clickAtPoint(
-          convertDynamicListToIntList(params['coords']), params['delay']);
-    });
-    jsRuntime.onMessage('press', (params) async {});
-    jsRuntime.onMessage('wait', (param) async {
-      await Future.delayed(Duration(milliseconds: param));
-    });
-
     directories = loadDirectories(ScriptEditorModel.directoryPath);
 
     // 自动选择上次选项，如果没有，则默认选择第一个
@@ -75,18 +59,11 @@ class ScriptEditorModel with ChangeNotifier {
       (_) => saveFile(controller.text),
       seconds: 2,
     );
-
-    // 加载js函数
-    loadJsFunction();
   }
 
   var fileType = 'lua';
 
   TextEditingController nameController = TextEditingController();
-
-  loadJsFunction() async {
-    jsFunction = await rootBundle.loadString('assets/js/func.js');
-  }
 
   bool isRunning = false;
 
