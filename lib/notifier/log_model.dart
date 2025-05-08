@@ -1,4 +1,5 @@
 import 'package:assistant/config/record_config.dart';
+import 'package:assistant/constants/script_type.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
@@ -105,7 +106,7 @@ class LogModel extends ChangeNotifier {
   }
 
   void output() {
-    if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+    if (WindowsApp.scriptEditorModel.selectedDir == autoTp) {
       outputAsRoute();
     } else {
       outputAsScript();

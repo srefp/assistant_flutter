@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
+import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path/path.dart';
@@ -34,13 +35,10 @@ class ScriptEditorModel with ChangeNotifier {
 
   late CodeLineEditingController controller;
   late Function(dynamic) saveFileContent;
-  List<String> directories = [];
 
   ScriptEditorModel() {
-    directories = loadDirectories(ScriptEditorModel.directoryPath);
-
     // 自动选择上次选项，如果没有，则默认选择第一个
-    autoSelectDir(directories);
+    autoSelectDir(scriptTypes);
     autoSelectFile();
 
     controller = CodeLineEditingController();

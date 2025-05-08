@@ -3,7 +3,6 @@ import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/dao/crud.dart';
-import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';

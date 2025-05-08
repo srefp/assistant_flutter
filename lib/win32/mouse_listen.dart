@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/util/tpc.dart';
 import 'package:win32/win32.dart';
 
@@ -49,7 +50,7 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
     }
 
     if (WindowsApp.recordModel.isRecording) {
-      if (WindowsApp.scriptEditorModel.selectedDir == '自动传') {
+      if (WindowsApp.scriptEditorModel.selectedDir == autoTp) {
         recordRoute(mouseStruct, wParam, lParam);
       } else {
         recordScript(mouseStruct, wParam, lParam);

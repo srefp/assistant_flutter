@@ -1,4 +1,5 @@
 import 'package:assistant/components/highlight_combo_box.dart';
+import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -29,7 +30,7 @@ class ScriptEditor extends StatelessWidget {
                   height: 34,
                   child: HighlightComboBox(
                     value: model.selectedDir,
-                    items: model.directories,
+                    items: scriptTypes,
                     onChanged: (value) {
                       model.selectDir(value);
                     },

@@ -61,7 +61,6 @@ class HighlightText extends StatelessWidget {
       return Text(
         text.replaceAll('', '\u200B'),
         style: style ?? _defaultTextStyle,
-        overflow: TextOverflow.ellipsis,
       );
     }
     // 如果有需要高亮显示的内容
