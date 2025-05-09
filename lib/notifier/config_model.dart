@@ -1,5 +1,6 @@
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
 import '../components/coords_config_row.dart';
@@ -44,11 +45,17 @@ class HotkeyConfigRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 3),
           child: SizedBox(
             height: 34,
-            width: 200,
-            child: TextBox(
-              textAlign: TextAlign.center,
-              controller: TextEditingController(text: item.valueCallback()),
-              onChanged: (value) => HotkeyConfig.to.save(item.valueKey, value),
+            child: HotKeyRecorder(
+              initalHotKey: HotKey(key: PhysicalKeyboardKey.f7),
+              onHotKeyRecorded: (HotKey value) {
+                print('value: ${value.debugName}');
+                // HotkeyConfig.to.save(item.valueKey, value.toString());
+              },
+              // child: TextBox(
+              //   textAlign: TextAlign.center,
+              //   controller: TextEditingController(text: item.valueCallback()),
+              //   onChanged: (value) => HotkeyConfig.to.save(item.valueKey, value),
+              // ),
             ),
           ),
         ),
