@@ -14,6 +14,7 @@ class RecordConfig with ConfigStorage {
   static const keyHalfTpDelay = "halfTpDelay";
   static const keyNextKey = "nextKey";
   static const keyPrevKey = "prevKey";
+  static const keyShowCoordsKey = "showCoordsKey";
 
   bool getEnableDefaultDelay() => box.read(keyEnableDefaultDelay) ?? true;
 
@@ -37,4 +38,6 @@ class RecordConfig with ConfigStorage {
   int getHalfTpDelay() => box.read(keyHalfTpDelay) ?? 90;
 
   String getNextKey() => box.read(keyNextKey) ?? "right";
+
+  String getShowCoordsKey() => box.read(keyShowCoordsKey)?? "up";
 }

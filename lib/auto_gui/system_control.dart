@@ -21,6 +21,10 @@ class Rect {
   String toString() {
     return 'Rect(left: $left, top: $top, right: $right, bottom: $bottom, width: $width, height: $height)';
   }
+
+  String getWidthAndHeight() {
+    return '${width}x$height';
+  }
 }
 
 class SystemControl {

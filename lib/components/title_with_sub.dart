@@ -8,6 +8,7 @@ class TitleWithSub extends StatelessWidget {
   final String subTitle;
   final Widget rightWidget;
   final String lightText;
+  final bool hasSubTitle;
 
   const TitleWithSub({
     super.key,
@@ -15,6 +16,7 @@ class TitleWithSub extends StatelessWidget {
     this.subTitle = '',
     this.lightText = '',
     this.rightWidget = const SizedBox(),
+    this.hasSubTitle = true,
   });
 
   @override
@@ -23,34 +25,48 @@ class TitleWithSub extends StatelessWidget {
       children: [
         Expanded(
           flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              HighlightText(
-                title,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: fontFamily),
-                lightText: lightText,
-              ),
-              HighlightText(
-                subTitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w200,
-                  color: Color(0xFFAAAAAA),
-                  fontFamily: fontFamily,
-                ),
-                lightText: lightText,
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
+          child: _buildLeft(),
         ),
         rightWidget,
       ],
     );
+  }
+
+  Widget _buildLeft() {
+    if (!hasSubTitle) {
+      return HighlightText(
+        title,
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            fontFamily: fontFamily),
+        lightText: lightText,
+      );
+    }
+    return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            HighlightText(
+              title,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: fontFamily),
+              lightText: lightText,
+            ),
+            HighlightText(
+              subTitle,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w200,
+                color: Color(0xFFAAAAAA),
+                fontFamily: fontFamily,
+              ),
+              lightText: lightText,
+            ),
+            const SizedBox(height: 10),
+          ],
+        );
   }
 }

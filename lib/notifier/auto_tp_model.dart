@@ -1,3 +1,4 @@
+import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
@@ -500,11 +501,19 @@ class AutoTpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void start(BuildContext context) {
+  void startOrStop() {
+    if (isRunning) {
+      stop();
+    } else {
+      start();
+    }
+  }
+
+  void start({BuildContext? context}) {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
 
-    if (hWnd == 0) {
+    if (hWnd == 0 && context != null) {
       dialog(context, title: '错误', content: '游戏窗口未启动!');
       return;
     }
@@ -527,5 +536,10 @@ class AutoTpModel extends ChangeNotifier {
     ScreenManager.instance.stopListen();
 
     notifyListeners();
+  }
+
+  String getScreen() {
+    return SystemControl.getCaptureRect(ScreenManager.instance.hWnd)
+        .getWidthAndHeight();
   }
 }

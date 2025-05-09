@@ -5,6 +5,7 @@ import 'package:assistant/components/delay_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
+import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/util/asset_loader.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/coords_config_row.dart';
+import '../components/divider.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
 import '../util/file_utils.dart';
@@ -58,11 +60,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
       });
     }
 
-    final divider = Container(
-      height: 1,
-      color: Color(0xFF666666),
-    );
-
     return Consumer<AutoTpModel>(builder: (context, model, child) {
       return CustomScrollView(
         slivers: [
@@ -89,7 +86,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     if (model.isRunning) {
                       model.stop();
                     } else {
-                      model.start(context);
+                      model.start(context: context);
                     }
                   },
                 ),
@@ -128,7 +125,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       ),
                     ],
                   ),
-                  Row(),
                 ],
               ),
             ),
@@ -288,7 +284,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.pin_drop,
               title: '关键位置标点',
-              subTitle: '默认为16:9屏幕，其他比例屏幕需要自己标注',
+              subTitle: '自动识别您的游戏/屏幕分辨率，当前游戏/屏幕：${model.getScreen()}',
               content: Column(
                 children: [
                   Padding(

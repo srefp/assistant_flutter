@@ -43,14 +43,39 @@ function cp(text) {
     sendMessage('cp', JSON.stringify({'text': text}));
 }
 
-// 基础鼠标操作
+// 移动鼠标
 async function move(coords, delay) {
-    sendMessage('move', JSON.stringify({'coords': coords}));
+    sendMessage('move', JSON.stringify({'coords': coords, 'delay': delay}));
+}
+
+// 相对移动鼠标
+async function moveR(coords, delay) {
+    sendMessage('moveR', JSON.stringify({'coords': coords, 'delay': delay}));
+}
+
+// 3D视角下移动鼠标
+async function moveR3D(coords, delay) {
+    sendMessage('moveR3D', JSON.stringify({'coords': coords, 'delay': delay}));
+}
+
+// 鼠标按下
+async function mDown() {
+    sendMessage('mDown', JSON.stringify({''}));
 }
 
 // 按键
 async function press(key, delay) {
     await sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
+}
+
+// 拖动
+async function drag(coords, shortMove, delay) {
+    await sendMessage('drag', JSON.stringify({'coords': coords, 'shortMove': shortMove, 'delay': delay}));
+}
+
+// 传送
+async function tp(params, remember, delay) {
+    await sendMessage('tp', JSON.stringify({'params': params, 'remember': remember, 'delay': delay}));
 }
 
 // 图片

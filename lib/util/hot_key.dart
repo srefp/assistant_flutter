@@ -1,6 +1,7 @@
-import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+
+import '../app/windows_app.dart';
 
 /// 快捷键
 class KeyItem {
@@ -11,7 +12,7 @@ class KeyItem {
 
   KeyItem(
       this.keyCode, {
-        this.modifiers,
+        this.modifiers = const [],
         this.scope = HotKeyScope.inapp,
         this.callback,
       });
@@ -29,13 +30,12 @@ void initHotKey() async {
   // 再添加快捷键
   final keyItemList = [
     // 全局快捷键
-    // 1. 显示/隐藏窗口
+    // 1. 开启
     KeyItem(
-      PhysicalKeyboardKey.arrowUp,
-      modifiers: [HotKeyModifier.control],
+      PhysicalKeyboardKey.f7,
       scope: HotKeyScope.system,
       callback: () {
-        KeyMouseUtil.showCoordinate();
+        WindowsApp.autoTpModel.startOrStop();
       },
     ),
   ];

@@ -62,8 +62,12 @@ void listenKeyboard(int vkCode, int wParam) {
   }
   final keyName = getKeyName(vkCode);
   if (keyName == RecordConfig.to.getNextKey()) {
-    print('keyName: $keyName');
     RouteExecutor.tpNext(false);
+  }
+
+  print('keyName: $keyName');
+  if (keyName == RecordConfig.to.getShowCoordsKey()) {
+    KeyMouseUtil.showCoordinate();
   }
 }
 
