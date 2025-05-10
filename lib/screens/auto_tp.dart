@@ -5,7 +5,6 @@ import 'package:assistant/components/delay_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
-import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/util/asset_loader.dart';
 import 'package:fluent_ui/fluent_ui.dart';

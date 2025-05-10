@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/executor/route_executor.dart';
@@ -40,6 +42,12 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
     // print(
     //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
 
+    // 添加事件来源判断（0x10表示程序注入事件）
+    if ((kbdStruct.ref.flags & 0x10) != 0) {
+      print('是模拟事件，跳过');
+      return res;
+    }
+
     if (WindowsApp.autoTpModel.isRunning && ScreenManager.instance.isGameActive()) {
       listenKeyboard(vkCode, wParam);
     }
@@ -55,17 +63,43 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
   return res;
 });
 
+// 添加全局定时器变量
+Timer? _fKeyTimer;
+
 /// 监听操作
-void listenKeyboard(int vkCode, int wParam) {
+void listenKeyboard(int vkCode, int wParam) async {
+  final keyName = getKeyName(vkCode);
+  if (keyName == 'f') {
+    print('key f ${wParam == WM_KEYDOWN? 'Down' : 'Up'}, ${now()}');
+    if (wParam == WM_KEYDOWN) {
+      _fKeyTimer ??= Timer.periodic(Duration(milliseconds: 20), (timer) async {
+        if (!WindowsApp.autoTpModel.isRunning || !ScreenManager.instance.isGameActive()) {
+          print('快捡已停止1');
+          _fKeyTimer?.cancel();
+          _fKeyTimer = null;
+          return;
+        }
+        api.keyDown(key: 'f');
+        await Future.delayed(Duration(milliseconds: 5));
+        api.keyUp(key: 'f');
+        await Future.delayed(Duration(milliseconds: 5));
+        api.scroll(clicks: -1);
+        print('快捡中... ${now()}');
+      });
+    } else if (wParam == WM_KEYUP) {
+      _fKeyTimer?.cancel();
+      _fKeyTimer = null;
+      print('快捡已停止2');
+    }
+  }
+
   if (wParam != WM_KEYDOWN) {
     return;
   }
-  final keyName = getKeyName(vkCode);
   if (keyName == RecordConfig.to.getNextKey()) {
     RouteExecutor.tpNext(false);
   }
 
-  print('keyName: $keyName');
   if (keyName == RecordConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
   }
