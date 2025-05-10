@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
+import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/executor/route_executor.dart';
@@ -69,27 +70,23 @@ Timer? _fKeyTimer;
 /// 监听操作
 void listenKeyboard(int vkCode, int wParam) async {
   final keyName = getKeyName(vkCode);
-  if (keyName == 'f') {
-    print('key f ${wParam == WM_KEYDOWN? 'Down' : 'Up'}, ${now()}');
+  if (keyName == HotkeyConfig.to.getQuickPickKey()) {
     if (wParam == WM_KEYDOWN) {
       _fKeyTimer ??= Timer.periodic(Duration(milliseconds: 20), (timer) async {
         if (!WindowsApp.autoTpModel.isRunning || !ScreenManager.instance.isGameActive()) {
-          print('快捡已停止1');
           _fKeyTimer?.cancel();
           _fKeyTimer = null;
           return;
         }
-        api.keyDown(key: 'f');
+        api.keyDown(key: HotkeyConfig.to.getQuickPickKey());
         await Future.delayed(Duration(milliseconds: 5));
-        api.keyUp(key: 'f');
+        api.keyUp(key: HotkeyConfig.to.getQuickPickKey());
         await Future.delayed(Duration(milliseconds: 5));
         api.scroll(clicks: -1);
-        print('快捡中... ${now()}');
       });
     } else if (wParam == WM_KEYUP) {
       _fKeyTimer?.cancel();
       _fKeyTimer = null;
-      print('快捡已停止2');
     }
   }
 
@@ -100,7 +97,7 @@ void listenKeyboard(int vkCode, int wParam) async {
     RouteExecutor.tpNext(false);
   }
 
-  if (keyName == RecordConfig.to.getShowCoordsKey()) {
+  if (keyName == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
   }
 }
