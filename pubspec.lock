@@ -533,6 +533,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
+  matrix2d:
+    dependency: "direct main"
+    description:
+      name: matrix2d
+      sha256: "188718dd3bc2a31e372cfd0791b0f77f4f13ea76164147342cc378d9132949e7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   menu_base:
     dependency: transitive
     description:
@@ -621,11 +629,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
-  opencv_core:
+  opencv_dart:
     dependency: "direct main"
     description:
-      name: opencv_core
-      sha256: "713ce0400bf81996009b3c98dbf25643546574637d35d3604792253317ee3824"
+      name: opencv_dart
+      sha256: "0c31f9352951147a463a96c117e5bd54777fa99fe5b12c1c2e351a543fac2c2f"
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"

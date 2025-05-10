@@ -1,9 +1,10 @@
 import 'package:assistant/auto_gui/key_mouse_util.dart';
-import 'package:assistant/components/highlight_combo_box.dart';
+import 'package:assistant/cv/cv.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
+import '../auto_gui/system_control.dart';
 import '../components/win_text.dart';
 
 class Test extends StatelessWidget {
@@ -37,7 +38,23 @@ class Test extends StatelessWidget {
                 child: WinText('获取窗口句柄'),
                 onPressed: () {
                   ScreenManager.instance.refreshWindowHandle();
-                  showToast('句柄： ${ScreenManager.instance.hWnd ?? '空'}');
+                  showToast('句柄： ${ScreenManager.instance.hWnd}');
+                },
+              ),
+            ),
+            SizedBox(width: 16),
+            SizedBox(
+              width: 120,
+              child: Button(
+                child: WinText('截图'),
+                onPressed: () {
+                  var rect = ScreenRect(0, 0, 6000, 3000);
+                  var data = captureImageWin(rect);
+                  print('data: ${data?.length}');
+                  if (data == null) {
+                    return;
+                  }
+                  saveScreenshot(data, rect.width, rect.height, 'D:\\demo\\screenshot.png');
                 },
               ),
             ),
