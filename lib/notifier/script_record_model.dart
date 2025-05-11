@@ -3,7 +3,9 @@ import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../components/win_text.dart';
+import '../manager/screen_manager.dart';
 import '../win32/mouse_listen.dart';
+import '../win32/window.dart';
 
 class ScriptRecordModel extends ChangeNotifier {
   bool isRecording = false;
@@ -25,10 +27,15 @@ class ScriptRecordModel extends ChangeNotifier {
       return;
     }
 
+    ScreenManager.instance.refreshWindowHandle();
+    int? hWnd = ScreenManager.instance.hWnd;
+    if (hWnd != 0) {
+      setForegroundWindow(hWnd);
+    }
+
     isRecording = true;
 
     recordCurrentTime = DateTime.now();
-    WindowsApp.logModel.info('开始录制...');
     notifyListeners();
   }
 
@@ -39,7 +46,6 @@ class ScriptRecordModel extends ChangeNotifier {
 
     WindowsApp.logModel.appendDelay(getDelay());
     WindowsApp.logModel.output();
-    WindowsApp.logModel.info('停止录制');
     notifyListeners();
   }
 

@@ -2,6 +2,7 @@ import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/util/js_executor.dart';
 import 'package:assistant/win32/toast.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 import '../util/route_util.dart';
 
@@ -41,6 +42,7 @@ class RouteExecutor {
         executeStep(tpPoints[config.getRouteIndex()], qm);
       }
     } catch (e) {
+      debugPrint(e.toString());
       showToast('脚本执行出错了');
     } finally {
       Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpCooldown()),

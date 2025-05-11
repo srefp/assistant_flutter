@@ -71,7 +71,7 @@ void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
 
     WindowsApp.logModel.appendOperation(Operation(
         func: "tpc",
-        template: "tpc('slow', [${coords[0]}, ${coords[1]}], 0});"));
+        template: "tpc([${coords[0]}, ${coords[1]}], 0);"));
 
     WindowsApp.logModel.outputAsRoute();
   }

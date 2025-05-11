@@ -226,7 +226,7 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       /// Script Editor
       GoRoute(
         path: Routes.scriptEditor,
-        builder: (context, state) => ScriptEditor(),
+        builder: (context, state) => const ScriptEditor(),
       ),
 
       /// Record

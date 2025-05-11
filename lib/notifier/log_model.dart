@@ -20,9 +20,9 @@ class Operation {
       prevDelay: RecordConfig.to.getClickDelay());
 
   static Operation openMap = Operation(
-      func: "openMap",
+      func: "map",
       coords: [],
-      template: "openMap(%s);",
+      template: "map(%s);",
       prevDelay: RecordConfig.to.getOpenMapDelay());
 
   Operation({
@@ -57,7 +57,8 @@ class LogModel extends ChangeNotifier {
   void appendOperation(Operation operation, {bool route = true}) {
     // 路线模式下，只记录键盘和鼠标点击操作
     if (route &&
-        !['kDown', 'mDown', 'kUp', 'mUp', 'click', 'tpc'].contains(operation.func)) {
+        !['kDown', 'mDown', 'kUp', 'mUp', 'click', 'tpc']
+            .contains(operation.func)) {
       return;
     }
 
@@ -123,7 +124,7 @@ class LogModel extends ChangeNotifier {
       return;
     }
     for (var element in prevOperations) {
-      scriptController.text += "$element\n";
+      appendText("$element\n");
     }
     prevOperations = [];
   }
@@ -136,7 +137,8 @@ class LogModel extends ChangeNotifier {
     var script = '';
 
     bool openMapKeyFound = false;
-    for (var element in prevOperations) {
+    for (var index = 0; index < prevOperations.length; index++) {
+      var element = prevOperations[index];
       if (!openMapKeyFound &&
           element.template
               .contains("press('${RecordConfig.to.getOpenMapKey()}'")) {
@@ -144,12 +146,14 @@ class LogModel extends ChangeNotifier {
         openMapKeyFound = true;
       }
       if (openMapKeyFound) {
-        script += "$element ";
+        script += index == prevOperations.length - 1
+            ? element.toString()
+            : '$element ';
       }
     }
 
     if (script.isNotEmpty) {
-      scriptController.text += "script: \"$script\"\n";
+      appendText("script: \"$script\"\n");
     }
     prevOperations = [];
   }
@@ -169,18 +173,36 @@ class LogModel extends ChangeNotifier {
   }
 
   void append(String text) {
-    scriptController.text += "$text\n";
+    appendText("$text\n");
     notifyListeners();
+  }
+
+  appendText(text) {
+    var content = scriptController.text;
+    if (content.endsWith('\n')) {
+      content = content.substring(0, content.length - 1);
+    }
+    if (content.trim().isEmpty) {
+      scriptController.text = '$text';
+    } else {
+      scriptController.text = '$content\n$text';
+    }
+
+    // 设置光标位置到末尾
+    scriptController.selection = CodeLineSelection.collapsed(
+      index: scriptController.codeLines.length - 1,
+      offset: scriptController.codeLines.last.length,
+    );
   }
 
   void info(String text) {
-    scriptController.text += "${now()} [INFO] $text\n";
+    logController.text += "${now()} [INFO] $text\n";
     notifyListeners();
   }
 
-  // void clear() {
-  //   scriptController.text = '';
-  // }
+// void clear() {
+//   scriptController.text = '';
+// }
 }
 
 class Command {

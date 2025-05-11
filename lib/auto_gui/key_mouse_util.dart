@@ -5,6 +5,7 @@ import 'package:assistant/auto_gui/simulation.dart';
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:ffi/ffi.dart';
+import 'package:flutter/services.dart';
 import 'package:win32/win32.dart';
 
 import '../manager/screen_manager.dart';
@@ -318,6 +319,8 @@ class KeyMouseUtil {
   static void showCoordinate() {
     List<int> point = getMousePos();
     List<int> virtualPos = getVirtualPos(point);
-    showToast('已复制坐标: ${virtualPos[0]}, ${virtualPos[1]}');
+    var text = '${virtualPos[0]}, ${virtualPos[1]}';
+    Clipboard.setData(ClipboardData(text: text));
+    showToast('已复制坐标: $text');
   }
 }

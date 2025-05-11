@@ -80,10 +80,10 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 运行js代码
   void runJs(BuildContext context) async {
-    if (!WindowsApp.autoTpModel.isRunning) {
-      appNotRunning(context);
-      return;
-    }
+    // if (!WindowsApp.autoTpModel.isRunning) {
+    //   appNotRunning(context);
+    //   return;
+    // }
 
     isRunning = true;
     notifyListeners();
@@ -93,13 +93,25 @@ class ScriptEditorModel with ChangeNotifier {
     if (hWnd != 0) {
       setForegroundWindow(hWnd);
     }
+
     String code = controller.selectedText;
     if (code.isEmpty) {
       code = controller.text;
     }
 
-    // 将code中的异步函数添加await
-    await runScript(code);
+    if (selectedScriptType == autoTp) {
+      var autoTpCode = '';
+      for (var element in code.split('\n')) {
+        if (element.trim().isEmpty) {
+          continue;
+        }
+        autoTpCode += 'await tp({${element.trim()}});\n';
+      }
+      await runScript(autoTpCode, addAwait: false);
+    } else if (selectedScriptType == autoScript) {
+      // 将code中的异步函数添加await
+      await runScript(code);
+    }
 
     isRunning = false;
     notifyListeners();
@@ -201,9 +213,15 @@ class ScriptEditorModel with ChangeNotifier {
   /// 保存脚本
   saveScript(String text) async {
     var content = text;
-    if (!content.endsWith('\n')) {
+    if (content.isNotEmpty && !content.endsWith('\n')) {
       content += '\n';
       controller.text = content;
+
+      // 设置光标位置到末尾
+      controller.selection = CodeLineSelection.collapsed(
+        index: controller.codeLines.length - 1,
+        offset: controller.codeLines.last.length,
+      );
     }
     await updateScript(selectedScriptType!, selectedScriptName!, content);
     isUnsaved = false;

@@ -34,8 +34,8 @@ async function wait(delay) {
 }
 
 // 开图
-async function map() {
-    sendMessage('map');
+async function map(delay) {
+    await sendMessage('map', JSON.stringify({'delay': delay}));
 }
 
 // 复制粘贴
@@ -59,8 +59,8 @@ async function moveR3D(coords, delay) {
 }
 
 // 鼠标按下
-async function mDown() {
-    sendMessage('mDown', JSON.stringify({''}));
+async function mDown(delay) {
+    sendMessage('mDown', JSON.stringify({'delay': delay}));
 }
 
 // 按键
@@ -85,5 +85,5 @@ async function tpc(coords, delay) {
 
 // 图片
 function pic(topLeft, bottomRight) {
-    sendMessage('pic', JSON.stringify({'topLeft': topLeft, 'bottomRight': bottomRight}));
+    return sendMessage('pic', JSON.stringify({'topLeft': topLeft, 'bottomRight': bottomRight}));
 }

@@ -1,5 +1,6 @@
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/util/route_util.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 
@@ -29,7 +30,6 @@ const tpc = "tpc";
 
 const keys = [
   tp,
-  tip,
   wait,
   move,
   moveR,
@@ -58,11 +58,12 @@ loadJsFunction() async {
 void registerJsFunc() {
   // 打印日志
   jsRuntime.onMessage('log', (params) {
+    print('log = ${params['info']}');
     WindowsApp.logModel.info(params['info']);
   });
 
   // 弹出消息框
-  jsRuntime.onMessage('tip', (params) async {
+  jsRuntime.onMessage(tip, (params) async {
     if (params['duration'] == null) {
       params['duration'] = 3000;
     }
@@ -70,52 +71,68 @@ void registerJsFunc() {
   });
 
   // 点击
-  jsRuntime.onMessage('click', (params) async {
+  jsRuntime.onMessage(click, (params) async {
     await KeyMouseUtil.clickAtPoint(
         convertDynamicListToIntList(params['coords']), params['delay']);
   });
 
   // 按键
-  jsRuntime.onMessage('press', (params) async {
+  jsRuntime.onMessage(press, (params) async {
     await api.press(key: params['key']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
   // 等待
-  jsRuntime.onMessage('wait', (param) async {
+  jsRuntime.onMessage(wait, (param) async {
     await Future.delayed(Duration(milliseconds: param));
   });
 
   // 开图
-  jsRuntime.onMessage('map', (params) async {
+  jsRuntime.onMessage(map, (params) async {
+    print('map params = $params');
     await api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
     await api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
   // 传送确认
-  jsRuntime.onMessage('tpc', (params) async {
+  jsRuntime.onMessage(tpc, (params) async {
+    print('tpc params = $params');
     await KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcDelay());
+        convertDynamicListToIntList(params['coords']),
+        AutoTpConfig.to.getTpcDelay());
     await KeyMouseUtil.clickAtPoint(
         convertDynamicListToIntList(AutoTpConfig.to.getConfirmPosIntList()),
         params['delay']);
   });
 
+  // 传送
+  jsRuntime.onMessage(tp, (params) async {
+    // print('params = $params');
+    var script = params['params']['script'];
+    // final tpPoint = RouteUtil.parseFile(params).first;
+    if (script != null) {
+      await runScript(script!);
+    }
+  });
+
   // 拖动
-  jsRuntime.onMessage('drag', (params) async {
-    await KeyMouseUtil.drag(
-        convertDynamicListToIntList(params['coords']));
+  jsRuntime.onMessage(drag, (params) async {
+    await KeyMouseUtil.drag(convertDynamicListToIntList(params['coords']));
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 }
 
 /// 运行js代码
-Future<void> runScript(String code) async {
+Future<void> runScript(String code, {bool addAwait = true}) async {
   // 将code中的异步函数添加await
-  for (var key in keys) {
-    code = code.replaceAll('$key(', 'await $key(');
+  if (addAwait) {
+    for (var key in keys) {
+      code = code.replaceAll('$key(', 'await $key(');
+    }
   }
+
+  print('code = $code');
 
   JsEvalResult result = await jsRuntime.evaluateAsync('''
     $jsFunction
