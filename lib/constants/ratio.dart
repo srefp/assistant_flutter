@@ -49,13 +49,19 @@ class Ratio {
     denominator: 4,
   );
 
-  static Ratio? fromWidthHeight(int width, int height) {
+  static final Ratio unknown = Ratio(
+    name: 'unknown',
+    numerator: 1,
+    denominator: 1,
+  );
+
+  static Ratio fromWidthHeight(int width, int height) {
     for (var ratio in ratios) {
       if (ratio.match(width, height)) {
         return ratio;
       }
     }
-    return null;
+    return unknown;
   }
 
   const Ratio({

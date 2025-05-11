@@ -367,12 +367,12 @@ class AutoTpModel extends ChangeNotifier {
   loadRoutes() async {
     routes =
         (await queryDb(TpRouteDb.tableName)).map(TpRoute.fromJson).toList();
-    routeNames = routes.map((e) => e.name).toList();
+    routeNames = routes.map((e) => e.scriptName).toList();
     currentRoute = AutoTpConfig.to.getCurrentRoute();
 
     if (currentRoute != null) {
       for (var element in routes) {
-        if (element.name == currentRoute) {
+        if (element.scriptName == currentRoute) {
           tpPoints = parseTpPoints(element.content);
           posList = ['不在路线中'];
           for (var i = 0; i < tpPoints.length; i++) {
@@ -390,8 +390,8 @@ class AutoTpModel extends ChangeNotifier {
 
   selectRoute(final String routeName) {
     for (var element in routes) {
-      if (element.name == routeName) {
-        currentRoute = element.name;
+      if (element.scriptName == routeName) {
+        currentRoute = element.scriptName;
         tpPoints = parseTpPoints(element.content);
         AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
         posList = ['不在路线中'];

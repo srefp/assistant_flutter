@@ -50,7 +50,7 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
     }
 
     if (WindowsApp.recordModel.isRecording) {
-      if (WindowsApp.scriptEditorModel.selectedDir == autoTp) {
+      if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
         recordRoute(mouseStruct, wParam, lParam);
       } else {
         recordScript(mouseStruct, wParam, lParam);

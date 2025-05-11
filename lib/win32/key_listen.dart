@@ -54,7 +54,7 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
     }
 
     if (WindowsApp.recordModel.isRecording) {
-      if (WindowsApp.scriptEditorModel.selectedDir == autoTp) {
+      if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
         recordRoute(vkCode, wParam);
       } else {
         recordScript(vkCode, wParam);

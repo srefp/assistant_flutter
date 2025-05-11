@@ -6,7 +6,8 @@ class TpRouteDb {
   static const ddl = '''
     create table if not exists route (
       id integer primary key autoincrement, -- 主键
-      name text, -- 路线名称
+      scriptName text, -- 脚本名称
+      scriptType text, -- 脚本类型
       content text, -- 路线内容
       ratio text, -- 屏幕比例
       remark text, -- 备注
@@ -22,9 +23,9 @@ class TpRouteDb {
     final route6 = await getContent('assets/route/-6.lua');
     final routeMeat = await getContent('assets/route/肉 - 兽肉.lua');
     return '''
-    insert into route (name, content, ratio, remark, author, orderNum, createdOn, updatedOn) values
-    ('-6', '$route6', '16:9', '渊下宫第一个点位需要先运行预加载', '瓜老师', 1, 1677609600, 1677609600),
-    ('肉 - 兽肉', '$routeMeat', '16:9', '', 'srefp', 2, 1677609600, 1677609600);
+    insert into route (scriptName, scriptType, content, ratio, remark, author, orderNum, createdOn, updatedOn) values
+    ('-6', '自动传', '$route6', '16:9', '渊下宫第一个点位需要先运行预加载', '瓜老师', 1, 1677609600, 1677609600),
+    ('肉 - 兽肉', '自动传', '$routeMeat', '16:9', '', 'srefp', 2, 1677609600, 1677609600);
     ''';
   }
 

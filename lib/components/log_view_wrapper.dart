@@ -61,16 +61,16 @@ class LogView extends StatelessWidget {
                 SizedBox(
                   width: 10,
                 ),
-                SizedBox(
-                  height: 34,
-                  child: ButtonWithIcon(
-                    icon: Icons.clear,
-                    text: '清空',
-                    onPressed: () {
-                      model.clear();
-                    },
-                  ),
-                ),
+                // SizedBox(
+                //   height: 34,
+                //   child: ButtonWithIcon(
+                //     icon: Icons.clear,
+                //     text: '清空',
+                //     onPressed: () {
+                //       model.clear();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),

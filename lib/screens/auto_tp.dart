@@ -26,6 +26,8 @@ class AutoTpPage extends StatefulWidget {
   State<AutoTpPage> createState() => _AutoTpPageState();
 }
 
+Future? _future;
+
 class _AutoTpPageState extends State<AutoTpPage> {
   int tryTimes = 0;
 
@@ -33,9 +35,11 @@ class _AutoTpPageState extends State<AutoTpPage> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 1), () {
+    _future ??= Future.delayed(const Duration(seconds: 1), () {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showOutDate(context);
+        if (context.mounted) {
+          showOutDate(context);
+        }
       });
     });
   }

@@ -21,27 +21,7 @@ class ScriptRecordModel extends ChangeNotifier {
   /// 开始录制
   void startRecord(BuildContext context) {
     if (!WindowsApp.autoTpModel.isRunning) {
-      showDialog(
-          context: context,
-          builder: (context) => ContentDialog(
-                title: WinText('错误'),
-                content: SizedBox(
-                  height: 50,
-                  child: Column(
-                    children: [
-                      WinText('耕地机未开启，无法录制脚本。'),
-                    ],
-                  ),
-                ),
-                actions: [
-                  FilledButton(
-                    child: const WinText('确定'),
-                    onPressed: () {
-                      Navigator.pop(context); // 关闭模态框
-                    },
-                  ),
-                ],
-              ));
+      appNotRunning(context);
       return;
     }
 
@@ -70,4 +50,28 @@ class ScriptRecordModel extends ChangeNotifier {
       mouseHook = 0;
     }
   }
+}
+
+void appNotRunning(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (context) => ContentDialog(
+        title: WinText('错误'),
+        content: SizedBox(
+          height: 50,
+          child: Column(
+            children: [
+              WinText('耕地机未开启！'),
+            ],
+          ),
+        ),
+        actions: [
+          FilledButton(
+            child: const WinText('确定'),
+            onPressed: () {
+              Navigator.pop(context); // 关闭模态框
+            },
+          ),
+        ],
+      ));
 }

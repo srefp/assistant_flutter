@@ -106,11 +106,15 @@ class LogModel extends ChangeNotifier {
   }
 
   void output() {
-    if (WindowsApp.scriptEditorModel.selectedDir == autoTp) {
+    if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
       outputAsRoute();
     } else {
       outputAsScript();
     }
+  }
+
+  CodeLineEditingController get scriptController {
+    return WindowsApp.scriptEditorModel.controller;
   }
 
   /// 输出为脚本
@@ -119,7 +123,7 @@ class LogModel extends ChangeNotifier {
       return;
     }
     for (var element in prevOperations) {
-      logController.text += "$element\n";
+      scriptController.text += "$element\n";
     }
     prevOperations = [];
   }
@@ -145,7 +149,7 @@ class LogModel extends ChangeNotifier {
     }
 
     if (script.isNotEmpty) {
-      logController.text += "script: \"$script\"\n";
+      scriptController.text += "script: \"$script\"\n";
     }
     prevOperations = [];
   }
@@ -165,18 +169,18 @@ class LogModel extends ChangeNotifier {
   }
 
   void append(String text) {
-    logController.text += "$text\n";
+    scriptController.text += "$text\n";
     notifyListeners();
   }
 
   void info(String text) {
-    logController.text += "${now()} [INFO] $text\n";
+    scriptController.text += "${now()} [INFO] $text\n";
     notifyListeners();
   }
 
-  void clear() {
-    logController.text = '';
-  }
+  // void clear() {
+  //   scriptController.text = '';
+  // }
 }
 
 class Command {

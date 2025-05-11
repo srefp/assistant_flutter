@@ -6,7 +6,10 @@ class TpRoute {
   int? id;
 
   /// 路线名称
-  String name;
+  String scriptName;
+
+  /// 路线类型
+  String scriptType;
 
   /// 路线内容
   String content;
@@ -28,7 +31,8 @@ class TpRoute {
 
   TpRoute({
     this.id,
-    required this.name,
+    required this.scriptName,
+    required this.scriptType,
     required this.content,
     this.remark,
     this.author = '-1',
@@ -43,7 +47,8 @@ class TpRoute {
 
   factory TpRoute.fromJson(Map<String, dynamic> json) => TpRoute(
         id: json['id'] as int?,
-        name: json['name'] as String,
+        scriptName: json['scriptName'] as String,
+        scriptType: json['scriptType'] as String,
         content: json['content'] as String,
         remark: json['remark'] as String?,
         author: json['author'] as String,
@@ -54,7 +59,8 @@ class TpRoute {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
-        'name': name,
+        'scriptName': scriptName,
+        'scriptType': scriptType,
         'content': content,
         'remark': remark,
         'author': author,
@@ -65,5 +71,5 @@ class TpRoute {
 
   @override
   String toString() =>
-      'Route{id: $id, name: $name, content: $content, remark: $remark, author: $author, ratio: $ratio, createdAt: $createdAt, updatedAt: $updatedAt}';
+      'Route{id: $id, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, createdAt: $createdAt, updatedAt: $updatedAt}';
 }
