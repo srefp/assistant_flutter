@@ -105,19 +105,6 @@ class RouteKeys {
   static const String flowerA = "flowerA";
   static const String dragA = "dragA";
   static const String wheelA = "wheelA";
-
-  /// 已经弃用的属性
-  @Deprecated("use boss")
-  static const String monster = "monster";
-
-  @Deprecated("user posD")
-  static const String fastPos = "fastPos";
-
-  @Deprecated("user narrowD")
-  static const String fastNarrow = "fastNarrow";
-
-  @Deprecated("use posA")
-  static const String posArea = "posArea";
 }
 
 class RouteUtil {
@@ -243,14 +230,6 @@ class RouteUtil {
           tpPoint.script = stringToString(value);
         } else if (key == RouteKeys.scriptD) {
           tpPoint.script = stringToString(value);
-        } else if (key == RouteKeys.monster) {
-          tpPoint.boss = stringToIntList(value);
-        } else if (key == RouteKeys.fastPos) {
-          tpPoint.posD = stringToIntList(value);
-        } else if (key == RouteKeys.fastNarrow) {
-          tpPoint.narrowD = stringToInt(value);
-        } else if (key == RouteKeys.posArea) {
-          tpPoint.posA = stringToIntList(value);
         } else if (key == RouteKeys.pos) {
           tpPoint.pos = stringToIntList(value);
         } else if (key == RouteKeys.narrow) {
@@ -312,7 +291,10 @@ class RouteUtil {
     return int.parse(str.trim());
   }
 
-  static List<int> stringToIntList(String str) {
+  static List<int>? stringToIntList(String? str) {
+    if (str == null) {
+      return null;
+    }
     List<int> res = [];
     str = str.replaceAll('[', '').replaceAll(']', '');
     List<String> tmpValues = str.split(RegExp(r', *'));

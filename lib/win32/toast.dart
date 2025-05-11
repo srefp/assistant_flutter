@@ -90,6 +90,8 @@ int windowProcedure(int hWnd, int msg, int wParam, int lParam) {
     message = createStruct.ref.lpCreateParams.cast<Utf16>().toDartString();
   }
   switch (msg) {
+    case WM_NCHITTEST: // 新增点击穿透处理
+      return HTTRANSPARENT; // 始终返回透明区域，使鼠标事件穿透
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;

@@ -1,3 +1,5 @@
+import 'package:assistant/util/route_util.dart';
+
 import 'config_storage.dart';
 
 class AutoTpConfig with ConfigStorage {
@@ -133,6 +135,8 @@ class AutoTpConfig with ConfigStorage {
   String getCrusadePos() => box.read(keyCrusadePos) ?? "9884, 33238";
 
   String getConfirmPos() => box.read(keyConfirmPos) ?? "55753, 60951";
+
+  List<int> getConfirmPosIntList() => RouteUtil.stringToIntList(box.read(keyConfirmPos))?? [55753, 60951];
 
   String getBookDragStartPos() =>
       box.read(keyBookDragStartPos) ?? "32706, 17058";

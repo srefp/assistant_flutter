@@ -1,3 +1,5 @@
+import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/config/game_key_config.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 
@@ -22,7 +24,8 @@ const kUp = "kUp";
 const press = "press";
 const cp = "cp";
 const wheel = "wheel";
-const openMap = "openMap";
+const map = "map";
+const tpc = "tpc";
 
 const keys = [
   tp,
@@ -40,10 +43,11 @@ const keys = [
   press,
   cp,
   wheel,
-  openMap
+  map,
+  tpc,
 ];
 
-final JavascriptRuntime jsRuntime  = getJavascriptRuntime();
+final JavascriptRuntime jsRuntime = getJavascriptRuntime();
 
 late String jsFunction;
 
@@ -52,27 +56,57 @@ loadJsFunction() async {
 }
 
 void registerJsFunc() {
+  // 打印日志
   jsRuntime.onMessage('log', (params) {
     WindowsApp.logModel.info(params['info']);
   });
-  jsRuntime.onMessage('click', (params) async {
-    print('params: ${params}');
-    await KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(params['coords']), params['delay']);
-  });
-  jsRuntime.onMessage('press', (params) async {
-    print('params: ${params}');
-    await api.press(key: params['key']);
-    await Future.delayed(Duration(milliseconds: params['delay']));
-  });
-  jsRuntime.onMessage('wait', (param) async {
-    await Future.delayed(Duration(milliseconds: param));
-  });
+
+  // 弹出消息框
   jsRuntime.onMessage('tip', (params) async {
     if (params['duration'] == null) {
       params['duration'] = 3000;
     }
     showToast(params['message'], duration: params['duration']);
+  });
+
+  // 点击
+  jsRuntime.onMessage('click', (params) async {
+    await KeyMouseUtil.clickAtPoint(
+        convertDynamicListToIntList(params['coords']), params['delay']);
+  });
+
+  // 按键
+  jsRuntime.onMessage('press', (params) async {
+    await api.press(key: params['key']);
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 等待
+  jsRuntime.onMessage('wait', (param) async {
+    await Future.delayed(Duration(milliseconds: param));
+  });
+
+  // 开图
+  jsRuntime.onMessage('map', (params) async {
+    await api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
+    await api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 传送确认
+  jsRuntime.onMessage('tpc', (params) async {
+    await KeyMouseUtil.clickAtPoint(
+        convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcDelay());
+    await KeyMouseUtil.clickAtPoint(
+        convertDynamicListToIntList(AutoTpConfig.to.getConfirmPosIntList()),
+        params['delay']);
+  });
+
+  // 拖动
+  jsRuntime.onMessage('drag', (params) async {
+    await KeyMouseUtil.drag(
+        convertDynamicListToIntList(params['coords']));
+    await Future.delayed(Duration(milliseconds: params['delay']));
   });
 }
 

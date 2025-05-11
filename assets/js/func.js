@@ -34,8 +34,8 @@ async function wait(delay) {
 }
 
 // 开图
-async function openMap() {
-    sendMessage('openMap');
+async function map() {
+    sendMessage('map');
 }
 
 // 复制粘贴
@@ -76,6 +76,11 @@ async function drag(coords, shortMove, delay) {
 // 传送
 async function tp(params, remember, delay) {
     await sendMessage('tp', JSON.stringify({'params': params, 'remember': remember, 'delay': delay}));
+}
+
+// 传送确认
+async function tpc(coords, delay) {
+    await sendMessage('tpc', JSON.stringify({'coords': coords, 'delay': delay}));
 }
 
 // 图片
