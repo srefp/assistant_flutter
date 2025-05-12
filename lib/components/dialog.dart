@@ -5,9 +5,11 @@ dialog(
   BuildContext context, {
   required String title,
   String content = '',
+  barrierDismissible = true,
   Widget? child,
 }) {
   showDialog(
+      barrierDismissible: barrierDismissible,
       context: context,
       builder: (context) => ContentDialog(
             title: WinText(title),

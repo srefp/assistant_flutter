@@ -235,6 +235,7 @@ class ScriptEditorModel with ChangeNotifier {
   /// 显示脚本信息的模态框
   void showScriptInfo(BuildContext context) {
     showDialog(
+      barrierDismissible: true,
       context: context,
       builder: (context) =>
           Consumer<ScriptEditorModel>(builder: (context, model, child) {
@@ -301,6 +302,7 @@ class ScriptEditorModel with ChangeNotifier {
   /// 显示添加脚本的模态框
   void showAddScriptModel(BuildContext context) {
     showDialog(
+        barrierDismissible: true,
         context: context,
         builder: (context) =>
             Consumer<ScriptEditorModel>(builder: (context, model, child) {
@@ -393,6 +395,7 @@ class ScriptEditorModel with ChangeNotifier {
 
   void showDeleteScriptModel(BuildContext context) {
     showDialog(
+      barrierDismissible: true,
       context: context,
       builder: (context) =>
           Consumer<ScriptEditorModel>(builder: (context, model, child) {

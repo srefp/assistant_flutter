@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../app/windows_app.dart';
 import '../components/bool_config_row.dart';
 import '../components/int_config_row.dart';
 import '../components/string_config_row.dart';
@@ -321,7 +320,12 @@ final coordsConfigItems = [
 
 showOutDate(BuildContext context) {
   if (DateTime.now().isAfter(outDate)) {
-    dialog(context, title: '通知', content: '请下载新版本的耕地机，该版本已停止使用!');
+    dialog(
+      context,
+      title: '通知',
+      content: '请下载新版本的耕地机，该版本已停止使用!',
+      barrierDismissible: false,
+    );
     Future.delayed(const Duration(seconds: 5), () {
       windowManager.hide();
       trayManager.destroy();

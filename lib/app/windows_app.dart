@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:assistant/app/root_app.dart';
-import 'package:assistant/components/log_view_wrapper.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
@@ -180,7 +179,7 @@ class _WindowsAppState extends State<WindowsApp>
       items: [
         MenuItem(
           key: 'show_window',
-          label: 'Show Window',
+          label: '显示窗口',
           onClick: (item) {
             windowManager.show();
           },
@@ -188,8 +187,9 @@ class _WindowsAppState extends State<WindowsApp>
         MenuItem.separator(),
         MenuItem(
           key: 'exit_app',
-          label: 'Exit App',
+          label: '退出',
           onClick: (item) {
+            WindowsApp.autoTpModel.stop();
             windowManager.hide();
             trayManager.destroy();
             windowManager.destroy();
