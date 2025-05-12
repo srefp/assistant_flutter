@@ -76,8 +76,8 @@ dependencies:
   uuid: ^3.0.7
   dio: ^5.8.0+1
   windows_single_instance: ^1.0.1
-  opencv_dart: ^1.4.1
-  matrix2d: ^1.0.4
+#  opencv_dart: ^1.4.1
+#  matrix2d: ^1.0.4
   flutter_markdown: ^0.7.7
   sqflite_common_ffi: ^2.2.0+1
   sqflite: ^2.2.4+1
