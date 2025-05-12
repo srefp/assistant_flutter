@@ -37,7 +37,7 @@ class DbHelper {
           onCreate: (db, version) async {
             // 执行数据库创建操作
             await db.execute(TpRouteDb.ddl);
-            await db.execute(await TpRouteDb.initRouteSql);
+            // await db.execute(await TpRouteDb.initRouteSql);
           },
           onUpgrade: (db, oldVersion, newVersion) async {
             if (oldVersion < 2 && newVersion >= 2) {

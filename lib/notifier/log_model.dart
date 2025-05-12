@@ -15,7 +15,7 @@ class Operation {
 
   static Operation confirm = Operation(
       func: "click",
-      coords: RecordConfig.to.getConfirmPosition(),
+      coords: AutoTpConfig.to.getConfirmPosIntList(),
       template:
           "click(${AutoTpConfig.to.getConfirmPos()[0]}, ${AutoTpConfig.to.getConfirmPos()[1]}, %s);",
       prevDelay: AutoTpConfig.to.getClickRecordDelay());

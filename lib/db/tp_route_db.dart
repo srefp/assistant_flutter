@@ -10,6 +10,7 @@ class TpRouteDb {
       scriptType text, -- 脚本类型
       content text, -- 路线内容
       ratio text, -- 屏幕比例
+      videoUrl text, -- 视频地址
       remark text, -- 备注
       author text, -- 作者
       orderNum integer, -- 排序

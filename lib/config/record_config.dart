@@ -11,31 +11,16 @@ class RecordConfig with ConfigStorage {
   static const keyOpenMapKey = "openMapKey";
   static const keyConfirmOperationKey = "confirmOperationKey";
   static const keyConfirmPosition = "confirmPosition";
-  static const keyHalfTpDelay = "halfTpDelay";
   static const keyNextKey = "nextKey";
   static const keyPrevKey = "prevKey";
   static const keyShowCoordsKey = "showCoordsKey";
 
   bool getEnableDefaultDelay() => box.read(keyEnableDefaultDelay) ?? true;
 
-  int getOpenMapDelay() => box.read(keyOpenMapDelay) ?? 560;
-
-  int getClickDelay() => box.read(keyClickDelay) ?? 0;
-
-  int getDragDelay() => box.read(keyDragDelay) ?? 100;
-
   /// 判断为单击的最大误差
   int getClickDiff() => box.read(keyClickDiff) ?? 500;
 
   String getOpenMapKey() => box.read(keyOpenMapKey) ?? "m";
-
-  String getConfirmOperationKey() =>
-      box.read(keyConfirmOperationKey) ?? "enter";
-
-  List<int> getConfirmPosition() =>
-      box.read(keyConfirmPosition) ?? [53704, 61376];
-
-  int getHalfTpDelay() => box.read(keyHalfTpDelay) ?? 90;
 
   String getNextKey() => box.read(keyNextKey) ?? "right";
 }

@@ -17,6 +17,9 @@ class TpRoute {
   /// 屏幕比例
   String ratio;
 
+  /// 视频地址
+  String? videoUrl;
+
   /// 备注
   String? remark;
 
@@ -37,6 +40,7 @@ class TpRoute {
     this.remark,
     this.author = '-1',
     this.ratio = '16:9',
+    this.videoUrl,
     int? createdAt,
     int? updatedAt,
   }) {
@@ -53,6 +57,7 @@ class TpRoute {
         remark: json['remark'] as String?,
         author: json['author'] as String,
         ratio: json['ratio'] as String,
+        videoUrl: json['videoUrl'] as String?,
         createdAt: json['created_at'] as int?,
         updatedAt: json['updated_at'] as int?,
       );
@@ -65,11 +70,12 @@ class TpRoute {
         'remark': remark,
         'author': author,
         'ratio': ratio,
+        'videoUrl': videoUrl,
         'created_at': createdAt,
         'updated_at': updatedAt,
       };
 
   @override
   String toString() =>
-      'Route{id: $id, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, createdAt: $createdAt, updatedAt: $updatedAt}';
+      'Route{id: $id, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, videoUrl: $videoUrl, createdAt: $createdAt, updatedAt: $updatedAt}';
 }

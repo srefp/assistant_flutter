@@ -105,8 +105,6 @@ flutter:
     - assets/image/logo.png
     - assets/js/func.js
     - assets/doc/operation.md
-    - assets/route/-6.lua
-    - assets/route/肉 - 兽肉.lua
   fonts:
     - family: deluge
       fonts:
