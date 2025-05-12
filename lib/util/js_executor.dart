@@ -118,7 +118,7 @@ void registerJsFunc() {
 
   // 拖动
   jsRuntime.onMessage(drag, (params) async {
-    await KeyMouseUtil.drag(convertDynamicListToIntList(params['coords']));
+    await KeyMouseUtil.fastDrag(convertDynamicListToIntList(params['coords']), params['shortMove']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 }

@@ -21,7 +21,7 @@ class ConfigPage extends StatelessWidget {
           ),
           CustomSliverBox(
             child: WinText(
-              '快捷键',
+              '快捷键（这个功能还在开发中）',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           ),

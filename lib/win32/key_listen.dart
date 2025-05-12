@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
@@ -69,6 +70,10 @@ Timer? _fKeyTimer;
 
 /// 监听操作
 void listenKeyboard(int vkCode, int wParam) async {
+  if (!AutoTpConfig.to.isQuickPickEnabled()) {
+    return;
+  }
+
   final keyName = getKeyName(vkCode);
   if (keyName == HotkeyConfig.to.getQuickPickKey()) {
     if (wParam == WM_KEYDOWN) {

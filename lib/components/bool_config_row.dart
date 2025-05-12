@@ -3,31 +3,37 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import '../config/auto_tp_config.dart';
 
-typedef ValueCallback = int Function();
+typedef ValueCallback = bool Function();
 
-class IntConfigItem {
+class BoolConfigItem {
   final String title;
   final String subTitle;
   final String valueKey;
   final ValueCallback valueCallback;
 
-  IntConfigItem({
+  BoolConfigItem({
     required this.title,
-    required this.subTitle,
+    this.subTitle = '',
     required this.valueKey,
     required this.valueCallback,
   });
 }
 
-class IntConfigRow extends StatelessWidget {
-  final IntConfigItem item;
+class BoolConfigRow extends StatefulWidget {
+  final BoolConfigItem item;
   final String lightText;
 
-  const IntConfigRow({
+  const BoolConfigRow({
     super.key,
     required this.item,
     this.lightText = '',
   });
+
+  @override
+  State<BoolConfigRow> createState() => _BoolConfigRowState();
+}
+
+class _BoolConfigRowState extends State<BoolConfigRow> {
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +44,22 @@ class IntConfigRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: TitleWithSub(
-              title: item.title,
-              subTitle: item.subTitle,
-              lightText: lightText,
+              title: widget.item.title,
+              subTitle: widget.item.subTitle,
+              lightText: widget.lightText,
             ),
           ),
           SizedBox(
             width: 12,
           ),
           SizedBox(
-            height: 34,
-            width: 200,
-            child: NumberBox(
-              value: item.valueCallback(),
-              onChanged: (value) => AutoTpConfig.to.save(item.valueKey, value),
+            child: ToggleSwitch(
+              checked: widget.item.valueCallback(),
+              onChanged: (value) {
+                setState(() {
+                  AutoTpConfig.to.save(widget.item.valueKey, value);
+                });
+              },
             ),
           )
         ],

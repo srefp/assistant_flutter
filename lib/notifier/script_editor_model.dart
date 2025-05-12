@@ -6,7 +6,6 @@ import 'package:assistant/constants/ratio.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/db/tp_route_db.dart';
 import 'package:assistant/model/tp_route.dart';
-import 'package:assistant/notifier/script_record_model.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -80,10 +79,9 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 运行js代码
   void runJs(BuildContext context) async {
-    // if (!WindowsApp.autoTpModel.isRunning) {
-    //   appNotRunning(context);
-    //   return;
-    // }
+    if (!WindowsApp.autoTpModel.isRunning) {
+      WindowsApp.autoTpModel.start();
+    }
 
     isRunning = true;
     notifyListeners();

@@ -1,3 +1,4 @@
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -16,14 +17,14 @@ class Operation {
       func: "click",
       coords: RecordConfig.to.getConfirmPosition(),
       template:
-          "click(${RecordConfig.to.getConfirmPosition()[0]}, ${RecordConfig.to.getConfirmPosition()[1]}, %s);",
-      prevDelay: RecordConfig.to.getClickDelay());
+          "click(${AutoTpConfig.to.getConfirmPos()[0]}, ${AutoTpConfig.to.getConfirmPos()[1]}, %s);",
+      prevDelay: AutoTpConfig.to.getClickRecordDelay());
 
   static Operation openMap = Operation(
       func: "map",
       coords: [],
       template: "map(%s);",
-      prevDelay: RecordConfig.to.getOpenMapDelay());
+      prevDelay: AutoTpConfig.to.getMapRecordDelay());
 
   Operation({
     required this.func,
@@ -87,7 +88,7 @@ class LogModel extends ChangeNotifier {
           RecordConfig.to.getClickDiff()) {
         // 归类为单击
         final delay = RecordConfig.to.getEnableDefaultDelay()
-            ? RecordConfig.to.getClickDelay()
+            ? AutoTpConfig.to.getClickRecordDelay()
             : operation.prevDelay;
         previousOperation.template =
             "click([${operation.coords[0]}, ${operation.coords[1]}], $delay);";
@@ -95,10 +96,11 @@ class LogModel extends ChangeNotifier {
       } else {
         // 归类为拖动
         final delay = RecordConfig.to.getEnableDefaultDelay()
-            ? RecordConfig.to.getDragDelay()
+            ? AutoTpConfig.to.getDragRecordDelay()
             : operation.prevDelay;
+        final shortMove = AutoTpConfig.to.getShortMoveRecord();
         previousOperation.template =
-            "drag([${previousOperation.coords[0]}, ${previousOperation.coords[1]}, ${operation.coords[0]}, ${operation.coords[1]}], 15, $delay);";
+            "drag([${previousOperation.coords[0]}, ${previousOperation.coords[1]}, ${operation.coords[0]}, ${operation.coords[1]}], $shortMove, $delay);";
         previousOperation.prevDelay = delay;
       }
     } else {

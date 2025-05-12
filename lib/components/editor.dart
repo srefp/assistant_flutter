@@ -65,26 +65,18 @@ class _EditorState extends State<Editor> {
   Widget build(BuildContext context) {
     return Consumer<ScriptEditorModel>(builder: (context, model, child) {
       return CodeAutocomplete(
+        promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
+          directPrompts: const [
+            CodeKeywordPrompt(word: 'name: '),
+            CodeKeywordPrompt(word: 'script: '),
+          ],
+        ),
         viewBuilder: (context, notifier, onSelected) {
           return _DefaultCodeAutocompleteListView(
             notifier: notifier,
             onSelected: onSelected,
           );
         },
-        promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
-          language: langDart,
-          directPrompts: const [
-            CodeFieldPrompt(word: 'foo', type: 'String'),
-            CodeFieldPrompt(word: 'bar', type: 'String'),
-            CodeFunctionPrompt(word: 'hello', type: 'void', parameters: {
-              'value': 'String',
-            })
-          ],
-          relatedPrompts: {
-            'foo': _kStringPrompts,
-            'bar': _kStringPrompts,
-          },
-        ),
         child: CodeEditor(
           style: CodeEditorStyle(
             fontFamily: 'Consolas',

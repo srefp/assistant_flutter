@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:assistant/components/bool_config_row.dart';
 import 'package:assistant/components/button_with_icon.dart';
-import 'package:assistant/components/delay_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
+import 'package:assistant/components/int_config_row.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/util/asset_loader.dart';
@@ -11,8 +12,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../components/coords_config_row.dart';
 import '../components/divider.dart';
+import '../components/string_config_row.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
 import '../util/file_utils.dart';
@@ -110,20 +111,10 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         width: 12,
                       ),
                       ButtonWithIcon(
-                        text: '打开路线目录',
-                        icon: FluentIcons.open_folder_horizontal,
-                        onPressed: () {
-                          openRelativeOrAbsolute(getAssets('routes'));
-                        },
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      ButtonWithIcon(
                         text: '重新加载路线',
                         icon: FluentIcons.refresh,
                         onPressed: () {
-                          openRelativeOrAbsolute(getAssets('routes'));
+                          model.loadRoutes();
                         },
                       ),
                     ],
@@ -232,6 +223,41 @@ class _AutoTpPageState extends State<AutoTpPage> {
               icon: Icons.cases_rounded,
               title: '其他辅助',
               subTitle: '其他辅助功能',
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 400,
+                          height: 34,
+                          child: TextBox(
+                            controller: model.helpSearchController,
+                            placeholder: '搜索辅助功能',
+                            style: TextStyle(fontFamily: fontFamily),
+                            onChanged: (value) =>
+                                model.searchDisplayedHelpConfigItems(value),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedHelpConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedHelpConfigItems[index];
+                      return BoolConfigRow(
+                        item: item,
+                        lightText: model.helpLightText,
+                      );
+                    },
+                    shrinkWrap: true,
+                  ),
+                ],
+              ),
             ),
           ),
           CustomSliverBox(
@@ -275,6 +301,48 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       return IntConfigRow(
                         item: item,
                         lightText: model.delayLightText,
+                      );
+                    },
+                    shrinkWrap: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CustomSliverBox(
+            child: IconCard(
+              icon: Icons.access_time_outlined,
+              title: '录制参数',
+              subTitle: '录制路线时，默认的操作延迟 以及 其他操作参数',
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 400,
+                          height: 34,
+                          child: TextBox(
+                            controller: model.recordDelaySearchController,
+                            placeholder: '搜索延迟',
+                            style: TextStyle(fontFamily: fontFamily),
+                            onChanged: (value) =>
+                                model.searchDisplayedRecordDelayConfigItems(value),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedRecordDelayConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedRecordDelayConfigItems[index];
+                      return IntConfigRow(
+                        item: item,
+                        lightText: model.recordDelayLightText,
                       );
                     },
                     shrinkWrap: true,

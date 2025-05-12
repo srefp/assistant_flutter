@@ -39,7 +39,11 @@ class RouteExecutor {
 
       if (config.getRouteIndex() > 0 &&
           config.getRouteIndex() <= tpPoints.length) {
-        executeStep(tpPoints[config.getRouteIndex()], qm);
+        await executeStep(tpPoints[config.getRouteIndex() - 1], qm);
+        
+        // 刷新当前位置
+        final curPos = tpPoints[config.getRouteIndex() - 1].name ?? '点位${config.getRouteIndex()}';
+        WindowsApp.autoTpModel.selectPos(curPos);
       }
     } catch (e) {
       debugPrint(e.toString());

@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
-import '../components/coords_config_row.dart';
+import '../components/string_config_row.dart';
 import '../components/title_with_sub.dart';
 import '../util/search_utils.dart';
 

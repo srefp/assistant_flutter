@@ -56,6 +56,11 @@ class AutoTpConfig with ConfigStorage {
   static const keyCurrentRoute = "currentRoute";
   static const keyContinuousMode = "continuousMode";
   static const keyRouteIndex = "routeIndex";
+  static const keyQuickPickEnabled = "quickPickEnabled";
+  static const keyMapRecordDelay = "mapRecordDelay";
+  static const keyClickRecordDelay = "clickRecordDelay";
+  static const keyDragRecordDelay = "dragRecordDelay";
+  static const keyShortMoveRecord = "shortMoveRecord";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -136,7 +141,8 @@ class AutoTpConfig with ConfigStorage {
 
   String getConfirmPos() => box.read(keyConfirmPos) ?? "55753, 60951";
 
-  List<int> getConfirmPosIntList() => RouteUtil.stringToIntList(box.read(keyConfirmPos))?? [55753, 60951];
+  List<int> getConfirmPosIntList() =>
+      RouteUtil.stringToIntList(box.read(keyConfirmPos)) ?? [55753, 60951];
 
   String getBookDragStartPos() =>
       box.read(keyBookDragStartPos) ?? "32706, 17058";
@@ -171,4 +177,14 @@ class AutoTpConfig with ConfigStorage {
   bool isContinuousMode() => box.read(keyContinuousMode) ?? false;
 
   int getRouteIndex() => box.read(keyRouteIndex) ?? 0;
+
+  bool isQuickPickEnabled() => box.read(keyQuickPickEnabled) ?? true;
+
+  int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 500;
+
+  int getClickRecordDelay() => box.read(keyClickRecordDelay) ?? 60;
+
+  int getDragRecordDelay() => box.read(keyDragRecordDelay) ?? 60;
+
+  int getShortMoveRecord() => box.read(keyShortMoveRecord)?? 20;
 }

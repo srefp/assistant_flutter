@@ -11,8 +11,10 @@ import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../components/coords_config_row.dart';
-import '../components/delay_config_row.dart';
+import '../app/windows_app.dart';
+import '../components/bool_config_row.dart';
+import '../components/int_config_row.dart';
+import '../components/string_config_row.dart';
 import '../config/auto_tp_config.dart';
 import '../db/tp_route_db.dart';
 import '../main.dart';
@@ -23,6 +25,16 @@ import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
 import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
+
+/// 辅助功能开启/关闭配置
+final helpConfigItems = [
+  BoolConfigItem(
+    title: '开启辅助功能',
+    subTitle: '开启后，会自动执行一些操作',
+    valueKey: AutoTpConfig.keyQuickPickEnabled,
+    valueCallback: AutoTpConfig.to.isQuickPickEnabled,
+  ),
+];
 
 /// 游戏键位配置
 final gameKeyConfigItems = [
@@ -184,6 +196,33 @@ final delayConfigItems = [
     subTitle: '锚点多选等待时间',
     valueKey: AutoTpConfig.keyMultiSelectDelay,
     valueCallback: AutoTpConfig.to.getMultiSelectDelay,
+  ),
+];
+
+final recordDelayConfigItems = [
+  IntConfigItem(
+    title: '开图操作',
+    subTitle: '开图操作的延迟',
+    valueKey: AutoTpConfig.keyMapRecordDelay,
+    valueCallback: AutoTpConfig.to.getMapRecordDelay,
+  ),
+  IntConfigItem(
+    title: '点击操作',
+    subTitle: '点击操作的延迟',
+    valueKey: AutoTpConfig.keyClickRecordDelay,
+    valueCallback: AutoTpConfig.to.getClickRecordDelay,
+  ),
+  IntConfigItem(
+    title: '拖动操作',
+    subTitle: '拖动操作的后摇（完成拖动后的延迟）',
+    valueKey: AutoTpConfig.keyDragRecordDelay,
+    valueCallback: AutoTpConfig.to.getDragRecordDelay,
+  ),
+  IntConfigItem(
+    title: '拖动第一步的一小段移动距离',
+    subTitle: '拖动需要先移动一小段距离',
+    valueKey: AutoTpConfig.keyShortMoveRecord,
+    valueCallback: AutoTpConfig.to.getShortMoveRecord,
   ),
 ];
 
@@ -419,6 +458,27 @@ class AutoTpModel extends ChangeNotifier {
     return RouteUtil.parseFile(content);
   }
 
+  var helpLightText = '';
+  var displayedHelpConfigItems = helpConfigItems;
+  final helpSearchController = TextEditingController();
+
+  void searchDisplayedHelpConfigItems(String searchValue) {
+    helpLightText = searchValue;
+    if (searchValue.isEmpty) {
+      displayedHelpConfigItems = helpConfigItems;
+      notifyListeners();
+      return;
+    }
+    final filteredList = helpConfigItems
+        .where(
+            (item) => searchTextList(searchValue, [item.title, item.subTitle]))
+        .toList();
+    if (filteredList.isNotEmpty) {
+      displayedHelpConfigItems = filteredList;
+    }
+    notifyListeners();
+  }
+
   var delayLightText = '';
   var displayedDelayConfigItems = delayConfigItems;
   final delaySearchController = TextEditingController();
@@ -436,6 +496,27 @@ class AutoTpModel extends ChangeNotifier {
         .toList();
     if (filteredList.isNotEmpty) {
       displayedDelayConfigItems = filteredList;
+    }
+    notifyListeners();
+  }
+
+  var recordDelayLightText = '';
+  var displayedRecordDelayConfigItems = recordDelayConfigItems;
+  final recordDelaySearchController = TextEditingController();
+
+  void searchDisplayedRecordDelayConfigItems(String searchValue) {
+    recordDelayLightText = searchValue;
+    if (searchValue.isEmpty) {
+      displayedRecordDelayConfigItems = recordDelayConfigItems;
+      notifyListeners();
+      return;
+    }
+    final filteredList = recordDelayConfigItems
+        .where(
+            (item) => searchTextList(searchValue, [item.title, item.subTitle]))
+        .toList();
+    if (filteredList.isNotEmpty) {
+      displayedRecordDelayConfigItems = filteredList;
     }
     notifyListeners();
   }
