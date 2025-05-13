@@ -39,6 +39,18 @@ final helpConfigItems = [
     valueKey: AutoTpConfig.keyDashEnabled,
     valueCallback: AutoTpConfig.to.isDashEnabled,
   ),
+  BoolConfigItem(
+    title: '记录快速吃药',
+    subTitle: '双击b键，进入记录视频坐标模式，默认有20秒的时间，点击食品就记录成功，按`键快速吃药',
+    valueKey: AutoTpConfig.keyFoodRecordEnabled,
+    valueCallback: AutoTpConfig.to.isFoodRecordEnabled,
+  ),
+  StringConfigItem(
+    title: '快速吃药坐标',
+    subTitle: '坐标列表',
+    valueKey: AutoTpConfig.keyRecordedFoodPos,
+    valueCallback: AutoTpConfig.to.getRecordedFoodPos,
+  ),
 ];
 
 /// 游戏键位配置
@@ -636,5 +648,9 @@ class AutoTpModel extends ChangeNotifier {
   String getScreen() {
     return SystemControl.getCaptureRect(ScreenManager.instance.hWnd)
         .getWidthAndHeight();
+  }
+
+  void fresh() {
+    notifyListeners();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:assistant/components/config_item.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/config_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -8,20 +9,17 @@ import '../config/auto_tp_config.dart';
 typedef ValueCallback = String Function();
 typedef KeyItemCallback = HotKey Function();
 
-class StringConfigItem {
+class StringConfigItem extends ConfigItem {
   final int type;
   final KeyItemCallback? keyItemCallback;
   final HotKeyHandler? keyDownHandler;
-  final String title;
-  final String subTitle;
-  final String valueKey;
   final ValueCallback valueCallback;
 
   StringConfigItem({
     this.type = listen,
-    required this.title,
-    this.subTitle = '',
-    required this.valueKey,
+    required super.title,
+    super.subTitle = '',
+    required super.valueKey,
     required this.valueCallback,
     this.keyItemCallback,
     this.keyDownHandler,

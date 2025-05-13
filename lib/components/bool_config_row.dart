@@ -1,3 +1,4 @@
+import 'package:assistant/components/config_item.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -5,16 +6,13 @@ import '../config/auto_tp_config.dart';
 
 typedef ValueCallback = bool Function();
 
-class BoolConfigItem {
-  final String title;
-  final String subTitle;
-  final String valueKey;
+class BoolConfigItem extends ConfigItem {
   final ValueCallback valueCallback;
 
   BoolConfigItem({
-    required this.title,
-    this.subTitle = '',
-    required this.valueKey,
+    required super.title,
+    super.subTitle = '',
+    required super.valueKey,
     required this.valueCallback,
   });
 }
@@ -34,7 +32,6 @@ class BoolConfigRow extends StatefulWidget {
 }
 
 class _BoolConfigRowState extends State<BoolConfigRow> {
-
   @override
   Widget build(BuildContext context) {
     return Padding(

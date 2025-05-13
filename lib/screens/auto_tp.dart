@@ -250,22 +250,24 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedHelpConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedHelpConfigItems[index];
-                      return BoolConfigRow(
-                        item: item,
-                        lightText: model.helpLightText,
-                      );
+
+                      if (item is BoolConfigItem) {
+                        return BoolConfigRow(
+                          item: item,
+                          lightText: model.helpLightText,
+                        );
+                      } else if (item is StringConfigItem) {
+                        return StringConfigRow(
+                          item: item,
+                          lightText: model.helpLightText,
+                        );
+                      }
+                      return null;
                     },
                     shrinkWrap: true,
                   ),
                 ],
               ),
-            ),
-          ),
-          CustomSliverBox(
-            child: IconCard(
-              icon: Icons.fastfood,
-              title: '一键吃药',
-              subTitle: '自动吃预设的食物',
             ),
           ),
           CustomSliverBox(
@@ -328,8 +330,8 @@ class _AutoTpPageState extends State<AutoTpPage> {
                             controller: model.recordDelaySearchController,
                             placeholder: '搜索延迟',
                             style: TextStyle(fontFamily: fontFamily),
-                            onChanged: (value) =>
-                                model.searchDisplayedRecordDelayConfigItems(value),
+                            onChanged: (value) => model
+                                .searchDisplayedRecordDelayConfigItems(value),
                           ),
                         )
                       ],

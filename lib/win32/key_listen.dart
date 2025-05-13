@@ -10,6 +10,7 @@ import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
+import 'package:assistant/win32/toast.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
@@ -25,7 +26,7 @@ Pointer<NativeFunction<HOOKPROC>> setCallback(HookProc callback) {
 Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> setListenCallback(
     ListenProc callback) {
   return NativeCallable<LPTHREAD_START_ROUTINE>.isolateLocal(callback,
-      exceptionalReturn: 0)
+          exceptionalReturn: 0)
       .nativeFunction;
 }
 
@@ -71,6 +72,7 @@ void listenKeyboard(int vkCode, int wParam) async {
   final keyName = getKeyName(vkCode);
   quickPick(vkCode, wParam, keyName);
   dash(vkCode, wParam, keyName);
+  recordFood(vkCode, wParam, keyName);
 
   if (wParam != WM_KEYDOWN) {
     return;
@@ -82,6 +84,77 @@ void listenKeyboard(int vkCode, int wParam) async {
 
   if (keyName == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
+  }
+
+  if (keyName == '0xc0') {
+    eatFood();
+  }
+}
+
+bool foodSelected = false;
+
+void eatFood() async {
+  showToast('记录完成');
+  foodRecording = false;
+
+  if (foodRecordTimer != null) {
+    foodRecordTimer?.cancel();
+    foodRecordTimer = null;
+  }
+
+  api.keyDown(key: 'b');
+  await Future.delayed(Duration(milliseconds: 20));
+  api.keyUp(key: 'b');
+  await Future.delayed(Duration(milliseconds: 600));
+
+  if (!foodSelected) {
+    await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getFoodPosIntList(), 120);
+    foodSelected = true;
+  }
+
+  var foodList = AutoTpConfig.to.getRecordedFoodPosList();
+  for (var index = 0; index < foodList.length; index += 2) {
+    var foodPos = [foodList[index], foodList[index + 1]];
+    await KeyMouseUtil.clickAtPoint(foodPos, 60);
+    await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getConfirmPosIntList(), 60);
+  }
+}
+
+int lastBPressTime = 0;
+const double keyDoubleClickThreshold = 500;
+
+bool foodRecording = false;
+Timer? foodRecordTimer;
+
+void recordFood(int vkCode, int wParam, String keyName) async {
+  if (keyName == AutoTpConfig.to.getFoodKey()) {
+    if (wParam == WM_KEYDOWN) {
+      int currentTime = DateTime.now().millisecondsSinceEpoch;
+      if (currentTime - lastBPressTime < keyDoubleClickThreshold) {
+        // 点击食物
+        await Future.delayed(Duration(milliseconds: 600), () async {
+          await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getFoodPosIntList(), 100);
+          foodSelected = true;
+        });
+
+        foodRecording = true;
+        AutoTpConfig.to.save(AutoTpConfig.keyRecordedFoodPos, '');
+        WindowsApp.autoTpModel.fresh();
+
+        showToast('食品列表已清空，你有20秒的时间来记录食物坐标');
+
+        if (foodRecordTimer != null) {
+          foodRecordTimer?.cancel();
+          foodRecordTimer = null;
+        }
+
+        foodRecordTimer ??= Timer(Duration(seconds: 20), () {
+          showToast('记录完成');
+          foodRecording = false;
+        });
+      }
+      lastBPressTime = currentTime;
+    }
   }
 }
 
@@ -285,7 +358,7 @@ String getKeyName(int vkCode) {
     case VIRTUAL_KEY.VK_RWIN:
       return 'win(Right)';
     default:
-    // 处理字母和数字（A-Z, 0-9）
+      // 处理字母和数字（A-Z, 0-9）
       if (vkCode >= 0x30 && vkCode <= 0x39) {
         // 数字键 0-9
         return String.fromCharCode(vkCode);

@@ -291,10 +291,7 @@ class RouteUtil {
     return int.parse(str.trim());
   }
 
-  static List<int>? stringToIntList(String? str) {
-    if (str == null) {
-      return null;
-    }
+  static List<int> stringToIntList(String str) {
     List<int> res = [];
     str = str.replaceAll('[', '').replaceAll(']', '');
     List<String> tmpValues = str.split(RegExp(r', *'));

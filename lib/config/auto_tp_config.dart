@@ -62,6 +62,9 @@ class AutoTpConfig with ConfigStorage {
   static const keyDragRecordDelay = "dragRecordDelay";
   static const keyShortMoveRecord = "shortMoveRecord";
   static const keyDashEnabled = "dashEnabled";
+  static const keyFoodRecordEnabled = "foodRecordEnabled";
+  static const keyFoodKey = "foodKey";
+  static const keyRecordedFoodPos = "recordedFoodPos";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -143,7 +146,10 @@ class AutoTpConfig with ConfigStorage {
   String getConfirmPos() => box.read(keyConfirmPos) ?? "55753, 60951";
 
   List<int> getConfirmPosIntList() =>
-      RouteUtil.stringToIntList(box.read(keyConfirmPos)) ?? [55753, 60951];
+      RouteUtil.stringToIntList(getConfirmPos());
+
+  List<int> getFoodPosIntList() =>
+      RouteUtil.stringToIntList(getFoodPos());
 
   String getBookDragStartPos() =>
       box.read(keyBookDragStartPos) ?? "32706, 17058";
@@ -190,4 +196,22 @@ class AutoTpConfig with ConfigStorage {
   int getShortMoveRecord() => box.read(keyShortMoveRecord) ?? 20;
 
   bool isDashEnabled() => box.read(keyDashEnabled) ?? true;
+
+  bool isFoodRecordEnabled() => box.read(keyFoodRecordEnabled) ?? true;
+
+  String getFoodKey() => box.read(keyFoodKey) ?? 'b';
+
+  String getRecordedFoodPos() => box.read(keyRecordedFoodPos) ?? '';
+
+  List<int> getRecordedFoodPosList() =>
+      RouteUtil.stringToIntList(getRecordedFoodPos());
+
+  void addFoodPos(String foodPos) {
+    var text = box.read(keyRecordedFoodPos) ?? '';
+    if (text.isEmpty) {
+      box.write(keyRecordedFoodPos, foodPos);
+    } else {
+      box.write(keyRecordedFoodPos, '$text, $foodPos');
+    }
+  }
 }

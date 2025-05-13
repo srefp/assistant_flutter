@@ -22,8 +22,8 @@ Future<void> showToast(String message, {int duration = 3000}) async {
   const windowHeight = 45;
 
   // 计算窗口的位置
-  var windowX = x;
-  var windowY = y;
+  var windowX = x + 20;
+  var windowY = y + 12;
 
   // 如果鼠标在右下角，调整窗口位置到鼠标左上方
   if (x + windowWidth > screenWidth) {
