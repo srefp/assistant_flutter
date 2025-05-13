@@ -61,6 +61,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyClickRecordDelay = "clickRecordDelay";
   static const keyDragRecordDelay = "dragRecordDelay";
   static const keyShortMoveRecord = "shortMoveRecord";
+  static const keyDashEnabled = "dashEnabled";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -186,5 +187,7 @@ class AutoTpConfig with ConfigStorage {
 
   int getDragRecordDelay() => box.read(keyDragRecordDelay) ?? 60;
 
-  int getShortMoveRecord() => box.read(keyShortMoveRecord)?? 20;
+  int getShortMoveRecord() => box.read(keyShortMoveRecord) ?? 20;
+
+  bool isDashEnabled() => box.read(keyDashEnabled) ?? true;
 }

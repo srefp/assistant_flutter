@@ -28,10 +28,16 @@ import '../win32/window.dart';
 /// 辅助功能开启/关闭配置
 final helpConfigItems = [
   BoolConfigItem(
-    title: '开启辅助功能',
-    subTitle: '开启后，会自动执行一些操作',
+    title: '快捡',
+    subTitle: '长按F变成快速连发F加滚轮',
     valueKey: AutoTpConfig.keyQuickPickEnabled,
     valueCallback: AutoTpConfig.to.isQuickPickEnabled,
+  ),
+  BoolConfigItem(
+    title: '匀速冲刺',
+    subTitle: '按shift + w 可以匀速冲刺，之后可以松开shift，需要一直按住w。松开w就停止冲刺。',
+    valueKey: AutoTpConfig.keyDashEnabled,
+    valueCallback: AutoTpConfig.to.isDashEnabled,
   ),
 ];
 

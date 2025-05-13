@@ -25,7 +25,7 @@ Pointer<NativeFunction<HOOKPROC>> setCallback(HookProc callback) {
 Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> setListenCallback(
     ListenProc callback) {
   return NativeCallable<LPTHREAD_START_ROUTINE>.isolateLocal(callback,
-          exceptionalReturn: 0)
+      exceptionalReturn: 0)
       .nativeFunction;
 }
 
@@ -46,11 +46,12 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
 
     // 添加事件来源判断（0x10表示程序注入事件）
     if ((kbdStruct.ref.flags & 0x10) != 0) {
-      print('是模拟事件，跳过');
+      // print('是模拟事件，跳过');
       return res;
     }
 
-    if (WindowsApp.autoTpModel.isRunning && ScreenManager.instance.isGameActive()) {
+    if (WindowsApp.autoTpModel.isRunning &&
+        ScreenManager.instance.isGameActive()) {
       listenKeyboard(vkCode, wParam);
     }
 
@@ -65,20 +66,40 @@ final hookProcPointer = setCallback((nCode, wParam, lParam) {
   return res;
 });
 
+/// 监听操作
+void listenKeyboard(int vkCode, int wParam) async {
+  final keyName = getKeyName(vkCode);
+  quickPick(vkCode, wParam, keyName);
+  dash(vkCode, wParam, keyName);
+
+  if (wParam != WM_KEYDOWN) {
+    return;
+  }
+
+  if (keyName == RecordConfig.to.getNextKey()) {
+    RouteExecutor.tpNext(false);
+  }
+
+  if (keyName == HotkeyConfig.to.getShowCoordsKey()) {
+    KeyMouseUtil.showCoordinate();
+  }
+}
+
 // 添加全局定时器变量
 Timer? _fKeyTimer;
 
-/// 监听操作
-void listenKeyboard(int vkCode, int wParam) async {
+/// 快捡
+void quickPick(int vkCode, int wParam, String keyName) {
   if (!AutoTpConfig.to.isQuickPickEnabled()) {
     return;
   }
 
-  final keyName = getKeyName(vkCode);
   if (keyName == HotkeyConfig.to.getQuickPickKey()) {
     if (wParam == WM_KEYDOWN) {
       _fKeyTimer ??= Timer.periodic(Duration(milliseconds: 20), (timer) async {
-        if (!WindowsApp.autoTpModel.isRunning || !ScreenManager.instance.isGameActive()) {
+        // 后面可以判断按键是否按下：!(GetKeyState(VIRTUAL_KEY.VK_F) & 0x8000 != 0)
+        if (!WindowsApp.autoTpModel.isRunning ||
+            !ScreenManager.instance.isGameActive()) {
           _fKeyTimer?.cancel();
           _fKeyTimer = null;
           return;
@@ -94,16 +115,34 @@ void listenKeyboard(int vkCode, int wParam) async {
       _fKeyTimer = null;
     }
   }
+}
 
-  if (wParam != WM_KEYDOWN) {
+/// 匀速冲刺定时器
+Timer? _dashTimer;
+
+void dash(int vkCode, int wParam, String keyName) {
+  if (!AutoTpConfig.to.isDashEnabled()) {
     return;
   }
-  if (keyName == RecordConfig.to.getNextKey()) {
-    RouteExecutor.tpNext(false);
-  }
 
-  if (keyName == HotkeyConfig.to.getShowCoordsKey()) {
-    KeyMouseUtil.showCoordinate();
+  final shiftPressed = GetKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0;
+
+  if (shiftPressed && keyName == 'w' && wParam == WM_KEYDOWN) {
+    _dashTimer ??= Timer.periodic(Duration(milliseconds: 860), (timer) async {
+      if (!WindowsApp.autoTpModel.isRunning ||
+          !ScreenManager.instance.isGameActive()) {
+        _dashTimer?.cancel();
+        _dashTimer = null;
+        return;
+      }
+
+      api.keyDown(key: 'shift');
+      await Future.delayed(Duration(milliseconds: 20));
+      api.keyUp(key: 'shift');
+    });
+  } else if (keyName == 'w' && wParam == WM_KEYUP) {
+    _dashTimer?.cancel();
+    _dashTimer = null;
   }
 }
 
@@ -246,7 +285,7 @@ String getKeyName(int vkCode) {
     case VIRTUAL_KEY.VK_RWIN:
       return 'win(Right)';
     default:
-      // 处理字母和数字（A-Z, 0-9）
+    // 处理字母和数字（A-Z, 0-9）
       if (vkCode >= 0x30 && vkCode <= 0x39) {
         // 数字键 0-9
         return String.fromCharCode(vkCode);
