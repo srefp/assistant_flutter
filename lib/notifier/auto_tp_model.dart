@@ -598,9 +598,13 @@ class AutoTpModel extends ChangeNotifier {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
 
-    if (hWnd == 0 && context != null) {
-      dialog(context, title: '错误', content: '游戏窗口未启动!');
-      return;
+    if (hWnd == 0) {
+      if (context != null) {
+        dialog(context, title: '错误', content: '游戏窗口未启动!');
+        return;
+      } else {
+        return;
+      }
     }
 
     isRunning = true;

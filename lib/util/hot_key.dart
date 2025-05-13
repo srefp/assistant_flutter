@@ -1,3 +1,4 @@
+import 'package:assistant/config/hotkey_config.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
@@ -18,42 +19,28 @@ class KeyItem {
       });
 }
 
-/// 取消注册快捷键
-Future<void> unregisterHotKey() async {
-  await hotKeyManager.unregisterAll();
-}
+final Map<String, PhysicalKeyboardKey> physicalKeyMap = {
+  'f1': PhysicalKeyboardKey.f1,
+  'f2': PhysicalKeyboardKey.f2,
+  'f3': PhysicalKeyboardKey.f3,
+  'f4': PhysicalKeyboardKey.f4,
+  'f5': PhysicalKeyboardKey.f5,
+  'f6': PhysicalKeyboardKey.f6,
+  'f7': PhysicalKeyboardKey.f7,
+  'f8': PhysicalKeyboardKey.f8,
+  'f9': PhysicalKeyboardKey.f9,
+  'f10': PhysicalKeyboardKey.f10,
+  'f11': PhysicalKeyboardKey.f11,
+  'f12': PhysicalKeyboardKey.f12,
+  'enter': PhysicalKeyboardKey.enter,
+  'esc': PhysicalKeyboardKey.escape,
+};
 
 /// 注册快捷键
 void initHotKey() async {
   // 先取消所有注册的全局快捷键
   await hotKeyManager.unregisterAll();
-  // 再添加快捷键
-  final keyItemList = [
-    // 全局快捷键
-    // 1. 开启
-    KeyItem(
-      PhysicalKeyboardKey.f7,
-      scope: HotKeyScope.system,
-      callback: () {
-        WindowsApp.autoTpModel.startOrStop();
-      },
-    ),
-  ];
-  for (var e in keyItemList) {
-    await registerHotKey(e);
-  }
-}
-
-/// 注册快捷键
-Future<void> registerHotKey(final KeyItem item) async {
-  // 再添加全局快捷键
-  HotKey hotKey = HotKey(
-    key: item.keyCode,
-    modifiers: item.modifiers,
-    scope: item.scope,
-  );
-  await hotKeyManager.register(
-    hotKey,
-    keyDownHandler: (hotKey) => item.callback?.call(),
-  );
+  await hotKeyManager.register(HotkeyConfig.to.getStartStopKeyItem(), keyDownHandler: (hotKey) {
+    WindowsApp.autoTpModel.startOrStop();
+  });
 }

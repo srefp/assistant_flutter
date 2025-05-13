@@ -14,14 +14,12 @@ class ConfigPage extends StatelessWidget {
       return CustomScrollView(
         slivers: [
           CustomSliverBox(
-            child: const SizedBox(
-              height: 12,
-            ),
-          ),
-          CustomSliverBox(
-            child: WinText(
-              '快捷键（这个功能还在开发中）',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: WinText(
+                '快捷键',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           CustomSliverBox(child: SizedBox(height: 16)),

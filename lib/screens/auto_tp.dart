@@ -66,9 +66,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
       return CustomScrollView(
         slivers: [
           CustomSliverBox(
-            child: WinText(
-              '自动传送',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: WinText(
+                '自动传送',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           CustomSliverBox(

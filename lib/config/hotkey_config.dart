@@ -1,4 +1,7 @@
 import 'package:assistant/config/config_storage.dart';
+import 'package:assistant/util/hot_key.dart';
+import 'package:flutter/services.dart';
+import 'package:hotkey_manager_platform_interface/src/hotkey.dart';
 
 class HotkeyConfig with ConfigStorage {
   static final HotkeyConfig to = HotkeyConfig();
@@ -25,4 +28,13 @@ class HotkeyConfig with ConfigStorage {
   String getTpPrev() => box.read(keyTpPrev) ?? 'left';
 
   String getQuickPickKey() => box.read(keyQuickPickKey) ?? "f";
+
+  HotKey getStartStopKeyItem() {
+    return HotKey(
+      identifier: keyStartStopKey,
+      key: physicalKeyMap[getStartStopKey()] ?? PhysicalKeyboardKey.f7,
+      scope: HotKeyScope.system,
+      modifiers: [],
+    );
+  }
 }
