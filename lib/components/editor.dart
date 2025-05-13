@@ -5,39 +5,10 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
-import 'package:re_highlight/languages/dart.dart';
 import 'package:re_highlight/languages/javascript.dart';
 
 import 'find.dart';
 import 'menu.dart';
-
-const List<CodePrompt> _kStringPrompts = [
-  CodeFieldPrompt(word: 'length', type: 'int'),
-  CodeFieldPrompt(word: 'isEmpty', type: 'bool'),
-  CodeFieldPrompt(word: 'isNotEmpty', type: 'bool'),
-  CodeFieldPrompt(word: 'characters', type: 'Characters'),
-  CodeFieldPrompt(word: 'hashCode', type: 'int'),
-  CodeFieldPrompt(word: 'codeUnits', type: 'List<int>'),
-  CodeFieldPrompt(word: 'runes', type: 'Runes'),
-  CodeFunctionPrompt(
-      word: 'codeUnitAt', type: 'int', parameters: {'index': 'int'}),
-  CodeFunctionPrompt(word: 'replaceAll', type: 'String', parameters: {
-    'from': 'Pattern',
-    'replace': 'String',
-  }),
-  CodeFunctionPrompt(word: 'contains', type: 'bool', parameters: {
-    'other': 'String',
-  }),
-  CodeFunctionPrompt(word: 'split', type: 'List<String>', parameters: {
-    'pattern': 'Pattern',
-  }),
-  CodeFunctionPrompt(word: 'endsWith', type: 'bool', parameters: {
-    'other': 'String',
-  }),
-  CodeFunctionPrompt(word: 'startsWith', type: 'bool', parameters: {
-    'other': 'String',
-  })
-];
 
 /// 代码编辑器
 class Editor extends StatefulWidget {
@@ -290,7 +261,7 @@ extension _TextStyleExtension on TextStyle {
     required String anchor,
     required Color color,
     FontWeight? fontWeight,
-    bool casesensitive = false,
+    bool caseSensitive = false,
   }) {
     if (anchor.isEmpty) {
       return TextSpan(
@@ -299,7 +270,7 @@ extension _TextStyleExtension on TextStyle {
       );
     }
     final int index;
-    if (casesensitive) {
+    if (caseSensitive) {
       index = value.indexOf(anchor);
     } else {
       index = value.toLowerCase().indexOf(anchor.toLowerCase());

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
-import 'package:assistant/config/record_config.dart';
 import 'package:flutter_auto_gui_windows/flutter_auto_gui_windows.dart';
 
 import '../config/auto_tp_config.dart';

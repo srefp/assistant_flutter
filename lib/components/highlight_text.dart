@@ -42,16 +42,15 @@ class HighlightText extends StatelessWidget {
 
   HighlightText(
     this.text, {
-    Key? key,
+    super.key,
     this.lightText = '',
     this.style,
-  })  : this.textLower = text.toLowerCase(),
-        this.lightStyle = style?.copyWith(
+  })  : textLower = text.toLowerCase(),
+        lightStyle = style?.copyWith(
           color: Colors.orangeAccent,
-        ),
-        super(key: key) {
-    this.pinyinShort = textLower.pinyinShort;
-    this.pinyinAndPosMap = textLower.pinyinAndPosMap;
+        ) {
+    pinyinShort = textLower.pinyinShort;
+    pinyinAndPosMap = textLower.pinyinAndPosMap;
   }
 
   @override

@@ -7,7 +7,6 @@ import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/int_config_row.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
-import 'package:assistant/util/asset_loader.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,6 @@ import '../components/divider.dart';
 import '../components/string_config_row.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
-import '../util/file_utils.dart';
 
 bool finishedSettingTheme = false;
 

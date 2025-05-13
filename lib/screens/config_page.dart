@@ -3,7 +3,6 @@ import 'package:assistant/screens/auto_tp.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
-import '../components/divider.dart';
 import '../components/win_text.dart';
 
 class ConfigPage extends StatelessWidget {

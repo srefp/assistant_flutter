@@ -57,7 +57,6 @@ class RouteExecutor {
   }
 
   static Future<void> executeStep(TpPoint tpPoint, bool qmParam) async {
-    print('执行脚本：${tpPoint.script}');
     if (tpPoint.script != null) {
       await runScript(tpPoint.script!);
     }

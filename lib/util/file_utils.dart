@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:assistant/extensions/string_extension.dart';
 import 'package:assistant/util/path_manage.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:uuid/uuid.dart';
 
 import '../config/file_info_config.dart';
 import 'log_util.dart';
-import 'message_utils.dart';
 
 
 /// 拼接 baseDir 得到真实路径
@@ -69,7 +67,7 @@ Future<String> renameFileOrDir(
 Future<void> openUrl(String? url, {bool notify = true}) async {
   if (url == null || url.isBlank) {
     if (notify) {
-      snack('错误', '网址为空！');
+      // snack('错误', '网址为空！');
     }
     return;
   }
@@ -77,7 +75,7 @@ Future<void> openUrl(String? url, {bool notify = true}) async {
     await launchUrlString(url);
   } catch (e) {
     if (notify) {
-      snack('错误', '无法识别此网址');
+      // snack('错误', '无法识别此网址');
     }
     appLog.error('无法打开网址！${e.toString()}');
   }
@@ -97,7 +95,7 @@ Future<void> launchExternal(String path) async {
 Future<void> openRelativeOrAbsolute(String? path, {bool notify = true}) async {
   if (path == null || path.isBlank) {
     if (notify) {
-      snack('错误', '路径为空！');
+      // snack('错误', '路径为空！');
     }
     return;
   }
@@ -112,7 +110,7 @@ Future<void> openRelativeOrAbsolute(String? path, {bool notify = true}) async {
 Future<void> _openFileOrDir(String? path, {bool notify = true}) async {
   if (path == null || path.isBlank) {
     if (notify) {
-      snack('错误', '路径为空！');
+      // snack('错误', '路径为空！');
     }
     return;
   }
@@ -120,7 +118,7 @@ Future<void> _openFileOrDir(String? path, {bool notify = true}) async {
     await launchUrlString(path);
   } catch (e, s) {
     if (notify) {
-      snack('错误', '无法识别路径');
+      // snack('错误', '无法识别路径');
     }
     appLog.error('无法打开路径！${e.toString()}', s);
   }
@@ -212,7 +210,7 @@ Future<String> _moveAndDeleteDir(
     if (notCopiedFileNum == 0) {
       await sourceDirectory.delete(recursive: true);
     } else {
-      Get.snackbar('警告', '文件夹中的文件未完全复制！');
+      // Get.snackbar('警告', '文件夹中的文件未完全复制！');
     }
   } catch (e) {
     appLog.error(e.toString());
@@ -246,7 +244,7 @@ Future<String> _copyAndDeleteFile(File sourceFile, String targetPath) async {
     await sourceFile.copy(targetPath);
   } catch (e, s) {
     appLog.error('拷贝失败！${e.toString()}', s);
-    snack('错误', '拷贝失败！');
+    // snack('错误', '拷贝失败！');
     return targetPath;
   }
   // 检查：
@@ -261,7 +259,7 @@ Future<String> _copyAndDeleteFile(File sourceFile, String targetPath) async {
       await sourceFile.delete();
     } catch (e) {
       appLog.error(e.toString());
-      snack('错误', '原文件正在被使用，无法被删除');
+      // snack('错误', '原文件正在被使用，无法被删除');
     }
   }
   return targetPath;

@@ -48,7 +48,6 @@ class HotkeyConfigRow extends StatelessWidget {
             child: HotKeyRecorder(
               initalHotKey: HotKey(key: PhysicalKeyboardKey.f7),
               onHotKeyRecorded: (HotKey value) {
-                print('value: ${value.debugName}');
                 // HotkeyConfig.to.save(item.valueKey, value.toString());
               },
               // child: TextBox(

@@ -57,15 +57,15 @@ extension StringExtension on String {
     return splits.last;
   }
 
-  /// 转换为 List<int>
+  /// 转换为 int list
   List<int> get getIntList {
-    List<String> list = this.split(',');
+    List<String> list = split(',');
     return list.map((e) => int.parse(e)).toList();
   }
 
-  /// 转换为 Set<int>
+  /// 转换为 int set
   Set<int> get getIntSet {
-    List<String> list = this.split(',');
+    List<String> list = split(',');
     return list.map((e) => int.parse(e)).toSet();
   }
 
@@ -93,10 +93,10 @@ extension StringExtension on String {
         String pinyin = PinyinHelper.getPinyinE(temp.toString(),
             separator: pinyinSeparator);
         List<String> pinyinArray = pinyin.split(pinyinSeparator);
-        pinyinArray.forEach((v) {
+        for (var v in pinyinArray) {
           sb.write(v[0]);
           i++;
-        });
+        }
         i--;
         temp.clear();
       } else {
@@ -136,22 +136,20 @@ extension StringExtension on String {
       MultiPinyin? node =
           PinyinHelper.convertToMultiPinyin(subStr, separator, format);
       if (node == null) {
-        String _char = str[i];
+        String char = str[i];
         reverseMap[i] = sb.length;
-        if (ChineseHelper.isChinese(_char)) {
+        if (ChineseHelper.isChinese(char)) {
           List<String> pinyinArray =
-              PinyinHelper.convertToPinyinArray(_char, format);
+              PinyinHelper.convertToPinyinArray(char, format);
           if (pinyinArray.isNotEmpty) {
             map[sb.length] =
                 PinyinStartAndLen(startPos: i, len: pinyinArray[0].length);
             sb.write(pinyinArray[0]);
           } else {
             sb.write(defPinyin);
-            print(
-                "### Can't convert to pinyin: $_char , defPinyin: $defPinyin");
           }
         } else {
-          sb.write(_char);
+          sb.write(char);
         }
         if (i < strLen) {
           sb.write(separator);
@@ -175,10 +173,10 @@ extension StringExtension on String {
 
   /// 获取拼音
   String get pinyinFirstLetter {
-    if (this.startsWith('调度')) {
+    if (startsWith('调度')) {
       return 'D';
     }
-    return this.isEmpty
+    return isEmpty
         ? ''
         : PinyinHelper.getFirstWordPinyin(this)[0].toUpperCase();
   }

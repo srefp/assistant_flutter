@@ -8,10 +8,10 @@ import '../win32/models.dart';
 import '../win32/task_manager.dart';
 
 // 窗口事件常量
-const EVENT_SYSTEM_MOVESIZEEND = 0x000B;
-const EVENT_OBJECT_DESTROY = 0x8001;
-const WINEVENT_OUTOFCONTEXT = 0x0000;
-const WINEVENT_SKIPOWNPROCESS = 0x0002;
+const eventSystemMoveSizeEnd = 0x000B;
+const eventObjectDestroy = 0x8001;
+const winEventOutOfContext = 0x0000;
+const winEventSkipOwnProcess = 0x0002;
 
 // 添加以下函数声明
 final _user32 = DynamicLibrary.open('user32.dll');
@@ -35,7 +35,7 @@ typedef WinEventProcDart = void Function(
   int dwmsEventTime,
 );
 
-final SetWinEventHook = _user32.lookupFunction<
+final setWinEventHook = _user32.lookupFunction<
     IntPtr Function(
         Uint32 eventMin,
         Uint32 eventMax,
@@ -53,7 +53,7 @@ final SetWinEventHook = _user32.lookupFunction<
         int idThread,
         int dwFlags)>('SetWinEventHook');
 
-final UnhookWinEvent = _user32.lookupFunction<
+final unhookWinEvent = _user32.lookupFunction<
     Int32 Function(IntPtr hWinEventHook),
     int Function(int hWinEventHook)>('UnhookWinEvent');
 
@@ -69,22 +69,22 @@ class ScreenManager {
 
   // 添加窗口事件监听
   void startListen() {
-    _hook = SetWinEventHook(
-        EVENT_SYSTEM_MOVESIZEEND,
+    _hook = setWinEventHook(
+        eventSystemMoveSizeEnd,
         // 窗口移动/调整大小事件
-        EVENT_OBJECT_DESTROY,
+        eventObjectDestroy,
         // 窗口销毁事件
         0,
         Pointer.fromFunction(_winEventProc),
         0,
         0,
-        WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+        winEventOutOfContext | winEventSkipOwnProcess);
   }
 
   // 停止监听
   void stopListen() {
     if (_hook != 0) {
-      UnhookWinEvent(_hook);
+      unhookWinEvent(_hook);
       _hook = 0;
     }
   }
@@ -97,13 +97,12 @@ class ScreenManager {
     if (hwnd != instance.hWnd) return;
 
     switch (event) {
-      case EVENT_SYSTEM_MOVESIZEEND:
+      case eventSystemMoveSizeEnd:
         instance.refreshWindowHandle();
-        print('窗口移动了');
         // 触发窗口移动后的处理
         break;
-      case EVENT_OBJECT_DESTROY:
-        instance.hWnd = 0; // 窗口已关闭
+      case eventObjectDestroy:
+        instance.hWnd = 0;
         // 触发窗口关闭后的处理
         WindowsApp.autoTpModel.stop();
         break;

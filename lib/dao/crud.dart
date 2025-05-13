@@ -85,7 +85,7 @@ Future<Operation> insertOrUpdateDb(
     ) async {
   List<Map<String, dynamic>> data = await db
       .query(tableName, where: 'id = ?', whereArgs: [e['id'].toString()]);
-  if (data.length == 0) {
+  if (data.isEmpty) {
     await db.insert(tableName, e);
     return Operation.insert;
   } else {

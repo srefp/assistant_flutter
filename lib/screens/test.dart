@@ -50,7 +50,6 @@ class Test extends StatelessWidget {
                 onPressed: () {
                   var rect = ScreenRect(0, 0, 6000, 3000);
                   var data = captureImageWin(rect);
-                  print('data: ${data?.length}');
                   if (data == null) {
                     return;
                   }

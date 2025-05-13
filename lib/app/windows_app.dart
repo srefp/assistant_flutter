@@ -202,8 +202,7 @@ class _WindowsAppState extends State<WindowsApp>
 
   /// 验证客户端
   void verifyClient() {
-    var response = Dio().get(VerificationConfig.to.verificationServer());
-    print(response);
+    Dio().get(VerificationConfig.to.verificationServer());
   }
 }
 
