@@ -9,7 +9,7 @@ import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
-const String version = '2025.5';
+const String version = '2025.5.3';
 const String innerVersion = '2025.5.1';
 const String appId = 'assistant';
 const int versionCode = 1;

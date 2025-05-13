@@ -77,7 +77,8 @@ void registerJsFunc() {
 
   // 按键
   jsRuntime.onMessage(press, (params) async {
-    await api.press(key: params['key']);
+    api.keyDown(key: params['key']);
+    api.keyUp(key: params['key']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
@@ -88,15 +89,13 @@ void registerJsFunc() {
 
   // 开图
   jsRuntime.onMessage(map, (params) async {
-    print('map params = $params');
-    await api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
-    await api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
+    api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
+    api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
   // 传送确认
   jsRuntime.onMessage(tpc, (params) async {
-    print('tpc params = $params');
     await KeyMouseUtil.clickAtPoint(
         convertDynamicListToIntList(params['coords']),
         AutoTpConfig.to.getTpcDelay());

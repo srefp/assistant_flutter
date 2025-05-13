@@ -79,23 +79,23 @@ class KeyMouseUtil {
 
   static Future<void> moveWithoutStep(List<int> point) async {
     var res = physicalPos(point);
-    await Simulation.sendInput.mouse.move(res);
+    Simulation.sendInput.mouse.move(res);
   }
 
   static Future<void> click() async {
-    await Simulation.sendInput.mouse.leftButtonClick();
+    Simulation.sendInput.mouse.leftButtonClick();
   }
 
   static Future<void> clickAtPoint(List<int> point, int delay) async {
     var res = physicalPos(point);
-    await Simulation.sendInput.mouse.move(res);
+    Simulation.sendInput.mouse.move(res);
     await Future.delayed(Duration(milliseconds: 2));
-    await Simulation.sendInput.mouse.leftButtonClick();
+    Simulation.sendInput.mouse.leftButtonClick();
     await Future.delayed(Duration(milliseconds: delay));
   }
 
   static Future<void> clickRight() async {
-    await Simulation.sendInput.mouse.rightButtonClick();
+    Simulation.sendInput.mouse.rightButtonClick();
   }
 
   static List<int> getCurLogicalPos() {
