@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:win32/win32.dart';
 
@@ -99,10 +100,13 @@ class ScreenManager {
     switch (event) {
       case eventSystemMoveSizeEnd:
         instance.refreshWindowHandle();
-        // 触发窗口移动后的处理
+
+        // 触发窗口移动后，重新计算窗口矩形
+        SystemControl.rect = SystemControl.getCaptureRect(instance.hWnd);
         break;
       case eventObjectDestroy:
         instance.hWnd = 0;
+
         // 触发窗口关闭后的处理
         WindowsApp.autoTpModel.stop();
         break;

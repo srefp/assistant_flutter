@@ -73,7 +73,7 @@ class ScriptEditorModel with ChangeNotifier {
   bool isRunning = false;
 
   String get ratio {
-    final rect = SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    final rect = SystemControl.rect;
     return Ratio.fromWidthHeight(rect.width, rect.height).name;
   }
 

@@ -40,6 +40,8 @@ class SystemControl {
     return ScreenRect(0, 0, width, height);
   }
 
+  static ScreenRect rect = getScreenRect();
+
   static ScreenRect getCaptureRect(int hWnd) {
     if (hWnd == 0) {
       return getScreenRect();
@@ -56,6 +58,7 @@ class SystemControl {
 
   static ScreenRect getWindowRect(int hWnd) {
     final rect = calloc<RECT>();
+
     // 调用DwmGetWindowAttribute获取窗口位置
     final result = DwmGetWindowAttribute(
       hWnd,

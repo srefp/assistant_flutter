@@ -615,6 +615,7 @@ class AutoTpModel extends ChangeNotifier {
   void start({BuildContext? context}) {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
+    SystemControl.rect = SystemControl.getCaptureRect(hWnd);
 
     if (hWnd == 0) {
       if (context != null) {
@@ -646,8 +647,7 @@ class AutoTpModel extends ChangeNotifier {
   }
 
   String getScreen() {
-    return SystemControl.getCaptureRect(ScreenManager.instance.hWnd)
-        .getWidthAndHeight();
+    return SystemControl.rect.getWidthAndHeight();
   }
 
   void fresh() {

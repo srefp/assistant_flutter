@@ -99,19 +99,16 @@ class KeyMouseUtil {
   }
 
   static List<int> getCurLogicalPos() {
-    var currentRect =
-        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
-    var point = getMousePos();
+    final currentRect = SystemControl.rect;
+    final point = getMousePos();
     return [
-      ((point[0] - currentRect.left) * factor / (currentRect.width))
-          .toInt(),
+      ((point[0] - currentRect.left) * factor / (currentRect.width)).toInt(),
       ((point[1] - currentRect.top) * factor / (currentRect.height)).toInt()
     ];
   }
 
   static List<int> logicalDistance(List<int> distance) {
-    var currentRect =
-        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    final currentRect = SystemControl.rect;
     return [
       (distance[0] * factor / (currentRect.width - 1)).floor(),
       (distance[1] * factor / (currentRect.height - 1)).floor()
@@ -119,8 +116,7 @@ class KeyMouseUtil {
   }
 
   static List<int> physicalDistance(List<int> distance) {
-    var currentRect =
-        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    final currentRect = SystemControl.rect;
     return [
       (distance[0] * (currentRect.width - 1) / factor).ceil(),
       (distance[1] * (currentRect.height - 1) / factor).ceil()
@@ -128,8 +124,7 @@ class KeyMouseUtil {
   }
 
   static List<int> logicalPos(List<int> pPos) {
-    var currentRect =
-        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    final currentRect = SystemControl.rect;
     return [
       ((pPos[0] - currentRect.left) * factor / (currentRect.width - 1)).floor(),
       ((pPos[1] - currentRect.top) * factor / (currentRect.height - 1)).floor()
@@ -137,8 +132,7 @@ class KeyMouseUtil {
   }
 
   static List<int> physicalPos(List<int> lPos) {
-    var currentRect =
-        SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    final currentRect = SystemControl.rect;
     return [
       currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).ceil(),
       currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil()
@@ -204,25 +198,33 @@ class KeyMouseUtil {
       List<int> end = [drag[2], drag[3]];
 
       moveWithoutStep(start);
-      await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
 
       await Simulation.sendInput.mouse.leftButtonDown();
-      await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
 
       List<int> distance = [end[0] - start[0], end[1] - start[1]];
       if (distance[0] != 0) {
-        moveRWithoutStep(logicalDistance(getShortMove([distance[0], 0], shortMove)));
-        await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+        moveRWithoutStep(
+            logicalDistance(getShortMove([distance[0], 0], shortMove)));
+        await Future.delayed(
+            Duration(milliseconds: config.getDragMoveStepDelay()));
       } else if (distance[1] != 0) {
-        moveRWithoutStep(logicalDistance(getShortMove([0, distance[1]], shortMove)));
-        await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+        moveRWithoutStep(
+            logicalDistance(getShortMove([0, distance[1]], shortMove)));
+        await Future.delayed(
+            Duration(milliseconds: config.getDragMoveStepDelay()));
       }
 
       moveWithoutStep(end);
-      await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
 
       await Simulation.sendInput.mouse.leftButtonUp();
-      await Future.delayed(Duration(milliseconds: config.getDragReleaseMouseDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragReleaseMouseDelay()));
     }
   }
 
@@ -258,7 +260,8 @@ class KeyMouseUtil {
       var end = physicalPos([drag[2], drag[3]]);
 
       await Simulation.sendInput.mouse.move(start);
-      await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
       await mouseMoveMapX(((end[0] - start[0]) / pixelNum).toInt());
       await mouseMoveMapY(((end[1] - start[1]) / pixelNum).toInt());
     }
@@ -271,18 +274,21 @@ class KeyMouseUtil {
     var config = AutoTpConfig.to;
     var moveUnit = dx > 0 ? 20 : -20;
     await Simulation.sendInput.mouse.leftButtonDown();
-    await Future.delayed(Duration(milliseconds: config.getDragReleaseMouseDelay()));
+    await Future.delayed(
+        Duration(milliseconds: config.getDragReleaseMouseDelay()));
     var times = dx / moveUnit;
 
     for (var i = 0; i < times; i++) {
       await Simulation.sendInput.mouse.moveMouseBy([moveUnit, 0]);
-      await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
     }
 
     await Simulation.sendInput.mouse.leftButtonUp();
     await Simulation.sendInput.mouse.leftButtonDown();
     await Simulation.sendInput.mouse.leftButtonUp();
-    await Future.delayed(Duration(milliseconds: config.getDragReleaseMouseDelay()));
+    await Future.delayed(
+        Duration(milliseconds: config.getDragReleaseMouseDelay()));
   }
 
   /// 在Y轴上执行鼠标移动映射操作
@@ -297,7 +303,8 @@ class KeyMouseUtil {
 
     for (var i = 0; i < times; i++) {
       await Simulation.sendInput.mouse.moveMouseBy([0, moveUnit]);
-      await Future.delayed(Duration(milliseconds: config.getDragReleaseMouseDelay()));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragReleaseMouseDelay()));
     }
 
     await Simulation.sendInput.mouse.leftButtonUp();
