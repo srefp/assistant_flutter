@@ -336,10 +336,9 @@ final coordsConfigItems = [
   ),
 ];
 
-showOutDate(BuildContext context) {
+showOutDate() {
   if (DateTime.now().isAfter(outDate)) {
     dialog(
-      context,
       title: '通知',
       content: '请下载新版本的耕地机，该版本已停止使用!',
       barrierDismissible: false,
@@ -353,7 +352,6 @@ showOutDate(BuildContext context) {
   } else {
     if (!AppConfig.to.getOutDateNotificationDisabled()) {
       dialog(
-        context,
         title: '注意',
         child: OutOfDateNotification(),
       );
@@ -616,23 +614,19 @@ class AutoTpModel extends ChangeNotifier {
     }
   }
 
-  void start({BuildContext? context}) {
+  void start() {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
     SystemControl.rect = SystemControl.getCaptureRect(hWnd);
 
     if (hWnd == 0) {
-      if (context != null) {
-        dialog(context, title: '错误', content: '游戏窗口未启动!');
-        return;
-      } else {
-        return;
-      }
+      dialog(title: '错误', content: '游戏窗口未启动!');
+      return;
     }
 
     isRunning = true;
-    startKeyboardHook();
-    startMouseHook();
+    // startKeyboardHook();
+    // startMouseHook();
 
     setForegroundWindow(hWnd);
 
@@ -643,8 +637,8 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
-    stopKeyboardHook();
-    stopMouseHook();
+    // stopKeyboardHook();
+    // stopMouseHook();
     ScreenManager.instance.stopListen();
 
     notifyListeners();

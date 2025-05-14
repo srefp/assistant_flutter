@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  bot_toast:
+    dependency: "direct main"
+    description:
+      name: bot_toast
+      sha256: "6b93030a99a98335b8827ecd83021e92e885ffc61d261d3825ffdecdd17f3bdf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.3"
   characters:
     dependency: transitive
     description:
@@ -849,6 +857,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  superuser:
+    dependency: "direct main"
+    description:
+      name: superuser
+      sha256: dfd6fca51838ec3d15068b61ef9b3cfa81ee096b1c79d4334de69778fbdd7f0e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  superuser_interfaces:
+    dependency: transitive
+    description:
+      name: superuser_interfaces
+      sha256: "135f91b9a655da9fc893021daa52bd51628d5ea300965567d8423d17baa5a9bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  superuser_plugin_unix:
+    dependency: transitive
+    description:
+      name: superuser_plugin_unix
+      sha256: "45f956dbd4dc70d86136f23ab3237cdbff12077f5bb313d56aa618ad152ded89"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  superuser_plugin_windows:
+    dependency: transitive
+    description:
+      name: superuser_plugin_windows
+      sha256: cd2cab90f495d327d057b07d7ae9073c78f910629613195ce492dfd05f547b33
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   sync_http:
     dependency: transitive
     description:

@@ -10,7 +10,9 @@ import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:superuser/superuser.dart';
 
+import '../components/dialog.dart';
 import '../components/divider.dart';
 import '../components/string_config_row.dart';
 import '../components/win_text.dart';
@@ -25,21 +27,21 @@ class AutoTpPage extends StatefulWidget {
   State<AutoTpPage> createState() => _AutoTpPageState();
 }
 
-Future? _future;
-
 class _AutoTpPageState extends State<AutoTpPage> {
   int tryTimes = 0;
 
   @override
   void initState() {
     super.initState();
-
-    _future ??= Future.delayed(const Duration(seconds: 1), () {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) {
-          showOutDate(context);
-        }
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showOutDate();
+      if (!Superuser.isSuperuser || !Superuser.isActivated) {
+        dialog(
+            title: '未以管理员方式启动！',
+            content:
+                '未以管理员方式启动，无法使用游戏检测功能。请通过右下角托盘图标退出程序后，将软件设置为管理员方式启动。具体教程参考gitee下载页面。',
+            height: 100);
+      }
     });
   }
 
@@ -91,7 +93,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     if (model.isRunning) {
                       model.stop();
                     } else {
-                      model.start(context: context);
+                      model.start();
                     }
                   },
                 ),

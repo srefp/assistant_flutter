@@ -1,21 +1,23 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-dialog(
-  BuildContext context, {
+import '../app/windows_app.dart';
+
+dialog({
   required String title,
   String content = '',
   barrierDismissible = true,
   Widget? child,
+  double height = 50,
 }) {
   showDialog(
       barrierDismissible: barrierDismissible,
-      context: context,
+      context: rootNavigatorKey.currentContext!,
       builder: (context) => ContentDialog(
             title: WinText(title),
             content: child ??
                 SizedBox(
-                  height: 50,
+                  height: height,
                   child: Column(
                     children: [
                       WinText(content),

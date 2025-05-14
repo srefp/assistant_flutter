@@ -18,6 +18,7 @@ import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:win32/win32.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../notifier/app_model.dart';
@@ -47,6 +48,8 @@ class WindowsApp extends StatefulWidget {
 }
 
 final _appTheme = AppTheme();
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _WindowsAppState extends State<WindowsApp>
     with TrayListener, WindowListener {
@@ -191,6 +194,7 @@ class _WindowsAppState extends State<WindowsApp>
           key: 'exit_app',
           label: '退出',
           onClick: (item) {
+            PostQuitMessage(0);
             WindowsApp.autoTpModel.stop();
             windowManager.hide();
             trayManager.destroy();

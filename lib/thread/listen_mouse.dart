@@ -12,11 +12,10 @@ import '../util/hotkey_util.dart';
 import '../win32/mouse_listen.dart';
 
 late final Isolate isolate;
+final receivePort = ReceivePort();
 
 void startKeyMouseListen() async {
-  final receivePort = ReceivePort();
   receivePort.listen((message) {
-    print('message: $message');
     if (message is Map) {
       final mouseStruct =
           Pointer<MSLLHOOKSTRUCT>.fromAddress(message['lParam']);
@@ -41,16 +40,17 @@ void startKeyMouseListen() async {
     int mouseHook = 0;
     final hookProcPointer = setCallback((nCode, wParam, lParam) {
       final result = CallNextHookEx(mouseHook, nCode, wParam, lParam);
-
-      if (nCode == HC_ACTION) {
-        // 仅传递必要数据到隔离
-        sendPort.send({
-          'type': 'mouse',
-          'wParam': wParam,
-          'lParam': lParam,
-          'time': DateTime.now().millisecondsSinceEpoch
-        });
-      }
+      Future.microtask(() {
+        if (nCode == HC_ACTION) {
+          // 仅传递必要数据到隔离
+          sendPort.send({
+            'type': 'mouse',
+            'wParam': wParam,
+            'lParam': lParam,
+            'time': DateTime.now().millisecondsSinceEpoch
+          });
+        }
+      });
       return result;
     });
 
@@ -70,5 +70,9 @@ void startKeyMouseListen() async {
       DispatchMessage(msg);
     }
     free(msg);
+
+    print('移除了钩子');
+
+    UnhookWindowsHookEx(mouseHook);
   }, receivePort.sendPort);
 }

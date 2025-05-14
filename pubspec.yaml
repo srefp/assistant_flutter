@@ -76,10 +76,11 @@ dependencies:
   flutter_markdown: ^0.7.7
   sqflite_common_ffi: ^2.2.4+1
   sqflite: ^2.2.4+1
+  superuser: ^2.1.1
 #  dartssh2: ^2.11.0
 #  opencv_dart: ^1.4.1
 #  matrix2d: ^1.0.4
-#  bot_toast: ^4.0.3
+  bot_toast: ^4.0.3
 #  fluttertoast: ^8.1.2
 
 dev_dependencies:
