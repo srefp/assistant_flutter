@@ -416,12 +416,16 @@ class AutoTpModel extends ChangeNotifier {
   List<String> routeNames = [];
   String currentPos = '不在路线中';
   List<String> posList = ['不在路线中'];
+  var openMessage = false;
 
   AutoTpModel() {
     // 加载js函数
     loadJsFunction();
     registerJsFunc();
-    messagePump();
+    if (!openMessage) {
+      messagePump();
+      openMessage = true;
+    }
     loadRoutes();
   }
 

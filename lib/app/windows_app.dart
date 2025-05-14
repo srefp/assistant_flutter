@@ -10,6 +10,7 @@ import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/doc_page.dart';
 import 'package:assistant/screens/record_page.dart';
+import 'package:assistant/thread/listen_mouse.dart';
 import 'package:assistant/util/hot_key.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -56,6 +57,7 @@ class _WindowsAppState extends State<WindowsApp>
     trayManager.addListener(this);
     _initSystemTray();
     initHotKey();
+    startKeyMouseListen();
     // verifyClient();
   }
 

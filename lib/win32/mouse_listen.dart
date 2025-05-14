@@ -8,6 +8,7 @@ import 'package:win32/win32.dart';
 import '../app/windows_app.dart';
 import '../manager/screen_manager.dart';
 import '../notifier/log_model.dart';
+import '../thread/listen_mouse.dart';
 import '../util/hotkey_util.dart';
 
 typedef HookProc = int Function(int, int, int);
