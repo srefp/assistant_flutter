@@ -625,8 +625,8 @@ class AutoTpModel extends ChangeNotifier {
     }
 
     isRunning = true;
-    // startKeyboardHook();
-    // startMouseHook();
+    startKeyboardHook();
+    startMouseHook();
 
     setForegroundWindow(hWnd);
 
@@ -637,8 +637,8 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
-    // stopKeyboardHook();
-    // stopMouseHook();
+    stopKeyboardHook();
+    stopMouseHook();
     ScreenManager.instance.stopListen();
 
     notifyListeners();
