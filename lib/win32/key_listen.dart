@@ -78,7 +78,7 @@ void listenKeyboard(int vkCode, int wParam) async {
     return;
   }
 
-  if (keyName == RecordConfig.to.getNextKey()) {
+  if (keyName == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
   }
 

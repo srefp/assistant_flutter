@@ -8,7 +8,6 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 import 'package:win32/win32.dart';
 
-import '../manager/screen_manager.dart';
 import '../screens/virtual_screen.dart';
 import '../win32/toast.dart';
 import 'math_util.dart';

@@ -6,8 +6,6 @@ import 'package:assistant/util/tpc.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
-import '../config/record_config.dart';
-import '../executor/route_executor.dart';
 import '../manager/screen_manager.dart';
 import '../notifier/log_model.dart';
 import '../util/hotkey_util.dart';
@@ -76,11 +74,6 @@ void recordRoute(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
         template: "tpc([${coords[0]}, ${coords[1]}], 0);"));
 
     WindowsApp.logModel.outputAsRoute();
-  }
-
-  String buttonName = xButton == xbutton1 ? 'xbutton1' : 'xbutton2';
-  if (buttonName == RecordConfig.to.getNextKey()) {
-    RouteExecutor.tpNext(false);
   }
 
   int delay = WindowsApp.recordModel.getDelay();

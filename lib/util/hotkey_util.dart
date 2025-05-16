@@ -9,6 +9,7 @@ import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../config/hotkey_config.dart';
+import '../executor/route_executor.dart';
 import '../screens/virtual_screen.dart';
 import '../win32/mouse_listen.dart';
 
@@ -32,6 +33,10 @@ void listenMouse(Pointer<MSLLHOOKSTRUCT> mouseStruct, int wParam, int lParam) {
 
     if (xButtonName == HotkeyConfig.to.getHalfTp()) {
       tpc();
+    }
+
+    if (xButtonName == HotkeyConfig.to.getTpNext()) {
+      RouteExecutor.tpNext(false);
     }
   }
 }

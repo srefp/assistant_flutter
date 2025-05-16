@@ -21,6 +21,4 @@ class RecordConfig with ConfigStorage {
   int getClickDiff() => box.read(keyClickDiff) ?? 500;
 
   String getOpenMapKey() => box.read(keyOpenMapKey) ?? "m";
-
-  String getNextKey() => box.read(keyNextKey) ?? "right";
 }
