@@ -82,14 +82,6 @@ class ScreenManager {
         winEventOutOfContext | winEventSkipOwnProcess);
   }
 
-  // 停止监听
-  void stopListen() {
-    if (_hook != 0) {
-      unhookWinEvent(_hook);
-      _hook = 0;
-    }
-  }
-
   // 窗口事件回调处理
   static void _winEventProc(int hWinEventHook, int event, int hwnd,
       int idObject, int idChild, int dwEventThread, int dwmsEventTime) {
@@ -125,10 +117,6 @@ class ScreenManager {
   refreshWindowHandle() {
     final tasks = TaskManager.tasks;
     hWnd = findWindowHandle(tasks);
-    if (hWnd == 0) {
-      // 添加窗口丢失处理
-      stopListen();
-    }
   }
 
   /// 判断游戏窗口是否置顶

@@ -1,12 +1,10 @@
 import 'dart:math';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
-import 'package:flutter_auto_gui_windows/flutter_auto_gui_windows.dart';
 
+import '../auto_gui/keyboard.dart';
 import '../config/auto_tp_config.dart';
 import '../config/game_pos/game_pos_config.dart';
-
-final _api = FlutterAutoGuiWindows();
 
 bool allowTpc = true;
 
@@ -27,22 +25,23 @@ void tpc() async {
       .then((value) => allowTpc = true);
 
   // 获取当前鼠标位置
-  var currentPos = await _api.position();
+  var currentPos = await api.position();
 
-  await _api.click(clicks: 1);
+  api.click(clicks: 1);
+  await Future.delayed(Duration(milliseconds: 20));
   var point = GamePosConfig.to.getConfirmPosIntList();
   var res = KeyMouseUtil.physicalPos(point);
-  await _api.moveTo(point: Point(res[0], res[1]));
+  api.moveTo(point: Point(res[0], res[1]));
   await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
-  await _api.click(clicks: 1);
+  api.click(clicks: 1);
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getTpcRetryDelay()));
-  await _api.click(clicks: 1);
+  api.click(clicks: 1);
 
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getTpcBackDelay()));
   // 复位
-  await _api.moveTo(point: currentPos!);
+  api.moveTo(point: currentPos!);
 
   // await _api.click(clicks: 2);
   // var point = AutoTpConfig.to.getConfirmPosIntList();
@@ -68,49 +67,49 @@ const slow = 'slow';
 void tpcFunc(String type, List<int> coords) async {
   switch (type) {
     case anchor:
-      await _api.moveTo(point: Point(coords[0], coords[1]));
-      await _api.click(clicks: 2);
+      await api.moveTo(point: Point(coords[0], coords[1]));
+      await api.click(clicks: 2);
       var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
-      await _api.moveTo(point: Point(res[0], res[1]));
-      await _api.click(clicks: 1);
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(clicks: 1);
+      await api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 90));
-      await _api.click(clicks: 1);
+      await api.click(clicks: 1);
     case domain:
-      await _api.moveTo(point: Point(coords[0], coords[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(coords[0], coords[1]));
+      await api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 30));
-      await _api.click(clicks: 1);
+      await api.click(clicks: 1);
       var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
-      await _api.moveTo(point: Point(res[0], res[1]));
-      await _api.click(clicks: 1);
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(clicks: 1);
+      await api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 90));
-      await _api.click(clicks: 1);
+      await api.click(clicks: 1);
     case anchorSelect:
-      await _api.moveTo(point: Point(coords[0], coords[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(coords[0], coords[1]));
+      await api.click(clicks: 1);
       var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
-      await _api.moveTo(point: Point(res[0], res[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(clicks: 1);
     case domainSelect:
-      await _api.moveTo(point: Point(coords[0], coords[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(coords[0], coords[1]));
+      await api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 30));
       var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
-      await _api.moveTo(point: Point(res[0], res[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(clicks: 1);
     case slow:
-      await _api.moveTo(point: Point(coords[0], coords[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(coords[0], coords[1]));
+      await api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 90));
       var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
-      await _api.moveTo(point: Point(res[0], res[1]));
-      await _api.click(clicks: 1);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(clicks: 1);
   }
 }

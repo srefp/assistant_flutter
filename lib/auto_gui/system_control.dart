@@ -41,12 +41,11 @@ class SystemControl {
     return ScreenRect(0, 0, width, height);
   }
 
-  static ScreenRect rect = getScreenRect();
+  static ScreenRect get rect => SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
 
   static Ratio ratio = Ratio.fromWidthHeight(rect.width, rect.height);
 
   static void refreshRect() {
-    rect = SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
     ratio = Ratio.fromWidthHeight(rect.width, rect.height);
   }
 

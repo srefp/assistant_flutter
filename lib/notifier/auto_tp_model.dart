@@ -628,14 +628,11 @@ class AutoTpModel extends ChangeNotifier {
 
     setForegroundWindow(hWnd);
 
-    ScreenManager.instance.startListen();
-
     notifyListeners();
   }
 
   void stop() {
     isRunning = false;
-    ScreenManager.instance.stopListen();
 
     notifyListeners();
   }
