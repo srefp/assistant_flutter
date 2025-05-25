@@ -5,6 +5,8 @@ import '../../constants/ratio.dart';
 import '../../util/route_util.dart';
 import '../config_storage.dart';
 import 'game_pos1610_config.dart';
+import 'game_pos4318_config.dart';
+import 'game_pos6427_config.dart';
 
 abstract class GamePosConfig with ConfigStorage {
   static GamePosConfig get to {
@@ -12,6 +14,10 @@ abstract class GamePosConfig with ConfigStorage {
       return GamePosConfig169.to;
     } else if (SystemControl.ratio == Ratio.r1610) {
       return GamePosConfig1610.to;
+    } else if (SystemControl.ratio == Ratio.r4318) {
+      return GamePosConfig4318.to;
+    } else if (SystemControl.ratio == Ratio.r6427) {
+      return GamePosConfig6427.to;
     }
     return GamePosConfig169();
   }

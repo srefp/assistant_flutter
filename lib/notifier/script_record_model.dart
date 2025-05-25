@@ -1,10 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../components/win_text.dart';
 import '../manager/screen_manager.dart';
-import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
 
 class ScriptRecordModel extends ChangeNotifier {
@@ -46,14 +44,6 @@ class ScriptRecordModel extends ChangeNotifier {
     WindowsApp.logModel.appendDelay(getDelay());
     WindowsApp.logModel.output();
     notifyListeners();
-  }
-
-  /// 关闭鼠标监听
-  void stopMouseHook() {
-    if (mouseHook != 0) {
-      UnhookWindowsHookEx(mouseHook);
-      mouseHook = 0;
-    }
   }
 }
 

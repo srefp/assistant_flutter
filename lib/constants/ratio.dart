@@ -5,10 +5,10 @@ class Ratio {
   final int denominator;
 
   static final List<Ratio> ratios = [
-    r169,
-    r1610,
-    r4318,
-    r6427,
+    r169, // 代表 3840 x 2160
+    r1610, // 代表 2560 x 1600
+    r4318, // 代表 3440 x 1440
+    r6427, // 代表 2560 x 1080、5120 x 2160
     r43,
     r54,
   ];

@@ -11,6 +11,8 @@ import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/win32/toast.dart';
+import 'package:flutter/services.dart';
+import 'package:hid_listener/hid_listener.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
@@ -35,6 +37,35 @@ const left = 37;
 const up = 38;
 const right = 39;
 const down = 40;
+
+void keyboardListener(RawKeyEvent event) {
+  final data = event.data;
+
+  if (data is KeyExt) {
+    KeyExt eventData = data;
+    if (eventData.mocked) {
+      print('Key mocked: ${eventData.logicalKey.debugName}');
+      return;
+    }
+
+    final vkCode = data.keyCode;
+    final wParam = event is RawKeyDownEvent ? WM_KEYDOWN : WM_KEYUP;
+
+    print('vkCode: $vkCode, wParam: $wParam');
+    if (WindowsApp.autoTpModel.isRunning &&
+        ScreenManager.instance.isGameActive()) {
+      listenKeyboard(vkCode, wParam);
+    }
+
+    if (WindowsApp.recordModel.isRecording) {
+      if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
+        recordRoute(vkCode, wParam);
+      } else {
+        recordScript(vkCode, wParam);
+      }
+    }
+  }
+}
 
 // 全局变量
 int keyboardHook = 0;
@@ -80,6 +111,7 @@ void listenKeyboard(int vkCode, int wParam) async {
   }
 
   if (keyName == HotkeyConfig.to.getTpNext()) {
+    print('全自动传送');
     RouteExecutor.tpNext(false);
   }
 
@@ -119,6 +151,9 @@ void eatFood() async {
     await KeyMouseUtil.clickAtPoint(foodPos, 60);
     await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getConfirmPosIntList(), 60);
   }
+
+  await Future.delayed(Duration(milliseconds: 300));
+  api.keyDown(key: 'b');
 }
 
 int lastBPressTime = 0;
@@ -290,28 +325,6 @@ void stopKeyboardHook() {
   if (keyboardHook != 0) {
     UnhookWindowsHookEx(keyboardHook);
     keyboardHook = 0;
-  }
-}
-
-/// 启动键盘监听
-void startKeyboardHook() async {
-  if (keyboardHook != 0) {
-    return;
-  }
-
-  // 必须通过 GetModuleHandle 获取当前实例
-  final hModule = GetModuleHandle(nullptr);
-
-  keyboardHook = SetWindowsHookEx(
-    WINDOWS_HOOK_ID.WH_KEYBOARD_LL, // 低级键鼠钩子
-    hookProcPointer, // 回调函数指针
-    hModule, // 模块句柄
-    0, // 线程ID（0 表示全局）
-  );
-
-  if (keyboardHook == 0) {
-    WindowsApp.logModel.append('钩子安装失败: ${GetLastError()}');
-    return;
   }
 }
 

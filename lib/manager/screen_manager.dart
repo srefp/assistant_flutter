@@ -102,7 +102,7 @@ class ScreenManager {
         instance.refreshWindowHandle();
 
         // 触发窗口移动后，重新计算窗口矩形
-        SystemControl.rect = SystemControl.getCaptureRect(instance.hWnd);
+        SystemControl.refreshRect();
         break;
       case eventObjectDestroy:
         instance.hWnd = 0;

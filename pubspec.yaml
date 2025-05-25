@@ -77,7 +77,8 @@ dependencies:
   sqflite_common_ffi: ^2.2.4+1
   sqflite: ^2.2.4+1
   superuser: ^2.1.1
-  hid_listener: ^2.0.1
+  hid_listener:
+    path: D:/codeRepo/AndroidStudioProjects/hid_listener
 #  dartssh2: ^2.11.0
 #  opencv_dart: ^1.4.1
 #  matrix2d: ^1.0.4

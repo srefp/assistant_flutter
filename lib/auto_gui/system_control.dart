@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:assistant/constants/ratio.dart';
+import 'package:assistant/manager/screen_manager.dart';
 import 'package:ffi/ffi.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:win32/win32.dart';
@@ -29,7 +30,6 @@ class ScreenRect {
 }
 
 class SystemControl {
-
   /// 获取整个屏幕的矩形
   static ScreenRect getScreenRect() {
     final width = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSCREEN);
@@ -44,6 +44,11 @@ class SystemControl {
   static ScreenRect rect = getScreenRect();
 
   static Ratio ratio = Ratio.fromWidthHeight(rect.width, rect.height);
+
+  static void refreshRect() {
+    rect = SystemControl.getCaptureRect(ScreenManager.instance.hWnd);
+    ratio = Ratio.fromWidthHeight(rect.width, rect.height);
+  }
 
   static ScreenRect getCaptureRect(int hWnd) {
     if (hWnd == 0) {

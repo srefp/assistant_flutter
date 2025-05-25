@@ -1,9 +1,10 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
+import 'package:assistant/win32/key_listen.dart';
+import 'package:assistant/win32/mouse_listen.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:get_storage/get_storage.dart';
 import 'package:hid_listener/hid_listener.dart';
@@ -11,12 +12,12 @@ import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
-const String version = '2025.5.3';
-const String innerVersion = '2025.5.1';
+const String version = '2025.6';
+const String innerVersion = '2025.6.1';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
-final DateTime outDate = DateTime(2025, 6, 1);
+final DateTime outDate = DateTime(2025, 10, 1);
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,23 +65,14 @@ Future<void> _initApp() async {
     await initWindowsDb();
 
     if (!getListenerBackend()!.initialize()) {
-      print("Failed to initialize listener backend");
+      debugPrint("Failed to initialize listener backend");
     }
 
-    getListenerBackend()!.addKeyboardListener(listener);
+    getListenerBackend()!.addKeyboardListener(keyboardListener);
     getListenerBackend()!.addMouseListener(mouseListener);
 
     await GetStorage.init();
   }
-}
-
-void listener(RawKeyEvent event) {
-  print(
-      "${event is RawKeyDownEvent} ${event.logicalKey.debugName} ${HardwareKeyboard.instance.isShiftPressed} ${HardwareKeyboard.instance.isAltPressed} ${HardwareKeyboard.instance.isControlPressed}");
-}
-
-void mouseListener(MouseEvent event) {
-  print("${event}");
 }
 
 bool get isDesktop {

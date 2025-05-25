@@ -191,12 +191,11 @@ class _WindowsAppState extends State<WindowsApp>
         MenuItem(
           key: 'exit_app',
           label: '退出',
-          onClick: (item) {
-            PostQuitMessage(0);
+          onClick: (item) async {
             WindowsApp.autoTpModel.stop();
-            windowManager.hide();
+            await windowManager.hide();
             trayManager.destroy();
-            windowManager.destroy();
+            exit(0);
           },
         ),
       ],

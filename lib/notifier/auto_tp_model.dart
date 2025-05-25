@@ -21,9 +21,7 @@ import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
 import '../util/search_utils.dart';
-import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
-import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
 
 /// 辅助功能开启/关闭配置
@@ -420,8 +418,8 @@ class AutoTpModel extends ChangeNotifier {
     // 加载js函数
     loadJsFunction();
     registerJsFunc();
-    messagePump();
     loadRoutes();
+    messagePump();
   }
 
   loadRoutes() async {
@@ -619,7 +617,7 @@ class AutoTpModel extends ChangeNotifier {
   void start() {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
-    SystemControl.rect = SystemControl.getCaptureRect(hWnd);
+    SystemControl.refreshRect();
 
     if (hWnd == 0) {
       dialog(title: '错误', content: '游戏窗口未启动!');
@@ -627,8 +625,6 @@ class AutoTpModel extends ChangeNotifier {
     }
 
     isRunning = true;
-    startKeyboardHook();
-    startMouseHook();
 
     setForegroundWindow(hWnd);
 
@@ -639,8 +635,6 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
-    stopKeyboardHook();
-    stopMouseHook();
     ScreenManager.instance.stopListen();
 
     notifyListeners();

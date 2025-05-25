@@ -8,7 +8,6 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 import 'package:win32/win32.dart';
 
-import '../screens/virtual_screen.dart';
 import '../win32/toast.dart';
 import 'math_util.dart';
 
@@ -99,7 +98,7 @@ class KeyMouseUtil {
 
   static List<int> getCurLogicalPos() {
     final currentRect = SystemControl.rect;
-    final point = getMousePos();
+    final point = getMousePosOfWindow();
     return [
       ((point[0] - currentRect.left) * factor / (currentRect.width)).toInt(),
       ((point[1] - currentRect.top) * factor / (currentRect.height)).toInt()
@@ -313,18 +312,26 @@ class KeyMouseUtil {
   }
 
   /// 获取鼠标位置
-  static List<int> getMousePos() {
+  static List<int> getMousePosOfWindow() {
     final point = calloc<POINT>();
     GetCursorPos(point);
-    final x = point.ref.x;
-    final y = point.ref.y;
+    int x = point.ref.x;
+    int y = point.ref.y;
+    free(point);
+
+    if (x < SystemControl.rect.left || x > SystemControl.rect.right || y < SystemControl.rect.top || y > SystemControl.rect.bottom) {
+      return [-1, -1];
+    }
     return [x, y];
   }
 
   /// 显示鼠标坐标
   static void showCoordinate() {
-    List<int> point = getMousePos();
-    List<int> virtualPos = getVirtualPos(point);
+    List<int> point = getMousePosOfWindow();
+    if (point[0] == -1 || point[1] == -1) {
+      return;
+    }
+    List<int> virtualPos = KeyMouseUtil.logicalPos(point);
     var text = '${virtualPos[0]}, ${virtualPos[1]}';
     Clipboard.setData(ClipboardData(text: text));
     showToast('已复制坐标: $text');
