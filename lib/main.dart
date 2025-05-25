@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:get_storage/get_storage.dart';
+import 'package:hid_listener/hid_listener.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
@@ -62,8 +63,24 @@ Future<void> _initApp() async {
     // 初始化数据库
     await initWindowsDb();
 
+    if (!getListenerBackend()!.initialize()) {
+      print("Failed to initialize listener backend");
+    }
+
+    getListenerBackend()!.addKeyboardListener(listener);
+    getListenerBackend()!.addMouseListener(mouseListener);
+
     await GetStorage.init();
   }
+}
+
+void listener(RawKeyEvent event) {
+  print(
+      "${event is RawKeyDownEvent} ${event.logicalKey.debugName} ${HardwareKeyboard.instance.isShiftPressed} ${HardwareKeyboard.instance.isAltPressed} ${HardwareKeyboard.instance.isControlPressed}");
+}
+
+void mouseListener(MouseEvent event) {
+  print("${event}");
 }
 
 bool get isDesktop {

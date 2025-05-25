@@ -9,6 +9,7 @@
 #include <flutter_acrylic/flutter_acrylic_plugin.h>
 #include <flutter_auto_gui_windows/flutter_auto_gui_windows.h>
 #include <flutter_js/flutter_js_plugin.h>
+#include <hid_listener/hid_listener_plugin_windows.h>
 #include <hotkey_manager_windows/hotkey_manager_windows_plugin_c_api.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
 #include <system_theme/system_theme_plugin.h>
@@ -24,6 +25,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterAutoGuiWindows"));
   FlutterJsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterJsPlugin"));
+  HidListenerPluginWindowsRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("HidListenerPluginWindows"));
   HotkeyManagerWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("HotkeyManagerWindowsPluginCApi"));
   ScreenRetrieverWindowsPluginCApiRegisterWithRegistrar(
