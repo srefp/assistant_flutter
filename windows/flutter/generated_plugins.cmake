@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_acrylic
   flutter_auto_gui_windows
   flutter_js
-  hid_listener
   hotkey_manager_windows
   screen_retriever_windows
   system_theme
