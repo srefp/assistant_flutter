@@ -14,7 +14,6 @@ class AutoTpConfig with ConfigStorage {
   static const keyTpCooldown = "tpCooldown";
   static const keyTpcRetryDelay = "tpcRetryDelay";
   static const keyCrusadePos = "crusadePos";
-  static const keyConfirmPos = "confirmPos";
   static const keyBookDragStartPos = "bookDragStartPos";
   static const keyBossXAxis = "bossXAxis";
   static const keyBossYAxis = "bossYAxis";
@@ -22,7 +21,6 @@ class AutoTpConfig with ConfigStorage {
   static const keyEnlargePos = "enlargePos";
   static const keyTrackBossPos = "trackBossPos";
   static const keyCloseBossDrawerPos = "closeBossDrawerPos";
-  static const keyFoodPos = "foodPos";
   static const keySelectPos = "selectPos";
   static const keySelectAreaPos = "selectAreaPos";
   static const keyFirstAreaPos = "firstAreaPos";
@@ -143,14 +141,6 @@ class AutoTpConfig with ConfigStorage {
 
   String getCrusadePos() => box.read(keyCrusadePos) ?? "9884, 33238";
 
-  String getConfirmPos() => box.read(keyConfirmPos) ?? "55753, 60951";
-
-  List<int> getConfirmPosIntList() =>
-      RouteUtil.stringToIntList(getConfirmPos());
-
-  List<int> getFoodPosIntList() =>
-      RouteUtil.stringToIntList(getFoodPos());
-
   String getBookDragStartPos() =>
       box.read(keyBookDragStartPos) ?? "32706, 17058";
 
@@ -166,8 +156,6 @@ class AutoTpConfig with ConfigStorage {
 
   String getCloseBossDrawerPos() =>
       box.read(keyCloseBossDrawerPos) ?? "63981, 2094";
-
-  String getFoodPos() => box.read(keyFoodPos) ?? "29464, 3096";
 
   String getSelectPos() => box.read(keySelectPos) ?? "46944, 44499";
 

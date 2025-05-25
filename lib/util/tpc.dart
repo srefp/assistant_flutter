@@ -4,6 +4,7 @@ import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:flutter_auto_gui_windows/flutter_auto_gui_windows.dart';
 
 import '../config/auto_tp_config.dart';
+import '../config/game_pos/game_pos_config.dart';
 
 final _api = FlutterAutoGuiWindows();
 
@@ -29,7 +30,7 @@ void tpc() async {
   var currentPos = await _api.position();
 
   await _api.click(clicks: 1);
-  var point = AutoTpConfig.to.getConfirmPosIntList();
+  var point = GamePosConfig.to.getConfirmPosIntList();
   var res = KeyMouseUtil.physicalPos(point);
   await _api.moveTo(point: Point(res[0], res[1]));
   await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
@@ -69,7 +70,7 @@ void tpcFunc(String type, List<int> coords) async {
     case anchor:
       await _api.moveTo(point: Point(coords[0], coords[1]));
       await _api.click(clicks: 2);
-      var point = AutoTpConfig.to.getConfirmPosIntList();
+      var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
       await _api.moveTo(point: Point(res[0], res[1]));
       await _api.click(clicks: 1);
@@ -81,7 +82,7 @@ void tpcFunc(String type, List<int> coords) async {
       await _api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 30));
       await _api.click(clicks: 1);
-      var point = AutoTpConfig.to.getConfirmPosIntList();
+      var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
       await _api.moveTo(point: Point(res[0], res[1]));
       await _api.click(clicks: 1);
@@ -91,7 +92,7 @@ void tpcFunc(String type, List<int> coords) async {
     case anchorSelect:
       await _api.moveTo(point: Point(coords[0], coords[1]));
       await _api.click(clicks: 1);
-      var point = AutoTpConfig.to.getConfirmPosIntList();
+      var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
       await _api.moveTo(point: Point(res[0], res[1]));
       await _api.click(clicks: 1);
@@ -99,7 +100,7 @@ void tpcFunc(String type, List<int> coords) async {
       await _api.moveTo(point: Point(coords[0], coords[1]));
       await _api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 30));
-      var point = AutoTpConfig.to.getConfirmPosIntList();
+      var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
       await _api.moveTo(point: Point(res[0], res[1]));
       await _api.click(clicks: 1);
@@ -107,7 +108,7 @@ void tpcFunc(String type, List<int> coords) async {
       await _api.moveTo(point: Point(coords[0], coords[1]));
       await _api.click(clicks: 1);
       await Future.delayed(Duration(milliseconds: 90));
-      var point = AutoTpConfig.to.getConfirmPosIntList();
+      var point = GamePosConfig.to.getConfirmPosIntList();
       var res = KeyMouseUtil.physicalPos(point);
       await _api.moveTo(point: Point(res[0], res[1]));
       await _api.click(clicks: 1);

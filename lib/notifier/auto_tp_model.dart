@@ -3,6 +3,7 @@ import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/config/game_pos/game_pos_config.dart';
 import 'package:assistant/dao/crud.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
@@ -253,8 +254,8 @@ final coordsConfigItems = [
   StringConfigItem(
     title: '确认',
     subTitle: '确认按钮的位置',
-    valueKey: AutoTpConfig.keyConfirmPos,
-    valueCallback: AutoTpConfig.to.getConfirmPos,
+    valueKey: GamePosConfig.keyConfirmPos,
+    valueCallback: GamePosConfig.to.getConfirmPos,
   ),
   StringConfigItem(
     title: '重置拖动条',
@@ -301,8 +302,8 @@ final coordsConfigItems = [
   StringConfigItem(
     title: '食物',
     subTitle: '食物按钮的位置',
-    valueKey: AutoTpConfig.keyFoodPos,
-    valueCallback: AutoTpConfig.to.getFoodPos,
+    valueKey: GamePosConfig.keyFoodPos,
+    valueCallback: GamePosConfig.to.getFoodPos,
   ),
   StringConfigItem(
     title: '锚点多选一',
@@ -442,7 +443,12 @@ class AutoTpModel extends ChangeNotifier {
     }
 
     if (posList.isNotEmpty) {
-      currentPos = posList[AutoTpConfig.to.getRouteIndex()];
+      final index = AutoTpConfig.to.getRouteIndex();
+      if (index < posList.length) {
+        currentPos = posList[index];
+      } else {
+        currentPos = posList[0];
+      }
     }
     notifyListeners();
   }

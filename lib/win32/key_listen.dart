@@ -14,6 +14,7 @@ import 'package:assistant/win32/toast.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
+import '../config/game_pos/game_pos_config.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
@@ -108,7 +109,7 @@ void eatFood() async {
   await Future.delayed(Duration(milliseconds: 600));
 
   if (!foodSelected) {
-    await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getFoodPosIntList(), 120);
+    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getFoodPosIntList(), 120);
     foodSelected = true;
   }
 
@@ -116,7 +117,7 @@ void eatFood() async {
   for (var index = 0; index < foodList.length; index += 2) {
     var foodPos = [foodList[index], foodList[index + 1]];
     await KeyMouseUtil.clickAtPoint(foodPos, 60);
-    await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getConfirmPosIntList(), 60);
+    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getConfirmPosIntList(), 60);
   }
 }
 
@@ -133,7 +134,7 @@ void recordFood(int vkCode, int wParam, String keyName) async {
       if (currentTime - lastBPressTime < keyDoubleClickThreshold) {
         // 点击食物
         await Future.delayed(Duration(milliseconds: 600), () async {
-          await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getFoodPosIntList(), 100);
+          await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getFoodPosIntList(), 100);
           foodSelected = true;
         });
 

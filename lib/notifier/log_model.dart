@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../app/windows_app.dart';
+import '../config/game_pos/game_pos_config.dart';
 
 class Operation {
   final String func;
@@ -15,9 +16,9 @@ class Operation {
 
   static Operation confirm = Operation(
       func: "click",
-      coords: AutoTpConfig.to.getConfirmPosIntList(),
+      coords: GamePosConfig.to.getConfirmPosIntList(),
       template:
-          "click(${AutoTpConfig.to.getConfirmPos()[0]}, ${AutoTpConfig.to.getConfirmPos()[1]}, %s);",
+          "click(${GamePosConfig.to.getConfirmPos()[0]}, ${GamePosConfig.to.getConfirmPos()[1]}, %s);",
       prevDelay: AutoTpConfig.to.getClickRecordDelay());
 
   static Operation openMap = Operation(

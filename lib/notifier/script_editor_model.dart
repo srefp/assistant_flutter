@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
-import 'package:assistant/constants/ratio.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/db/tp_route_db.dart';
 import 'package:assistant/model/tp_route.dart';
@@ -71,11 +70,6 @@ class ScriptEditorModel with ChangeNotifier {
   TextEditingController nameController = TextEditingController();
 
   bool isRunning = false;
-
-  String get ratio {
-    final rect = SystemControl.rect;
-    return Ratio.fromWidthHeight(rect.width, rect.height).name;
-  }
 
   /// 运行js代码
   void runJs(BuildContext context) async {
@@ -343,7 +337,7 @@ class ScriptEditorModel with ChangeNotifier {
                                 const SizedBox(
                                   width: 12,
                                 ),
-                                Expanded(child: WinText(model.ratio)),
+                                Expanded(child: WinText(SystemControl.ratio.name)),
                               ],
                             ),
                           ),

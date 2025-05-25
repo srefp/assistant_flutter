@@ -6,6 +6,7 @@ import 'package:flutter_js/flutter_js.dart';
 import '../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/keyboard.dart';
+import '../config/game_pos/game_pos_config.dart';
 import '../win32/toast.dart';
 import 'data_converter.dart';
 
@@ -100,7 +101,7 @@ void registerJsFunc() {
         convertDynamicListToIntList(params['coords']),
         AutoTpConfig.to.getTpcDelay());
     await KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(AutoTpConfig.to.getConfirmPosIntList()),
+        convertDynamicListToIntList(GamePosConfig.to.getConfirmPosIntList()),
         params['delay']);
   });
 
