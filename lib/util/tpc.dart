@@ -28,7 +28,7 @@ void tpc() async {
   var currentPos = await api.position();
 
   api.click(clicks: 1);
-  await Future.delayed(Duration(milliseconds: 20));
+  await Future.delayed(Duration(milliseconds: 2));
   var point = GamePosConfig.to.getConfirmPosIntList();
   var res = KeyMouseUtil.physicalPos(point);
   api.moveTo(point: Point(res[0], res[1]));

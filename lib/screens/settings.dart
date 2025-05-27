@@ -3,6 +3,7 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/config_row.dart';
 import 'package:assistant/config/setting_config.dart';
+import 'package:assistant/main.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
@@ -259,6 +260,8 @@ class _SettingsState extends State<Settings> with PageMixin {
               ),
             );
           }),
+          const SizedBox(height: 10,),
+          WinText('小版本：$innerVersion'),
         ],
       ],
     );

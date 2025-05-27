@@ -20,5 +20,4 @@ class RecordConfig with ConfigStorage {
   /// 判断为单击的最大误差
   int getClickDiff() => box.read(keyClickDiff) ?? 500;
 
-  String getOpenMapKey() => box.read(keyOpenMapKey) ?? "m";
 }

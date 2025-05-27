@@ -145,6 +145,8 @@ class ScriptEditorModel with ChangeNotifier {
       controller.text = scriptContent ?? '';
     }
 
+    WindowsApp.autoTpModel.selectRoute(value);
+
     notifyListeners();
   }
 
@@ -217,6 +219,8 @@ class ScriptEditorModel with ChangeNotifier {
     }
     await updateScript(selectedScriptType!, selectedScriptName!, content);
     isUnsaved = false;
+
+    WindowsApp.autoTpModel.loadRoutes();
     notifyListeners();
   }
 
@@ -238,8 +242,8 @@ class ScriptEditorModel with ChangeNotifier {
           content: Padding(
             padding: const EdgeInsets.only(top: 10),
             child: SizedBox(
-              height: 108,
-              child: Column(children: [
+              height: 200,
+              child: ListView(children: [
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -263,6 +267,19 @@ class ScriptEditorModel with ChangeNotifier {
                         width: 12,
                       ),
                       WinText(currentScript?.ratio ?? ''),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                  child: Row(
+                    children: [
+                      WinText('错误信息'),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(child: WinText(WindowsApp.autoTpModel.errorMessage ?? '')),
                     ],
                   ),
                 ),

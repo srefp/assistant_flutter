@@ -1,9 +1,12 @@
+import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/constants/script_type.dart';
+import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Icons;
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../components/button_with_icon.dart';
@@ -19,117 +22,149 @@ class ScriptEditor extends StatelessWidget {
       return Flex(
         direction: Axis.vertical,
         children: [
-          SizedBox(
-            height: 34,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          minWidth: 100,
-                        ),
-                        width: 100,
-                        height: 34,
-                        child: HighlightComboBox(
-                          value: model.selectedScriptType,
-                          items: scriptTypes,
-                          onChanged: (value) {
-                            model.selectScriptType(value);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                          minWidth: 100,
-                        ),
-                        width: 300,
-                        height: 34,
-                        child: HighlightComboBox(
-                          value: model.selectedScriptName,
-                          items: model.scriptNameList,
-                          onChanged: (value) {
-                            model.selectScript(value);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: 34,
-                        child: ButtonWithIcon(
-                          icon: Icons.add,
-                          text: '添加',
-                          onPressed: () {
-                            model.showAddScriptModel(context);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: 34,
-                        child: ButtonWithIcon(
-                          icon: model.isRunning ? Icons.stop : Icons.play_arrow,
-                          text: model.isRunning ? '停止' : '运行',
-                          onPressed: throttle(() async {
-                            model.isRunning
-                                ? model.stopJs()
-                                : model.runJs(context);
-                          }),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Consumer<ScriptRecordModel>(
-                          builder: (context, model, child) {
-                        return SizedBox(
-                          height: 34,
-                          child: ButtonWithIcon(
-                            icon: model.isRecording
-                                ? Icons.stop
-                                : Icons.fiber_manual_record,
-                            text: model.isRecording ? '停止' : '录制',
-                            onPressed: () {
-                              if (model.isRecording) {
-                                model.stopRecord();
-                              } else {
-                                model.startRecord(context);
-                              }
-                            },
-                          ),
-                        );
-                      }),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      model.isUnsaved
-                          ? Icon(Icons.circle)
-                          : SizedBox(width: 0, height: 0),
-                    ],
-                  ),
-                ),
-                Row(
+          Row(
+            children: [
+              Expanded(
+                child: Wrap(
                   children: [
-                    SizedBox(
-                      width: 34,
-                      height: 34,
-                      child: IconButton(
-                        icon: Icon(FluentIcons.info_solid, size: 16),
-                        onPressed: () => model.showScriptInfo(context),
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: 100,
                       ),
-                    )
+                      width: 100,
+                      height: 34,
+                      child: HighlightComboBox(
+                        value: model.selectedScriptType,
+                        items: scriptTypes,
+                        onChanged: (value) {
+                          model.selectScriptType(value);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: 100,
+                      ),
+                      width: 280,
+                      height: 34,
+                      child: HighlightComboBox(
+                        value: model.selectedScriptName,
+                        items: model.scriptNameList,
+                        onChanged: (value) {
+                          model.selectScript(value);
+                        },
+                      ),
+                    ),
+                    model.selectedScriptType == autoTp
+                        ? SizedBox(
+                            width: 10,
+                          )
+                        : const SizedBox(),
+                    model.selectedScriptType == autoTp
+                        ? Consumer<AutoTpModel>(
+                            builder: (context, model, child) {
+                            return Container(
+                              constraints: BoxConstraints(
+                                minWidth: 100,
+                              ),
+                              width: 280,
+                              height: 34,
+                              child: HighlightComboBox(
+                                value: model.currentPos,
+                                items: model.posList,
+                                onChanged: (value) {
+                                  model.selectPos(value);
+                                },
+                              ),
+                            );
+                          })
+                        : const SizedBox(),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      height: 34,
+                      width: 76,
+                      child: ButtonWithIcon(
+                        icon: Icons.add,
+                        text: '添加',
+                        onPressed: () {
+                          model.showAddScriptModel(context);
+                        },
+                      ),
+                    ),
+                    model.selectedScriptType == autoScript
+                        ? SizedBox(
+                            width: 10,
+                          )
+                        : const SizedBox(),
+                    model.selectedScriptType == autoScript
+                        ? SizedBox(
+                            height: 34,
+                            width: 76,
+                            child: ButtonWithIcon(
+                              icon: model.isRunning
+                                  ? Icons.stop
+                                  : Icons.play_arrow,
+                              text: model.isRunning ? '停止' : '运行',
+                              onPressed: throttle(() async {
+                                model.isRunning
+                                    ? model.stopJs()
+                                    : model.runJs(context);
+                              }),
+                            ),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Consumer<ScriptRecordModel>(
+                        builder: (context, model, child) {
+                      return SizedBox(
+                        height: 34,
+                        width: 76,
+                        child: ButtonWithIcon(
+                          icon: model.isRecording
+                              ? Icons.stop
+                              : Icons.fiber_manual_record,
+                          text: model.isRecording ? '停止' : '录制',
+                          onPressed: () {
+                            if (model.isRecording) {
+                              model.stopRecord();
+                            } else {
+                              model.startRecord(context);
+                            }
+                          },
+                        ),
+                      );
+                    }),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    model.isUnsaved
+                        ? Icon(Icons.circle)
+                        : SizedBox(width: 0, height: 0),
                   ],
-                )
-              ],
-            ),
+                ),
+              ),
+              SizedBox(
+                width: 34,
+                height: 34,
+                child: IconButton(
+                  icon: Icon(
+                    FluentIcons.info_solid,
+                    size: 16,
+                    color: WindowsApp.autoTpModel.errorMessage == null
+                        ? null
+                        : Colors.red,
+                  ),
+                  onPressed: () => model.showScriptInfo(context),
+                ),
+              )
+            ],
           ),
           Expanded(
             flex: 1,

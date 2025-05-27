@@ -38,6 +38,11 @@ async function map(delay) {
     await sendMessage('map', JSON.stringify({'delay': delay}));
 }
 
+// 开书
+async function book(delay) {
+    await sendMessage('book', JSON.stringify({'delay': delay}));
+}
+
 // 复制粘贴
 function cp(text) {
     sendMessage('cp', JSON.stringify({'text': text}));

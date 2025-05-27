@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
@@ -51,7 +52,6 @@ void keyboardListener(RawKeyEvent event) {
     final vkCode = data.keyCode;
     final wParam = event is RawKeyDownEvent ? WM_KEYDOWN : WM_KEYUP;
 
-    print('vkCode: $vkCode, wParam: $wParam');
     if (WindowsApp.autoTpModel.isRunning &&
         ScreenManager.instance.isGameActive()) {
       listenKeyboard(vkCode, wParam);
@@ -149,7 +149,8 @@ void eatFood() async {
   for (var index = 0; index < foodList.length; index += 2) {
     var foodPos = [foodList[index], foodList[index + 1]];
     await KeyMouseUtil.clickAtPoint(foodPos, 60);
-    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getConfirmPosIntList(), 60);
+    await KeyMouseUtil.clickAtPoint(
+        GamePosConfig.to.getConfirmPosIntList(), 60);
   }
 
   await Future.delayed(Duration(milliseconds: 300));
@@ -169,7 +170,8 @@ void recordFood(int vkCode, int wParam, String keyName) async {
       if (currentTime - lastBPressTime < keyDoubleClickThreshold) {
         // 点击食物
         await Future.delayed(Duration(milliseconds: 600), () async {
-          await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getFoodPosIntList(), 100);
+          await KeyMouseUtil.clickAtPoint(
+              GamePosConfig.to.getFoodPosIntList(), 100);
           foodSelected = true;
         });
 
@@ -262,7 +264,7 @@ void recordRoute(int vkCode, int wParam) {
   var key = getKeyName(vkCode);
 
   // 开图键录制
-  if (key == RecordConfig.to.getOpenMapKey() && wParam == WM_KEYDOWN) {
+  if (key == GameKeyConfig.to.getOpenMapKey() && wParam == WM_KEYDOWN) {
     final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
         func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
@@ -371,6 +373,10 @@ String getKeyName(int vkCode) {
       return 'win(Left)';
     case VIRTUAL_KEY.VK_RWIN:
       return 'win(Right)';
+    case VIRTUAL_KEY.VK_F1:
+      return 'f1';
+    case VIRTUAL_KEY.VK_F2:
+      return 'f2';
     default:
       // 处理字母和数字（A-Z, 0-9）
       if (vkCode >= 0x30 && vkCode <= 0x39) {

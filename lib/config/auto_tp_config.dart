@@ -57,6 +57,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyQuickPickEnabled = "quickPickEnabled";
   static const keyMapRecordDelay = "mapRecordDelay";
   static const keyClickRecordDelay = "clickRecordDelay";
+  static const keyBookRecordDelay = "bookRecordDelay";
   static const keyDragRecordDelay = "dragRecordDelay";
   static const keyShortMoveRecord = "shortMoveRecord";
   static const keyDashEnabled = "dashEnabled";
@@ -76,7 +77,7 @@ class AutoTpConfig with ConfigStorage {
 
   int getTpcDelay() => box.read(keyTpcDelay) ?? 10;
 
-  int getTpcRetryDelay() => box.read(keyTpcRetryDelay) ?? 80;
+  int getTpcRetryDelay() => box.read(keyTpcRetryDelay) ?? 30;
 
   int getTpcBackDelay() => box.read(keyTpcBackDelay) ?? 30;
 
@@ -141,6 +142,9 @@ class AutoTpConfig with ConfigStorage {
 
   String getCrusadePos() => box.read(keyCrusadePos) ?? "9884, 33238";
 
+  List<int> getCrusadePosIntList() =>
+      RouteUtil.stringToIntList(getCrusadePos());
+
   String getBookDragStartPos() =>
       box.read(keyBookDragStartPos) ?? "32706, 17058";
 
@@ -175,9 +179,11 @@ class AutoTpConfig with ConfigStorage {
 
   bool isQuickPickEnabled() => box.read(keyQuickPickEnabled) ?? true;
 
-  int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 500;
+  int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 450;
 
   int getClickRecordDelay() => box.read(keyClickRecordDelay) ?? 60;
+
+  int getBookRecordDelay() => box.read(keyBookRecordDelay) ?? 720;
 
   int getDragRecordDelay() => box.read(keyDragRecordDelay) ?? 60;
 

@@ -143,7 +143,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 300,
+                        width: 280,
                         child: HighlightComboBox(
                           value: model.currentRoute,
                           items: model.routeNames,
@@ -164,7 +164,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 300,
+                        width: 280,
                         child: HighlightComboBox(
                           value: model.currentPos,
                           items: model.posList,

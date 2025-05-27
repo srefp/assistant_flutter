@@ -80,7 +80,7 @@ dependencies:
   hid_listener:
     path: D:/codeRepo/AndroidStudioProjects/hid_listener
 #  dartssh2: ^2.11.0
-#  opencv_dart: ^1.4.1
+  opencv_dart: ^1.4.1
 #  matrix2d: ^1.0.4
   bot_toast: ^4.0.3
 #  fluttertoast: ^8.1.2

@@ -26,6 +26,7 @@ const press = "press";
 const cp = "cp";
 const wheel = "wheel";
 const map = "map";
+const book = "book";
 const tpc = "tpc";
 
 const keys = [
@@ -44,6 +45,7 @@ const keys = [
   cp,
   wheel,
   map,
+  book,
   tpc,
 ];
 
@@ -54,6 +56,8 @@ late String jsFunction;
 loadJsFunction() async {
   jsFunction = await rootBundle.loadString('assets/js/func.js');
 }
+
+bool crusade = false;
 
 void registerJsFunc() {
   // 打印日志
@@ -93,6 +97,17 @@ void registerJsFunc() {
     api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
     api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
     await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 开书
+  jsRuntime.onMessage(book, (params) async {
+    api.keyDown(key: GameKeyConfig.to.getOpenBookKey());
+    api.keyUp(key: GameKeyConfig.to.getOpenBookKey());
+    await Future.delayed(Duration(milliseconds: params['delay']));
+    if (!crusade) {
+      crusade = true;
+      await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getCrusadePosIntList(), AutoTpConfig.to.getCrusadeDelay());
+    }
   });
 
   // 传送确认

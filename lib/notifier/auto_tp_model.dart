@@ -230,6 +230,12 @@ final recordDelayConfigItems = [
     valueCallback: AutoTpConfig.to.getClickRecordDelay,
   ),
   IntConfigItem(
+    title: '开书操作',
+    subTitle: '开书延迟',
+    valueKey: AutoTpConfig.keyClickRecordDelay,
+    valueCallback: AutoTpConfig.to.getClickRecordDelay,
+  ),
+  IntConfigItem(
     title: '拖动操作',
     subTitle: '拖动操作的后摇（完成拖动后的延迟）',
     valueKey: AutoTpConfig.keyDragRecordDelay,
@@ -317,8 +323,8 @@ final coordsConfigItems = [
     valueCallback: AutoTpConfig.to.getSelectAreaPos,
   ),
   StringConfigItem(
-    title: '区域蒙德',
-    subTitle: '第一个区域蒙德的位置',
+    title: '第一个区域',
+    subTitle: '第一个区域的位置',
     valueKey: AutoTpConfig.keyFirstAreaPos,
     valueCallback: AutoTpConfig.to.getFirstAreaPos,
   ),
@@ -414,6 +420,7 @@ class AutoTpModel extends ChangeNotifier {
   List<String> routeNames = [];
   String currentPos = '不在路线中';
   List<String> posList = ['不在路线中'];
+  String? errorMessage;
 
   AutoTpModel() {
     // 加载js函数
@@ -432,7 +439,12 @@ class AutoTpModel extends ChangeNotifier {
     if (currentRoute != null) {
       for (var element in routes) {
         if (element.scriptName == currentRoute) {
-          tpPoints = parseTpPoints(element.content);
+          try {
+            tpPoints = parseTpPoints(element.content);
+            errorMessage = null;
+          } catch (e) {
+            errorMessage = e.toString();
+          }
           posList = ['不在路线中'];
           for (var i = 0; i < tpPoints.length; i++) {
             posList.add(tpPoints[i].name ?? '点位${i + 1}');
@@ -455,6 +467,8 @@ class AutoTpModel extends ChangeNotifier {
   selectRoute(final String routeName) {
     for (var element in routes) {
       if (element.scriptName == routeName) {
+        print('element.scriptName = ${element.scriptName}, routeName = $routeName');
+
         currentRoute = element.scriptName;
         tpPoints = parseTpPoints(element.content);
         AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);

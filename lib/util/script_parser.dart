@@ -1,7 +1,7 @@
 import 'package:assistant/util/route_util.dart';
 
 class BlockItem {
-  final String name;
+  final String? name;
   final String code;
 
   BlockItem(this.name, this.code);
@@ -54,7 +54,7 @@ List<BlockItem> extractTopLevelBlocks(String code) {
         String normalizedName =
             rawName.replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' ');
 
-        result.add(BlockItem(normalizedName, minifiedBlock));
+        result.add(BlockItem(normalizedName.isNotEmpty ? normalizedName : null, minifiedBlock));
         startIdx = null;
       }
     }
@@ -127,7 +127,7 @@ String removeComments(String code) {
 }
 
 // 第一代脚本解析器
-List<TpPoint> parse(String content) {
+List<TpPoint> parseV1(String content) {
   final RegExp keyValuePairRegex =
       RegExp(r'(\w+):\s*((?:"[^"]*")|(?:\[.*?\])|(?:-?\d+(?:\.\d+)?))');
 

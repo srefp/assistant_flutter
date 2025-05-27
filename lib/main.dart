@@ -13,7 +13,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
 const String version = '2025.6';
-const String innerVersion = '2025.6.1';
+const String innerVersion = '2025.6.2';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';

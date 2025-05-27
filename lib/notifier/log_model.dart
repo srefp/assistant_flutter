@@ -1,4 +1,5 @@
 import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/record_config.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -26,6 +27,12 @@ class Operation {
       coords: [],
       template: "map(%s);",
       prevDelay: AutoTpConfig.to.getMapRecordDelay());
+
+  static Operation openBook = Operation(
+    func: "book",
+    template: "book(%s);",
+    prevDelay: AutoTpConfig.to.getBookRecordDelay(),
+  );
 
   Operation({
     required this.func,
@@ -139,24 +146,27 @@ class LogModel extends ChangeNotifier {
     }
     var script = '';
 
-    bool openMapKeyFound = false;
+    bool startKeyFound = false;
     for (var index = 0; index < prevOperations.length; index++) {
       var element = prevOperations[index];
-      if (!openMapKeyFound &&
-          element.template
-              .contains("press('${RecordConfig.to.getOpenMapKey()}'")) {
-        element = Operation.openMap;
-        openMapKeyFound = true;
+      if (!startKeyFound) {
+        if (element.template
+            .contains("press('${GameKeyConfig.to.getOpenMapKey()}'")) {
+          element = Operation.openMap;
+          startKeyFound = true;
+        } else if (element.template
+            .contains("press('${GameKeyConfig.to.getOpenBookKey()}'")) {
+          element = Operation.openBook;
+          startKeyFound = true;
+        }
       }
-      if (openMapKeyFound) {
-        script += index == prevOperations.length - 1
-            ? element.toString()
-            : '$element ';
+      if (startKeyFound) {
+        script += '  ${element.toString()}\n';
       }
     }
 
     if (script.isNotEmpty) {
-      appendText("script: \"$script\"\n");
+      appendText("{\n$script}\n");
     }
     prevOperations = [];
   }
