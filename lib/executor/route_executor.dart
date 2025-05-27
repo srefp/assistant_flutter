@@ -1,6 +1,7 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/util/js_executor.dart';
+import 'package:assistant/util/script_parser.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -37,7 +38,7 @@ class RouteExecutor {
           config.getRouteIndex() <= tpPoints.length) {
         config.save(AutoTpConfig.keyRouteIndex, config.getRouteIndex() + 1);
       }
-      
+
       // 超出范围，则表示路线结束
       if (config.getRouteIndex() > tpPoints.length) {
         showToast('当前路线已结束！');
@@ -46,9 +47,10 @@ class RouteExecutor {
       if (config.getRouteIndex() >= 0 &&
           config.getRouteIndex() <= tpPoints.length) {
         await executeStep(tpPoints[config.getRouteIndex() - 1], qm);
-        
+
         // 刷新当前位置
-        final curPos = tpPoints[config.getRouteIndex() - 1].name ?? '点位${config.getRouteIndex()}';
+        final curPos = tpPoints[config.getRouteIndex() - 1].name ??
+            '点位${config.getRouteIndex()}';
         WindowsApp.autoTpModel.selectPos(curPos);
       }
     } catch (e) {
@@ -62,9 +64,7 @@ class RouteExecutor {
     }
   }
 
-  static Future<void> executeStep(TpPoint tpPoint, bool qmParam) async {
-    if (tpPoint.script != null) {
-      await runScript(tpPoint.script!);
-    }
+  static Future<void> executeStep(BlockItem tpPoint, bool qmParam) async {
+    await runScript(tpPoint.code);
   }
 }

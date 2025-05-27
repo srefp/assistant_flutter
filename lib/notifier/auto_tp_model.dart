@@ -7,6 +7,7 @@ import 'package:assistant/config/game_pos/game_pos_config.dart';
 import 'package:assistant/dao/crud.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
+import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -406,7 +407,7 @@ class AutoTpModel extends ChangeNotifier {
   String? selectedDir;
   String? selectedFile;
   int currentRouteIndex = 0;
-  List<TpPoint> tpPoints = [];
+  List<BlockItem> tpPoints = [];
   bool isRunning = false;
   String? currentRoute;
   List<TpRoute> routes = [];
@@ -478,7 +479,7 @@ class AutoTpModel extends ChangeNotifier {
   }
 
   /// 解析路线内容
-  parseTpPoints(String content) {
+  List<BlockItem> parseTpPoints(String content) {
     return RouteUtil.parseFile(content);
   }
 

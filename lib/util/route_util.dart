@@ -1,4 +1,6 @@
 // 假设 TpPoint 类定义如下
+import 'package:assistant/util/script_parser.dart';
+
 class TpPoint {
   String? id;
   List<int>? boss;
@@ -180,103 +182,8 @@ class RouteUtil {
     'cy': [4, 2],
   };
 
-  static List<TpPoint> parseFile(String content) {
-    List<TpPoint> res = [];
-    List<String> lines = content.split('\n');
-    for (String lineItem in lines) {
-      String line = lineItem.trim();
-      if (line.contains('--')) {
-        line = line.substring(0, line.indexOf('--')).trim();
-      }
-
-      if (line.isEmpty) {
-        continue;
-      }
-
-      // 使用 String 的 split 方法结合正则表达式
-      final matches = keyValuePairRegex.allMatches(lineItem);
-      final values = matches.expand((match) => [match[1]!, match[2]!]).toList();
-      List<String> keyValues = values.where((s) => s.isNotEmpty).toList();
-      int len = keyValues.length;
-      TpPoint tpPoint = TpPoint();
-
-      for (int index = 0; index < len; index += 2) {
-        String key = keyValues[index];
-        String value = keyValues[index + 1];
-
-        if (key == RouteKeys.id) {
-          tpPoint.id = stringToString(value);
-        } else if (key == RouteKeys.boss) {
-          if (value.startsWith('[')) {
-            tpPoint.boss = stringToIntList(value);
-          } else {
-            tpPoint.boss = bossMap[stringToString(value)];
-          }
-        } else if (key == RouteKeys.delayBoss) {
-          tpPoint.delayBook = stringToInt(value);
-        } else if (key == RouteKeys.delayTrack) {
-          tpPoint.delayTrack = stringToInt(value);
-        } else if (key == RouteKeys.delayMap) {
-          tpPoint.delayMap = stringToInt(value);
-        } else if (key == RouteKeys.delayTp) {
-          tpPoint.delayTp = stringToInt(value);
-        } else if (key == RouteKeys.delayConfirm) {
-          tpPoint.delayConfirm = stringToInt(value);
-        } else if (key == RouteKeys.domain) {
-          tpPoint.domain = stringToBool(value);
-        } else if (key == RouteKeys.temporary) {
-          tpPoint.temporary = stringToBool(value);
-        } else if (key == RouteKeys.script) {
-          tpPoint.script = stringToString(value);
-        } else if (key == RouteKeys.scriptD) {
-          tpPoint.script = stringToString(value);
-        } else if (key == RouteKeys.pos) {
-          tpPoint.pos = stringToIntList(value);
-        } else if (key == RouteKeys.narrow) {
-          tpPoint.narrow = stringToInt(value);
-        } else if (key == RouteKeys.select) {
-          tpPoint.select = stringToBool(value);
-        } else if (key == RouteKeys.flower) {
-          tpPoint.flower = stringToBool(value);
-        } else if (key == RouteKeys.drag) {
-          tpPoint.drag = stringToIntList(value);
-        } else if (key == RouteKeys.posD) {
-          tpPoint.posD = stringToIntList(value);
-        } else if (key == RouteKeys.narrowD) {
-          tpPoint.narrowD = stringToInt(value);
-        } else if (key == RouteKeys.selectD) {
-          tpPoint.selectD = stringToInt(value);
-        } else if (key == RouteKeys.flowerD) {
-          tpPoint.flowerD = stringToBool(value);
-        } else if (key == RouteKeys.dragD) {
-          tpPoint.dragD = stringToIntList(value);
-        } else if (key == RouteKeys.area) {
-          if (value.startsWith('[')) {
-            tpPoint.area = stringToIntList(value);
-          } else {
-            tpPoint.area = areaMap[stringToString(value)];
-          }
-        } else if (key == RouteKeys.posA) {
-          tpPoint.posA = stringToIntList(value);
-        } else if (key == RouteKeys.narrowA) {
-          tpPoint.narrowA = stringToInt(value);
-        } else if (key == RouteKeys.selectA) {
-          tpPoint.selectA = stringToInt(value);
-        } else if (key == RouteKeys.flowerA) {
-          tpPoint.flowerA = stringToBool(value);
-        } else if (key == RouteKeys.dragA) {
-          tpPoint.dragA = stringToIntList(value);
-        } else if (key == RouteKeys.name) {
-          tpPoint.name = stringToString(value);
-        } else if (key == RouteKeys.comment) {
-          tpPoint.comment = stringToString(value);
-        }
-      }
-
-      res.add(tpPoint);
-    }
-
-    return res;
+  static List<BlockItem> parseFile(String content) {
+    return extractTopLevelBlocks(content);
   }
 
   static bool stringToBool(String str) {
