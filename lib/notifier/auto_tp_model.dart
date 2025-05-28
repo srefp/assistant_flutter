@@ -214,6 +214,36 @@ final delayConfigItems = [
     valueKey: AutoTpConfig.keyMultiSelectDelay,
     valueCallback: AutoTpConfig.to.getMultiSelectDelay,
   ),
+  IntConfigItem(
+    title: '拖动操作（移动到初始位置）',
+    subTitle: '移动到初始位置的后摇',
+    valueKey: AutoTpConfig.keyDragMoveToStartDelay,
+    valueCallback: AutoTpConfig.to.getDragMoveToStartDelay,
+  ),
+  IntConfigItem(
+    title: '拖动操作（按下鼠标左键）',
+    subTitle: '按下鼠标左键的后摇',
+    valueKey: AutoTpConfig.keyDragMouseDownDelay,
+    valueCallback: AutoTpConfig.to.getDragMouseDownDelay,
+  ),
+  IntConfigItem(
+    title: '拖动操作（移动一小段距离）',
+    subTitle: '移动一小段距离的后摇',
+    valueKey: AutoTpConfig.keyDragShortMoveDelay,
+    valueCallback: AutoTpConfig.to.getDragShortMoveDelay,
+  ),
+  IntConfigItem(
+    title: '拖动操作（移动到终止位置）',
+    subTitle: '移动到终止位置的后摇',
+    valueKey: AutoTpConfig.keyDragMoveToEndDelay,
+    valueCallback: AutoTpConfig.to.getDragMoveToEndDelay,
+  ),
+  IntConfigItem(
+    title: '拖动操作（松开鼠标）',
+    subTitle: '松开鼠标的后摇',
+    valueKey: AutoTpConfig.keyDragMouseUpDelay,
+    valueCallback: AutoTpConfig.to.getDragMouseUpDelay,
+  ),
 ];
 
 final recordDelayConfigItems = [
@@ -467,7 +497,8 @@ class AutoTpModel extends ChangeNotifier {
   selectRoute(final String routeName) {
     for (var element in routes) {
       if (element.scriptName == routeName) {
-        print('element.scriptName = ${element.scriptName}, routeName = $routeName');
+        print(
+            'element.scriptName = ${element.scriptName}, routeName = $routeName');
 
         currentRoute = element.scriptName;
         tpPoints = parseTpPoints(element.content);

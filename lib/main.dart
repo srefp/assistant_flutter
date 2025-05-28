@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
@@ -17,7 +15,7 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 import 'config/config_storage.dart';
 
 const String version = '2025.6';
-const String innerVersion = '2025.6.3';
+const String innerVersion = '2025.6.4';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';

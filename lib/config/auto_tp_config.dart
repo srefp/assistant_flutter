@@ -47,8 +47,6 @@ class AutoTpConfig with ConfigStorage {
   static const keyMultiSelectFlowerAfterDelay = "multiSelectFlowerAfterDelay";
   static const keyFirstOpenBagDelay = "firstOpenBagDelay";
   static const keyOpenBagDelay = "openBagDelay";
-  static const keyDragMoveStepDelay = "dragMoveStepDelay";
-  static const keyDragReleaseMouseDelay = "dragReleaseMouseDelay";
   static const keyBookDragPixelNum = "bookDragPixelNum";
   static const keyDragPixelNum = "dragPixelNum";
   static const keyCurrentRoute = "currentRoute";
@@ -64,6 +62,11 @@ class AutoTpConfig with ConfigStorage {
   static const keyFoodRecordEnabled = "foodRecordEnabled";
   static const keyFoodKey = "foodKey";
   static const keyRecordedFoodPos = "recordedFoodPos";
+  static const keyDragMoveToStartDelay = "dragMoveToStartDelay";
+  static const keyDragMouseDownDelay = "dragMouseDownDelay";
+  static const keyDragShortMoveDelay = "dragShortMoveDelay";
+  static const keyDragMoveToEndDelay = "dragMoveToEndDelay";
+  static const keyDragMouseUpDelay = "dragMouseUpDelay";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -132,13 +135,15 @@ class AutoTpConfig with ConfigStorage {
 
   int getOpenBagDelay() => box.read(keyOpenBagDelay) ?? 500;
 
-  int getDragMoveStepDelay() => box.read(keyDragMoveStepDelay) ?? 30;
+  int getDragMoveToStartDelay() => box.read(keyDragMoveToStartDelay) ?? 20;
 
-  int getDragReleaseMouseDelay() => box.read(keyDragReleaseMouseDelay) ?? 60;
+  int getDragMouseDownDelay() => box.read(keyDragMouseDownDelay) ?? 30;
 
-  int getBookDragPixelNum() => box.read(keyBookDragPixelNum) ?? 5;
+  int getDragShortMoveDelay() => box.read(keyDragShortMoveDelay) ?? 20;
 
-  int getDragPixelNum() => box.read(keyDragPixelNum) ?? 20;
+  int getDragMoveToEndDelay() => box.read(keyDragMoveToEndDelay) ?? 30;
+
+  int getDragMouseUpDelay() => box.read(keyDragMouseUpDelay) ?? 30;
 
   String getCrusadePos() => box.read(keyCrusadePos) ?? "9884, 33238";
 
@@ -185,7 +190,7 @@ class AutoTpConfig with ConfigStorage {
 
   int getBookRecordDelay() => box.read(keyBookRecordDelay) ?? 720;
 
-  int getDragRecordDelay() => box.read(keyDragRecordDelay) ?? 60;
+  int getDragRecordDelay() => box.read(keyDragRecordDelay) ?? 0;
 
   int getShortMoveRecord() => box.read(keyShortMoveRecord) ?? 20;
 

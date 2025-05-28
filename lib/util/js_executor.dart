@@ -1,3 +1,4 @@
+import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:flutter/services.dart';
@@ -76,6 +77,7 @@ void registerJsFunc() {
 
   // 点击
   jsRuntime.onMessage(click, (params) async {
+    SystemControl.refreshRect();
     await KeyMouseUtil.clickAtPoint(
         convertDynamicListToIntList(params['coords']), params['delay']);
   });
@@ -112,6 +114,7 @@ void registerJsFunc() {
 
   // 传送确认
   jsRuntime.onMessage(tpc, (params) async {
+    SystemControl.refreshRect();
     await KeyMouseUtil.clickAtPoint(
         convertDynamicListToIntList(params['coords']),
         AutoTpConfig.to.getTpcDelay());
@@ -122,9 +125,7 @@ void registerJsFunc() {
 
   // 传送
   jsRuntime.onMessage(tp, (params) async {
-    // print('params = $params');
     var script = params['params']['script'];
-    // final tpPoint = RouteUtil.parseFile(params).first;
     if (script != null) {
       await runScript(script!);
     }
@@ -132,6 +133,7 @@ void registerJsFunc() {
 
   // 拖动
   jsRuntime.onMessage(drag, (params) async {
+    SystemControl.refreshRect();
     await KeyMouseUtil.fastDrag(convertDynamicListToIntList(params['coords']), params['shortMove']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });

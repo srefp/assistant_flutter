@@ -43,7 +43,6 @@ class DbHelper {
             onUpgrade: (db, oldVersion, newVersion) async {
               if (oldVersion < 2 && newVersion >= 2) {
                 // 执行版本2的升级操作
-                // 执行版本3的升级操作
                 final List<Map<String, dynamic>> routes =
                     await db.query(TpRouteDb.tableName);
                 for (final route in routes) {

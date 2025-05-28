@@ -71,7 +71,7 @@ class ScreenManager {
   // 添加窗口事件监听
   void startListen() {
     _hook = setWinEventHook(
-        eventSystemMoveSizeEnd,
+        eventObjectDestroy,
         // 窗口移动/调整大小事件
         eventObjectDestroy,
         // 窗口销毁事件
@@ -80,6 +80,14 @@ class ScreenManager {
         0,
         0,
         winEventOutOfContext | winEventSkipOwnProcess);
+  }
+
+  // 停止监听
+  void stopListen() {
+    if (_hook != 0) {
+      unhookWinEvent(_hook);
+      _hook = 0;
+    }
   }
 
   // 窗口事件回调处理
@@ -117,6 +125,10 @@ class ScreenManager {
   refreshWindowHandle() {
     final tasks = TaskManager.tasks;
     hWnd = findWindowHandle(tasks);
+    if (hWnd == 0) {
+      // 添加窗口丢失处理
+      stopListen();
+    }
   }
 
   /// 判断游戏窗口是否置顶

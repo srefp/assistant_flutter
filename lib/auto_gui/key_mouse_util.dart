@@ -208,96 +208,24 @@ class KeyMouseUtil {
 
       api.moveTo(point: physicalPosSize(start));
       await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
+          Duration(milliseconds: config.getDragMoveToStartDelay()));
 
       api.mouseDown();
       await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
+          Duration(milliseconds: config.getDragMouseDownDelay()));
 
       api.moveToRel(offset: ui.Size(0, shortMove.toDouble()));
       await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
+          Duration(milliseconds: config.getDragShortMoveDelay()));
 
       api.moveTo(point: physicalPosSize(end));
       await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
+          Duration(milliseconds: config.getDragMoveToEndDelay()));
 
       api.mouseUp();
       await Future.delayed(
-          Duration(milliseconds: config.getDragReleaseMouseDelay()));
+          Duration(milliseconds: config.getDragMouseUpDelay()));
     }
-  }
-
-  /// 执行拖动操作
-  ///
-  /// [totalDrag] 总拖动距离数组
-  static Future<void> drag(List<int> totalDrag) async {
-    var config = AutoTpConfig.to;
-    int pixelNum = config.getDragPixelNum();
-    var dragSize = totalDrag.length;
-
-    for (int index = 0; index < dragSize; index += 4) {
-      List<int> drag = [
-        totalDrag[index],
-        totalDrag[index + 1],
-        totalDrag[index + 2],
-        totalDrag[index + 3]
-      ];
-      var start = physicalPos([drag[0], drag[1]]);
-      var end = physicalPos([drag[2], drag[3]]);
-
-      await Simulation.sendInput.mouse.move(start);
-      await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
-      await mouseMoveMapX(((end[0] - start[0]) / pixelNum).toInt());
-      await mouseMoveMapY(((end[1] - start[1]) / pixelNum).toInt());
-    }
-  }
-
-  /// 在X轴上执行鼠标移动映射操作
-  ///
-  /// [dx] X轴上的移动距离
-  static Future<void> mouseMoveMapX(int dx) async {
-    var config = AutoTpConfig.to;
-    var moveUnit = dx > 0 ? 20 : -20;
-    await Simulation.sendInput.mouse.leftButtonDown();
-    await Future.delayed(
-        Duration(milliseconds: config.getDragReleaseMouseDelay()));
-    var times = dx / moveUnit;
-
-    for (var i = 0; i < times; i++) {
-      await Simulation.sendInput.mouse.moveMouseBy([moveUnit, 0]);
-      await Future.delayed(
-          Duration(milliseconds: config.getDragMoveStepDelay()));
-    }
-
-    await Simulation.sendInput.mouse.leftButtonUp();
-    await Simulation.sendInput.mouse.leftButtonDown();
-    await Simulation.sendInput.mouse.leftButtonUp();
-    await Future.delayed(
-        Duration(milliseconds: config.getDragReleaseMouseDelay()));
-  }
-
-  /// 在Y轴上执行鼠标移动映射操作
-  ///
-  /// [dy] Y轴上的移动距离
-  static Future<void> mouseMoveMapY(int dy) async {
-    var config = AutoTpConfig.to;
-    var moveUnit = dy > 0 ? 20 : -20;
-    await Simulation.sendInput.mouse.leftButtonDown();
-    await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
-    var times = dy / moveUnit;
-
-    for (var i = 0; i < times; i++) {
-      await Simulation.sendInput.mouse.moveMouseBy([0, moveUnit]);
-      await Future.delayed(
-          Duration(milliseconds: config.getDragReleaseMouseDelay()));
-    }
-
-    await Simulation.sendInput.mouse.leftButtonUp();
-    await Simulation.sendInput.mouse.leftButtonDown();
-    await Simulation.sendInput.mouse.leftButtonUp();
-    await Future.delayed(Duration(milliseconds: config.getDragMoveStepDelay()));
   }
 
   /// 获取鼠标位置
