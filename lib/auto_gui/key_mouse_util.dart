@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:math';
+import 'dart:ui' as ui;
 
+import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/auto_gui/simulation.dart';
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
@@ -129,6 +132,14 @@ class KeyMouseUtil {
     ];
   }
 
+  static Point<int> physicalPosSize(List<int> lPos) {
+    final currentRect = SystemControl.rect;
+    return Point<int>(
+        currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).ceil(),
+        currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil()
+    );
+  }
+
   static List<int> physicalPos(List<int> lPos) {
     final currentRect = SystemControl.rect;
     return [
@@ -195,48 +206,26 @@ class KeyMouseUtil {
       List<int> start = [drag[0], drag[1]];
       List<int> end = [drag[2], drag[3]];
 
-      moveWithoutStep(start);
+      api.moveTo(point: physicalPosSize(start));
       await Future.delayed(
           Duration(milliseconds: config.getDragMoveStepDelay()));
 
-      await Simulation.sendInput.mouse.leftButtonDown();
+      api.mouseDown();
       await Future.delayed(
           Duration(milliseconds: config.getDragMoveStepDelay()));
 
-      List<int> distance = [end[0] - start[0], end[1] - start[1]];
-      if (distance[0] != 0) {
-        moveRWithoutStep(
-            logicalDistance(getShortMove([distance[0], 0], shortMove)));
-        await Future.delayed(
-            Duration(milliseconds: config.getDragMoveStepDelay()));
-      } else if (distance[1] != 0) {
-        moveRWithoutStep(
-            logicalDistance(getShortMove([0, distance[1]], shortMove)));
-        await Future.delayed(
-            Duration(milliseconds: config.getDragMoveStepDelay()));
-      }
-
-      moveWithoutStep(end);
+      api.moveToRel(offset: ui.Size(0, shortMove.toDouble()));
       await Future.delayed(
           Duration(milliseconds: config.getDragMoveStepDelay()));
 
-      await Simulation.sendInput.mouse.leftButtonUp();
+      api.moveTo(point: physicalPosSize(end));
+      await Future.delayed(
+          Duration(milliseconds: config.getDragMoveStepDelay()));
+
+      api.mouseUp();
       await Future.delayed(
           Duration(milliseconds: config.getDragReleaseMouseDelay()));
     }
-  }
-
-  /// 获取短移动距离
-  ///
-  /// [moveDistance] 移动距离数组
-  /// [shortMove] 短移动的步长
-  /// 返回一个包含短移动距离的数组
-  static List<int> getShortMove(List<int> moveDistance, int shortMove) {
-    var longerIndex = (moveDistance[0].abs() > moveDistance[1].abs()) ? 0 : 1;
-    var direction = (moveDistance[longerIndex] > 0) ? 1 : -1;
-    return longerIndex == 0
-        ? [shortMove * direction, 0]
-        : [0, shortMove * direction];
   }
 
   /// 执行拖动操作
@@ -319,7 +308,10 @@ class KeyMouseUtil {
     int y = point.ref.y;
     free(point);
 
-    if (x < SystemControl.rect.left || x > SystemControl.rect.right || y < SystemControl.rect.top || y > SystemControl.rect.bottom) {
+    if (x < SystemControl.rect.left ||
+        x > SystemControl.rect.right ||
+        y < SystemControl.rect.top ||
+        y > SystemControl.rect.bottom) {
       return [-1, -1];
     }
     return [x, y];

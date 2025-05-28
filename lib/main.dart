@@ -14,13 +14,14 @@ import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
+import 'config/config_storage.dart';
+
 const String version = '2025.6';
 const String innerVersion = '2025.6.3';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
 final DateTime outDate = DateTime(2025, 10, 1);
-late final GetStorage getStorage;
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,10 @@ void main(List<String> args) async {
 
 /// 初始化应用
 Future<void> _initApp() async {
+  // 自定义存储路径
+  final customPath = await getStoragePath();
+  box = GetStorage(appId, customPath);
+
   await initFileManagement();
   if (!kIsWeb &&
       [
@@ -73,10 +78,6 @@ Future<void> _initApp() async {
 
     getListenerBackend()!.addKeyboardListener(keyboardListener);
     getListenerBackend()!.addMouseListener(mouseListener);
-
-    // 自定义存储路径
-    final customPath = await getStoragePath();
-    getStorage = GetStorage(appId, customPath);
   }
 }
 

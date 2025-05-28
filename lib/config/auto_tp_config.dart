@@ -132,7 +132,7 @@ class AutoTpConfig with ConfigStorage {
 
   int getOpenBagDelay() => box.read(keyOpenBagDelay) ?? 500;
 
-  int getDragMoveStepDelay() => box.read(keyDragMoveStepDelay) ?? 60;
+  int getDragMoveStepDelay() => box.read(keyDragMoveStepDelay) ?? 30;
 
   int getDragReleaseMouseDelay() => box.read(keyDragReleaseMouseDelay) ?? 60;
 

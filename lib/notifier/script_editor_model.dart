@@ -14,6 +14,7 @@ import 'package:re_editor/re_editor.dart';
 
 import '../app/windows_app.dart';
 import '../auto_gui/system_control.dart';
+import '../config/config_storage.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
 import '../win32/window.dart';
@@ -117,8 +118,7 @@ class ScriptEditorModel with ChangeNotifier {
   /// 选择脚本类型
   void selectScriptType(value) async {
     selectedScriptType = value;
-    ScriptConfig.to.box
-        .write(ScriptConfig.keySelectedScriptType, selectedScriptType);
+    box.write(ScriptConfig.keySelectedScriptType, selectedScriptType);
 
     // 加载目录下的文件
     if (selectedScriptType != null) {
@@ -126,8 +126,7 @@ class ScriptEditorModel with ChangeNotifier {
     }
 
     selectFirstFile(scriptNameList);
-    ScriptConfig.to.box
-        .write(ScriptConfig.keySelectedScript, selectedScriptName);
+    box.write(ScriptConfig.keySelectedScript, selectedScriptName);
 
     notifyListeners();
   }
@@ -135,14 +134,14 @@ class ScriptEditorModel with ChangeNotifier {
   /// 选择文件
   void selectScript(value) async {
     selectedScriptName = value;
-    ScriptConfig.to.box
-        .write(ScriptConfig.keySelectedScript, selectedScriptName);
+    box.write(ScriptConfig.keySelectedScript, selectedScriptName);
 
     if (selectedScriptType != null && selectedScriptName != null) {
       currentScript = await loadScriptByNameAndType(
           selectedScriptType!, selectedScriptName!);
       scriptContent = currentScript?.content;
       controller.text = scriptContent ?? '';
+      controller.clearHistory();
     }
 
     WindowsApp.autoTpModel.selectRoute(value);
@@ -151,8 +150,7 @@ class ScriptEditorModel with ChangeNotifier {
   }
 
   Future<void> autoSelectDir(List<String> directories) async {
-    selectedScriptType =
-        ScriptConfig.to.box.read(ScriptConfig.keySelectedScriptType);
+    selectedScriptType = box.read(ScriptConfig.keySelectedScriptType);
     if (selectedScriptType == null) {
       selectFirstDir(directories);
     } else {
@@ -173,8 +171,7 @@ class ScriptEditorModel with ChangeNotifier {
   }
 
   Future<void> autoSelectFile() async {
-    selectedScriptName =
-        ScriptConfig.to.box.read(ScriptConfig.keySelectedScript);
+    selectedScriptName = box.read(ScriptConfig.keySelectedScript);
     if (selectedScriptName == null) {
       selectFirstFile(scriptNameList);
     }
@@ -272,14 +269,16 @@ class ScriptEditorModel with ChangeNotifier {
                 ),
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                   child: Row(
                     children: [
                       WinText('错误信息'),
                       const SizedBox(
                         width: 12,
                       ),
-                      Expanded(child: WinText(WindowsApp.autoTpModel.errorMessage ?? '')),
+                      Expanded(
+                          child: WinText(
+                              WindowsApp.autoTpModel.errorMessage ?? '')),
                     ],
                   ),
                 ),
@@ -354,7 +353,8 @@ class ScriptEditorModel with ChangeNotifier {
                                 const SizedBox(
                                   width: 12,
                                 ),
-                                Expanded(child: WinText(SystemControl.ratio.name)),
+                                Expanded(
+                                    child: WinText(SystemControl.ratio.name)),
                               ],
                             ),
                           ),
@@ -399,8 +399,7 @@ class ScriptEditorModel with ChangeNotifier {
     await deleteScriptByNameAndType(selectedScriptType!, selectedScriptName!);
     scriptNameList.remove(selectedScriptName);
     selectFirstFile(scriptNameList);
-    ScriptConfig.to.box
-        .write(ScriptConfig.keySelectedScript, selectedScriptName);
+    box.write(ScriptConfig.keySelectedScript, selectedScriptName);
     notifyListeners();
   }
 

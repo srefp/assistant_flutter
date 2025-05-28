@@ -1,5 +1,7 @@
 import 'package:assistant/config/game_pos/game_pos_config.dart';
 
+import '../config_storage.dart';
+
 class GamePosConfig4318 extends GamePosConfig {
   static GamePosConfig4318 to = GamePosConfig4318();
 

@@ -1,5 +1,7 @@
 import 'package:assistant/config/game_pos/game_pos_config.dart';
 
+import '../config_storage.dart';
+
 class GamePosConfig6427 extends GamePosConfig {
   static GamePosConfig6427 to = GamePosConfig6427();
 

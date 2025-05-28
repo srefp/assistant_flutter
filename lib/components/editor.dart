@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:assistant/notifier/script_editor_model.dart';
+import 'package:assistant/util/js_executor.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:provider/provider.dart';
@@ -37,10 +38,7 @@ class _EditorState extends State<Editor> {
     return Consumer<ScriptEditorModel>(builder: (context, model, child) {
       return CodeAutocomplete(
         promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
-          directPrompts: const [
-            CodeKeywordPrompt(word: 'name: '),
-            CodeKeywordPrompt(word: 'script: '),
-          ],
+          directPrompts: keys.map((key) => CodeKeywordPrompt(word: key)).toList(),
         ),
         viewBuilder: (context, notifier, onSelected) {
           return _DefaultCodeAutocompleteListView(
