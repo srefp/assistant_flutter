@@ -72,7 +72,6 @@ class ScreenManager {
   void startListen() {
     _hook = setWinEventHook(
         eventObjectDestroy,
-        // 窗口移动/调整大小事件
         eventObjectDestroy,
         // 窗口销毁事件
         0,

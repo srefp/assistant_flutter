@@ -497,9 +497,6 @@ class AutoTpModel extends ChangeNotifier {
   selectRoute(final String routeName) {
     for (var element in routes) {
       if (element.scriptName == routeName) {
-        print(
-            'element.scriptName = ${element.scriptName}, routeName = $routeName');
-
         currentRoute = element.scriptName;
         tpPoints = parseTpPoints(element.content);
         AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
@@ -673,13 +670,14 @@ class AutoTpModel extends ChangeNotifier {
     isRunning = true;
 
     setForegroundWindow(hWnd);
+    ScreenManager.instance.startListen();
 
     notifyListeners();
   }
 
   void stop() {
     isRunning = false;
-
+    ScreenManager.instance.startListen();
     notifyListeners();
   }
 
