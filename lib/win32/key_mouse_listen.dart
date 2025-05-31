@@ -10,6 +10,7 @@ import '../executor/route_executor.dart';
 import '../util/tpc.dart';
 import 'mouse_listen.dart';
 
+/// 键鼠监听回调
 void keyMouseListen(name, down) {
   listenKeyboard(name, down);
 
@@ -24,6 +25,8 @@ void keyMouseListen(name, down) {
   if (!down) {
     return;
   }
+
+  print('name: $name, down: $down');
 
   if (WindowsApp.recordModel.isRecording) {
     if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {

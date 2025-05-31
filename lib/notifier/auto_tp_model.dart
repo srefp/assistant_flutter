@@ -35,15 +35,21 @@ final helpConfigItems = [
   ),
   BoolConfigItem(
     title: '匀速冲刺',
-    subTitle: '按shift + w 可以匀速冲刺，之后可以松开shift，需要一直按住w。松开w就停止冲刺。',
+    subTitle: '默认按 v 可以匀速冲刺；再按 v 停止匀速冲刺，但是还会往前走；按 w 人工接管。',
     valueKey: AutoTpConfig.keyDashEnabled,
     valueCallback: AutoTpConfig.to.isDashEnabled,
   ),
   BoolConfigItem(
     title: '记录快速吃药',
-    subTitle: '双击b键，进入记录视频坐标模式，默认有20秒的时间，点击食品就记录成功，按`键快速吃药',
+    subTitle: '双击b键，进入记录视频坐标模式，点击食品就记录成功，之后单击b完成记录。',
     valueKey: AutoTpConfig.keyFoodRecordEnabled,
     valueCallback: AutoTpConfig.to.isFoodRecordEnabled,
+  ),
+  BoolConfigItem(
+    title: '快速吃药',
+    subTitle: '默认按`键快速吃药',
+    valueKey: AutoTpConfig.keyEatFoodEnabled,
+    valueCallback: AutoTpConfig.to.isEatFoodEnabled,
   ),
   StringConfigItem(
     title: '快速吃药坐标',
@@ -57,13 +63,13 @@ final helpConfigItems = [
 final gameKeyConfigItems = [
   StringConfigItem(
     title: '开图',
-    subTitle: '打开地图的键位',
+    subTitle: '打开/关闭地图的键位',
     valueKey: GameKeyConfig.keyOpenMapKey,
     valueCallback: GameKeyConfig.to.getOpenMapKey,
   ),
   StringConfigItem(
     title: '开书',
-    subTitle: '打开书的键位',
+    subTitle: '打开/关闭书的键位',
     valueKey: GameKeyConfig.keyOpenBookKey,
     valueCallback: GameKeyConfig.to.getOpenBookKey,
   ),
@@ -72,6 +78,24 @@ final gameKeyConfigItems = [
     subTitle: '联机的键位',
     valueKey: GameKeyConfig.keyOnlineKey,
     valueCallback: GameKeyConfig.to.getOnlineKey,
+  ),
+  StringConfigItem(
+    title: '冲刺',
+    subTitle: '冲刺的键位',
+    valueKey: GameKeyConfig.keyDashKey,
+    valueCallback: GameKeyConfig.to.getDashKey,
+  ),
+  StringConfigItem(
+    title: '背包',
+    subTitle: '打开/关闭背包的键位',
+    valueKey: GameKeyConfig.keyBagKey,
+    valueCallback: GameKeyConfig.to.getBagKey,
+  ),
+  StringConfigItem(
+    title: '前进',
+    subTitle: '向前走的键位',
+    valueKey: GameKeyConfig.keyForwardKey,
+    valueCallback: GameKeyConfig.to.getForwardKey,
   ),
 ];
 
@@ -677,7 +701,7 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
-    ScreenManager.instance.startListen();
+    ScreenManager.instance.stopListen();
     notifyListeners();
   }
 

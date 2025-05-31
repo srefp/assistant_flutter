@@ -73,26 +73,45 @@ void listenKeyboard(String name, bool down) async {
     KeyMouseUtil.showCoordinate();
   }
 
-  if (name == '0xc0') {
+  if (name == HotkeyConfig.to.getEatFoodKey()) {
     eatFood();
   }
 }
 
 bool foodSelected = false;
 
+bool eatFoodForbidden = false;
+
 void eatFood() async {
-  showToast('记录完成');
-  foodRecording = false;
+  if (!AutoTpConfig.to.isEatFoodEnabled()) {
+    return;
+  }
+
+  if (eatFoodForbidden) {
+    return;
+  }
+
+  eatFoodForbidden = true;
+
+  Timer(Duration(seconds: 1), () {
+    eatFoodForbidden = false;
+  });
+
+  if (foodRecording) {
+    showToast('记录完成');
+    foodRecording = false;
+  }
 
   if (foodRecordTimer != null) {
     foodRecordTimer?.cancel();
     foodRecordTimer = null;
   }
 
-  api.keyDown(key: 'b');
+  api.keyDown(key: GameKeyConfig.to.getBagKey());
   await Future.delayed(Duration(milliseconds: 20));
-  api.keyUp(key: 'b');
-  await Future.delayed(Duration(milliseconds: 600));
+  api.keyUp(key: GameKeyConfig.to.getBagKey());
+  await Future.delayed(
+      Duration(milliseconds: AutoTpConfig.to.getOpenBagDelay()));
 
   if (!foodSelected) {
     await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getFoodPosIntList(), 120);
@@ -102,28 +121,49 @@ void eatFood() async {
   var foodList = AutoTpConfig.to.getRecordedFoodPosList();
   for (var index = 0; index < foodList.length; index += 2) {
     var foodPos = [foodList[index], foodList[index + 1]];
-    await KeyMouseUtil.clickAtPoint(foodPos, 60);
     await KeyMouseUtil.clickAtPoint(
-        GamePosConfig.to.getConfirmPosIntList(), 60);
+        foodPos, AutoTpConfig.to.getClickFoodDelay());
+    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getConfirmPosIntList(),
+        AutoTpConfig.to.getEatFoodDelay());
   }
 
+  api.keyDown(key: GameKeyConfig.to.getBagKey());
+  await Future.delayed(Duration(milliseconds: 20));
+  api.keyUp(key: GameKeyConfig.to.getBagKey());
+
   await Future.delayed(Duration(milliseconds: 300));
-  api.keyDown(key: 'b');
 }
 
 int lastBPressTime = 0;
-const double keyDoubleClickThreshold = 500;
+const double keyDoubleClickThreshold = 300;
 
 bool foodRecording = false;
 Timer? foodRecordTimer;
 
 void recordFood(String name, bool down) async {
+  if (!AutoTpConfig.to.isFoodRecordEnabled()) {
+    return;
+  }
+
   if (name == AutoTpConfig.to.getFoodKey()) {
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
+    if (foodRecording &&
+        down &&
+        currentTime - lastBPressTime > keyDoubleClickThreshold) {
+      showToast('记录完成');
+      foodRecording = false;
+      foodRecordTimer?.cancel();
+      foodRecordTimer = null;
+    }
+
     if (down) {
       int currentTime = DateTime.now().millisecondsSinceEpoch;
       if (currentTime - lastBPressTime < keyDoubleClickThreshold) {
         // 点击食物
-        await Future.delayed(Duration(milliseconds: 600), () async {
+        await Future.delayed(
+            Duration(
+              milliseconds: AutoTpConfig.to.getOpenBagDelay(),
+            ), () async {
           await KeyMouseUtil.clickAtPoint(
               GamePosConfig.to.getFoodPosIntList(), 100);
           foodSelected = true;
@@ -133,7 +173,7 @@ void recordFood(String name, bool down) async {
         AutoTpConfig.to.save(AutoTpConfig.keyRecordedFoodPos, '');
         WindowsApp.autoTpModel.fresh();
 
-        showToast('食品列表已清空，你有20秒的时间来记录食物坐标');
+        showToast('食品列表已清空，请通过鼠标点击记录食物坐标');
 
         if (foodRecordTimer != null) {
           foodRecordTimer?.cancel();
@@ -182,6 +222,16 @@ void quickPick(String name, bool down) {
   }
 }
 
+/// 全局快捡
+Timer? _globalQuickPickTimer;
+
+/// 全局快捡
+void globalQuickPick(String name, bool down) {
+  if (!AutoTpConfig.to.isGlobalQuickPickEnabled()) {
+    return;
+  }
+}
+
 /// 匀速冲刺定时器
 Timer? _dashTimer;
 
@@ -199,7 +249,7 @@ void timerDash(String name, bool down) async {
     }
   }
 
-  if (name != AutoTpConfig.to.getTimerDashKey()) {
+  if (name != HotkeyConfig.to.getTimerDashKey()) {
     return;
   }
 

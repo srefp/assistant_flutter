@@ -39,6 +39,16 @@ final hotkeyConfigItems = [
     valueKey: HotkeyConfig.keyTpNext,
     valueCallback: HotkeyConfig.to.getTpNext,
   ),
+  StringConfigItem(
+    title: '匀速冲刺',
+    valueKey: HotkeyConfig.keyTimerDashKey,
+    valueCallback: HotkeyConfig.to.getTimerDashKey,
+  ),
+  StringConfigItem(
+    title: '一键吃药',
+    valueKey: HotkeyConfig.keyEatFoodKey,
+    valueCallback: HotkeyConfig.to.getEatFoodKey,
+  ),
 ];
 
 class HotkeyConfigRow extends StatefulWidget {

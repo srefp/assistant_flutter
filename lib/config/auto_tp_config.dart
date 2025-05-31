@@ -67,7 +67,8 @@ class AutoTpConfig with ConfigStorage {
   static const keyDragShortMoveDelay = "dragShortMoveDelay";
   static const keyDragMoveToEndDelay = "dragMoveToEndDelay";
   static const keyDragMouseUpDelay = "dragMouseUpDelay";
-  static const keyTimerDashKey = "timerDashKey";
+  static const keyEatFoodEnabled = "eatFoodEnabled";
+  static const keyGlobalQuickPickEnabled = "globalQuickPickEnabled";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -199,6 +200,11 @@ class AutoTpConfig with ConfigStorage {
 
   bool isFoodRecordEnabled() => box.read(keyFoodRecordEnabled) ?? true;
 
+  bool isEatFoodEnabled() => box.read(keyEatFoodEnabled) ?? true;
+
+  bool isGlobalQuickPickEnabled() =>
+      box.read(keyGlobalQuickPickEnabled) ?? false;
+
   String getFoodKey() => box.read(keyFoodKey) ?? 'b';
 
   String getRecordedFoodPos() => box.read(keyRecordedFoodPos) ?? '';
@@ -214,6 +220,4 @@ class AutoTpConfig with ConfigStorage {
       box.write(keyRecordedFoodPos, '$text, $foodPos');
     }
   }
-
-  String getTimerDashKey() => box.read(keyTimerDashKey) ?? 'v';
 }

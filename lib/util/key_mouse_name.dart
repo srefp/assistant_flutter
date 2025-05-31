@@ -4,15 +4,8 @@ import 'package:win32/win32.dart';
 
 // 定义键码到键名的映射
 final Map<int, String> keyCodeToNameMap = {
-  VIRTUAL_KEY.VK_OEM_1: 'oem1',
-  VIRTUAL_KEY.VK_OEM_2: 'oem2',
-  VIRTUAL_KEY.VK_OEM_3: 'oem3',
-  VIRTUAL_KEY.VK_OEM_4: 'oem4',
-  VIRTUAL_KEY.VK_OEM_5: 'oem5',
-  VIRTUAL_KEY.VK_OEM_6: 'oem6',
-  VIRTUAL_KEY.VK_OEM_7: 'oem7',
-  VIRTUAL_KEY.VK_OEM_8: 'oem8',
-  VIRTUAL_KEY.VK_OEM_102: 'oem102',
+  VIRTUAL_KEY.VK_OEM_3: '`',
+  VIRTUAL_KEY.VK_OEM_8: '`',
   VIRTUAL_KEY.VK_BACK: 'backspace',
   VIRTUAL_KEY.VK_TAB: 'tab',
   VIRTUAL_KEY.VK_RETURN: 'enter',

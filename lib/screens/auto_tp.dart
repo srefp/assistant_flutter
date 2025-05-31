@@ -183,7 +183,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.gamepad_outlined,
               title: '游戏键位',
-              subTitle: '根据游戏键位修改耕地机键位，键位名称为英文全小写',
+              subTitle: '根据游戏键位修改耕地机键位，键位名称为英文全小写，例如: m ` capslock tab shift',
               content: Column(
                 children: [
                   Padding(
@@ -210,7 +210,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedGameKeyConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedGameKeyConfigItems[index];
-                      return StringConfigRow(
+                      return GameKeyConfigRow(
                         item: item,
                         lightText: model.gameKeyLightText,
                       );
