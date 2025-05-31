@@ -1,7 +1,9 @@
 import 'package:assistant/config/config_storage.dart';
-import 'package:assistant/util/hot_key.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_auto_gui_windows/types/keyboard_keys.dart';
 import 'package:hotkey_manager_platform_interface/src/hotkey.dart';
+
+import '../util/key_mouse_name.dart';
 
 class HotkeyConfig with ConfigStorage {
   static final HotkeyConfig to = HotkeyConfig();
@@ -32,7 +34,7 @@ class HotkeyConfig with ConfigStorage {
   HotKey getStartStopKeyItem() {
     return HotKey(
       identifier: keyStartStopKey,
-      key: physicalKeyMap[getStartStopKey()] ?? PhysicalKeyboardKey.f7,
+      key: stringToPhysicalKeyMap[getStartStopKey()] ?? PhysicalKeyboardKey.f7,
       scope: HotKeyScope.system,
       modifiers: [],
     );

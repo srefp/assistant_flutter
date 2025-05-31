@@ -6,8 +6,6 @@ import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
-import 'package:assistant/config/record_config.dart';
-import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/executor/route_executor.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
@@ -18,6 +16,8 @@ import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
+import '../util/key_mouse_name.dart';
+import 'key_mouse_listen.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
@@ -34,92 +34,46 @@ Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> setListenCallback(
       .nativeFunction;
 }
 
-const left = 37;
-const up = 38;
-const right = 39;
-const down = 40;
-
 void keyboardListener(RawKeyEvent event) {
   final data = event.data;
+
+  if (!WindowsApp.autoTpModel.isRunning ||
+      !ScreenManager.instance.isGameActive()) {
+    return;
+  }
 
   if (data is KeyExt) {
     KeyExt eventData = data;
     if (eventData.mocked) {
-      print('Key mocked: ${eventData.logicalKey.debugName}');
       return;
     }
 
-    final vkCode = data.keyCode;
-    final wParam = event is RawKeyDownEvent ? WM_KEYDOWN : WM_KEYUP;
+    final bool down = event is RawKeyDownEvent;
+    final keyName = getKeyName(data.keyCode);
 
-    if (WindowsApp.autoTpModel.isRunning &&
-        ScreenManager.instance.isGameActive()) {
-      listenKeyboard(vkCode, wParam);
-    }
-
-    if (WindowsApp.recordModel.isRecording) {
-      if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
-        recordRoute(vkCode, wParam);
-      } else {
-        recordScript(vkCode, wParam);
-      }
-    }
+    keyMouseListen(keyName, down);
   }
 }
 
-// 全局变量
-int keyboardHook = 0;
-final hookProcPointer = setCallback((nCode, wParam, lParam) {
-  int res = CallNextHookEx(keyboardHook, nCode, wParam, lParam);
-  if (nCode >= 0) {
-    final kbdStruct = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
-    final vkCode = kbdStruct.ref.vkCode;
-    // print(
-    //     'Key event: ${wParam == WM_KEYDOWN ? 'Down' : 'Up'} | VK Code: $vkCode | Name: ${getKeyName(vkCode)}');
-
-    // 添加事件来源判断（0x10表示程序注入事件）
-    if ((kbdStruct.ref.flags & 0x10) != 0) {
-      // print('是模拟事件，跳过');
-      return res;
-    }
-
-    if (WindowsApp.autoTpModel.isRunning &&
-        ScreenManager.instance.isGameActive()) {
-      listenKeyboard(vkCode, wParam);
-    }
-
-    if (WindowsApp.recordModel.isRecording) {
-      if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
-        recordRoute(vkCode, wParam);
-      } else {
-        recordScript(vkCode, wParam);
-      }
-    }
-  }
-  return res;
-});
-
 /// 监听操作
-void listenKeyboard(int vkCode, int wParam) async {
-  final keyName = getKeyName(vkCode);
-  quickPick(vkCode, wParam, keyName);
-  dash(vkCode, wParam, keyName);
-  recordFood(vkCode, wParam, keyName);
+void listenKeyboard(String name, bool down) async {
+  quickPick(name, down);
+  timerDash(name, down);
+  recordFood(name, down);
 
-  if (wParam != WM_KEYDOWN) {
+  if (!down) {
     return;
   }
 
-  if (keyName == HotkeyConfig.to.getTpNext()) {
-    print('全自动传送');
+  if (name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
   }
 
-  if (keyName == HotkeyConfig.to.getShowCoordsKey()) {
+  if (name == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
   }
 
-  if (keyName == '0xc0') {
+  if (name == '0xc0') {
     eatFood();
   }
 }
@@ -163,9 +117,9 @@ const double keyDoubleClickThreshold = 500;
 bool foodRecording = false;
 Timer? foodRecordTimer;
 
-void recordFood(int vkCode, int wParam, String keyName) async {
-  if (keyName == AutoTpConfig.to.getFoodKey()) {
-    if (wParam == WM_KEYDOWN) {
+void recordFood(String name, bool down) async {
+  if (name == AutoTpConfig.to.getFoodKey()) {
+    if (down) {
       int currentTime = DateTime.now().millisecondsSinceEpoch;
       if (currentTime - lastBPressTime < keyDoubleClickThreshold) {
         // 点击食物
@@ -200,13 +154,13 @@ void recordFood(int vkCode, int wParam, String keyName) async {
 Timer? _fKeyTimer;
 
 /// 快捡
-void quickPick(int vkCode, int wParam, String keyName) {
+void quickPick(String name, bool down) {
   if (!AutoTpConfig.to.isQuickPickEnabled()) {
     return;
   }
 
-  if (keyName == HotkeyConfig.to.getQuickPickKey()) {
-    if (wParam == WM_KEYDOWN) {
+  if (name == HotkeyConfig.to.getQuickPickKey()) {
+    if (down) {
       _fKeyTimer ??= Timer.periodic(Duration(milliseconds: 20), (timer) async {
         // 后面可以判断按键是否按下：!(GetKeyState(VIRTUAL_KEY.VK_F) & 0x8000 != 0)
         if (!WindowsApp.autoTpModel.isRunning ||
@@ -221,7 +175,7 @@ void quickPick(int vkCode, int wParam, String keyName) {
         await Future.delayed(Duration(milliseconds: 5));
         api.scroll(clicks: -1);
       });
-    } else if (wParam == WM_KEYUP) {
+    } else {
       _fKeyTimer?.cancel();
       _fKeyTimer = null;
     }
@@ -231,79 +185,97 @@ void quickPick(int vkCode, int wParam, String keyName) {
 /// 匀速冲刺定时器
 Timer? _dashTimer;
 
-void dash(int vkCode, int wParam, String keyName) {
+/// 定时冲刺
+void timerDash(String name, bool down) async {
   if (!AutoTpConfig.to.isDashEnabled()) {
     return;
   }
 
-  final shiftPressed = GetKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0;
-
-  if (shiftPressed && keyName == 'w' && wParam == WM_KEYDOWN) {
-    _dashTimer ??= Timer.periodic(Duration(milliseconds: 860), (timer) async {
-      if (!WindowsApp.autoTpModel.isRunning ||
-          !ScreenManager.instance.isGameActive()) {
-        _dashTimer?.cancel();
-        _dashTimer = null;
-        return;
-      }
-
-      api.keyDown(key: 'shift');
-      await Future.delayed(Duration(milliseconds: 20));
-      api.keyUp(key: 'shift');
-    });
-  } else if (keyName == 'w' && wParam == WM_KEYUP) {
-    _dashTimer?.cancel();
-    _dashTimer = null;
+  if (name == GameKeyConfig.to.getForwardKey() && down) {
+    if (_dashTimer != null) {
+      showToast('停止冲刺');
+      _dashTimer?.cancel();
+      _dashTimer = null;
+    }
   }
+
+  if (name != AutoTpConfig.to.getTimerDashKey()) {
+    return;
+  }
+
+  if (down) {
+    if (_dashTimer != null) {
+      showToast('停止冲刺');
+      _dashTimer?.cancel();
+      _dashTimer = null;
+    } else {
+      showToast('开始冲刺');
+      await dash();
+      api.keyDown(key: GameKeyConfig.to.getForwardKey());
+      _dashTimer = Timer.periodic(Duration(milliseconds: 860), (timer) async {
+        if (!WindowsApp.autoTpModel.isRunning ||
+            !ScreenManager.instance.isGameActive()) {
+          _dashTimer?.cancel();
+          _dashTimer = null;
+          return;
+        }
+
+        await dash();
+      });
+    }
+  }
+}
+
+Future<void> dash() async {
+  final dashKey = GameKeyConfig.to.getDashKey();
+  api.keyDown(key: dashKey);
+  await Future.delayed(Duration(milliseconds: 20));
+  api.keyUp(key: dashKey);
 }
 
 /// 记录路线
-void recordRoute(int vkCode, int wParam) {
+void recordRoute(String name, bool down) {
   WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
 
-  var key = getKeyName(vkCode);
-
   // 开图键录制
-  if (key == GameKeyConfig.to.getOpenMapKey() && wParam == WM_KEYDOWN) {
-    final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
-    WindowsApp.logModel.appendOperation(Operation(
-        func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
-  } else {
-    final operation = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
-    WindowsApp.logModel.appendOperation(Operation(
-        func: operation, template: "$operation('${getKeyName(vkCode)}', %s);"));
+  if (name != GameKeyConfig.to.getOpenMapKey()) {
+    return;
   }
+
+  final operation = down ? 'kDown' : 'kUp';
+  WindowsApp.logModel.appendOperation(
+      Operation(func: operation, template: "$operation('$name', %s);"));
 }
 
 /// 记录脚本
-void recordScript(int vkCode, int wParam) {
+void recordScript(String name, bool down) {
   WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
   WindowsApp.logModel.outputAsScript();
 
-  if (vkCode == left) {
+  if (name == 'left') {
     simulateMouseMove('left');
     WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel
         .append('moveR3D(${directionDistances['left']}, 10, 5);');
-  } else if (vkCode == up) {
+  } else if (name == 'up') {
     simulateMouseMove('up');
     WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel.append('moveR3D(${directionDistances['up']}, 10, 5);');
-  } else if (vkCode == right) {
+  } else if (name == 'right') {
     simulateMouseMove('right');
     WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel
         .append('moveR3D(${directionDistances['right']}, 10, 5);');
-  } else if (vkCode == down) {
+  } else if (name == 'down') {
     simulateMouseMove('down');
     WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel
         .append('moveR3D(${directionDistances['down']}, 10, 5);');
   } else {
-    final func = wParam == WM_KEYDOWN ? 'kDown' : 'kUp';
+    final func = down ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
       func: func,
-      template: "$func('${getKeyName(vkCode)}', %s);",
+      template: "$func('$name', %s);",
     ));
   }
 }
@@ -320,75 +292,4 @@ const directionDistances = {
 void simulateMouseMove(String key) async {
   final distance = directionDistances[key] ?? [0, 0];
   await KeyMouseUtil.moveR3D(distance, 10, 5);
-}
-
-/// 关闭键盘监听
-void stopKeyboardHook() {
-  if (keyboardHook != 0) {
-    UnhookWindowsHookEx(keyboardHook);
-    keyboardHook = 0;
-  }
-}
-
-// 键码映射函数
-String getKeyName(int vkCode) {
-  switch (vkCode) {
-    case VIRTUAL_KEY.VK_BACK:
-      return 'backspace';
-    case VIRTUAL_KEY.VK_TAB:
-      return 'tab';
-    case VIRTUAL_KEY.VK_RETURN:
-      return 'enter';
-    case VIRTUAL_KEY.VK_ESCAPE:
-      return 'esc';
-    case VIRTUAL_KEY.VK_SPACE:
-      return 'space';
-    case VIRTUAL_KEY.VK_PRIOR:
-      return 'pageup';
-    case VIRTUAL_KEY.VK_NEXT:
-      return 'pagedown';
-    case VIRTUAL_KEY.VK_END:
-      return 'end';
-    case VIRTUAL_KEY.VK_HOME:
-      return 'home';
-    case VIRTUAL_KEY.VK_LEFT:
-      return 'left';
-    case VIRTUAL_KEY.VK_UP:
-      return 'up';
-    case VIRTUAL_KEY.VK_RIGHT:
-      return 'right';
-    case VIRTUAL_KEY.VK_DOWN:
-      return 'down';
-    case VIRTUAL_KEY.VK_DELETE:
-      return 'delete';
-    case VIRTUAL_KEY.VK_CAPITAL:
-      return 'capsLock';
-    case VIRTUAL_KEY.VK_SHIFT:
-      return 'shift';
-    case VIRTUAL_KEY.VK_CONTROL:
-      return 'ctrl';
-    case VIRTUAL_KEY.VK_MENU:
-      return 'alt';
-    case VIRTUAL_KEY.VK_LWIN:
-      return 'win(Left)';
-    case VIRTUAL_KEY.VK_RWIN:
-      return 'win(Right)';
-    case VIRTUAL_KEY.VK_F1:
-      return 'f1';
-    case VIRTUAL_KEY.VK_F2:
-      return 'f2';
-    default:
-      // 处理字母和数字（A-Z, 0-9）
-      if (vkCode >= 0x30 && vkCode <= 0x39) {
-        // 数字键 0-9
-        return String.fromCharCode(vkCode);
-      } else if (vkCode >= 0x41 && vkCode <= 0x5A) {
-        // 字母 A-Z
-        return String.fromCharCode(vkCode).toLowerCase();
-      } else if (vkCode >= 0x60 && vkCode <= 0x69) {
-        // 小键盘数字
-        return 'NumPad ${vkCode - 0x60}';
-      }
-      return '0x${vkCode.toRadixString(16).padLeft(2, '0')}';
-  }
 }

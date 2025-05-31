@@ -83,10 +83,6 @@ class KeyMouseUtil {
     Simulation.sendInput.mouse.move(res);
   }
 
-  static Future<void> click() async {
-    Simulation.sendInput.mouse.leftButtonClick();
-  }
-
   static Future<void> clickAtPoint(List<int> point, int delay) async {
     var res = physicalPos(point);
     await Simulation.sendInput.mouse.move(res);
@@ -206,23 +202,23 @@ class KeyMouseUtil {
       List<int> start = [drag[0], drag[1]];
       List<int> end = [drag[2], drag[3]];
 
-      api.moveTo(point: physicalPosSize(start));
+      await api.moveTo(point: physicalPosSize(start));
       await Future.delayed(
           Duration(milliseconds: config.getDragMoveToStartDelay()));
 
-      api.mouseDown();
+      await api.mouseDown();
       await Future.delayed(
           Duration(milliseconds: config.getDragMouseDownDelay()));
 
-      api.moveToRel(offset: ui.Size(0, shortMove.toDouble()));
+      await api.moveToRel(offset: ui.Size(0, shortMove.toDouble()));
       await Future.delayed(
           Duration(milliseconds: config.getDragShortMoveDelay()));
 
-      api.moveTo(point: physicalPosSize(end));
+      await api.moveTo(point: physicalPosSize(end));
       await Future.delayed(
           Duration(milliseconds: config.getDragMoveToEndDelay()));
 
-      api.mouseUp();
+      await api.mouseUp();
       await Future.delayed(
           Duration(milliseconds: config.getDragMouseUpDelay()));
     }

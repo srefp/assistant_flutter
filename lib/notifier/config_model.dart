@@ -6,6 +6,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import '../app/windows_app.dart';
 import '../components/string_config_row.dart';
 import '../components/title_with_sub.dart';
+import '../util/key_mouse_name.dart';
 import '../util/search_utils.dart';
 
 const global = 1;
@@ -86,11 +87,7 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
                   return;
                 }
                 setState(() {
-                  final map = {
-                    0x8: 'xbutton1',
-                    0x10: 'xbutton2',
-                  };
-                  final text = map[event.buttons];
+                  final text = mouseEventToNameMap[event.buttons];
                   if (text != null) {
                     HotkeyConfig.to.save(widget.item.valueKey, text);
                     controller.text = text;
@@ -135,23 +132,15 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
       }
     }
 
-    final map = {
-      PhysicalKeyboardKey.arrowRight: 'right',
-      PhysicalKeyboardKey.arrowLeft: 'left',
-      PhysicalKeyboardKey.arrowUp: 'up',
-      PhysicalKeyboardKey.arrowDown: 'down',
-      PhysicalKeyboardKey.enter: 'enter',
-      PhysicalKeyboardKey.escape: 'esc',
-    };
-
-    final text =
-        map[event.physicalKey] ?? event.physicalKey.keyLabel.toLowerCase();
+    final text = physicalKeyMap[event.physicalKey] ??
+        event.physicalKey.keyLabel.toLowerCase();
     HotkeyConfig.to.save(widget.item.valueKey, text);
     controller.text = text;
 
     // 注册新快捷键
     if (widget.item.type == global) {
-      await hotKeyManager.register(widget.item.keyItemCallback!(), keyDownHandler: widget.item.keyDownHandler);
+      await hotKeyManager.register(widget.item.keyItemCallback!(),
+          keyDownHandler: widget.item.keyDownHandler);
     }
   }
 }

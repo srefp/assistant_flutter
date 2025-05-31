@@ -1,49 +1,106 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/constants/script_type.dart';
+import 'package:assistant/win32/key_mouse_listen.dart';
 import 'package:hid_listener/hid_listener.dart';
 
 import '../app/windows_app.dart';
 import '../manager/screen_manager.dart';
 import '../notifier/log_model.dart';
-import '../util/hotkey_util.dart';
 
 typedef HookProc = int Function(int, int, int);
 typedef ListenProc = int Function(Pointer);
+
+String getMouseButtonName(MouseButtonEventType type) {
+  switch (type) {
+    case MouseButtonEventType.leftButtonDown:
+      return 'left_button';
+    case MouseButtonEventType.leftButtonUp:
+      return 'left_button';
+    case MouseButtonEventType.rightButtonDown:
+      return 'right_button';
+    case MouseButtonEventType.rightButtonUp:
+      return 'right_button';
+    case MouseButtonEventType.x1ButtonDown:
+      return 'xbutton1';
+    case MouseButtonEventType.x1ButtonUp:
+      return 'xbutton1';
+    case MouseButtonEventType.x2ButtonDown:
+      return 'xbutton2';
+    case MouseButtonEventType.x2ButtonUp:
+      return 'xbutton2';
+    case MouseButtonEventType.middleButtonDown:
+      return 'middle_button';
+    case MouseButtonEventType.middleButtonUp:
+      return 'middle_button';
+  }
+}
+
+bool getMouseButtonDown(MouseButtonEventType type) {
+  switch (type) {
+    case MouseButtonEventType.leftButtonDown:
+      return true;
+    case MouseButtonEventType.leftButtonUp:
+      return false;
+    case MouseButtonEventType.rightButtonDown:
+      return true;
+    case MouseButtonEventType.rightButtonUp:
+      return false;
+    case MouseButtonEventType.x1ButtonDown:
+      return true;
+    case MouseButtonEventType.x1ButtonUp:
+      return false;
+    case MouseButtonEventType.x2ButtonDown:
+      return true;
+    case MouseButtonEventType.x2ButtonUp:
+      return false;
+    case MouseButtonEventType.middleButtonDown:
+      return true;
+    case MouseButtonEventType.middleButtonUp:
+      return false;
+  }
+}
 
 void mouseListener(MouseEvent event) {
   if (event is MouseMoveEvent) {
     return;
   }
 
+  if (!WindowsApp.autoTpModel.isRunning ||
+      !ScreenManager.instance.isGameActive()) {
+    return;
+  }
+
   if (event is MouseButtonEvent) {
-    if (WindowsApp.autoTpModel.isRunning && ScreenManager.instance.isGameActive()) {
-      listenMouse(event);
-    }
+    String mouseName = getMouseButtonName(event.type);
+    bool down = getMouseButtonDown(event.type);
+
+    keyMouseListen(mouseName, down);
+
+    List<int> coords = KeyMouseUtil.logicalPos([event.x, event.y]);
 
     if (WindowsApp.recordModel.isRecording) {
       if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
-        recordRoute(event);
+        recordRouteMouse(event, coords);
       } else {
-        recordScript(event);
+        recordScriptMouse(event, coords);
       }
     }
   }
 }
 
-void recordRoute(MouseButtonEvent event) {
-  List<int> coords =
-      KeyMouseUtil.logicalPos([event.x, event.y]);
-
-  if (event.type == MouseButtonEventType.x2ButtonDown) {
+void recordTpc(String name, bool down, List<int> coords) {
+  if (name == HotkeyConfig.to.getHalfTp()) {
     WindowsApp.logModel.appendOperation(Operation(
-        func: "tpc",
-        template: "tpc([${coords[0]}, ${coords[1]}], 0);"));
+        func: "tpc", template: "tpc([${coords[0]}, ${coords[1]}], 0);"));
 
     WindowsApp.logModel.outputAsRoute();
   }
+}
 
+void recordRouteMouse(MouseButtonEvent event, List<int> coords) {
   int delay = WindowsApp.recordModel.getDelay();
   WindowsApp.logModel.appendDelay(delay);
 
@@ -89,14 +146,11 @@ void recordRoute(MouseButtonEvent event) {
   }
 }
 
-void recordScript(MouseButtonEvent event) {
+void recordScriptMouse(MouseButtonEvent event, List<int> coords) {
   int delay = WindowsApp.recordModel.getDelay();
 
   WindowsApp.logModel.appendDelay(delay);
   WindowsApp.logModel.outputAsScript();
-
-  List<int> coords =
-  KeyMouseUtil.logicalPos([event.x, event.y]);
 
   switch (event.type) {
     case MouseButtonEventType.leftButtonDown:

@@ -6,10 +6,16 @@ class GameKeyConfig with ConfigStorage {
   static final String keyOpenMapKey = 'openMapKey';
   static final String keyOpenBookKey = 'openBookKey';
   static final String keyOnlineKey = 'onlineKey';
+  static final String keyDashKey = 'dashKey';
+  static final String keyForwardKey = 'forwardKey';
 
   String getOpenMapKey() => box.read(keyOpenMapKey) ?? 'm';
 
   String getOpenBookKey() => box.read(keyOpenBookKey) ?? 'f1';
 
   String getOnlineKey() => box.read(keyOnlineKey) ?? 'f2';
+
+  String getDashKey() => box.read(keyDashKey) ?? 'shift';
+
+  String getForwardKey() => box.read(keyForwardKey) ?? 'w';
 }
