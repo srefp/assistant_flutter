@@ -262,7 +262,7 @@ void timerDash(String name, bool down) async {
       showToast('开始冲刺');
       await dash();
       api.keyDown(key: GameKeyConfig.to.getForwardKey());
-      _dashTimer = Timer.periodic(Duration(milliseconds: 860), (timer) async {
+      _dashTimer ??= Timer.periodic(Duration(milliseconds: 860), (timer) async {
         if (!WindowsApp.autoTpModel.isRunning ||
             !ScreenManager.instance.isGameActive()) {
           _dashTimer?.cancel();
