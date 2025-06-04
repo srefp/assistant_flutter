@@ -5,7 +5,41 @@ import 'dart:typed_data';
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:ffi/ffi.dart';
 import 'package:image/image.dart';
+import 'package:opencv_dart/opencv.dart' as cv;
 import 'package:win32/win32.dart';
+
+cv.Mat captureImageWindows(ScreenRect rect) {
+  var image = captureImageWin(rect);
+  return uint8ListToMat(image!, rect.width, rect.height);
+}
+
+// 在文件底部添加以下函数
+cv.Mat uint8ListToMat(Uint8List bytes, int width, int height,
+    {int channels = 3, // 默认输出BGR三通道
+    bool swapRB = true // 是否交换红蓝通道
+    }) {
+  // 创建临时Mat对象
+  final mat = cv.Mat.fromList(
+    height,
+    width,
+    cv.MatType.CV_8UC4, // 输入为RGBA四通道格式
+    bytes,
+  );
+
+  // 颜色空间转换（RGBA -> BGR）
+  final converted =
+      cv.cvtColor(mat, swapRB ? cv.COLOR_RGBA2BGR : cv.COLOR_RGBA2RGB);
+
+  // 如果要求通道数不同则进行转换
+  if (channels == 1) {
+    final gray = cv.cvtColor(converted, cv.COLOR_BGR2GRAY);
+    converted.release();
+    return gray;
+  }
+
+  mat.release(); // 释放原始矩阵内存
+  return converted;
+}
 
 /// 使用 Win32 API 截取屏幕区域
 Uint8List? captureImageWin(ScreenRect rect) {
@@ -19,27 +53,14 @@ Uint8List? captureImageWin(ScreenRect rect) {
 
   try {
     // 创建兼容位图
-    hBitmap = CreateCompatibleBitmap(
-        hdcScreen,
-        rect.width,
-        rect.height
-    );
+    hBitmap = CreateCompatibleBitmap(hdcScreen, rect.width, rect.height);
 
     // 选择位图到设备上下文
     hOld = SelectObject(hdcMem, hBitmap);
 
     // 执行位块传输
-    BitBlt(
-        hdcMem,
-        0,
-        0,
-        rect.width,
-        rect.height,
-        hdcScreen,
-        rect.left,
-        rect.top,
-        ROP_CODE.SRCCOPY
-    );
+    BitBlt(hdcMem, 0, 0, rect.width, rect.height, hdcScreen, rect.left,
+        rect.top, ROP_CODE.SRCCOPY);
 
     // 获取位图数据
     bitmapHeader = calloc<BITMAPINFOHEADER>()
@@ -52,15 +73,8 @@ Uint8List? captureImageWin(ScreenRect rect) {
 
     buffer = calloc<Uint8>(rect.width * rect.height * 4);
 
-    GetDIBits(
-        hdcMem,
-        hBitmap,
-        0,
-        rect.height,
-        buffer.cast(),
-        bitmapHeader.cast(),
-        DIB_USAGE.DIB_RGB_COLORS
-    );
+    GetDIBits(hdcMem, hBitmap, 0, rect.height, buffer.cast(),
+        bitmapHeader.cast(), DIB_USAGE.DIB_RGB_COLORS);
 
     // 转换为 Dart 类型
     final imageBytes = buffer.asTypedList(rect.width * rect.height * 4);
@@ -73,15 +87,15 @@ Uint8List? captureImageWin(ScreenRect rect) {
     if (hOld != null) {
       SelectObject(hdcMem, hOld);
     }
-    if (hBitmap!= null) {
+    if (hBitmap != null) {
       DeleteObject(hBitmap);
     }
     DeleteDC(hdcMem);
     ReleaseDC(NULL, hdcScreen);
-    if (bitmapHeader!= null) {
+    if (bitmapHeader != null) {
       free(bitmapHeader);
     }
-    if (buffer!= null) {
+    if (buffer != null) {
       free(buffer);
     }
   }
@@ -99,11 +113,11 @@ void saveScreenshot(Uint8List bgraData, int width, int height, String path) {
       img.setPixelRgba(
           x,
           y,
-          bgraData[index + 2],    // R
-          bgraData[index + 1],    // G
-          bgraData[index],        // B
-          bgraData[index + 3]     // A
-      );
+          bgraData[index + 2], // R
+          bgraData[index + 1], // G
+          bgraData[index], // B
+          bgraData[index + 3] // A
+          );
     }
   }
 

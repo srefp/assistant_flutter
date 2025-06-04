@@ -1,3 +1,4 @@
+import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/util/route_util.dart';
 
 import 'config_storage.dart';
@@ -70,6 +71,8 @@ class AutoTpConfig with ConfigStorage {
   static const keyEatFoodEnabled = "eatFoodEnabled";
   static const keyGlobalQuickPickEnabled = "globalQuickPickEnabled";
   static const keyDashIntervalDelay = "dashIntervalDelay";
+  static const keySmartTpEnabled = "smartTpEnabled";
+  static const keyWorldScreenRect = "worldScreenRect";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -223,4 +226,15 @@ class AutoTpConfig with ConfigStorage {
   }
 
   int getDashIntervalDelay() => box.read(keyDashIntervalDelay) ?? 810;
+
+  bool isSmartTpEnabled() => box.read(keySmartTpEnabled) ?? true;
+
+  ScreenRect getWorldScreenRect() {
+    final worldScreenRect = box.read(keyWorldScreenRect);
+    if (worldScreenRect != null) {
+      final coords = RouteUtil.stringToIntList(worldScreenRect);
+      return ScreenRect(coords[0], coords[1], coords[2], coords[3]);
+    }
+    return ScreenRect(61950, 1305, 64049, 4249);
+  }
 }

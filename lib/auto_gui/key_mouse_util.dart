@@ -132,8 +132,21 @@ class KeyMouseUtil {
     final currentRect = SystemControl.rect;
     return Point<int>(
         currentRect.left + (lPos[0] * (currentRect.width - 1) / factor).ceil(),
-        currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil()
-    );
+        currentRect.top + (lPos[1] * (currentRect.height - 1) / factor).ceil());
+  }
+
+  /// 转换为物理矩形
+  static ScreenRect convertToPhysicalRect(ScreenRect rect) {
+    final currentRect = SystemControl.rect;
+    return ScreenRect(
+        currentRect.left +
+            (rect.left * (currentRect.width - 1) / factor).ceil(),
+        currentRect.top +
+            (rect.top * (currentRect.height - 1) / factor).ceil(),
+        currentRect.left +
+            (rect.right * (currentRect.width - 1) / factor).ceil(),
+        currentRect.top +
+            (rect.bottom * (currentRect.height - 1) / factor).ceil());
   }
 
   static List<int> physicalPos(List<int> lPos) {

@@ -4,6 +4,7 @@ import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/game_pos/game_pos_config.dart';
+import 'package:assistant/cv/scan.dart';
 import 'package:assistant/dao/crud.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
@@ -488,6 +489,7 @@ class AutoTpModel extends ChangeNotifier {
     registerJsFunc();
     loadRoutes();
     messagePump();
+    detectWorldRole();
   }
 
   loadRoutes() async {
