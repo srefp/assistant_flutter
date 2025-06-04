@@ -262,7 +262,7 @@ void timerDash(String name, bool down) async {
       showToast('开始冲刺');
       await dash();
       api.keyDown(key: GameKeyConfig.to.getForwardKey());
-      _dashTimer ??= Timer.periodic(Duration(milliseconds: 860), (timer) async {
+      _dashTimer ??= Timer.periodic(Duration(milliseconds: AutoTpConfig.to.getDashIntervalDelay()), (timer) async {
         if (!WindowsApp.autoTpModel.isRunning ||
             !ScreenManager.instance.isGameActive()) {
           _dashTimer?.cancel();
@@ -278,9 +278,9 @@ void timerDash(String name, bool down) async {
 
 Future<void> dash() async {
   final dashKey = GameKeyConfig.to.getDashKey();
-  api.keyDown(key: dashKey);
+  await api.keyDown(key: dashKey);
   await Future.delayed(Duration(milliseconds: 20));
-  api.keyUp(key: dashKey);
+  await api.keyUp(key: dashKey);
 }
 
 /// 记录路线

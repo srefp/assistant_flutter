@@ -69,6 +69,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyDragMouseUpDelay = "dragMouseUpDelay";
   static const keyEatFoodEnabled = "eatFoodEnabled";
   static const keyGlobalQuickPickEnabled = "globalQuickPickEnabled";
+  static const keyDashIntervalDelay = "dashIntervalDelay";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -220,4 +221,6 @@ class AutoTpConfig with ConfigStorage {
       box.write(keyRecordedFoodPos, '$text, $foodPos');
     }
   }
+
+  int getDashIntervalDelay() => box.read(keyDashIntervalDelay) ?? 810;
 }

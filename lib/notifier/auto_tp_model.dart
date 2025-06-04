@@ -101,6 +101,12 @@ final gameKeyConfigItems = [
 
 final delayConfigItems = [
   IntConfigItem(
+    title: '自动冲刺间隔',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyDashIntervalDelay,
+    valueCallback: AutoTpConfig.to.getDashIntervalDelay,
+  ),
+  IntConfigItem(
     title: '半自动传送冷却',
     subTitle: '',
     valueKey: AutoTpConfig.keyTpcCooldown,
