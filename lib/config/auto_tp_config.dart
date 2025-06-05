@@ -73,6 +73,9 @@ class AutoTpConfig with ConfigStorage {
   static const keyDashIntervalDelay = "dashIntervalDelay";
   static const keySmartTpEnabled = "smartTpEnabled";
   static const keyWorldScreenRect = "worldScreenRect";
+  static const keyPickTotalDelay = "pickTotalDelay";
+  static const keyPickDownDelay = "pickDownDelay";
+  static const keyPickUpDelay = "pickUpDelay";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -237,4 +240,10 @@ class AutoTpConfig with ConfigStorage {
     }
     return ScreenRect(61950, 1305, 64049, 4249);
   }
+
+  int getPickTotalDelay() => box.read(keyPickTotalDelay) ?? 20;
+
+  int getPickDownDelay() => box.read(keyPickDownDelay) ?? 5;
+
+  int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
 }

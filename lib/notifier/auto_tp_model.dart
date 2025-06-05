@@ -275,6 +275,24 @@ final delayConfigItems = [
     valueKey: AutoTpConfig.keyDragMouseUpDelay,
     valueCallback: AutoTpConfig.to.getDragMouseUpDelay,
   ),
+  IntConfigItem(
+    title: '快捡操作（总时长）',
+    subTitle: '一个快捡操作周期的总时长',
+    valueKey: AutoTpConfig.keyPickTotalDelay,
+    valueCallback: AutoTpConfig.to.getPickTotalDelay,
+  ),
+  IntConfigItem(
+    title: '快捡操作（按下F）',
+    subTitle: '按下F的后摇',
+    valueKey: AutoTpConfig.keyPickDownDelay,
+    valueCallback: AutoTpConfig.to.getPickDownDelay,
+  ),
+  IntConfigItem(
+    title: '快捡操作（松开F）',
+    subTitle: '松开F的后摇',
+    valueKey: AutoTpConfig.keyPickUpDelay,
+    valueCallback: AutoTpConfig.to.getPickUpDelay,
+  ),
 ];
 
 final recordDelayConfigItems = [

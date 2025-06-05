@@ -202,7 +202,7 @@ void quickPick(String name, bool down) {
 
   if (name == HotkeyConfig.to.getQuickPickKey()) {
     if (down) {
-      _fKeyTimer ??= Timer.periodic(Duration(milliseconds: 20), (timer) async {
+      _fKeyTimer ??= Timer.periodic(Duration(milliseconds: AutoTpConfig.to.getPickTotalDelay()), (timer) async {
         // 后面可以判断按键是否按下：!(GetKeyState(VIRTUAL_KEY.VK_F) & 0x8000 != 0)
         if (!WindowsApp.autoTpModel.isRunning ||
             !ScreenManager.instance.isGameActive()) {
@@ -211,9 +211,9 @@ void quickPick(String name, bool down) {
           return;
         }
         api.keyDown(key: GameKeyConfig.to.getPickKey());
-        await Future.delayed(Duration(milliseconds: 5));
+        await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getPickDownDelay()));
         api.keyUp(key: GameKeyConfig.to.getPickKey());
-        await Future.delayed(Duration(milliseconds: 5));
+        await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getPickUpDelay()));
         api.scroll(clicks: -1);
       });
     } else {
