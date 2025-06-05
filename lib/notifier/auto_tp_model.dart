@@ -707,14 +707,14 @@ class AutoTpModel extends ChangeNotifier {
     }
   }
 
-  void start() {
+  bool start() {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
     SystemControl.refreshRect();
 
     if (hWnd == 0) {
       dialog(title: '错误', content: '游戏窗口未启动!');
-      return;
+      return false;
     }
 
     isRunning = true;
@@ -723,6 +723,7 @@ class AutoTpModel extends ChangeNotifier {
     ScreenManager.instance.startListen();
 
     notifyListeners();
+    return true;
   }
 
   void stop() {

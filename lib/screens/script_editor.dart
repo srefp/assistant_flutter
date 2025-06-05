@@ -144,7 +144,7 @@ class ScriptEditor extends StatelessWidget {
                       width: 10,
                     ),
                     model.isUnsaved
-                        ? Icon(Icons.circle)
+                        ? SizedBox(height: 34, child: Icon(Icons.circle))
                         : SizedBox(width: 0, height: 0),
                   ],
                 ),

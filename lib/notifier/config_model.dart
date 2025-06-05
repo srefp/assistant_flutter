@@ -1,3 +1,4 @@
+import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -126,7 +127,7 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
                   }
                   return;
                 },
-                child: TextBox(
+                child: WinTextBox(
                   focusNode: focusNode,
                   textAlign: TextAlign.center,
                   controller: controller,

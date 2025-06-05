@@ -14,6 +14,7 @@ import 'package:re_editor/re_editor.dart';
 
 import '../app/windows_app.dart';
 import '../auto_gui/system_control.dart';
+import '../components/win_text_box.dart';
 import '../config/config_storage.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
@@ -336,8 +337,9 @@ class ScriptEditorModel with ChangeNotifier {
                                   width: 12,
                                 ),
                                 Expanded(
-                                    child: TextBox(
-                                        controller: model.nameController)),
+                                  child: WinTextBox(
+                                      controller: model.nameController),
+                                ),
                               ],
                             ),
                           ),

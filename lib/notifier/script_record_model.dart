@@ -21,7 +21,10 @@ class ScriptRecordModel extends ChangeNotifier {
   /// 开始录制
   void startRecord(BuildContext context) {
     if (!WindowsApp.autoTpModel.isRunning) {
-      WindowsApp.autoTpModel.start();
+      bool started = WindowsApp.autoTpModel.start();
+      if (!started) {
+        return;
+      }
     }
 
     ScreenManager.instance.refreshWindowHandle();

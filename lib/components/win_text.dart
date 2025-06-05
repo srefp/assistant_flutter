@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 字体
-String get fontFamily => 'MiSans';
+String fontFamily = 'MiSans';
 
 class WinText extends StatelessWidget {
   const WinText(

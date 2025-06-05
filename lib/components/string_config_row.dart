@@ -1,6 +1,8 @@
 import 'package:assistant/components/config_item.dart';
 import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/title_with_sub.dart';
+import 'package:assistant/components/win_text.dart';
+import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/notifier/config_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -58,7 +60,7 @@ class StringConfigRow extends StatelessWidget {
           SizedBox(
             height: 34,
             width: 200,
-            child: TextBox(
+            child: WinTextBox(
               controller: TextEditingController(text: item.valueCallback()),
               onChanged: (value) => AutoTpConfig.to.save(item.valueKey, value),
             ),
@@ -99,7 +101,7 @@ class GameKeyConfigRow extends StatelessWidget {
           SizedBox(
             height: 34,
             width: 200,
-            child: TextBox(
+            child: WinTextBox(
               controller: TextEditingController(text: item.valueCallback()),
               onChanged: (value) {
                 if (crackWithHotkey(value)) {

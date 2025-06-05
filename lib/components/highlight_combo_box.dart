@@ -1,4 +1,4 @@
-import 'package:assistant/components/win_text.dart';
+import 'package:assistant/components/win_text_box.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Material, Theme;
 
@@ -141,11 +141,10 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
         height: 34,
         child: CompositedTransformTarget(
           link: _layerLink,
-          child: TextBox(
+          child: WinTextBox(
             controller: _controller,
             style: TextStyle(
               fontSize: 16,
-              fontFamily: fontFamily,
             ),
             onTap: () {
               if (_hintText.isNotEmpty) {

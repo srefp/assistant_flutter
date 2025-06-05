@@ -1,5 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
+import '../components/win_text_box.dart';
+
 class SearchableBox extends StatefulWidget {
   final List<String> items;
   final ValueChanged<String?>? onChanged;
@@ -111,7 +113,7 @@ class _SearchableBoxState extends State<SearchableBox> {
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
-      child: TextBox(
+      child: WinTextBox(
         controller: _controller,
         focusNode: _focusNode,
         placeholder: '搜索路线...',

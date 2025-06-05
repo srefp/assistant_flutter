@@ -6,6 +6,7 @@ import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/int_config_row.dart';
 import 'package:assistant/components/title_with_sub.dart';
+import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -210,10 +211,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         SizedBox(
                           width: 400,
                           height: 34,
-                          child: TextBox(
+                          child: WinTextBox(
                             controller: model.gameKeySearchController,
                             placeholder: '搜索键位',
-                            style: TextStyle(fontFamily: fontFamily),
                             onChanged: (value) =>
                                 model.searchGameKeyConfigItems(value),
                           ),
@@ -252,10 +252,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         SizedBox(
                           width: 400,
                           height: 34,
-                          child: TextBox(
+                          child: WinTextBox(
                             controller: model.helpSearchController,
                             placeholder: '搜索辅助功能',
-                            style: TextStyle(fontFamily: fontFamily),
                             onChanged: (value) =>
                                 model.searchDisplayedHelpConfigItems(value),
                           ),
@@ -303,10 +302,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         SizedBox(
                           width: 400,
                           height: 34,
-                          child: TextBox(
+                          child: WinTextBox(
                             controller: model.delaySearchController,
                             placeholder: '搜索延迟',
-                            style: TextStyle(fontFamily: fontFamily),
                             onChanged: (value) =>
                                 model.searchDisplayedDelayConfigItems(value),
                           ),
@@ -345,10 +343,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         SizedBox(
                           width: 400,
                           height: 34,
-                          child: TextBox(
+                          child: WinTextBox(
                             controller: model.recordDelaySearchController,
                             placeholder: '搜索延迟',
-                            style: TextStyle(fontFamily: fontFamily),
                             onChanged: (value) => model
                                 .searchDisplayedRecordDelayConfigItems(value),
                           ),
@@ -387,10 +384,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         SizedBox(
                           width: 400,
                           height: 34,
-                          child: TextBox(
+                          child: WinTextBox(
                             controller: model.coordsSearchController,
                             placeholder: '搜索标点',
-                            style: TextStyle(fontFamily: fontFamily),
                             onChanged: (value) =>
                                 model.searchDisplayedCoordsConfigItems(value),
                           ),

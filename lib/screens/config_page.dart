@@ -1,3 +1,4 @@
+import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/notifier/config_model.dart';
 import 'package:assistant/screens/auto_tp.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -31,10 +32,9 @@ class ConfigPage extends StatelessWidget {
                   SizedBox(
                     width: 400,
                     height: 34,
-                    child: TextBox(
+                    child: WinTextBox(
                       controller: model.searchController,
                       placeholder: '搜索快捷键',
-                      style: TextStyle(fontFamily: fontFamily),
                       onChanged: (value) =>
                           model.searchConfigItems(value),
                     ),
