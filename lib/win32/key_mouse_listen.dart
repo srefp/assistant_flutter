@@ -12,7 +12,7 @@ import 'mouse_listen.dart';
 
 /// 键鼠监听回调
 void keyMouseListen(name, down) {
-  listenKeyboard(name, down);
+  listenAll(name, down);
 
   if (WindowsApp.recordModel.isRecording) {
     if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {

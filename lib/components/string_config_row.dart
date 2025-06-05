@@ -103,8 +103,7 @@ class GameKeyConfigRow extends StatelessWidget {
               controller: TextEditingController(text: item.valueCallback()),
               onChanged: (value) {
                 if (crackWithHotkey(value)) {
-                  dialog(title: '错误', content: '该键位已被耕地机快捷键占用');
-                  return;
+                  dialog(title: '注意', content: '该键位已被耕地机快捷键占用');
                 }
                 AutoTpConfig.to.save(item.valueKey, value);
               },

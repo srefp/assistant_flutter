@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/config/config_storage.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/executor/route_executor.dart';
@@ -55,8 +56,8 @@ void keyboardListener(RawKeyEvent event) {
   }
 }
 
-/// 监听操作
-void listenKeyboard(String name, bool down) async {
+/// 监听键鼠操作
+void listenAll(String name, bool down) async {
   quickPick(name, down);
   timerDash(name, down);
   recordFood(name, down);
@@ -67,13 +68,13 @@ void listenKeyboard(String name, bool down) async {
 
   if (name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
-  }
-
-  if (name == HotkeyConfig.to.getShowCoordsKey()) {
+  } else if (name == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
-  }
-
-  if (name == HotkeyConfig.to.getEatFoodKey()) {
+  } else if (name == HotkeyConfig.to.getToggleQuickPickKey()) {
+    final quickPickEnabled = AutoTpConfig.to.isQuickPickEnabled();
+    box.write(AutoTpConfig.keyQuickPickEnabled, !quickPickEnabled);
+    showToast('${quickPickEnabled ? '关闭' : '开启'}快捡');
+  } else if (name == HotkeyConfig.to.getEatFoodKey()) {
     eatFood();
   }
 }
@@ -209,9 +210,9 @@ void quickPick(String name, bool down) {
           _fKeyTimer = null;
           return;
         }
-        api.keyDown(key: HotkeyConfig.to.getQuickPickKey());
+        api.keyDown(key: GameKeyConfig.to.getPickKey());
         await Future.delayed(Duration(milliseconds: 5));
-        api.keyUp(key: HotkeyConfig.to.getQuickPickKey());
+        api.keyUp(key: GameKeyConfig.to.getPickKey());
         await Future.delayed(Duration(milliseconds: 5));
         api.scroll(clicks: -1);
       });
@@ -262,7 +263,9 @@ void timerDash(String name, bool down) async {
       showToast('开始冲刺');
       await dash();
       api.keyDown(key: GameKeyConfig.to.getForwardKey());
-      _dashTimer ??= Timer.periodic(Duration(milliseconds: AutoTpConfig.to.getDashIntervalDelay()), (timer) async {
+      _dashTimer ??= Timer.periodic(
+          Duration(milliseconds: AutoTpConfig.to.getDashIntervalDelay()),
+          (timer) async {
         if (!WindowsApp.autoTpModel.isRunning ||
             !ScreenManager.instance.isGameActive()) {
           _dashTimer?.cancel();

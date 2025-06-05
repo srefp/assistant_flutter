@@ -49,6 +49,16 @@ final hotkeyConfigItems = [
     valueKey: HotkeyConfig.keyEatFoodKey,
     valueCallback: HotkeyConfig.to.getEatFoodKey,
   ),
+  StringConfigItem(
+    title: '快捡',
+    valueKey: HotkeyConfig.keyQuickPickKey,
+    valueCallback: HotkeyConfig.to.getQuickPickKey,
+  ),
+  StringConfigItem(
+    title: '开启/关闭快捡',
+    valueKey: HotkeyConfig.keyToggleQuickPickKey,
+    valueCallback: HotkeyConfig.to.getToggleQuickPickKey,
+  ),
 ];
 
 class HotkeyConfigRow extends StatefulWidget {

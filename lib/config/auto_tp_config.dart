@@ -135,7 +135,7 @@ class AutoTpConfig with ConfigStorage {
   int getMultiSelectFlowerAfterDelay() =>
       box.read(keyMultiSelectFlowerAfterDelay) ?? 160;
 
-  bool getAutoTpEnabled() => box.read(keyAutoTpEnabled) ?? true;
+  bool isAutoTpEnabled() => box.read(keyAutoTpEnabled) ?? true;
 
   int getFirstOpenBagDelay() => box.read(keyFirstOpenBagDelay) ?? 700;
 

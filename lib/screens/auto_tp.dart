@@ -134,6 +134,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
               subTitle: '依据路线自动传送',
               content: Column(
                 children: [
+                  BoolConfigRow(
+                    item: BoolConfigItem(
+                      title: '自动传送',
+                      subTitle: '是否开启自动传送',
+                      valueKey: AutoTpConfig.keyAutoTpEnabled,
+                      valueCallback: AutoTpConfig.to.isAutoTpEnabled,
+                    ),
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -183,7 +191,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       valueKey: AutoTpConfig.keyContinuousMode,
                       valueCallback: AutoTpConfig.to.isContinuousMode,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

@@ -14,6 +14,7 @@ class HotkeyConfig with ConfigStorage {
   static const keyStartStopKey = 'startStopKey';
   static const keyShowCoordsKey = 'showCoordsKey';
   static const keyQuickPickKey = "quickPickKey";
+  static const keyToggleQuickPickKey = "toggleQuickPickKey";
   static const keyEatFoodKey = 'eatFoodKey';
   static const keyTimerDashKey = "timerDashKey";
 
@@ -32,6 +33,9 @@ class HotkeyConfig with ConfigStorage {
   String getQuickPickKey() => box.read(keyQuickPickKey) ?? "f";
 
   String getTimerDashKey() => box.read(keyTimerDashKey) ?? 'v';
+
+  String getToggleQuickPickKey() =>
+      box.read(keyToggleQuickPickKey) ?? 'xbutton1';
 
   HotKey getStartStopKeyItem() {
     return HotKey(

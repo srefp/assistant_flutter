@@ -5,14 +5,12 @@ import 'package:assistant/util/script_parser.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-import '../util/route_util.dart';
-
 class RouteExecutor {
   static bool tpForbidden = false;
   static AutoTpConfig config = AutoTpConfig.to;
 
   static Future<void> tpNext(bool qm) async {
-    if (!config.getAutoTpEnabled()) {
+    if (!config.isAutoTpEnabled()) {
       return;
     }
 
