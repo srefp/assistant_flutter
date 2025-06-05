@@ -9,7 +9,7 @@ class CvConfig with ConfigStorage {
   static const keyInfoLoadDelay = '${prefix}infoLoadDelay';
   static const keyMouseBackDelay = '${prefix}mouseBackDelay';
 
-  int getOpenMapDelay() => box.read(keyOpenMapDelay) ?? 450;
+  int getOpenMapDelay() => box.read(keyOpenMapDelay) ?? 550;
 
   int getTpCooldown() => box.read(keyTpCooldown) ?? 2000;
 

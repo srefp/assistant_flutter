@@ -22,7 +22,6 @@ class RouteExecutor {
 
     tpForbidden = true;
 
-    print('传送到下一个点');
     try {
       var tpPoints = WindowsApp.autoTpModel.tpPoints;
       if (config.isContinuousMode()) {
@@ -39,11 +38,6 @@ class RouteExecutor {
         config.save(AutoTpConfig.keyRouteIndex, config.getRouteIndex() + 1);
       }
 
-      // 超出范围，则表示路线结束
-      if (config.getRouteIndex() > tpPoints.length) {
-        showToast('当前路线已结束！');
-      }
-
       if (config.getRouteIndex() >= 0 &&
           config.getRouteIndex() <= tpPoints.length) {
         await executeStep(tpPoints[config.getRouteIndex() - 1], qm);
@@ -52,6 +46,8 @@ class RouteExecutor {
         final curPos = tpPoints[config.getRouteIndex() - 1].name ??
             '点位${config.getRouteIndex()}';
         WindowsApp.autoTpModel.selectPos(curPos);
+      } else {
+        showToast('当前路线已结束！');
       }
     } catch (e) {
       debugPrint(e.toString());

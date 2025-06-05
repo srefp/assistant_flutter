@@ -6,6 +6,7 @@ import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/int_config_row.dart';
 import 'package:assistant/components/title_with_sub.dart';
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
@@ -175,6 +176,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       ),
                     ],
                   ),
+                  BoolConfigRow(
+                    item: BoolConfigItem(
+                      title: '连锄模式',
+                      subTitle: '连续锄地模式，如果传送到路线最后一个点位，下一次会传送到第二个点位。',
+                      valueKey: AutoTpConfig.keyContinuousMode,
+                      valueCallback: AutoTpConfig.to.isContinuousMode,
+                    ),
+                  )
                 ],
               ),
             ),

@@ -184,13 +184,13 @@ class AutoTpConfig with ConfigStorage {
 
   String? getCurrentRoute() => box.read(keyCurrentRoute);
 
-  bool isContinuousMode() => box.read(keyContinuousMode) ?? false;
+  bool isContinuousMode() => box.read(keyContinuousMode) ?? true;
 
   int getRouteIndex() => box.read(keyRouteIndex) ?? 0;
 
   bool isQuickPickEnabled() => box.read(keyQuickPickEnabled) ?? true;
 
-  int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 450;
+  int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 550;
 
   int getClickRecordDelay() => box.read(keyClickRecordDelay) ?? 60;
 
