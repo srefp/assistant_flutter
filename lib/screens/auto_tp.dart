@@ -9,6 +9,7 @@ import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
+import 'package:assistant/win32/os_version.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ import '../components/win_text.dart';
 import '../theme.dart';
 
 bool finishedSettingTheme = false;
+bool win11 = isWindows11();
 
 class AutoTpPage extends StatefulWidget {
   const AutoTpPage({super.key});
@@ -51,8 +53,8 @@ class _AutoTpPageState extends State<AutoTpPage> {
   Widget build(BuildContext context) {
     final appTheme = context.watch<AppTheme>();
 
-    if (!finishedSettingTheme) {
-      Timer.periodic(Duration(milliseconds: 5), (timer) {
+    if (win11 && !finishedSettingTheme) {
+      Timer.periodic(Duration(milliseconds: 10), (timer) {
         if (context.mounted) {
           appTheme.setEffect(appTheme.windowEffect, context);
         }
@@ -103,26 +105,17 @@ class _AutoTpPageState extends State<AutoTpPage> {
               content: ListView(
                 shrinkWrap: true,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TitleWithSub(
-                            title: '路线文件夹',
-                            subTitle:
-                                '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560'),
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      ButtonWithIcon(
-                        text: '重新加载路线',
-                        icon: FluentIcons.refresh,
-                        onPressed: () {
-                          model.loadRoutes();
-                        },
-                      ),
-                    ],
+                  TitleWithSub(
+                    title: '路线文件夹',
+                    subTitle:
+                        '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560',
+                    rightWidget: ButtonWithIcon(
+                      text: '重新加载路线',
+                      icon: FluentIcons.refresh,
+                      onPressed: () {
+                        model.loadRoutes();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -406,6 +399,28 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       );
                     },
                     shrinkWrap: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CustomSliverBox(
+            child: IconCard(
+              icon: Icons.pin_drop,
+              title: '锚定窗口',
+              subTitle: '选择生效的窗口',
+              content: Column(
+                children: [
+                  TitleWithSub(
+                    title: '锚定窗口',
+                    subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
+                    // rightWidget: HighlightComboBox(
+                    //   value: model.anchorWindow,
+                    //   items: model.anchorWindowList,
+                    //   onChanged: (value) {
+                    //     model.selectAnchorWindow(value);
+                    //   },
+                    // ),
                   ),
                 ],
               ),

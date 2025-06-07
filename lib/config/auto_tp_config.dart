@@ -76,6 +76,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyPickTotalDelay = "pickTotalDelay";
   static const keyPickDownDelay = "pickDownDelay";
   static const keyPickUpDelay = "pickUpDelay";
+  static const keyAnchorWindow = "anchorWindow";
 
   List<String> get windowTitles {
     if (customWindowTitle) {
@@ -246,4 +247,6 @@ class AutoTpConfig with ConfigStorage {
   int getPickDownDelay() => box.read(keyPickDownDelay) ?? 5;
 
   int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
+
+  String getAnchorWindow() => box.read(keyAnchorWindow) ?? 'YuanShen';
 }

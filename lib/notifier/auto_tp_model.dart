@@ -666,6 +666,10 @@ class AutoTpModel extends ChangeNotifier {
   var displayedGameKeyConfigItems = gameKeyConfigItems;
   final gameKeySearchController = TextEditingController();
 
+  String anchorWindow = AutoTpConfig.to.getAnchorWindow();
+
+  List<String> anchorWindowList = [];
+
   void searchGameKeyConfigItems(String searchValue) {
     gameKeyLightText = searchValue;
     if (searchValue.isEmpty) {
@@ -737,6 +741,12 @@ class AutoTpModel extends ChangeNotifier {
   }
 
   void fresh() {
+    notifyListeners();
+  }
+
+  void selectAnchorWindow(String value) {
+    anchorWindow = value;
+    AutoTpConfig.to.save(AutoTpConfig.keyAnchorWindow, value);
     notifyListeners();
   }
 }
