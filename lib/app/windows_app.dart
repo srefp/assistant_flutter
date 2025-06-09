@@ -10,6 +10,7 @@ import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/doc_page.dart';
 import 'package:assistant/screens/record_page.dart';
+import 'package:assistant/screens/tool_page.dart';
 import 'package:assistant/util/hot_key.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tray_manager/tray_manager.dart';
-import 'package:win32/win32.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../notifier/app_model.dart';
@@ -25,10 +25,10 @@ import '../notifier/auto_tp_model.dart';
 import '../notifier/config_model.dart';
 import '../notifier/script_record_model.dart';
 import '../routes/routes.dart';
-import '../screens/auto_tp.dart';
+import '../screens/auto_tp_page.dart';
 import '../screens/script_editor.dart';
 import '../screens/settings.dart';
-import '../screens/test.dart';
+import '../screens/test_page.dart';
 import '../theme.dart';
 
 class WindowsApp extends StatefulWidget {
@@ -241,6 +241,12 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
 
       /// Doc
       GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),
+
+      /// Tool
+      GoRoute(
+        path: Routes.tool,
+        builder: (context, state) => const ToolPage(),
+      ),
 
       /// Test
       GoRoute(path: Routes.test, builder: (context, state) => const Test()),

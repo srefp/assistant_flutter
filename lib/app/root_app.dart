@@ -88,7 +88,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getConfigMenu()) {
+    if (SettingConfig.to.getHotkeyMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.config),
         icon: const Icon(FluentIcons.keyboard_classic, size: iconSize),
@@ -120,6 +120,26 @@ class _RootAppState extends State<RootApp> {
               .uri
               .toString() != Routes.doc) {
             context.go(Routes.doc);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getToolMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.tool),
+        icon: const Icon(FluentIcons.toolbox, size: iconSize),
+        title: Text(
+          '工具',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState
+              .of(context)
+              .uri
+              .toString() != Routes.tool) {
+            context.go(Routes.tool);
           }
         },
       ));

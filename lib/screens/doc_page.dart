@@ -5,7 +5,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'auto_tp.dart';
+import 'auto_tp_page.dart';
 
 class DocPage extends StatelessWidget {
   const DocPage({super.key});

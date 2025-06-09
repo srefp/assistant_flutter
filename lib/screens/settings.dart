@@ -155,12 +155,48 @@ class _SettingsState extends State<Settings> with PageMixin {
             ),
           ),
           ConfigRow(
+            title: '快捷键',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getHotkeyMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyHotkeyMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '文档',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getDocMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyDocMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
             title: '日志查看',
             content: ToggleSwitch(
               checked: SettingConfig.to.getLogShow(),
               onChanged: (value) => {
                 setState(() {
                   SettingConfig.to.save(SettingConfig.keyLogShow, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '工具',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getToolMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyToolMenu, value);
                   WindowsApp.appModel.changeMenu();
                 })
               },

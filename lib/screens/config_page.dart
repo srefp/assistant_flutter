@@ -1,6 +1,6 @@
 import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/notifier/config_model.dart';
-import 'package:assistant/screens/auto_tp.dart';
+import 'package:assistant/screens/auto_tp_page.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 

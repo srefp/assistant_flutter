@@ -7,4 +7,5 @@ class Routes {
   static const config = '/config';
   static const record = '/record';
   static const doc = '/doc';
+  static const tool = '/tool';
 }
