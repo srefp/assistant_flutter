@@ -82,8 +82,6 @@ class LogModel extends ChangeNotifier {
       return;
     }
 
-    print('operation: $operation');
-
     final previousOperation = prevOperations[prevOperations.length - 1];
 
     // 如果前一个操作是Down，且两个操作之间的延迟小于300ms，则将两个操作合并

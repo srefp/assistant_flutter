@@ -53,7 +53,6 @@ class DbHelper {
                   // 更新脚本
                   db.update(TpRouteDb.tableName, {'content': script},
                       where: 'id = ?', whereArgs: [route['id']]);
-                  print('更新了脚本：${route['scriptName']}');
                 }
               }
               if (oldVersion < 3 && newVersion >= 3) {

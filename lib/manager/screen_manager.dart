@@ -1,12 +1,15 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/system_control.dart';
+import 'package:assistant/components/dialog.dart';
 import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/win32/toast.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../win32/models.dart';
 import '../win32/task_manager.dart';
+import '../win32/window.dart';
 
 // 窗口事件常量
 const eventSystemMoveSizeEnd = 0x000B;
@@ -71,12 +74,12 @@ class ScreenManager {
   // 添加窗口事件监听
   void startListen() {
     _hook = setWinEventHook(
-        eventObjectDestroy,
+        eventSystemMoveSizeEnd,
         eventObjectDestroy,
         // 窗口销毁事件
         0,
         Pointer.fromFunction(_winEventProc),
-        0,
+        task?.pid ?? 0,
         0,
         winEventOutOfContext | winEventSkipOwnProcess);
   }
@@ -92,19 +95,16 @@ class ScreenManager {
   // 窗口事件回调处理
   static void _winEventProc(int hWinEventHook, int event, int hwnd,
       int idObject, int idChild, int dwEventThread, int dwmsEventTime) {
-    final instance = ScreenManager.instance;
     // 仅处理目标窗口的事件
     if (hwnd != instance.hWnd) return;
 
     switch (event) {
       case eventSystemMoveSizeEnd:
-        instance.refreshWindowHandle();
-
         // 触发窗口移动后，重新计算窗口矩形
         SystemControl.refreshRect();
         break;
       case eventObjectDestroy:
-        instance.hWnd = 0;
+        instance.task = null;
 
         // 触发窗口关闭后的处理
         WindowsApp.autoTpModel.stop();
@@ -114,16 +114,23 @@ class ScreenManager {
 
   ScreenManager._internal();
 
-  int hWnd = 0;
+  Task? task;
+
+  int get hWnd => task?.hWnd ?? 0;
 
   /// 判断窗口是否存在
   bool isWindowExist() {
     return hWnd != 0;
   }
 
-  refreshWindowHandle() {
+  refreshWindowHandle({String? windowTitle}) {
     final tasks = TaskManager.tasks;
-    hWnd = findWindowHandle(tasks);
+
+    if (windowTitle != null) {
+      task = findTargetTask(windowTitle, tasks);
+      print('task: $task');
+    }
+
     if (hWnd == 0) {
       // 添加窗口丢失处理
       stopListen();
@@ -133,25 +140,36 @@ class ScreenManager {
   /// 判断游戏窗口是否置顶
   bool isGameActive() {
     var hWnd = GetForegroundWindow();
+    if (ScreenManager.instance.hWnd == 0) {
+      return true;
+    }
     return hWnd == ScreenManager.instance.hWnd;
   }
 
-  int findWindowHandle(final List<Task>? tasks) {
-    Task? task;
-    for (var value in AutoTpConfig.to.windowTitles) {
-      task = findWindowByTitle(value, tasks);
-
-      if (task != null) {
-        break;
-      }
+  static List<Task> getWindowTasks() {
+    final tasks = TaskManager.tasks ?? [];
+    for (final task in tasks) {
+      int? mainHandle = TaskManager.getMainHandle(task.pid);
+      task.hWnd = mainHandle;
     }
+    return tasks.where((task) => task.hWnd != null).toList();
+  }
+
+  Task? findTargetTask(final String windowTitle, final List<Task>? tasks) {
+    Task? task;
+
+    task = findWindowByTitle(windowTitle, tasks);
 
     if (task == null) {
-      return 0;
+      return null;
     }
 
     int? mainHandle = TaskManager.getMainHandle(task.pid);
-    return mainHandle ?? 0;
+    task.hWnd = mainHandle;
+    if (mainHandle != null) {
+      task.windowName = getWindowTitle(mainHandle);
+    }
+    return task;
   }
 
   // 根据进程名称查找窗口句柄

@@ -14,8 +14,6 @@ import 'mouse_listen.dart';
 void keyMouseListen(name, down) {
   listenAll(name, down);
 
-  print('name: $name, down: $down');
-
   if (WindowsApp.recordModel.isRecording) {
     if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
       recordRoute(name, down);

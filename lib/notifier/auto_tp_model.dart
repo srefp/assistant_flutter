@@ -23,7 +23,9 @@ import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
 import '../util/search_utils.dart';
+import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
+import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
 
 /// 辅助功能开启/关闭配置
@@ -488,6 +490,9 @@ class _OutOfDateNotificationState extends State<OutOfDateNotification> {
   }
 }
 
+const String curScreen = '当前屏幕';
+const String targetWindow = '指定窗口';
+
 class AutoTpModel extends ChangeNotifier {
   String? selectedDir;
   String? selectedFile;
@@ -500,14 +505,29 @@ class AutoTpModel extends ChangeNotifier {
   String currentPos = '不在路线中';
   List<String> posList = ['不在路线中'];
   String? errorMessage;
+  var tasks = ScreenManager.getWindowTasks();
 
   AutoTpModel() {
     // 加载js函数
-    loadJsFunction();
-    registerJsFunc();
-    loadRoutes();
-    messagePump();
-    detectWorldRole();
+    Future.delayed(Duration(milliseconds: 10), () {
+      loadJsFunction();
+      registerJsFunc();
+      loadRoutes();
+      messagePump();
+      detectWorldRole();
+      loadTasks();
+    });
+  }
+
+  bool active() {
+    return isRunning &&
+        (validType == curScreen || ScreenManager.instance.isGameActive());
+  }
+
+  loadTasks() {
+    tasks = ScreenManager.getWindowTasks();
+    anchorWindowList = tasks.map((e) => e.name).toList();
+    notifyListeners();
   }
 
   loadRoutes() async {
@@ -666,9 +686,13 @@ class AutoTpModel extends ChangeNotifier {
   var displayedGameKeyConfigItems = gameKeyConfigItems;
   final gameKeySearchController = TextEditingController();
 
-  String anchorWindow = AutoTpConfig.to.getAnchorWindow();
+  String? anchorWindow = AutoTpConfig.to.getAnchorWindow();
 
   List<String> anchorWindowList = [];
+
+  String validType = AutoTpConfig.to.getValidType();
+
+  List<String> validTypeList = [curScreen, targetWindow];
 
   void searchGameKeyConfigItems(String searchValue) {
     gameKeyLightText = searchValue;
@@ -711,20 +735,30 @@ class AutoTpModel extends ChangeNotifier {
     }
   }
 
+  int keyListerId = 0;
+  int mouseListerId = 0;
+
   bool start() {
-    ScreenManager.instance.refreshWindowHandle();
-    int? hWnd = ScreenManager.instance.hWnd;
+    final String? windowTitle = AutoTpConfig.to.getAnchorWindow();
+
+    ScreenManager.instance.refreshWindowHandle(windowTitle: windowTitle);
+    int hWnd = ScreenManager.instance.hWnd;
     SystemControl.refreshRect();
 
-    if (hWnd == 0) {
+    if (validType == targetWindow && hWnd == 0) {
       dialog(title: '错误', content: '游戏窗口未启动!');
       return false;
     }
 
     isRunning = true;
 
-    setForegroundWindow(hWnd);
-    ScreenManager.instance.startListen();
+    if (validType == targetWindow && hWnd != 0) {
+      setForegroundWindow(hWnd);
+      ScreenManager.instance.startListen();
+    }
+
+    keyListerId = listenerBackend.addKeyboardListener(keyboardListener)!;
+    mouseListerId = listenerBackend.addMouseListener(mouseListener)!;
 
     notifyListeners();
     return true;
@@ -733,6 +767,9 @@ class AutoTpModel extends ChangeNotifier {
   void stop() {
     isRunning = false;
     ScreenManager.instance.stopListen();
+    listenerBackend.removeKeyboardListener(keyListerId);
+    listenerBackend.removeMouseListener(mouseListerId);
+
     notifyListeners();
   }
 
@@ -747,6 +784,12 @@ class AutoTpModel extends ChangeNotifier {
   void selectAnchorWindow(String value) {
     anchorWindow = value;
     AutoTpConfig.to.save(AutoTpConfig.keyAnchorWindow, value);
+    notifyListeners();
+  }
+
+  void selectValidType(String value) {
+    validType = value;
+    AutoTpConfig.to.save(AutoTpConfig.keyValidType, value);
     notifyListeners();
   }
 }

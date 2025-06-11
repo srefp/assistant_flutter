@@ -63,7 +63,6 @@ bool crusade = false;
 void registerJsFunc() {
   // 打印日志
   jsRuntime.onMessage('log', (params) {
-    print('log = ${params['info']}');
     WindowsApp.logModel.info(params['info']);
   });
 
@@ -147,8 +146,6 @@ Future<void> runScript(String code, {bool addAwait = true}) async {
       code = code.replaceAll('$key(', 'await $key(');
     }
   }
-
-  print('code = $code');
 
   JsEvalResult result = await jsRuntime.evaluateAsync('''
     $jsFunction

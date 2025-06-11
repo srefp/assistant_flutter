@@ -14,12 +14,13 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'config/config_storage.dart';
 
-const String version = '2025.6.7';
-const String innerVersion = '2025.6.7';
+const String version = '2025.6.8';
+const String innerVersion = '2025.6.8';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
 final DateTime outDate = DateTime(2025, 10, 1);
+late final HidListenerBackend listenerBackend;
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,17 +66,13 @@ Future<void> _initApp() async {
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
+
+      listenerBackend = getListenerBackend()!;
+      listenerBackend.initialize();
     });
 
     // 初始化数据库
     await initWindowsDb();
-
-    if (!getListenerBackend()!.initialize()) {
-      debugPrint("Failed to initialize listener backend");
-    }
-
-    getListenerBackend()!.addKeyboardListener(keyboardListener);
-    getListenerBackend()!.addMouseListener(mouseListener);
   }
 }
 

@@ -35,7 +35,6 @@ class SystemControl {
     final width = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSCREEN);
     final height = GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSCREEN);
     if (width == 0 || height == 0) {
-      debugPrint('获取屏幕尺寸失败: ${GetLastError()}');
       return ScreenRect(0, 0, 0, 0);
     }
     return ScreenRect(0, 0, width, height);
@@ -75,7 +74,6 @@ class SystemControl {
       sizeOf<RECT>(),
     );
     if (result != S_OK) {
-      debugPrint('获取窗口位置失败: $result');
       free(rect);
       return ScreenRect(0, 0, 0, 0);
     }
@@ -93,7 +91,6 @@ class SystemControl {
     // 调用GetClientRect获取窗口客户区矩形
     final success = GetClientRect(hWnd, rect);
     if (success == FALSE) {
-      debugPrint('获取窗口客户区矩形失败: ${GetLastError()}');
       free(rect);
       return ScreenRect(0, 0, 0, 0);
     }

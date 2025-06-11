@@ -1,4 +1,5 @@
 import 'package:assistant/auto_gui/system_control.dart';
+import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/util/route_util.dart';
 
 import 'config_storage.dart';
@@ -77,16 +78,15 @@ class AutoTpConfig with ConfigStorage {
   static const keyPickDownDelay = "pickDownDelay";
   static const keyPickUpDelay = "pickUpDelay";
   static const keyAnchorWindow = "anchorWindow";
+  static const keyValidType = "validType";
 
-  List<String> get windowTitles {
-    if (customWindowTitle) {
-      return [box.read(keyWindowTitles)];
-    } else {
-      return ["YuanShen", "GenshinImpact", "Genshin Impact Cloud Game"];
-    }
+  String getValidType() {
+    return box.read(keyValidType)?? curScreen;
   }
 
-  bool get customWindowTitle => box.read(keyCustomWindowTitle) ?? false;
+  String? getAnchorWindow() {
+    return box.read(keyAnchorWindow);
+  }
 
   int getTpcDelay() => box.read(keyTpcDelay) ?? 10;
 
@@ -247,6 +247,4 @@ class AutoTpConfig with ConfigStorage {
   int getPickDownDelay() => box.read(keyPickDownDelay) ?? 5;
 
   int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
-
-  String getAnchorWindow() => box.read(keyAnchorWindow) ?? 'YuanShen';
 }

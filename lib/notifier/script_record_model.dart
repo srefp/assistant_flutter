@@ -1,7 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../app/windows_app.dart';
-import '../components/win_text.dart';
 import '../manager/screen_manager.dart';
 import '../win32/window.dart';
 
@@ -48,28 +47,4 @@ class ScriptRecordModel extends ChangeNotifier {
     WindowsApp.logModel.output();
     notifyListeners();
   }
-}
-
-void appNotRunning(BuildContext context) {
-  showDialog(
-      context: context,
-      builder: (context) => ContentDialog(
-        title: WinText('错误'),
-        content: SizedBox(
-          height: 50,
-          child: Column(
-            children: [
-              WinText('耕地机未开启！'),
-            ],
-          ),
-        ),
-        actions: [
-          FilledButton(
-            child: const WinText('确定'),
-            onPressed: () {
-              Navigator.pop(context); // 关闭模态框
-            },
-          ),
-        ],
-      ));
 }

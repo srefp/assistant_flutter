@@ -87,7 +87,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.play_arrow_rounded,
               title: '耕地机，启动！',
-              subTitle: "启动后才能使用各项功能",
+              subTitle: "启动后才能使用各项功能，QQ群660182560",
               rightWidget: SizedBox(
                 height: 34,
                 child: ButtonWithIcon(
@@ -106,15 +106,47 @@ class _AutoTpPageState extends State<AutoTpPage> {
                 shrinkWrap: true,
                 children: [
                   TitleWithSub(
-                    title: '路线文件夹',
-                    subTitle:
-                        '每次更新后会覆盖你写的路线，请千万记得备份！请按照文档写路线并将文件发送到QQ群660182560',
-                    rightWidget: ButtonWithIcon(
-                      text: '重新加载路线',
-                      icon: FluentIcons.refresh,
-                      onPressed: () {
-                        model.loadRoutes();
-                      },
+                    title: '运行方式',
+                    subTitle: '选择全局生效或者是在锚定窗口内生效',
+                    rightWidget: SizedBox(
+                      width: 280,
+                      child: HighlightComboBox(
+                        value: model.validType,
+                        items: model.validTypeList,
+                        onChanged: (value) {
+                          model.selectValidType(value);
+                        },
+                      ),
+                    ),
+                  ),
+                  TitleWithSub(
+                    title: '锚定窗口',
+                    subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
+                    rightWidget: Row(
+                      children: [
+                        SizedBox(
+                            height: 34,
+                            child: ButtonWithIcon(
+                              icon: Icons.refresh,
+                              text: '刷新',
+                              onPressed: () {
+                                model.loadTasks();
+                              },
+                            )),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        SizedBox(
+                          width: 280,
+                          child: HighlightComboBox(
+                            value: model.anchorWindow,
+                            items: model.anchorWindowList,
+                            onChanged: (value) {
+                              model.selectAnchorWindow(value);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -399,28 +431,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       );
                     },
                     shrinkWrap: true,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CustomSliverBox(
-            child: IconCard(
-              icon: Icons.pin_drop,
-              title: '锚定窗口',
-              subTitle: '选择生效的窗口',
-              content: Column(
-                children: [
-                  TitleWithSub(
-                    title: '锚定窗口',
-                    subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
-                    // rightWidget: HighlightComboBox(
-                    //   value: model.anchorWindow,
-                    //   items: model.anchorWindowList,
-                    //   onChanged: (value) {
-                    //     model.selectAnchorWindow(value);
-                    //   },
-                    // ),
                   ),
                 ],
               ),

@@ -24,7 +24,6 @@ void initHotKey() async {
   // 先取消所有注册的全局快捷键
   await hotKeyManager.unregisterAll();
   await hotKeyManager.register(HotkeyConfig.to.getStartStopKeyItem(), keyDownHandler: (hotKey) {
-    print('开启');
     WindowsApp.autoTpModel.startOrStop();
   });
 }

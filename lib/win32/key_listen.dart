@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
@@ -13,33 +12,16 @@ import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:flutter/services.dart';
 import 'package:hid_listener/hid_listener.dart';
-import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
 import '../util/key_mouse_name.dart';
 import 'key_mouse_listen.dart';
 
-typedef HookProc = int Function(int, int, int);
-typedef ListenProc = int Function(Pointer);
-
-Pointer<NativeFunction<HOOKPROC>> setCallback(HookProc callback) {
-  return NativeCallable<HOOKPROC>.isolateLocal(callback, exceptionalReturn: 0)
-      .nativeFunction;
-}
-
-Pointer<NativeFunction<LPTHREAD_START_ROUTINE>> setListenCallback(
-    ListenProc callback) {
-  return NativeCallable<LPTHREAD_START_ROUTINE>.isolateLocal(callback,
-          exceptionalReturn: 0)
-      .nativeFunction;
-}
-
 void keyboardListener(RawKeyEvent event) {
   final data = event.data;
 
-  if (!WindowsApp.autoTpModel.isRunning ||
-      !ScreenManager.instance.isGameActive()) {
+  if (!WindowsApp.autoTpModel.active()) {
     return;
   }
 
@@ -206,8 +188,7 @@ void quickPick(String name, bool down) {
           Duration(milliseconds: AutoTpConfig.to.getPickTotalDelay()),
           (timer) async {
         // 后面可以判断按键是否按下：!(GetKeyState(VIRTUAL_KEY.VK_F) & 0x8000 != 0)
-        if (!WindowsApp.autoTpModel.isRunning ||
-            !ScreenManager.instance.isGameActive()) {
+        if (!WindowsApp.autoTpModel.active()) {
           _fKeyTimer?.cancel();
           _fKeyTimer = null;
           return;
@@ -270,8 +251,7 @@ void timerDash(String name, bool down) async {
       _dashTimer ??= Timer.periodic(
           Duration(milliseconds: AutoTpConfig.to.getDashIntervalDelay()),
           (timer) async {
-        if (!WindowsApp.autoTpModel.isRunning ||
-            !ScreenManager.instance.isGameActive()) {
+        if (!WindowsApp.autoTpModel.active()) {
           _dashTimer?.cancel();
           _dashTimer = null;
           return;

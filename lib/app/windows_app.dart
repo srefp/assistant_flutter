@@ -178,6 +178,8 @@ class _WindowsAppState extends State<WindowsApp>
     await trayManager.setIcon(
       Platform.isWindows ? 'assets/image/logo.ico' : 'assets/image/logo.png',
     );
+    trayManager.setToolTip('耕地机');
+
     Menu menu = Menu(
       items: [
         MenuItem(

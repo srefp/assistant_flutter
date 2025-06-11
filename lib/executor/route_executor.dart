@@ -48,7 +48,6 @@ class RouteExecutor {
         showToast('当前路线已结束！');
       }
     } catch (e) {
-      debugPrint(e.toString());
       showToast('脚本执行出错了');
     } finally {
       Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpCooldown()),

@@ -32,20 +32,14 @@ void detectWorldRole() async {
     await Future.delayed(const Duration(seconds: 1));
     while (AutoTpConfig.to.isSmartTpEnabled()) {
       await Future.delayed(const Duration(milliseconds: 1000));
-      if (!WindowsApp.autoTpModel.isRunning ||
-          !ScreenManager.instance.isGameActive()) {
+      if (!WindowsApp.autoTpModel.active()) {
         continue;
       }
 
-      print('检测中...');
-
       var rect = AutoTpConfig.to.getWorldScreenRect();
-      print(
-          'init rect: ${rect.left} ${rect.top} ${rect.right} ${rect.bottom} ${rect.width} ${rect.height}');
 
       // 检测世界角色
       var res = GamePicInfo.to.character.scan();
-      print('res: ${res.maxMatchValue} ${res.maxMatchLocation}');
     }
     return true;
   });
@@ -71,10 +65,7 @@ class PicItem {
       : rect = KeyMouseUtil.convertToPhysicalRect(rect);
 
   ScanResult scan() {
-    print(
-        'rect: ${rect.left} ${rect.top} ${rect.right} ${rect.bottom} ${rect.width} ${rect.height}');
     final capture = captureImageWindows(rect);
-    print('capture: ${capture.width} ${capture.height}');
 
     final result = cv.matchTemplate(
         capture,

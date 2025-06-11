@@ -68,8 +68,7 @@ void mouseListener(MouseEvent event) {
     return;
   }
 
-  if (!WindowsApp.autoTpModel.isRunning ||
-      !ScreenManager.instance.isGameActive()) {
+  if (!WindowsApp.autoTpModel.active()) {
     return;
   }
 
