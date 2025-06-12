@@ -1,4 +1,3 @@
-// 检查应用是否已经在运行
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';

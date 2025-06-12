@@ -153,8 +153,24 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
       }
     }
 
-    final text = physicalKeyMap[event.physicalKey] ??
+    var text = physicalKeyMap[event.physicalKey] ??
         event.physicalKey.keyLabel.toLowerCase();
+
+    final modifiers = <String>[];
+    // 识别组合键
+    if (HardwareKeyboard.instance.isControlPressed) {
+      modifiers.add('ctrl');
+    }
+
+    if (HardwareKeyboard.instance.isShiftPressed) {
+      modifiers.add('shift');
+    }
+
+    if (HardwareKeyboard.instance.isAltPressed) {
+      modifiers.add('alt');
+    }
+
+    text = modifiers.join(' + ') + (modifiers.isNotEmpty ? ' + ' : '') + text;
     HotkeyConfig.to.save(widget.item.valueKey, text);
     controller.text = text;
 

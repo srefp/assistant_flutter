@@ -7,35 +7,24 @@ import 'package:assistant/config/config_storage.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/executor/route_executor.dart';
-import 'package:assistant/manager/screen_manager.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/win32/toast.dart';
-import 'package:flutter/services.dart';
-import 'package:hid_listener/hid_listener.dart';
 
 import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
-import '../util/key_mouse_name.dart';
+import '../key_mouse/keyboard_event.dart';
 import 'key_mouse_listen.dart';
 
-void keyboardListener(RawKeyEvent event) {
-  final data = event.data;
-
+void keyboardListener(KeyboardEvent event) {
   if (!WindowsApp.autoTpModel.active()) {
     return;
   }
 
-  if (data is KeyExt) {
-    KeyExt eventData = data;
-    if (eventData.mocked) {
-      return;
-    }
-
-    final bool down = event is RawKeyDownEvent;
-    final keyName = getKeyName(data.keyCode);
-
-    keyMouseListen(keyName, down);
+  if (event.mocked) {
+    return;
   }
+
+  keyMouseListen(event.toString(), event.down);
 }
 
 /// 监听键鼠操作

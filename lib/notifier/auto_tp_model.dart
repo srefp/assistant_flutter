@@ -757,8 +757,8 @@ class AutoTpModel extends ChangeNotifier {
       ScreenManager.instance.startListen();
     }
 
-    keyListerId = listenerBackend.addKeyboardListener(keyboardListener)!;
-    mouseListerId = listenerBackend.addMouseListener(mouseListener)!;
+    // keyListerId = listenerBackend.addKeyboardListener(keyboardListener)!;
+    // mouseListerId = listenerBackend.addMouseListener(mouseListener)!;
 
     notifyListeners();
     return true;
@@ -767,8 +767,8 @@ class AutoTpModel extends ChangeNotifier {
   void stop() {
     isRunning = false;
     ScreenManager.instance.stopListen();
-    listenerBackend.removeKeyboardListener(keyListerId);
-    listenerBackend.removeMouseListener(mouseListerId);
+    // listenerBackend.removeKeyboardListener(keyListerId);
+    // listenerBackend.removeMouseListener(mouseListerId);
 
     notifyListeners();
   }
