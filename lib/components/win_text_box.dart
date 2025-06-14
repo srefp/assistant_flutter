@@ -14,6 +14,8 @@ class WinTextBox extends StatelessWidget {
     this.suffix,
     this.placeholder,
     this.focusNode,
+    this.showCursor = true,
+    this.enableInteractiveSelection = true,
   });
 
   final TextAlign textAlign;
@@ -25,6 +27,8 @@ class WinTextBox extends StatelessWidget {
   final Widget? suffix;
   final String? placeholder;
   final FocusNode? focusNode;
+  final bool showCursor;
+  final bool enableInteractiveSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +45,8 @@ class WinTextBox extends StatelessWidget {
       suffix: suffix,
       placeholder: placeholder,
       focusNode: focusNode,
+      showCursor: showCursor,
+      enableInteractiveSelection: enableInteractiveSelection,
     );
   }
 }

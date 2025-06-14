@@ -1,6 +1,7 @@
 import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
@@ -86,6 +87,7 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
   @override
   void dispose() {
     focusNode.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -103,6 +105,23 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
             height: 34,
             width: 200,
             child: Listener(
+              onPointerSignal: (event) {
+                if (event is PointerScrollEvent) {
+                  // 垂直滚动量（正值向下，负值向上）
+                  final verticalScroll = event.scrollDelta.dy;
+
+                  String text;
+                  // 可在此添加业务逻辑（如调整配置值）
+                  if (verticalScroll > 0) {
+                    text = 'wheel_down';
+                  } else {
+                    text = 'wheel_up';
+                  }
+
+                  HotkeyConfig.to.save(widget.item.valueKey, text);
+                  controller.text = text;
+                }
+              },
               onPointerDown: (event) {
                 if (widget.item.type == global) {
                   return;
@@ -131,6 +150,8 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
                   focusNode: focusNode,
                   textAlign: TextAlign.center,
                   controller: controller,
+                  showCursor: false,
+                  enableInteractiveSelection: false,
                 ),
               ),
             ),

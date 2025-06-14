@@ -85,8 +85,8 @@ bool closeEntrance = false;
 int keyboardBinding(int code, int wParam, int lParam) {
   if (code == HC_ACTION) {
     final kbs = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
-    if (kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
-    // if (closeEntrance) {
+    // if (kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
+    if (closeEntrance) {
       UnhookWindowsHookEx(eventHook);
       UnhookWindowsHookEx(keyHook);
       UnhookWindowsHookEx(mouseHook);
@@ -178,7 +178,7 @@ class RawMouseEvent {
       type = MouseEventType.middleButtonUp;
       down = false;
     } else if (wParam == WM_MOUSEWHEEL) {
-      name ='wheel';
+      name = highWord == 120 ? 'wheel_up' : 'wheel_down';
       type = highWord == 120 ? MouseEventType.wheelUp : MouseEventType.wheelDown;
       down = true;
     }

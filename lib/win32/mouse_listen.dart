@@ -16,7 +16,7 @@ void mouseListener(MouseEvent event) {
     return;
   }
 
-  print('event: ${event.name}, down: ${event.down}');
+  print('event: ${event.name}, down: ${event.down} x: ${event.x}, y: ${event.y} type: ${event.type}');
   String mouseName = event.name;
   bool down = event.down;
 

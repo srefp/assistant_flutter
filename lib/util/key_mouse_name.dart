@@ -160,7 +160,8 @@ final Map<String, PhysicalKeyboardKey> stringToPhysicalKeyMap = Map.fromEntries(
 final mouseEventToNameMap = {
   kBackMouseButton: 'xbutton1',
   kForwardMouseButton: 'xbutton2',
-  kMiddleMouseButton: 'middle',
+  kMiddleMouseButton: 'middle_button',
+  kSecondaryMouseButton: 'right_button',
 };
 
 String getKeyName(int vkCode) {
@@ -170,7 +171,7 @@ String getKeyName(int vkCode) {
   }
   // 处理字母和数字（A-Z, 0-9）
   if (vkCode >= 0x30 && vkCode <= 0x39) {
-    // 数字键 0-9
+    // 数字键 0-
     return String.fromCharCode(vkCode);
   } else if (vkCode >= 0x41 && vkCode <= 0x5A) {
     // 字母 A-Z
