@@ -37,6 +37,8 @@ class HotkeyConfig with ConfigStorage {
   String getToggleQuickPickKey() =>
       box.read(keyToggleQuickPickKey) ?? 'xbutton1';
 
+  String getQmTpNext() => box.read(keyQmTpNext)?? 'left';
+
   HotKey getStartStopKeyItem() {
     return HotKey(
       identifier: keyStartStopKey,

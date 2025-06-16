@@ -42,6 +42,11 @@ final hotkeyConfigItems = [
     valueCallback: HotkeyConfig.to.getTpNext,
   ),
   StringConfigItem(
+    title: 'qm全自动传送',
+    valueKey: HotkeyConfig.keyQmTpNext,
+    valueCallback: HotkeyConfig.to.getQmTpNext,
+  ),
+  StringConfigItem(
     title: '匀速冲刺',
     valueKey: HotkeyConfig.keyTimerDashKey,
     valueCallback: HotkeyConfig.to.getTimerDashKey,

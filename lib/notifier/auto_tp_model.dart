@@ -54,6 +54,12 @@ final helpConfigItems = [
     valueKey: AutoTpConfig.keyEatFoodEnabled,
     valueCallback: AutoTpConfig.to.isEatFoodEnabled,
   ),
+  BoolConfigItem(
+    title: 'qm时是否冲刺',
+    subTitle: 'qm时是否冲刺',
+    valueKey: AutoTpConfig.keyQmDash,
+    valueCallback: AutoTpConfig.to.isQmDash,
+  ),
   StringConfigItem(
     title: '快速吃药坐标',
     subTitle: '坐标列表',
@@ -99,6 +105,18 @@ final gameKeyConfigItems = [
     subTitle: '向前走的键位',
     valueKey: GameKeyConfig.keyForwardKey,
     valueCallback: GameKeyConfig.to.getForwardKey,
+  ),
+  StringConfigItem(
+    title: '捡东西',
+    subTitle: '捡东西的键位',
+    valueKey: GameKeyConfig.keyPickKey,
+    valueCallback: GameKeyConfig.to.getPickKey,
+  ),
+  StringConfigItem(
+    title: '放大招',
+    subTitle: '放大招的键位',
+    valueKey: GameKeyConfig.keyQKey,
+    valueCallback: GameKeyConfig.to.getQKey,
   ),
 ];
 
@@ -174,6 +192,12 @@ final delayConfigItems = [
     subTitle: '单击延迟',
     valueKey: AutoTpConfig.keyClickDelay,
     valueCallback: AutoTpConfig.to.getClickDelay,
+  ),
+  IntConfigItem(
+    title: '打开背包',
+    subTitle: '打开背包的延迟',
+    valueKey: AutoTpConfig.keyOpenBagDelay,
+    valueCallback: AutoTpConfig.to.getOpenBagDelay,
   ),
   IntConfigItem(
     title: '单击食物',

@@ -79,9 +79,10 @@ class AutoTpConfig with ConfigStorage {
   static const keyPickUpDelay = "pickUpDelay";
   static const keyAnchorWindow = "anchorWindow";
   static const keyValidType = "validType";
+  static const keyQmDash = "qmDash";
 
   String getValidType() {
-    return box.read(keyValidType)?? curScreen;
+    return box.read(keyValidType) ?? curScreen;
   }
 
   String? getAnchorWindow() {
@@ -247,4 +248,6 @@ class AutoTpConfig with ConfigStorage {
   int getPickDownDelay() => box.read(keyPickDownDelay) ?? 5;
 
   int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
+
+  bool isQmDash() => box.read(keyQmDash) ?? true;
 }

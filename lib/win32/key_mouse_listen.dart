@@ -51,6 +51,10 @@ void keyMouseListen(name, down) {
     tpc();
   }
 
+  if (name == HotkeyConfig.to.getQmTpNext() && down) {
+    RouteExecutor.tpNext(true);
+  }
+
   if (name == HotkeyConfig.to.getTpNext() && down) {
     RouteExecutor.tpNext(false);
   }

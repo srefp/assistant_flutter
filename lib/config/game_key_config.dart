@@ -10,6 +10,7 @@ class GameKeyConfig with ConfigStorage {
   static final String keyForwardKey = 'forwardKey';
   static final String keyBagKey = 'bagKey';
   static final String keyPickKey = 'pickKey';
+  static final String keyQKey = 'qKey';
 
   String getOpenMapKey() => box.read(keyOpenMapKey) ?? 'm';
 
@@ -24,4 +25,6 @@ class GameKeyConfig with ConfigStorage {
   String getBagKey() => box.read(keyBagKey) ?? 'b';
 
   String getPickKey() => box.read(keyPickKey) ?? 'f';
+
+  String getQKey() => box.read(keyQKey)?? 'q';
 }
