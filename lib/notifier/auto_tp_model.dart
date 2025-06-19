@@ -6,6 +6,7 @@ import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/game_pos/game_pos_config.dart';
 import 'package:assistant/cv/scan.dart';
 import 'package:assistant/dao/crud.dart';
+import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/route_util.dart';
 import 'package:assistant/util/script_parser.dart';
@@ -14,10 +15,12 @@ import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../auto_gui/key_mouse_util.dart';
 import '../components/bool_config_row.dart';
 import '../components/int_config_row.dart';
 import '../components/string_config_row.dart';
 import '../config/auto_tp_config.dart';
+import '../cv/cv.dart';
 import '../db/tp_route_db.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
@@ -551,7 +554,18 @@ class AutoTpModel extends ChangeNotifier {
       messagePump();
       detectWorldRole();
       loadTasks();
+
+      // 加载所有图片
+      loadAllPics();
     });
+  }
+
+  loadAllPics() async {
+    final pics = await loadAllPicRecord();
+    for (var element in pics) {
+      element.setMat();
+      picRecordMap[element.picName] = element;
+    }
   }
 
   bool active() {
@@ -847,5 +861,21 @@ class AutoTpModel extends ChangeNotifier {
     validType = value;
     AutoTpConfig.to.save(AutoTpConfig.keyValidType, value);
     notifyListeners();
+  }
+
+  void matchScreenshot(StringConfigItem item) async {
+    print('截图 ${item.valueKey}');
+
+    final stringValue = item.valueCallback();
+    final coords = RouteUtil.stringToIntList(stringValue);
+    var rect = ScreenRect(coords[0], coords[1], coords[2], coords[3]);
+    rect = KeyMouseUtil.convertToPhysicalRect(rect);
+
+    // 指定区域截图并使用Base64编码转换成字符串
+    final capture = captureImageWindows(rect);
+    final encodedImage = await encodeImage(capture);
+    print('encodedImage: data:image/png;base64,$encodedImage');
+
+    savePickRecord(item.valueKey, encodedImage, capture);
   }
 }

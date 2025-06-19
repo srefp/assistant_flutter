@@ -244,7 +244,7 @@ class AutoTpConfig with ConfigStorage {
   bool isQmDash() => box.read(keyQmDash) ?? true;
 
   String getWorldString() =>
-      box.read(keyWorldRect) ?? "61950, 1305, 64049, 4249";
+      box.read(keyWorldRect) ?? "62684, 2215, 63315, 3247";
 
   ScreenRect getWorldRect() {
     final worldRect = getWorldString();
@@ -253,7 +253,7 @@ class AutoTpConfig with ConfigStorage {
   }
 
   String getAnchorString() =>
-      box.read(keyAnchorRect) ?? "61950, 1305, 64049, 4249";
+      box.read(keyAnchorRect) ?? "49761, 60253, 50546, 61710";
 
   ScreenRect getAnchorRect() {
     final anchorRect = getAnchorString();

@@ -1,7 +1,6 @@
 import 'package:assistant/components/config_item.dart';
 import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/title_with_sub.dart';
-import 'package:assistant/components/win_text.dart';
 import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/notifier/config_model.dart';
@@ -33,11 +32,13 @@ class StringConfigItem extends ConfigItem {
 class StringConfigRow extends StatelessWidget {
   final StringConfigItem item;
   final String lightText;
+  final Widget rightWidget;
 
   const StringConfigRow({
     super.key,
     required this.item,
     this.lightText = '',
+    this.rightWidget = const SizedBox(),
   });
 
   @override
@@ -54,6 +55,7 @@ class StringConfigRow extends StatelessWidget {
               lightText: lightText,
             ),
           ),
+          rightWidget,
           SizedBox(
             width: 12,
           ),

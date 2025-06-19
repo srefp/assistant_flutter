@@ -10,7 +10,6 @@ import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/win32/os_version.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:superuser/superuser.dart';
@@ -451,10 +450,10 @@ class _AutoTpPageState extends State<AutoTpPage> {
                           width: 400,
                           height: 34,
                           child: WinTextBox(
-                            controller: model.delaySearchController,
+                            controller: model.matchSearchController,
                             placeholder: '搜索匹配区域',
                             onChanged: (value) =>
-                                model.searchDisplayedDelayConfigItems(value),
+                                model.searchDisplayedMatchConfigItems(value),
                           ),
                         )
                       ],
@@ -463,12 +462,22 @@ class _AutoTpPageState extends State<AutoTpPage> {
                   divider,
                   ListView.separated(
                     separatorBuilder: (context, index) => divider,
-                    itemCount: model.displayedDelayConfigItems.length,
+                    itemCount: model.displayedMatchConfigItems.length,
                     itemBuilder: (context, index) {
-                      final item = model.displayedDelayConfigItems[index];
-                      return IntConfigRow(
+                      final item = model.displayedMatchConfigItems[index];
+                      return StringConfigRow(
                         item: item,
                         lightText: model.delayLightText,
+                        rightWidget: SizedBox(
+                          height: 34,
+                          child: ButtonWithIcon(
+                            icon: Icons.remove_red_eye,
+                            text: '截图',
+                            onPressed: () {
+                              model.matchScreenshot(item);
+                            },
+                          ),
+                        ),
                       );
                     },
                     shrinkWrap: true,

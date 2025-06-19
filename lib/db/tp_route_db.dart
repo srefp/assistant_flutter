@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart';
 
+import '../model/tp_route.dart';
+import '../util/db_helper.dart';
+
 class TpRouteDb {
   static const tableName = "route";
 
@@ -37,4 +40,69 @@ class TpRouteDb {
     content = content.replaceAll("'", "''");
     return content;
   }
+}
+
+Future<List<String>> loadScriptsByType(String selectedScriptType) async {
+  // 加载脚本类别下的所有脚本名称
+  final List<Map<String, Object?>> scriptNameList = await db.query(
+      TpRouteDb.tableName,
+      columns: ['scriptName'],
+      where: 'scriptType = ?',
+      whereArgs: [selectedScriptType]);
+  return scriptNameList.map((e) => e['scriptName'] as String).toList();
+}
+
+/// 根据名称和类型加载脚本
+Future<TpRoute> loadScriptByNameAndType(
+    String scriptType, String scriptName) async {
+  final List<Map<String, Object?>> scriptNameList = await db.query(
+      TpRouteDb.tableName,
+      where: 'scriptName = ? and scriptType = ?',
+      whereArgs: [scriptName, scriptType]);
+  return TpRoute.fromJson(scriptNameList.first);
+}
+
+/// 删除脚本
+Future<void> deleteScriptByNameAndType(
+    String scriptType, String scriptName) async {
+  await db.delete(TpRouteDb.tableName,
+      where: 'scriptName = ? and scriptType = ?',
+      whereArgs: [scriptName, scriptType]);
+}
+
+Future<void> updateScript(
+  String selectedScriptType,
+  String selectedScriptName,
+  String content,
+) {
+  return db.update(
+    TpRouteDb.tableName,
+    {
+      'content': content,
+      'updatedOn': DateTime.now().millisecondsSinceEpoch,
+    },
+    where: 'scriptName = ? and scriptType = ?',
+    whereArgs: [selectedScriptName, selectedScriptType],
+  );
+}
+
+Future<void> addScript(
+  String scriptType,
+  String scriptName,
+  String content,
+) {
+  return db.insert(
+    TpRouteDb.tableName,
+    {
+      'scriptName': scriptName,
+      'scriptType': scriptType,
+      'content': content,
+      'ratio': '16:9',
+      'remark': '',
+      'author': 'srefp',
+      'orderNum': 1,
+      'createdOn': DateTime.now().millisecondsSinceEpoch,
+      'updatedOn': DateTime.now().millisecondsSinceEpoch,
+    },
+  );
 }

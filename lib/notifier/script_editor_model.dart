@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
 import 'package:assistant/constants/script_type.dart';
 import 'package:assistant/db/tp_route_db.dart';
 import 'package:assistant/model/tp_route.dart';
-import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 
@@ -435,87 +431,4 @@ class ScriptEditorModel with ChangeNotifier {
       }),
     );
   }
-}
-
-List<String> loadDirectories(String directoryPath) {
-  final List<String> files = [];
-  Directory directory = Directory(directoryPath);
-  if (!(directory.existsSync())) {
-    directory.createSync(recursive: true);
-  }
-  if (directory.existsSync()) {
-    // 列出目录下的所有实体
-    final entities = directory.listSync(recursive: false);
-    for (var entity in entities) {
-      if (entity is Directory) {
-        files.add(basename(entity.path));
-      }
-    }
-  }
-  return files;
-}
-
-Future<List<String>> loadScriptsByType(String selectedScriptType) async {
-  // 加载脚本类别下的所有脚本名称
-  final List<Map<String, Object?>> scriptNameList = await db.query(
-      TpRouteDb.tableName,
-      columns: ['scriptName'],
-      where: 'scriptType = ?',
-      whereArgs: [selectedScriptType]);
-  return scriptNameList.map((e) => e['scriptName'] as String).toList();
-}
-
-/// 根据名称和类型加载脚本
-Future<TpRoute> loadScriptByNameAndType(
-    String scriptType, String scriptName) async {
-  final List<Map<String, Object?>> scriptNameList = await db.query(
-      TpRouteDb.tableName,
-      where: 'scriptName = ? and scriptType = ?',
-      whereArgs: [scriptName, scriptType]);
-  return TpRoute.fromJson(scriptNameList.first);
-}
-
-/// 删除脚本
-Future<void> deleteScriptByNameAndType(
-    String scriptType, String scriptName) async {
-  await db.delete(TpRouteDb.tableName,
-      where: 'scriptName = ? and scriptType = ?',
-      whereArgs: [scriptName, scriptType]);
-}
-
-Future<void> updateScript(
-  String selectedScriptType,
-  String selectedScriptName,
-  String content,
-) {
-  return db.update(
-    TpRouteDb.tableName,
-    {
-      'content': content,
-      'updatedOn': DateTime.now().millisecondsSinceEpoch,
-    },
-    where: 'scriptName = ? and scriptType = ?',
-    whereArgs: [selectedScriptName, selectedScriptType],
-  );
-}
-
-Future<void> addScript(
-  String scriptType,
-  String scriptName,
-  String content,
-) {
-  return db.insert(
-    TpRouteDb.tableName,
-    {
-      'scriptName': scriptName,
-      'scriptType': scriptType,
-      'content': content,
-      'ratio': '16:9',
-      'remark': '',
-      'author': 'srefp',
-      'orderNum': 1,
-      'createdOn': DateTime.now().millisecondsSinceEpoch,
-      'updatedOn': DateTime.now().millisecondsSinceEpoch,
-    },
-  );
 }

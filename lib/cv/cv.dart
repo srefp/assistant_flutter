@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
@@ -8,9 +9,16 @@ import 'package:image/image.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 import 'package:win32/win32.dart';
 
+Future<String> encodeImage(cv.Mat mat) async {
+  final encodedBytes = cv.imencode('.png', mat);
+  return base64Encode(encodedBytes.$2);
+}
+
 cv.Mat captureImageWindows(ScreenRect rect) {
   var image = captureImageWin(rect);
-  return uint8ListToMat(image!, rect.width, rect.height);
+  cv.Mat mat = uint8ListToMat(image!, rect.width, rect.height);
+  mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
+  return mat;
 }
 
 // 在文件底部添加以下函数
@@ -33,11 +41,11 @@ cv.Mat uint8ListToMat(Uint8List bytes, int width, int height,
   // 如果要求通道数不同则进行转换
   if (channels == 1) {
     final gray = cv.cvtColor(converted, cv.COLOR_BGR2GRAY);
-    converted.release();
+    converted.dispose();
     return gray;
   }
 
-  mat.release(); // 释放原始矩阵内存
+  mat.dispose(); // 释放原始矩阵内存
   return converted;
 }
 

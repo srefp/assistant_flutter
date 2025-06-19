@@ -1,3 +1,4 @@
+import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/util/path_manage.dart';
 import 'package:path/path.dart' as path;
@@ -19,7 +20,7 @@ Future<String> getStoragePath() async =>
 
 class DbHelper {
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 2;
+  static const int _version = 3;
 
   /// 在windows平台初始化数据库
   static Future<sqlite_api.Database> getDbOnWindows() async {
@@ -38,6 +39,7 @@ class DbHelper {
             onCreate: (db, version) async {
               // 执行数据库创建操作
               await db.execute(TpRouteDb.ddl);
+              await db.execute(PicRecordDb.ddl);
               // await db.execute(await TpRouteDb.initRouteSql);
             },
             onUpgrade: (db, oldVersion, newVersion) async {
@@ -57,6 +59,7 @@ class DbHelper {
               }
               if (oldVersion < 3 && newVersion >= 3) {
                 // 执行版本3的升级操作
+                await db.execute(PicRecordDb.ddl);
               }
             }),
       );
