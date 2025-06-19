@@ -36,7 +36,7 @@ void detectWorldRole() async {
         continue;
       }
 
-      var rect = AutoTpConfig.to.getWorldScreenRect();
+      var rect = AutoTpConfig.to.getWorldRect();
 
       // 检测世界角色
       var res = GamePicInfo.to.character.scan();
@@ -53,7 +53,7 @@ class GamePicInfo {
       : character = PicItem(
             'character',
             cv.imread('assets/pics/character.png', flags: cv.IMREAD_COLOR),
-            AutoTpConfig.to.getWorldScreenRect());
+            AutoTpConfig.to.getWorldRect());
 }
 
 class PicItem {

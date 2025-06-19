@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:assistant/win32/mouse_listen.dart';
 import 'package:easy_isolate/easy_isolate.dart';
 import 'package:ffi/ffi.dart';
+import 'package:flutter/foundation.dart';
 import 'package:win32/win32.dart';
 
 import '../key_mouse/keyboard_event.dart';
@@ -80,13 +81,10 @@ void hookWin(dynamic event, SendPort isolateSendPort) async {
   }
 }
 
-bool closeEntrance = false;
-
 int keyboardBinding(int code, int wParam, int lParam) {
   if (code == HC_ACTION) {
     final kbs = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
-    // if (kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
-    if (closeEntrance) {
+    if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
       UnhookWindowsHookEx(eventHook);
       UnhookWindowsHookEx(keyHook);
       UnhookWindowsHookEx(mouseHook);

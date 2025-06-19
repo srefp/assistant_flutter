@@ -436,6 +436,47 @@ class _AutoTpPageState extends State<AutoTpPage> {
               ),
             ),
           ),
+          CustomSliverBox(
+            child: IconCard(
+              icon: Icons.remove_red_eye,
+              title: '匹配区域',
+              subTitle: '游戏中标志图像截图与匹配',
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 400,
+                          height: 34,
+                          child: WinTextBox(
+                            controller: model.delaySearchController,
+                            placeholder: '搜索匹配区域',
+                            onChanged: (value) =>
+                                model.searchDisplayedDelayConfigItems(value),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedDelayConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedDelayConfigItems[index];
+                      return IntConfigRow(
+                        item: item,
+                        lightText: model.delayLightText,
+                      );
+                    },
+                    shrinkWrap: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       );
     });

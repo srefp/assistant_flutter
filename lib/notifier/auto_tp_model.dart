@@ -23,9 +23,7 @@ import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
 import '../util/search_utils.dart';
-import '../win32/key_listen.dart';
 import '../win32/message_pump.dart';
-import '../win32/mouse_listen.dart';
 import '../win32/window.dart';
 
 /// 辅助功能开启/关闭配置
@@ -117,6 +115,19 @@ final gameKeyConfigItems = [
     subTitle: '放大招的键位',
     valueKey: GameKeyConfig.keyQKey,
     valueCallback: GameKeyConfig.to.getQKey,
+  ),
+];
+
+final matchConfigItems = [
+  StringConfigItem(
+    title: '大世界匹配区域',
+    valueKey: AutoTpConfig.keyWorldRect,
+    valueCallback: AutoTpConfig.to.getWorldString,
+  ),
+  StringConfigItem(
+    title: '锚点匹配区域',
+    valueKey: AutoTpConfig.keyAnchorRect,
+    valueCallback: AutoTpConfig.to.getAnchorString,
   ),
 ];
 
@@ -657,6 +668,27 @@ class AutoTpModel extends ChangeNotifier {
         .toList();
     if (filteredList.isNotEmpty) {
       displayedDelayConfigItems = filteredList;
+    }
+    notifyListeners();
+  }
+
+  var matchLightText = '';
+  var displayedMatchConfigItems = matchConfigItems;
+  final matchSearchController = TextEditingController();
+
+  void searchDisplayedMatchConfigItems(String searchValue) {
+    matchLightText = searchValue;
+    if (searchValue.isEmpty) {
+      displayedMatchConfigItems = matchConfigItems;
+      notifyListeners();
+      return;
+    }
+    final filteredList = matchConfigItems
+        .where(
+            (item) => searchTextList(searchValue, [item.title, item.subTitle]))
+        .toList();
+    if (filteredList.isNotEmpty) {
+      displayedMatchConfigItems = filteredList;
     }
     notifyListeners();
   }

@@ -73,13 +73,14 @@ class AutoTpConfig with ConfigStorage {
   static const keyGlobalQuickPickEnabled = "globalQuickPickEnabled";
   static const keyDashIntervalDelay = "dashIntervalDelay";
   static const keySmartTpEnabled = "smartTpEnabled";
-  static const keyWorldScreenRect = "worldScreenRect";
   static const keyPickTotalDelay = "pickTotalDelay";
   static const keyPickDownDelay = "pickDownDelay";
   static const keyPickUpDelay = "pickUpDelay";
   static const keyAnchorWindow = "anchorWindow";
   static const keyValidType = "validType";
   static const keyQmDash = "qmDash";
+  static const keyWorldRect = "worldRect";
+  static const keyAnchorRect = "anchorRect";
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
@@ -234,15 +235,6 @@ class AutoTpConfig with ConfigStorage {
 
   bool isSmartTpEnabled() => box.read(keySmartTpEnabled) ?? true;
 
-  ScreenRect getWorldScreenRect() {
-    final worldScreenRect = box.read(keyWorldScreenRect);
-    if (worldScreenRect != null) {
-      final coords = RouteUtil.stringToIntList(worldScreenRect);
-      return ScreenRect(coords[0], coords[1], coords[2], coords[3]);
-    }
-    return ScreenRect(61950, 1305, 64049, 4249);
-  }
-
   int getPickTotalDelay() => box.read(keyPickTotalDelay) ?? 20;
 
   int getPickDownDelay() => box.read(keyPickDownDelay) ?? 5;
@@ -250,4 +242,22 @@ class AutoTpConfig with ConfigStorage {
   int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
 
   bool isQmDash() => box.read(keyQmDash) ?? true;
+
+  String getWorldString() =>
+      box.read(keyWorldRect) ?? "61950, 1305, 64049, 4249";
+
+  ScreenRect getWorldRect() {
+    final worldRect = getWorldString();
+    final coords = RouteUtil.stringToIntList(worldRect);
+    return ScreenRect(coords[0], coords[1], coords[2], coords[3]);
+  }
+
+  String getAnchorString() =>
+      box.read(keyAnchorRect) ?? "61950, 1305, 64049, 4249";
+
+  ScreenRect getAnchorRect() {
+    final anchorRect = getAnchorString();
+    final coords = RouteUtil.stringToIntList(anchorRect);
+    return ScreenRect(coords[0], coords[1], coords[2], coords[3]);
+  }
 }
