@@ -1,3 +1,4 @@
+import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/win32/key_listen.dart';
 import 'package:assistant/win32/toast.dart';
 
@@ -34,8 +35,8 @@ void keyMouseListen(name, down) async {
   if (WindowsApp.recordModel.isRecording) {
     if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
       // 获取当前鼠标位置
-      List<int> coords = KeyMouseUtil.logicalPos(
-          KeyMouseUtil.getMousePosOfWindow());
+      List<int> coords =
+          KeyMouseUtil.logicalPos(KeyMouseUtil.getMousePosOfWindow());
       recordTpc(name, down, coords);
     }
   }
@@ -53,28 +54,27 @@ void keyMouseListen(name, down) async {
       WindowsApp.autoTpModel.fresh();
       showToast('已记录坐标：$text');
     } else if (mapping && clickEntry) {
+      clickEntry = false;
+      // 双击
+      var currentPos = await api.position();
+
       var now = DateTime.now();
       print('开始检测锚点');
-      while (DateTime
-          .now()
-          .difference(now)
-          .inMilliseconds < 350) {
-        await Future.delayed(Duration(milliseconds: 2));
+      while (DateTime.now().difference(now).inMilliseconds < 350) {
         var res = await GamePicInfo.to.anchorConfirm.scan();
         print('确认锚点：${res.maxMatchValue}');
         if (res.maxMatchValue >= matchThreshold) {
           print('点击123789');
-          clickEntry = false;
           await KeyMouseUtil.clickAtPoint(
               GamePosConfig.to.getConfirmPosIntList(), 0);
-          Future.delayed(Duration(seconds: 1)).then((value) =>
-              clickEntry = true);
+          await Future.delayed(Duration(milliseconds: 100));
+          api.moveTo(point: currentPos!);
           break;
         }
       }
+      Future.delayed(Duration(milliseconds: 350)).then((value) => clickEntry = true);
     }
   }
-
 
   if (name == HotkeyConfig.to.getHalfTp() && down) {
     tpc();

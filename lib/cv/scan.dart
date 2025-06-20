@@ -21,7 +21,7 @@ void findImageWithMask(templatePath, sourcePath) {
 
 bool detectOpen = true;
 
-const matchThreshold = 0.9;
+const matchThreshold = 0.2;
 
 void detectWorldRole() async {
   // await initializePics();
