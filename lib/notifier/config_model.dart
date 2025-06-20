@@ -1,4 +1,3 @@
-import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
@@ -8,6 +7,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import '../app/windows_app.dart';
 import '../components/string_config_row.dart';
 import '../components/title_with_sub.dart';
+import '../components/win_text.dart';
 import '../util/key_mouse_name.dart';
 import '../util/search_utils.dart';
 
@@ -80,19 +80,19 @@ class HotkeyConfigRow extends StatefulWidget {
 }
 
 class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
-  FocusNode focusNode = FocusNode();
-  late TextEditingController controller;
+  late final FocusNode focusNode;
+  late String hotkey;
 
   @override
   void initState() {
+    focusNode = FocusNode();
+    hotkey = widget.item.valueCallback();
     super.initState();
-    controller = TextEditingController(text: widget.item.valueCallback());
   }
 
   @override
   void dispose() {
     focusNode.dispose();
-    controller.dispose();
     super.dispose();
   }
 
@@ -111,6 +111,10 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
             width: 200,
             child: Listener(
               onPointerSignal: (event) {
+                if (!focusNode.hasFocus) {
+                  return;
+                }
+
                 if (event is PointerScrollEvent) {
                   // 垂直滚动量（正值向下，负值向上）
                   final verticalScroll = event.scrollDelta.dy;
@@ -124,10 +128,16 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
                   }
 
                   HotkeyConfig.to.save(widget.item.valueKey, text);
-                  controller.text = text;
+                  setState(() {
+                    hotkey = text;
+                  });
                 }
               },
               onPointerDown: (event) {
+                if (!focusNode.hasFocus) {
+                  return;
+                }
+
                 if (widget.item.type == global) {
                   return;
                 }
@@ -135,28 +145,27 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
                   final text = mouseEventToNameMap[event.buttons];
                   if (text != null) {
                     HotkeyConfig.to.save(widget.item.valueKey, text);
-                    controller.text = text;
+                    hotkey = text;
                   }
                 });
                 return;
               },
-              child: KeyboardListener(
-                focusNode: FocusNode(),
-                onKeyEvent: (event) {
+              child: Focus(
+                onKeyEvent: (node, event) {
                   if (event is KeyDownEvent) {
                     setState(() {
                       // 取消快捷键
                       updateKey(event);
                     });
                   }
-                  return;
+                  return KeyEventResult.handled;
                 },
-                child: WinTextBox(
+                child: Button(
                   focusNode: focusNode,
-                  textAlign: TextAlign.center,
-                  controller: controller,
-                  showCursor: false,
-                  enableInteractiveSelection: false,
+                  onPressed: () {
+                    focusNode.requestFocus();
+                  },
+                  child: WinText(hotkey),
                 ),
               ),
             ),
@@ -179,8 +188,19 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
       }
     }
 
-    var text = physicalKeyMap[event.physicalKey] ??
-        event.physicalKey.keyLabel.toLowerCase();
+    var text = logicalKeyMap[event.logicalKey] ??
+        event.logicalKey.keyLabel.toLowerCase();
+
+    if ([
+      'ctrlleft',
+      'ctrlright',
+      'shiftleft',
+      'shiftright',
+      'altleft',
+      'altright'
+    ].contains(text)) {
+      return;
+    }
 
     final modifiers = <String>[];
     // 识别组合键
@@ -198,7 +218,7 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
 
     text = modifiers.join(' + ') + (modifiers.isNotEmpty ? ' + ' : '') + text;
     HotkeyConfig.to.save(widget.item.valueKey, text);
-    controller.text = text;
+    hotkey = text;
 
     // 注册新快捷键
     if (widget.item.type == global) {

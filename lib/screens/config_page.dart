@@ -49,6 +49,7 @@ class ConfigPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = model.displayedConfigItems[index];
                 return HotkeyConfigRow(
+                  key: Key(item.valueKey),
                   item: item,
                   lightText: model.lightText,
                 );
