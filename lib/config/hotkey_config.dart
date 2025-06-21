@@ -17,6 +17,8 @@ class HotkeyConfig with ConfigStorage {
   static const keyToggleQuickPickKey = "toggleQuickPickKey";
   static const keyEatFoodKey = 'eatFoodKey';
   static const keyTimerDashKey = "timerDashKey";
+  static const keyToPrev = "toPrev";
+  static const keyToNext = "toNext";
 
   String getStartStopKey() => box.read(keyStartStopKey) ?? 'f7';
 
@@ -38,6 +40,10 @@ class HotkeyConfig with ConfigStorage {
       box.read(keyToggleQuickPickKey) ?? 'xbutton1';
 
   String getQmTpNext() => box.read(keyQmTpNext)?? 'left';
+
+  String getToPrev() => box.read(keyToPrev)?? 'subtract';
+
+  String getToNext() => box.read(keyToNext)?? 'add';
 
   HotKey getStartStopKeyItem() {
     return HotKey(

@@ -34,6 +34,8 @@ Future<void> _initApp() async {
   // 自定义存储路径
   final customPath = await getStoragePath();
   box = GetStorage(appId, customPath);
+  // 初始化数据库
+  await initWindowsDb();
 
   await initFileManagement();
   if (!kIsWeb &&
@@ -66,9 +68,6 @@ Future<void> _initApp() async {
 
       runWin32EventIsolate();
     });
-
-    // 初始化数据库
-    await initWindowsDb();
   }
 }
 

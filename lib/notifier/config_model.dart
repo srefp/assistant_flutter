@@ -37,6 +37,16 @@ final hotkeyConfigItems = [
     valueCallback: HotkeyConfig.to.getHalfTp,
   ),
   StringConfigItem(
+    title: '上一个点位（不传送）',
+    valueKey: HotkeyConfig.keyToPrev,
+    valueCallback: HotkeyConfig.to.getToPrev,
+  ),
+  StringConfigItem(
+    title: '下一个点位（不传送）',
+    valueKey: HotkeyConfig.keyToNext,
+    valueCallback: HotkeyConfig.to.getToNext,
+  ),
+  StringConfigItem(
     title: '全自动传送',
     valueKey: HotkeyConfig.keyTpNext,
     valueCallback: HotkeyConfig.to.getTpNext,

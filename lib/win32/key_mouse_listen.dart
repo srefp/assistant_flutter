@@ -54,25 +54,25 @@ void keyMouseListen(name, down) async {
       WindowsApp.autoTpModel.fresh();
       showToast('已记录坐标：$text');
     } else if (mapping && clickEntry) {
-      clickEntry = false;
-      // 双击
-      var currentPos = await api.position();
-
-      var now = DateTime.now();
-      print('开始检测锚点');
-      while (DateTime.now().difference(now).inMilliseconds < 350) {
-        var res = await GamePicInfo.to.anchorConfirm.scan();
-        print('确认锚点：${res.maxMatchValue}');
-        if (res.maxMatchValue >= matchThreshold) {
-          print('点击123789');
-          await KeyMouseUtil.clickAtPoint(
-              GamePosConfig.to.getConfirmPosIntList(), 0);
-          await Future.delayed(Duration(milliseconds: 100));
-          api.moveTo(point: currentPos!);
-          break;
-        }
-      }
-      Future.delayed(Duration(milliseconds: 350)).then((value) => clickEntry = true);
+    //   clickEntry = false;
+    //   // 双击
+    //   var currentPos = await api.position();
+    //
+    //   var now = DateTime.now();
+    //   print('开始检测锚点');
+    //   while (DateTime.now().difference(now).inMilliseconds < 350) {
+    //     var res = await GamePicInfo.to.anchorConfirm.scan();
+    //     print('确认锚点：${res.maxMatchValue}');
+    //     if (res.maxMatchValue >= matchThreshold) {
+    //       print('点击123789');
+    //       await KeyMouseUtil.clickAtPoint(
+    //           GamePosConfig.to.getConfirmPosIntList(), 0);
+    //       await Future.delayed(Duration(milliseconds: 100));
+    //       api.moveTo(point: currentPos!);
+    //       break;
+    //     }
+    //   }
+    //   Future.delayed(Duration(milliseconds: 350)).then((value) => clickEntry = true);
     }
   }
 

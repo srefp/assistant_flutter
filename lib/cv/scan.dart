@@ -19,7 +19,7 @@ void findImageWithMask(templatePath, sourcePath) {
   //
 }
 
-bool detectOpen = true;
+bool detectOpen = false;
 
 const matchThreshold = 0.2;
 

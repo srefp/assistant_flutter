@@ -37,6 +37,8 @@ void listenAll(String name, bool down) async {
     return;
   }
 
+  print('name: $name');
+
   if (name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
   } else if (name == HotkeyConfig.to.getShowCoordsKey()) {
@@ -47,6 +49,10 @@ void listenAll(String name, bool down) async {
     showToast('${quickPickEnabled ? '关闭' : '开启'}快捡');
   } else if (name == HotkeyConfig.to.getEatFoodKey()) {
     eatFood();
+  } else if (name == HotkeyConfig.to.getToPrev()) {
+    RouteExecutor.toPrev();
+  } else if (name == HotkeyConfig.to.getToNext()) {
+    RouteExecutor.toNext();
   }
 }
 

@@ -13,6 +13,36 @@ class RouteExecutor {
   static bool tpForbidden = false;
   static AutoTpConfig config = AutoTpConfig.to;
 
+  static void toPrev() {
+    print('上一个点位');
+    var tpPoints = WindowsApp.autoTpModel.tpPoints;
+
+    if (config.getRouteIndex() > 1 &&
+        config.getRouteIndex() <= tpPoints.length) {
+      config.save(AutoTpConfig.keyRouteIndex, config.getRouteIndex() - 1);
+    }
+
+    // 刷新当前位置
+    final curPos = tpPoints[config.getRouteIndex() - 1].name ??
+        '点位${config.getRouteIndex()}';
+    WindowsApp.autoTpModel.selectPos(curPos);
+  }
+
+  static void toNext() {
+    print('下一个点位');
+    var tpPoints = WindowsApp.autoTpModel.tpPoints;
+
+    if (config.getRouteIndex() >= 0 &&
+        config.getRouteIndex() < tpPoints.length) {
+      config.save(AutoTpConfig.keyRouteIndex, config.getRouteIndex() + 1);
+    }
+
+    // 刷新当前位置
+    final curPos = tpPoints[config.getRouteIndex() - 1].name ??
+        '点位${config.getRouteIndex()}';
+    WindowsApp.autoTpModel.selectPos(curPos);
+  }
+
   static Future<void> tpNext(bool qm) async {
     if (!config.isAutoTpEnabled()) {
       return;
@@ -68,10 +98,12 @@ class RouteExecutor {
       if (AutoTpConfig.to.isQmDash()) {
         await api.click(button: MouseButton.right);
       }
-      await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getQmDashDelay()));
+      await Future.delayed(
+          Duration(milliseconds: AutoTpConfig.to.getQmDashDelay()));
       await api.keyDown(key: GameKeyConfig.to.getQKey());
       await api.keyUp(key: GameKeyConfig.to.getQKey());
-      await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getQmQDelay()));
+      await Future.delayed(
+          Duration(milliseconds: AutoTpConfig.to.getQmQDelay()));
     }
     await runScript(tpPoint.code);
   }

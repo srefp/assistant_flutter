@@ -57,6 +57,22 @@ final Map<int, String> keyCodeToNameMap = {
   VIRTUAL_KEY.VK_F22: 'f22',
   VIRTUAL_KEY.VK_F23: 'f23',
   VIRTUAL_KEY.VK_F24: 'f24',
+  VIRTUAL_KEY.VK_NUMPAD0: 'num0',
+  VIRTUAL_KEY.VK_NUMPAD1: 'num1',
+  VIRTUAL_KEY.VK_NUMPAD2: 'num2',
+  VIRTUAL_KEY.VK_NUMPAD3: 'num3',
+  VIRTUAL_KEY.VK_NUMPAD4: 'num4',
+  VIRTUAL_KEY.VK_NUMPAD5: 'num5',
+  VIRTUAL_KEY.VK_NUMPAD6: 'num6',
+  VIRTUAL_KEY.VK_NUMPAD7: 'num7',
+  VIRTUAL_KEY.VK_NUMPAD8: 'num8',
+  VIRTUAL_KEY.VK_NUMPAD9: 'num9',
+  VIRTUAL_KEY.VK_MULTIPLY: 'multiply',
+  VIRTUAL_KEY.VK_ADD: 'add',
+  VIRTUAL_KEY.VK_SEPARATOR: 'separator',
+  VIRTUAL_KEY.VK_SUBTRACT: 'subtract',
+  VIRTUAL_KEY.VK_DECIMAL: 'decimal',
+  VIRTUAL_KEY.VK_DIVIDE: 'divide',
 };
 
 final logicalKeyMap = {
@@ -156,8 +172,8 @@ final logicalKeyMap = {
   LogicalKeyboardKey.printScreen: 'printscreen',
   LogicalKeyboardKey.scrollLock: 'scrolllock',
   LogicalKeyboardKey.shiftLeft: 'shiftleft',
-  LogicalKeyboardKey.shiftRight:'shiftright',
-  LogicalKeyboardKey.space:'space',
+  LogicalKeyboardKey.shiftRight: 'shiftright',
+  LogicalKeyboardKey.space: 'space',
   LogicalKeyboardKey.tab: 'tab',
 };
 
