@@ -32,7 +32,6 @@ class _RootAppState extends State<RootApp> {
   bool value = false;
   final viewKey = GlobalKey(debugLabel: 'Navigation View Key');
   final searchKey = GlobalKey(debugLabel: 'Search Bar Key');
-  final searchFocusNode = FocusNode();
   final searchController = TextEditingController();
 
   List<NavigationPaneItem> get originalItems {
@@ -105,6 +104,40 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
+    if (SettingConfig.to.getScriptManagementMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.scriptManagement),
+        icon: const Icon(FluentIcons.script, size: iconSize),
+        title: Text(
+          '脚本管理',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.scriptManagement) {
+            context.go(Routes.scriptManagement);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getCaptureManagementMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.captureManagement),
+        icon: const Icon(FluentIcons.picture, size: iconSize),
+        title: Text(
+          '截图管理',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.captureManagement) {
+            context.go(Routes.captureManagement);
+          }
+        },
+      ));
+    }
+
     if (SettingConfig.to.getDocMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.doc),
@@ -115,10 +148,7 @@ class _RootAppState extends State<RootApp> {
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState
-              .of(context)
-              .uri
-              .toString() != Routes.doc) {
+          if (GoRouterState.of(context).uri.toString() != Routes.doc) {
             context.go(Routes.doc);
           }
         },
@@ -135,10 +165,7 @@ class _RootAppState extends State<RootApp> {
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState
-              .of(context)
-              .uri
-              .toString() != Routes.tool) {
+          if (GoRouterState.of(context).uri.toString() != Routes.tool) {
             context.go(Routes.tool);
           }
         },
@@ -185,7 +212,6 @@ class _RootAppState extends State<RootApp> {
   @override
   void dispose() {
     searchController.dispose();
-    searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -267,62 +293,13 @@ class _RootAppState extends State<RootApp> {
           );
         },
         pane: NavigationPane(
+          size: NavigationPaneSize(openMaxWidth: 200),
           selected: _calculateSelectedIndex(context),
-          displayMode: PaneDisplayMode.compact,
+          displayMode: PaneDisplayMode.open,
+          toggleable: true,
           items: originalItems,
-          autoSuggestBox: Builder(builder: (context) {
-            return AutoSuggestBox(
-              key: searchKey,
-              focusNode: searchFocusNode,
-              controller: searchController,
-              unfocusedColor: Colors.transparent,
-              items: <PaneItem>[
-                ...originalItems
-                    .whereType<PaneItemExpander>()
-                    .expand<PaneItem>((item) {
-                  return [
-                    item,
-                    ...item.items.whereType<PaneItem>(),
-                  ];
-                }),
-                ...originalItems
-                    .where(
-                      (item) => item is PaneItem && item is! PaneItemExpander,
-                    )
-                    .cast<PaneItem>(),
-              ].map((item) {
-                final text = (item.title as Text).data!;
-                return AutoSuggestBoxItem(
-                  label: text,
-                  child: WinText(text),
-                  value: text,
-                  onSelected: () {
-                    item.onTap?.call();
-                    searchController.clear();
-                    searchFocusNode.unfocus();
-                    final view = NavigationView.of(context);
-                    if (view.compactOverlayOpen) {
-                      view.compactOverlayOpen = false;
-                    } else if (view.minimalPaneOpen) {
-                      view.minimalPaneOpen = false;
-                    }
-                  },
-                );
-              }).toList(),
-              trailingIcon: IgnorePointer(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(FluentIcons.search, size: iconSize),
-                ),
-              ),
-              placeholder: '搜索',
-              style: TextStyle(fontFamily: fontFamily),
-            );
-          }),
-          autoSuggestBoxReplacement: const Icon(FluentIcons.search, size: iconSize),
           footerItems: footerItems,
         ),
-        onOpenSearch: searchFocusNode.requestFocus,
       );
     });
   }

@@ -20,7 +20,7 @@ Future<String> getStoragePath() async =>
 
 class DbHelper {
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 3;
+  static const int _version = 4;
 
   /// 在windows平台初始化数据库
   static Future<sqlite_api.Database> getDbOnWindows() async {
@@ -60,6 +60,20 @@ class DbHelper {
               if (oldVersion < 3 && newVersion >= 3) {
                 // 执行版本3的升级操作
                 await db.execute(PicRecordDb.ddl);
+              }
+              if (oldVersion < 4 && newVersion >= 4) {
+                // 查询表结构获取现有列
+                final columns =
+                    await db.rawQuery('PRAGMA table_info(${TpRouteDb.tableName})');
+                final hasVideoUrl =
+                    columns.any((col) => col['name'] == 'videoUrl');
+
+                if (!hasVideoUrl) {
+                  // 不存在则添加列（TEXT类型，允许NULL）
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${TpRouteDb.tableName} ADD COLUMN videoUrl TEXT
+                  ''');
+                }
               }
             }),
       );

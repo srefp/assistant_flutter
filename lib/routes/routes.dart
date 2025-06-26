@@ -8,4 +8,6 @@ class Routes {
   static const record = '/record';
   static const doc = '/doc';
   static const tool = '/tool';
+  static const scriptManagement = '/script-management';
+  static const captureManagement = '/capture-management';
 }

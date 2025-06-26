@@ -4,12 +4,16 @@ import 'package:assistant/app/root_app.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
+import 'package:assistant/notifier/capture_management_model.dart';
 import 'package:assistant/notifier/doc_model.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
+import 'package:assistant/notifier/script_management_model.dart';
+import 'package:assistant/screens/capture_management_page.dart';
 import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/doc_page.dart';
 import 'package:assistant/screens/record_page.dart';
+import 'package:assistant/screens/script_management_page.dart';
 import 'package:assistant/screens/tool_page.dart';
 import 'package:assistant/util/hot_key.dart';
 import 'package:dio/dio.dart';
@@ -41,6 +45,8 @@ class WindowsApp extends StatefulWidget {
   static final appModel = AppModel();
   static final configModel = ConfigModel();
   static final docModel = DocModel();
+  static final scriptManagementModel = ScriptManagementModel();
+  static final captureManagementModel = CaptureManagementModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -112,6 +118,16 @@ class _WindowsAppState extends State<WindowsApp>
       // 键盘录制器
       ChangeNotifierProvider(
         create: (context) => WindowsApp.recordModel,
+      ),
+
+      // 脚本管理
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.scriptManagementModel,
+      ),
+
+      // 截图管理
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.captureManagementModel,
       ),
 
       // 文档
@@ -232,6 +248,16 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
         path: Routes.scriptEditor,
         builder: (context, state) => const ScriptEditor(),
       ),
+
+      /// Script Management
+      GoRoute(
+          path: Routes.scriptManagement,
+          builder: (context, state) => const ScriptManagementPage()),
+
+      /// Capture Management
+      GoRoute(
+          path: Routes.captureManagement,
+          builder: (context, state) => const CaptureManagementPage()),
 
       /// Record
       GoRoute(

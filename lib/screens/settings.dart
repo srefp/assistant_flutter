@@ -167,6 +167,30 @@ class _SettingsState extends State<Settings> with PageMixin {
             ),
           ),
           ConfigRow(
+            title: '脚本管理',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getScriptManagementMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyScriptManagementMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
+            title: '识图管理',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getCaptureManagementMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyCaptureManagementMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
             title: '文档',
             content: ToggleSwitch(
               checked: SettingConfig.to.getDocMenu(),
