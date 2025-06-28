@@ -76,7 +76,7 @@ class ScriptManagementModel extends ChangeNotifier {
                                 child: const WinText('确定'),
                                 onPressed: () {
                                   db.delete(TpRouteDb.tableName,
-                                      where: 'id =?',
+                                      where: 'id = ?',
                                       whereArgs: [
                                         e.id
                                       ]).then((res) => loadScripts());

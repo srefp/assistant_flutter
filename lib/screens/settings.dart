@@ -191,6 +191,18 @@ class _SettingsState extends State<Settings> with PageMixin {
             ),
           ),
           ConfigRow(
+            title: '宏',
+            content: ToggleSwitch(
+              checked: SettingConfig.to.getMacroMenu(),
+              onChanged: (value) => {
+                setState(() {
+                  SettingConfig.to.save(SettingConfig.keyMacroMenu, value);
+                  WindowsApp.appModel.changeMenu();
+                })
+              },
+            ),
+          ),
+          ConfigRow(
             title: '文档',
             content: ToggleSwitch(
               checked: SettingConfig.to.getDocMenu(),

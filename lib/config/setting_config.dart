@@ -21,6 +21,7 @@ class SettingConfig with ConfigStorage {
   static const keyHotkeyMenu = 'hotkeyMenu';
   static const keyScriptManagementMenu = 'scriptManagementMenu';
   static const keyCaptureManagementMenu = 'captureManagementMenu';
+  static const keyMacroMenu = 'macroMenu';
 
   ThemeMode getThemeMode() {
     final index = box.read(keyThemeMode);
@@ -60,11 +61,14 @@ class SettingConfig with ConfigStorage {
 
   bool getDocMenu() => box.read(keyDocMenu) ?? true;
 
-  bool getToolMenu() => box.read(keyToolMenu)?? false;
+  bool getToolMenu() => box.read(keyToolMenu) ?? false;
 
-  bool getHotkeyMenu() => box.read(keyHotkeyMenu)?? true;
+  bool getHotkeyMenu() => box.read(keyHotkeyMenu) ?? true;
 
-  bool getScriptManagementMenu() => box.read(keyScriptManagementMenu)?? true;
+  bool getScriptManagementMenu() => box.read(keyScriptManagementMenu) ?? true;
 
-  bool getCaptureManagementMenu() => box.read(keyCaptureManagementMenu)?? false;
+  bool getCaptureManagementMenu() =>
+      box.read(keyCaptureManagementMenu) ?? false;
+
+  bool getMacroMenu() => box.read(keyMacroMenu) ?? false;
 }

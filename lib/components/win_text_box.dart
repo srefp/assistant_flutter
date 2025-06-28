@@ -16,6 +16,8 @@ class WinTextBox extends StatelessWidget {
     this.focusNode,
     this.showCursor = true,
     this.enableInteractiveSelection = true,
+    this.minLines,
+    this.maxLines = 1,
   });
 
   final TextAlign textAlign;
@@ -29,6 +31,8 @@ class WinTextBox extends StatelessWidget {
   final FocusNode? focusNode;
   final bool showCursor;
   final bool enableInteractiveSelection;
+  final int? minLines;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,8 @@ class WinTextBox extends StatelessWidget {
     final TextStyle textStyle =
         style?.copyWith(fontFamily: font) ?? TextStyle(fontFamily: font);
     return TextBox(
+      minLines: minLines,
+      maxLines: maxLines,
       controller: controller,
       style: textStyle,
       textAlign: textAlign,

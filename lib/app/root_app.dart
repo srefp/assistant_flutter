@@ -29,10 +29,7 @@ class RootApp extends StatefulWidget {
 }
 
 class _RootAppState extends State<RootApp> {
-  bool value = false;
   final viewKey = GlobalKey(debugLabel: 'Navigation View Key');
-  final searchKey = GlobalKey(debugLabel: 'Search Bar Key');
-  final searchController = TextEditingController();
 
   List<NavigationPaneItem> get originalItems {
     final routes = <NavigationPaneItem>[];
@@ -114,7 +111,8 @@ class _RootAppState extends State<RootApp> {
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.scriptManagement) {
+          if (GoRouterState.of(context).uri.toString() !=
+              Routes.scriptManagement) {
             context.go(Routes.scriptManagement);
           }
         },
@@ -131,8 +129,26 @@ class _RootAppState extends State<RootApp> {
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.captureManagement) {
+          if (GoRouterState.of(context).uri.toString() !=
+              Routes.captureManagement) {
             context.go(Routes.captureManagement);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getMacroMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.macro),
+        icon: const Icon(FluentIcons.car, size: iconSize),
+        title: Text(
+          '宏',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.macro) {
+            context.go(Routes.macro);
           }
         },
       ));
@@ -211,7 +227,6 @@ class _RootAppState extends State<RootApp> {
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
   }
 
@@ -220,13 +235,16 @@ class _RootAppState extends State<RootApp> {
     int indexOriginal = originalItems
         .where((item) => item.key != null)
         .toList()
-        .indexWhere((item) => item.key == Key(location));
+        .indexWhere(
+            (item) => '$location/'.contains('${(item.key as ValueKey).value}/'));
 
     if (indexOriginal == -1) {
       int indexFooter = footerItems
           .where((element) => element.key != null)
           .toList()
-          .indexWhere((element) => element.key == Key(location));
+          .indexWhere((item) =>
+              '$location/'.contains('${(item.key as ValueKey).value}/'));
+
       if (indexFooter == -1) {
         return 0;
       }

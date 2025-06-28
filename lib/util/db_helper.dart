@@ -1,3 +1,4 @@
+import 'package:assistant/db/macro_db.dart';
 import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/util/path_manage.dart';
@@ -40,6 +41,7 @@ class DbHelper {
               // 执行数据库创建操作
               await db.execute(TpRouteDb.ddl);
               await db.execute(PicRecordDb.ddl);
+              await db.execute(MacroDb.ddl);
               // await db.execute(await TpRouteDb.initRouteSql);
             },
             onUpgrade: (db, oldVersion, newVersion) async {

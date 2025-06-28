@@ -29,13 +29,13 @@ class HighlightText extends StatelessWidget {
 
   /// 默认普通文本的样式
   final TextStyle _defaultTextStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: fontFamily,
   );
 
   /// 默认高亮文本的样式
   final TextStyle _defaultLightStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.orangeAccent,
     fontFamily: fontFamily,
   );

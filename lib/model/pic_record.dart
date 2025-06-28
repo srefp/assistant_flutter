@@ -9,10 +9,10 @@ class PicRecord {
   int? id;
 
   /// 图片名称
-  final String picName;
+  String picName;
 
   /// 图像
-  final String image;
+  String image;
 
   /// 图片
   cv.Mat? mat;

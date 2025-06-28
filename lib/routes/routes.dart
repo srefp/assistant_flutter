@@ -10,4 +10,6 @@ class Routes {
   static const tool = '/tool';
   static const scriptManagement = '/script-management';
   static const captureManagement = '/capture-management';
+  static const macro = '/macro';
+  static const macroEdit = '/macro/macro-edit';
 }

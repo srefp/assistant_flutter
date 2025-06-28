@@ -7,11 +7,14 @@ import 'package:assistant/main.dart';
 import 'package:assistant/notifier/capture_management_model.dart';
 import 'package:assistant/notifier/doc_model.dart';
 import 'package:assistant/notifier/log_model.dart';
+import 'package:assistant/notifier/macro_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/notifier/script_management_model.dart';
 import 'package:assistant/screens/capture_management_page.dart';
 import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/doc_page.dart';
+import 'package:assistant/screens/macro_edit_page.dart';
+import 'package:assistant/screens/macro_page.dart';
 import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/screens/script_management_page.dart';
 import 'package:assistant/screens/tool_page.dart';
@@ -47,6 +50,7 @@ class WindowsApp extends StatefulWidget {
   static final docModel = DocModel();
   static final scriptManagementModel = ScriptManagementModel();
   static final captureManagementModel = CaptureManagementModel();
+  static final macroModel = MacroModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -128,6 +132,11 @@ class _WindowsAppState extends State<WindowsApp>
       // 截图管理
       ChangeNotifierProvider(
         create: (context) => WindowsApp.captureManagementModel,
+      ),
+
+      // 宏
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.macroModel,
       ),
 
       // 文档
@@ -258,6 +267,16 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       GoRoute(
           path: Routes.captureManagement,
           builder: (context, state) => const CaptureManagementPage()),
+
+      /// Macro
+      GoRoute(
+          path: Routes.macro,
+          builder: (context, state) => const MacroPage()),
+
+      /// Macro Edit
+      GoRoute(
+          path: Routes.macroEdit,
+          builder: (context, state) => const MacroEditPage()),
 
       /// Record
       GoRoute(

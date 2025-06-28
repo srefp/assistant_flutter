@@ -16,7 +16,7 @@ bool allowTpc = true;
 /// tpc('slow', [12345, 12345]);
 ///
 /// 默认XButton2会输出tpc('slow', [12345, 12345]);，执行两个延迟90ms的单击操作。
-void tpc() async {
+void executeTpc() async {
   if (!allowTpc) {
     return;
   }

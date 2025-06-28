@@ -144,7 +144,7 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
           child: WinTextBox(
             controller: _controller,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
             ),
             onTap: () {
               if (_hintText.isNotEmpty) {

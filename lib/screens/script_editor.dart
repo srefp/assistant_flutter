@@ -168,8 +168,8 @@ class ScriptEditor extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Editor(
-              content: model.scriptContent ?? '',
-              saveFile: model.saveScript,
+              controller: model.controller,
+              onContentChanged: model.saveScript,
             ),
           ),
         ],

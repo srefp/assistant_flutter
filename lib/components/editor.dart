@@ -1,10 +1,8 @@
 import 'dart:math';
 
-import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/util/js_executor.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
-import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/javascript.dart';
 
@@ -13,13 +11,13 @@ import 'menu.dart';
 
 /// 代码编辑器
 class Editor extends StatefulWidget {
-  final String content;
-  final Function(String) saveFile;
+  final CodeLineEditingController controller;
+  final Function(String) onContentChanged;
 
   const Editor({
     super.key,
-    required this.content,
-    required this.saveFile,
+    required this.controller,
+    required this.onContentChanged,
   });
 
   @override
@@ -35,99 +33,97 @@ class _EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ScriptEditorModel>(builder: (context, model, child) {
-      return CodeAutocomplete(
-        promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
-          directPrompts: keys.map((key) => CodeKeywordPrompt(word: key)).toList(),
+    return CodeAutocomplete(
+      promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
+        directPrompts: keys.map((key) => CodeKeywordPrompt(word: key)).toList(),
+      ),
+      viewBuilder: (context, notifier, onSelected) {
+        return _DefaultCodeAutocompleteListView(
+          notifier: notifier,
+          onSelected: onSelected,
+        );
+      },
+      child: CodeEditor(
+        style: CodeEditorStyle(
+          fontFamily: 'Consolas',
+          fontSize: 16,
+          textColor: const Color(0xffbcbec4),
+          codeTheme: CodeHighlightTheme(
+            languages: {
+              'javascript': CodeHighlightThemeMode(mode: langJavascript)
+            },
+            theme: {
+              'root': TextStyle(
+                  backgroundColor: Color(0xff2b2b2b),
+                  color: Color(0xffbababa)),
+              'strong': TextStyle(color: Color(0xffa8a8a2)),
+              'emphasis': TextStyle(
+                  color: Color(0xffa8a8a2), fontStyle: FontStyle.italic),
+              'bullet': TextStyle(color: Color(0xff6896ba)),
+              'quote': TextStyle(color: Color(0xff6896ba)),
+              'link': TextStyle(color: Color(0xff6896ba)),
+              'number': TextStyle(color: Color(0xff6896ba)),
+              'regexp': TextStyle(color: Color(0xff6896ba)),
+              'literal': TextStyle(color: Color(0xff6896ba)),
+              'code': TextStyle(color: Color(0xffa6e22e)),
+              'selector-class': TextStyle(color: Color(0xffa6e22e)),
+              'keyword': TextStyle(color: Color(0xffcb7832)),
+              'selector-tag': TextStyle(color: Color(0xffcb7832)),
+              'section': TextStyle(color: Color(0xffcb7832)),
+              'attribute': TextStyle(color: Color(0xffcb7832)),
+              'name': TextStyle(color: Color(0xffcb7832)),
+              'variable': TextStyle(color: Color(0xffcb7832)),
+              'params': TextStyle(color: Color(0xffb9b9b9)),
+              'string': TextStyle(color: Color(0xff6a8759)),
+              'subst': TextStyle(color: Color(0xffe0c46c)),
+              'type': TextStyle(color: Color(0xffe0c46c)),
+              'built_in': TextStyle(color: Color(0xffe0c46c)),
+              'builtin-name': TextStyle(color: Color(0xffe0c46c)),
+              'symbol': TextStyle(color: Color(0xffe0c46c)),
+              'selector-id': TextStyle(color: Color(0xffe0c46c)),
+              'selector-attr': TextStyle(color: Color(0xffe0c46c)),
+              'selector-pseudo': TextStyle(color: Color(0xffe0c46c)),
+              'template-tag': TextStyle(color: Color(0xffe0c46c)),
+              'template-variable': TextStyle(color: Color(0xffe0c46c)),
+              'addition': TextStyle(color: Color(0xffe0c46c)),
+              'comment': TextStyle(color: Color(0xff7f7f7f)),
+              'deletion': TextStyle(color: Color(0xff7f7f7f)),
+              'meta': TextStyle(color: Color(0xff7f7f7f)),
+              'title': TextStyle(color: Color(0xff56a9f5)),
+              'title.class_': TextStyle(color: Color(0xffdcbdfb)),
+              'title.class_.inherited__': TextStyle(color: Color(0xffdcbdfb)),
+              'title.function_': TextStyle(color: Color(0xffdcbdfb)),
+              'attr': TextStyle(color: Color(0xff6cb6ff)),
+              'operator': TextStyle(color: Color(0xff6cb6ff)),
+              'meta-string': TextStyle(color: Color(0xff96d0ff)),
+              'formula': TextStyle(color: Color(0xff768390)),
+            },
+          ),
         ),
-        viewBuilder: (context, notifier, onSelected) {
-          return _DefaultCodeAutocompleteListView(
-            notifier: notifier,
-            onSelected: onSelected,
+        controller: widget.controller,
+        wordWrap: false,
+        indicatorBuilder:
+            (context, editingController, chunkController, notifier) {
+          return Row(
+            children: [
+              DefaultCodeLineNumber(
+                controller: editingController,
+                notifier: notifier,
+              ),
+              DefaultCodeChunkIndicator(
+                width: 20,
+                controller: chunkController,
+                notifier: notifier,
+              )
+            ],
           );
         },
-        child: CodeEditor(
-          style: CodeEditorStyle(
-            fontFamily: 'Consolas',
-            fontSize: 16,
-            textColor: const Color(0xffbcbec4),
-            codeTheme: CodeHighlightTheme(
-              languages: {
-                'javascript': CodeHighlightThemeMode(mode: langJavascript)
-              },
-              theme: {
-                'root': TextStyle(
-                    backgroundColor: Color(0xff2b2b2b),
-                    color: Color(0xffbababa)),
-                'strong': TextStyle(color: Color(0xffa8a8a2)),
-                'emphasis': TextStyle(
-                    color: Color(0xffa8a8a2), fontStyle: FontStyle.italic),
-                'bullet': TextStyle(color: Color(0xff6896ba)),
-                'quote': TextStyle(color: Color(0xff6896ba)),
-                'link': TextStyle(color: Color(0xff6896ba)),
-                'number': TextStyle(color: Color(0xff6896ba)),
-                'regexp': TextStyle(color: Color(0xff6896ba)),
-                'literal': TextStyle(color: Color(0xff6896ba)),
-                'code': TextStyle(color: Color(0xffa6e22e)),
-                'selector-class': TextStyle(color: Color(0xffa6e22e)),
-                'keyword': TextStyle(color: Color(0xffcb7832)),
-                'selector-tag': TextStyle(color: Color(0xffcb7832)),
-                'section': TextStyle(color: Color(0xffcb7832)),
-                'attribute': TextStyle(color: Color(0xffcb7832)),
-                'name': TextStyle(color: Color(0xffcb7832)),
-                'variable': TextStyle(color: Color(0xffcb7832)),
-                'params': TextStyle(color: Color(0xffb9b9b9)),
-                'string': TextStyle(color: Color(0xff6a8759)),
-                'subst': TextStyle(color: Color(0xffe0c46c)),
-                'type': TextStyle(color: Color(0xffe0c46c)),
-                'built_in': TextStyle(color: Color(0xffe0c46c)),
-                'builtin-name': TextStyle(color: Color(0xffe0c46c)),
-                'symbol': TextStyle(color: Color(0xffe0c46c)),
-                'selector-id': TextStyle(color: Color(0xffe0c46c)),
-                'selector-attr': TextStyle(color: Color(0xffe0c46c)),
-                'selector-pseudo': TextStyle(color: Color(0xffe0c46c)),
-                'template-tag': TextStyle(color: Color(0xffe0c46c)),
-                'template-variable': TextStyle(color: Color(0xffe0c46c)),
-                'addition': TextStyle(color: Color(0xffe0c46c)),
-                'comment': TextStyle(color: Color(0xff7f7f7f)),
-                'deletion': TextStyle(color: Color(0xff7f7f7f)),
-                'meta': TextStyle(color: Color(0xff7f7f7f)),
-                'title': TextStyle(color: Color(0xff56a9f5)),
-                'title.class_': TextStyle(color: Color(0xffdcbdfb)),
-                'title.class_.inherited__': TextStyle(color: Color(0xffdcbdfb)),
-                'title.function_': TextStyle(color: Color(0xffdcbdfb)),
-                'attr': TextStyle(color: Color(0xff6cb6ff)),
-                'operator': TextStyle(color: Color(0xff6cb6ff)),
-                'meta-string': TextStyle(color: Color(0xff96d0ff)),
-                'formula': TextStyle(color: Color(0xff768390)),
-              },
-            ),
-          ),
-          controller: model.controller,
-          wordWrap: false,
-          indicatorBuilder:
-              (context, editingController, chunkController, notifier) {
-            return Row(
-              children: [
-                DefaultCodeLineNumber(
-                  controller: editingController,
-                  notifier: notifier,
-                ),
-                DefaultCodeChunkIndicator(
-                  width: 20,
-                  controller: chunkController,
-                  notifier: notifier,
-                )
-              ],
-            );
-          },
-          findBuilder: (context, controller, readOnly) =>
-              CodeFindPanelView(controller: controller, readOnly: readOnly),
-          toolbarController: const ContextMenuControllerImpl(),
-          sperator: Container(width: 1, color: Colors.blue),
-        ),
-      );
-    });
+        findBuilder: (context, controller, readOnly) =>
+            CodeFindPanelView(controller: controller, readOnly: readOnly),
+        toolbarController: const ContextMenuControllerImpl(),
+        sperator: Container(width: 1, color: Colors.blue),
+      ),
+    );
   }
 }
 
