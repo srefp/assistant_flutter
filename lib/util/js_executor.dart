@@ -1,6 +1,7 @@
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/util/script_parser.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 
@@ -54,13 +55,15 @@ final JavascriptRuntime jsRuntime = getJavascriptRuntime();
 
 late String jsFunction;
 
-loadJsFunction() async {
-  jsFunction = await rootBundle.loadString('assets/js/func.js');
-}
-
 bool crusade = false;
 
-void registerJsFunc() {
+void registerJsFunc() async {
+  jsFunction = await rootBundle.loadString('assets/js/func.js');
+  jsFunction = zipJsCode(jsFunction);
+
+  // 注册所有函数
+  jsRuntime.evaluate(jsFunction);
+
   // 打印日志
   jsRuntime.onMessage('log', (params) {
     WindowsApp.logModel.info(params['info']);
@@ -74,6 +77,26 @@ void registerJsFunc() {
     showToast(params['message'], duration: params['duration']);
   });
 
+  // 滚轮
+  jsRuntime.onMessage(wheel, (params) async {
+    await api.scroll(clicks: -params['clicks']);
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 鼠标按下
+  jsRuntime.onMessage(mDown, (params) async {
+    SystemControl.refreshRect();
+    await api.mouseDown();
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 鼠标抬起
+  jsRuntime.onMessage(mUp, (params) async {
+    SystemControl.refreshRect();
+    await api.mouseUp();
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
   // 点击
   jsRuntime.onMessage(click, (params) async {
     SystemControl.refreshRect();
@@ -84,6 +107,18 @@ void registerJsFunc() {
   // 按键
   jsRuntime.onMessage(press, (params) async {
     api.keyDown(key: params['key']);
+    api.keyUp(key: params['key']);
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 按下
+  jsRuntime.onMessage(kDown, (params) async {
+    api.keyDown(key: params['key']);
+    await Future.delayed(Duration(milliseconds: params['delay']));
+  });
+
+  // 抬起
+  jsRuntime.onMessage(kUp, (params) async {
     api.keyUp(key: params['key']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
@@ -107,7 +142,8 @@ void registerJsFunc() {
     await Future.delayed(Duration(milliseconds: params['delay']));
     if (!crusade) {
       crusade = true;
-      await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getCrusadePosIntList(), AutoTpConfig.to.getCrusadeDelay());
+      await KeyMouseUtil.clickAtPoint(AutoTpConfig.to.getCrusadePosIntList(),
+          AutoTpConfig.to.getCrusadeDelay());
     }
   });
 
@@ -133,7 +169,8 @@ void registerJsFunc() {
   // 拖动
   jsRuntime.onMessage(drag, (params) async {
     SystemControl.refreshRect();
-    await KeyMouseUtil.fastDrag(convertDynamicListToIntList(params['coords']), params['shortMove']);
+    await KeyMouseUtil.fastDrag(
+        convertDynamicListToIntList(params['coords']), params['shortMove']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 }
@@ -147,12 +184,7 @@ Future<void> runScript(String code, {bool addAwait = true}) async {
     }
   }
 
-  JsEvalResult result = await jsRuntime.evaluateAsync('''
-    $jsFunction
-    (async function() {
-    $code
-    })();
-    ''');
+  JsEvalResult result = await jsRuntime.evaluateAsync('(async function() { $code })();');
   jsRuntime.executePendingJob();
   await jsRuntime.handlePromise(result);
 }

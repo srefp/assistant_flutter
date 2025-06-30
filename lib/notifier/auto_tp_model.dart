@@ -548,7 +548,6 @@ class AutoTpModel extends ChangeNotifier {
   AutoTpModel() {
     // 加载js函数
     Future.delayed(Duration(milliseconds: 10), () {
-      loadJsFunction();
       registerJsFunc();
       loadRoutes();
       messagePump();

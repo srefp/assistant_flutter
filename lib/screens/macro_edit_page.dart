@@ -6,14 +6,11 @@ import 'package:assistant/notifier/config_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart'
     hide IconButton, Card, Divider, DividerThemeData;
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../app/windows_app.dart';
 import '../components/highlight_combo_box.dart';
 import '../components/win_text.dart';
 import '../notifier/macro_model.dart';
-import '../routes/routes.dart';
 import 'auto_tp_page.dart';
 
 class MacroEditPage extends StatelessWidget {
@@ -35,14 +32,13 @@ class MacroEditPage extends StatelessWidget {
                         FluentIcons.back,
                         size: 20,
                       ),
-                      onPressed: () =>
-                          rootNavigatorKey.currentContext!.pop(),
+                      onPressed: model.saveThisMicro,
                     ),
                     SizedBox(
                       width: 12,
                     ),
                     WinText(
-                      '宏 - ${model.editedMacro?.name}',
+                      model.isNew ? '新增宏' : '宏 - ${model.editedMacro?.name}',
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
@@ -221,11 +217,17 @@ class MacroEditPage extends StatelessWidget {
             ),
             CustomSliverBox(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ButtonWithIcon(
                     text: '保存',
                     icon: Icons.save,
-                    onPressed: model.saveMicro,
+                    onPressed: model.saveThisMicro,
+                  ),
+                  ButtonWithIcon(
+                    text: '删除',
+                    icon: Icons.delete,
+                    onPressed: model.deleteCurrentMacro,
                   ),
                 ],
               ),

@@ -7,6 +7,15 @@ class BlockItem {
   BlockItem(this.name, this.code);
 }
 
+/// 压缩js代码
+String zipJsCode(String code) {
+  // 步骤1：移除所有注释
+  String noCommentCode = removeComments(code);
+
+  // 步骤2：精简空白字符
+  return minifyCode(noCommentCode);
+}
+
 List<BlockItem> extractTopLevelBlocks(String code) {
   // 第一步：去除所有注释（包括 // 和 /* */）
   code = removeComments(code);
@@ -48,13 +57,18 @@ List<BlockItem> extractTopLevelBlocks(String code) {
         }
         collectPos++;
 
-        String rawName = code.substring(collectPos, nameEnd).replaceAll('"', '').replaceAll("'", '').trim();
+        String rawName = code
+            .substring(collectPos, nameEnd)
+            .replaceAll('"', '')
+            .replaceAll("'", '')
+            .trim();
 
         // 将多行名称合并为一行，用空格连接
         String normalizedName =
             rawName.replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' ');
 
-        result.add(BlockItem(normalizedName.isNotEmpty ? normalizedName : null, minifiedBlock));
+        result.add(BlockItem(
+            normalizedName.isNotEmpty ? normalizedName : null, minifiedBlock));
         startIdx = null;
       }
     }

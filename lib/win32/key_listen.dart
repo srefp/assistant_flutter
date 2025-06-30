@@ -37,7 +37,7 @@ void listenAll(String name, bool down) async {
     return;
   }
 
-  print('name: $name');
+  // print('name: $name');
 
   if (name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);

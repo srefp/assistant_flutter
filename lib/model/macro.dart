@@ -1,6 +1,6 @@
+import 'package:assistant/constants/enum_util.dart';
 import 'package:assistant/constants/macro_trigger_type.dart';
 import 'package:assistant/constants/profile_status.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 
 import '../util/date_utils.dart';
 
@@ -35,6 +35,12 @@ class Macro {
   /// 更新时间
   int? updatedOn;
 
+  /// 任务
+  Future? macroFuture;
+
+  /// 是否循环执行
+  bool loopRunning = false;
+
   Macro({
     this.id,
     required this.name,
@@ -58,12 +64,12 @@ class Macro {
       name: json['name'],
       comment: json['comment'],
       script: json['script'],
-      triggerKey: json['trigger_key'],
-      triggerType: MacroTriggerType.values[json['trigger_type']],
-      processName: json['process_name'],
+      triggerKey: json['triggerKey'],
+      triggerType: EnumUtil.fromCode(json['triggerType'], MacroTriggerType.values),
+      processName: json['processName'],
       status: ProfileStatus.values[json['status']],
-      createdOn: json['created_on'],
-      updatedOn: json['updated_on'],
+      createdOn: json['createdOn'],
+      updatedOn: json['updatedOn'],
     );
   }
 
@@ -73,12 +79,12 @@ class Macro {
       'name': name,
       'comment': comment,
       'script': script,
-      'trigger_key': triggerKey,
-      'trigger_type': triggerType.index,
-      'process_name': processName,
+      'triggerKey': triggerKey,
+      'triggerType': triggerType.code,
+      'processName': processName,
       'status': status.index,
-      'created_on': createdOn,
-      'updated_on': updatedOn,
+      'createdOn': createdOn,
+      'updatedOn': updatedOn,
     };
   }
 

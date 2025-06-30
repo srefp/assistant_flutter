@@ -21,7 +21,7 @@ Future<String> getStoragePath() async =>
 
 class DbHelper {
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 4;
+  static const int _version = 5;
 
   /// 在windows平台初始化数据库
   static Future<sqlite_api.Database> getDbOnWindows() async {
@@ -76,6 +76,9 @@ class DbHelper {
                     ALTER TABLE ${TpRouteDb.tableName} ADD COLUMN videoUrl TEXT
                   ''');
                 }
+              }
+              if (oldVersion < 5 && newVersion >= 5) {
+                await db.execute(MacroDb.ddl);
               }
             }),
       );

@@ -201,6 +201,10 @@ class ScriptManagementModel extends ChangeNotifier {
         final row = sheet.row(rowIndex);
         if (row.isEmpty) break; // 遇到空行停止
 
+        if (row[1] == null || row[1]?.value == null) {
+          continue;
+        }
+
         // 按列顺序解析（与导出时的表头顺序一致）
         newRoutes.add(TpRoute(
           id: int.tryParse(row[0]?.value?.toString() ?? ''),
@@ -242,15 +246,4 @@ class ScriptManagementModel extends ChangeNotifier {
     }
   }
 
-  // 新增：时间字符串转毫秒工具方法（依赖date_utils）
-  int? parseDateTimeToMillis(String? dateStr) {
-    if (dateStr == null || dateStr.isEmpty) return null;
-    try {
-      final dateTime = DateTime.parse(dateStr);
-      return dateTime.millisecondsSinceEpoch;
-    } catch (e) {
-      print('时间解析失败: $dateStr');
-      return null;
-    }
-  }
 }

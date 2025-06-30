@@ -68,9 +68,29 @@ async function mDown(delay) {
     sendMessage('mDown', JSON.stringify({'delay': delay}));
 }
 
+// 鼠标抬起
+async function mUp(delay) {
+    sendMessage('mUp', JSON.stringify({'delay': delay}));
+}
+
 // 按键
 async function press(key, delay) {
     await sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
+}
+
+// 滚轮
+async function wheel(clicks, delay) {
+    await sendMessage('wheel', JSON.stringify({'clicks': clicks, 'delay': delay}));
+}
+
+// 按下
+async function kDown(key, delay) {
+    await sendMessage('kDown', JSON.stringify({'key': key, 'delay': delay}));
+}
+
+// 按下
+async function kUp(key, delay) {
+    await sendMessage('kUp', JSON.stringify({'key': key, 'delay': delay}));
 }
 
 // 拖动

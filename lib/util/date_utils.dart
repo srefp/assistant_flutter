@@ -38,6 +38,18 @@ bool sameDay(DateTime? a, DateTime? b) {
   return a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
+/// 新增：时间字符串转毫秒工具方法（依赖date_utils）
+int? parseDateTimeToMillis(String? dateStr) {
+  if (dateStr == null || dateStr.isEmpty) return null;
+  try {
+    final dateTime = DateTime.parse(dateStr);
+    return dateTime.millisecondsSinceEpoch;
+  } catch (e) {
+    print('时间解析失败: $dateStr');
+    return null;
+  }
+}
+
 /// 格式化日期时间
 String getFormattedDateTimeFromMillis(int? millis) {
   if (millis == null) {

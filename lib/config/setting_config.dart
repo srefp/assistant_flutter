@@ -1,4 +1,5 @@
 import 'package:assistant/util/asset_loader.dart';
+import 'package:assistant/win32/os_version.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 
@@ -26,7 +27,7 @@ class SettingConfig with ConfigStorage {
   ThemeMode getThemeMode() {
     final index = box.read(keyThemeMode);
     if (index == null) {
-      return ThemeMode.system;
+      return isWindows11() ? ThemeMode.system : ThemeMode.dark;
     }
     return getItemFromArr(ThemeMode.values, index) ?? ThemeMode.system;
   }
@@ -34,7 +35,7 @@ class SettingConfig with ConfigStorage {
   WindowEffect getTransparentMode() {
     final index = box.read(keyTransparentMode);
     if (index == null) {
-      return WindowEffect.mica;
+      return isWindows11() ? WindowEffect.mica : WindowEffect.disabled;
     }
     return getItemFromArr(WindowEffect.values, index) ?? WindowEffect.mica;
   }

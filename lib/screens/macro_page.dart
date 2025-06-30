@@ -1,3 +1,4 @@
+import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/model/macro.dart';
 import 'package:assistant/notifier/macro_model.dart';
 import 'package:assistant/routes/routes.dart';
@@ -11,6 +12,7 @@ import '../components/divider.dart';
 import '../components/title_with_sub.dart';
 import '../components/win_text.dart';
 import '../components/win_text_box.dart';
+import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
 import 'auto_tp_page.dart';
 
@@ -44,10 +46,10 @@ class MacroPage extends StatelessWidget {
                             width: 400,
                             height: 34,
                             child: WinTextBox(
-                              controller: model.macroSearchController,
+                              controller: model.searchController,
                               placeholder: '搜索宏',
                               onChanged: (value) =>
-                                  model.searchMacroConfigItems(value),
+                                  model.searchDisplayedDelayConfigItems(value),
                             ),
                           )
                         ],
@@ -56,12 +58,12 @@ class MacroPage extends StatelessWidget {
                     divider,
                     ListView.separated(
                       separatorBuilder: (context, index) => divider,
-                      itemCount: model.macroList.length,
+                      itemCount: model.displayedMacroList.length,
                       itemBuilder: (context, index) {
-                        final item = model.macroList[index];
+                        final item = model.displayedMacroList[index];
                         return MacroListRow(
                           item: item,
-                          lightText: model.searchText,
+                          lightText: model.lightText,
                           onToggle: () {
                             model.toggleMacroStatus(item);
                           },
@@ -70,6 +72,35 @@ class MacroPage extends StatelessWidget {
                       },
                       shrinkWrap: true,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ButtonWithIcon(
+                          text: '新增',
+                          icon: Icons.add,
+                          onPressed: () {
+                            model.createNewMacro();
+                            rootNavigatorKey.currentContext!
+                                .push(Routes.macroEdit);
+                          },
+                        ),
+                        SizedBox(width: 16),
+                        ButtonWithIcon(
+                          text: '导出',
+                          icon: Icons.output,
+                          onPressed: () {
+                            model.exportMacro();
+                          },
+                        ),
+                        SizedBox(width: 16), // 按钮间距
+                        // 新增导入按钮
+                        ButtonWithIcon(
+                          text: '导入',
+                          icon: Icons.input,
+                          onPressed: () => model.importMacro(),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -110,7 +141,8 @@ class _MacroListRowState extends State<MacroListRow> {
           Expanded(
             flex: 1,
             child: TitleWithSub(
-              title: '${item.name} (${item.triggerType.resourceId} ${item.triggerKey})',
+              title:
+                  '${item.name}【 ${item.triggerKey} ${item.triggerType.resourceId} 】',
               subTitle: item.comment ?? '',
               lightText: widget.lightText,
               rightWidget: Row(
