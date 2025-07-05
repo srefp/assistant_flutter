@@ -9,6 +9,7 @@ class TpRouteDb {
   static const ddl = '''
     create table if not exists route (
       id integer primary key autoincrement, -- 主键
+      uniqueId text, -- 唯一ID
       scriptName text, -- 脚本名称
       scriptType text, -- 脚本类型
       content text, -- 路线内容

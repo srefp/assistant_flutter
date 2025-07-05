@@ -1,12 +1,16 @@
 import 'package:assistant/constants/enum_util.dart';
 import 'package:assistant/constants/macro_trigger_type.dart';
 import 'package:assistant/constants/profile_status.dart';
+import 'package:ulid/ulid.dart';
 
 import '../util/date_utils.dart';
 
 class Macro {
   /// 主键
   int? id;
+
+  /// 唯一ID
+  String uniqueId;
 
   /// 名称
   String name;
@@ -41,8 +45,12 @@ class Macro {
   /// 是否循环执行
   bool loopRunning = false;
 
+  /// 是否可以停止
+  bool canStop = false;
+
   Macro({
     this.id,
+    required this.uniqueId,
     required this.name,
     this.comment,
     required this.script,
@@ -61,6 +69,7 @@ class Macro {
   factory Macro.fromJson(Map<String, dynamic> json) {
     return Macro(
       id: json['id'],
+      uniqueId: json['uniqueId'],
       name: json['name'],
       comment: json['comment'],
       script: json['script'],
@@ -76,6 +85,7 @@ class Macro {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'uniqueId': uniqueId,
       'name': name,
       'comment': comment,
       'script': script,
@@ -90,6 +100,6 @@ class Macro {
 
   @override
   String toString() {
-    return 'Macro{id: $id, name: $name, comment: $comment, script: $script, triggerKey: $triggerKey, triggerType: $triggerType, processName: $processName, status: $status}';
+    return 'Macro{id: $id, uniqueId: $uniqueId name: $name, comment: $comment, script: $script, triggerKey: $triggerKey, triggerType: $triggerType, processName: $processName, status: $status}';
   }
 }

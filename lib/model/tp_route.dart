@@ -5,6 +5,9 @@ class TpRoute {
   /// ID
   int? id;
 
+  /// 唯一ID
+  String uniqueId;
+
   /// 路线名称
   String scriptName;
 
@@ -34,6 +37,7 @@ class TpRoute {
 
   TpRoute({
     this.id,
+    required this.uniqueId,
     required this.scriptName,
     required this.scriptType,
     required this.content,
@@ -51,6 +55,7 @@ class TpRoute {
 
   factory TpRoute.fromJson(Map<String, dynamic> json) => TpRoute(
         id: json['id'] as int?,
+        uniqueId: json['uniqueId'] as String,
         scriptName: json['scriptName'] as String,
         scriptType: json['scriptType'] as String,
         content: json['content'] as String,
@@ -64,6 +69,7 @@ class TpRoute {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
+        'uniqueId': uniqueId,
         'scriptName': scriptName,
         'scriptType': scriptType,
         'content': content,
@@ -77,5 +83,5 @@ class TpRoute {
 
   @override
   String toString() =>
-      'Route{id: $id, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, videoUrl: $videoUrl, createdOn: $createdOn, updatedOn: $updatedOn}';
+      'Route{id: $id, uniqueId: $uniqueId, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, videoUrl: $videoUrl, createdOn: $createdOn, updatedOn: $updatedOn}';
 }

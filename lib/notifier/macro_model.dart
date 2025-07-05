@@ -9,6 +9,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
+import 'package:ulid/ulid.dart';
 
 import '../app/windows_app.dart';
 import '../components/dialog.dart';
@@ -182,7 +183,7 @@ class MacroModel extends ChangeNotifier {
       );
 
       // 表头字段（与Macro属性对应）
-      final headers = ['名称', '触发键', '触发类型', '状态', '注释', '脚本内容', '创建时间', '更新时间']
+      final headers = ['编号', '名称', '触发键', '触发类型', '状态', '注释', '脚本内容', '创建时间', '更新时间']
           .map((e) => TextCellValue(e))
           .toList();
       sheet.appendRow(headers);
@@ -197,6 +198,7 @@ class MacroModel extends ChangeNotifier {
       // 写入宏数据
       for (final macro in macroList) {
         sheet.appendRow([
+          TextCellValue(macro.uniqueId),
           TextCellValue(macro.name),
           TextCellValue(macro.triggerKey),
           TextCellValue(macro.triggerType.resourceId), // 触发类型标识
@@ -241,6 +243,27 @@ class MacroModel extends ChangeNotifier {
       List<Macro> newMacros = [];
       bool isHeaderRow = true;
 
+      // 读取表头并建立列名映射（关键修改点1）
+      final headerRow = sheet.row(0);
+      final columnIndexMap = <String, int>{};
+      for (int i = 0; i < headerRow.length; i++) {
+        final columnName = headerRow[i]?.value?.toString().trim();
+        if (columnName != null && columnName.isNotEmpty) {
+          columnIndexMap[columnName] = i;
+        }
+      }
+
+      // 通过列名获取对应索引
+      final uniqueIdIndex = columnIndexMap['编号']!;
+      final nameIndex = columnIndexMap['名称']!;
+      final triggerKeyIndex = columnIndexMap['触发键']!;
+      final triggerTypeIndex = columnIndexMap['触发类型']!;
+      final statusIndex = columnIndexMap['状态']!;
+      final commentIndex = columnIndexMap['注释']!;
+      final scriptIndex = columnIndexMap['脚本内容']!;
+      final createTimeIndex = columnIndexMap['创建时间']!;
+      final updateTimeIndex = columnIndexMap['更新时间']!;
+
       // 遍历Excel行（跳过表头）
       for (var row in sheet.rows) {
         if (isHeaderRow) {
@@ -248,19 +271,20 @@ class MacroModel extends ChangeNotifier {
           continue;
         }
 
-        if (row[1] == null || row[1]?.value == null) {
+        if (row[nameIndex] == null || row[nameIndex]?.value == null) {
           continue;
         }
 
         // 解析行数据（按表头顺序）
-        String name = row[0]?.value?.toString() ?? '';
-        String triggerKey = row[1]?.value?.toString() ?? '';
-        String triggerTypeId = row[2]?.value?.toString() ?? '';
-        String statusName = row[3]?.value?.toString() ?? 'active';
-        String comment = row[4]?.value?.toString() ?? '';
-        String script = row[5]?.value?.toString() ?? '';
-        int? createdOn = parseDateTimeToMillis(row[6]?.value?.toString());
-        int? updatedOn = parseDateTimeToMillis(row[7]?.value?.toString());
+        String uniqueId = row[uniqueIdIndex]?.value?.toString()?? '';
+        String name = row[nameIndex]?.value?.toString() ?? '';
+        String triggerKey = row[triggerKeyIndex]?.value?.toString() ?? '';
+        String triggerTypeId = row[triggerTypeIndex]?.value?.toString() ?? '';
+        String statusName = row[statusIndex]?.value?.toString() ?? 'active';
+        String comment = row[commentIndex]?.value?.toString() ?? '';
+        String script = row[scriptIndex]?.value?.toString() ?? '';
+        int? createdOn = parseDateTimeToMillis(row[createTimeIndex]?.value?.toString());
+        int? updatedOn = parseDateTimeToMillis(row[updateTimeIndex]?.value?.toString());
 
         // 转换触发类型（与现有枚举映射）
         MacroTriggerType triggerType = MacroTriggerType.values.firstWhere(
@@ -275,6 +299,7 @@ class MacroModel extends ChangeNotifier {
         );
 
         newMacros.add(Macro(
+          uniqueId: uniqueId,
           name: name,
           triggerKey: triggerKey,
           triggerType: triggerType,
@@ -301,6 +326,7 @@ class MacroModel extends ChangeNotifier {
   void createNewMacro() {
     _isNew = true;
     Macro value = Macro(
+      uniqueId: Ulid().toString(),
       name: '',
       triggerType: MacroTriggerType.down,
       triggerKey: '',

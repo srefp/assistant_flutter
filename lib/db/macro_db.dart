@@ -8,6 +8,7 @@ class MacroDb {
   static const ddl = '''
     create table if not exists $tableName (
       id integer primary key autoincrement, -- 主键
+      uniqueId text, -- 唯一ID
       name text, -- 名称
       comment text, -- 备注
       script text, -- 脚本

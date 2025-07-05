@@ -5,6 +5,7 @@ import 'package:assistant/util/path_manage.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart' as sqlite_api;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
+import 'package:ulid/ulid.dart';
 
 import '../db/tp_route_db.dart';
 
@@ -21,7 +22,7 @@ Future<String> getStoragePath() async =>
 
 class DbHelper {
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 5;
+  static const int _version = 6;
 
   /// 在windows平台初始化数据库
   static Future<sqlite_api.Database> getDbOnWindows() async {
@@ -65,8 +66,8 @@ class DbHelper {
               }
               if (oldVersion < 4 && newVersion >= 4) {
                 // 查询表结构获取现有列
-                final columns =
-                    await db.rawQuery('PRAGMA table_info(${TpRouteDb.tableName})');
+                final columns = await db
+                    .rawQuery('PRAGMA table_info(${TpRouteDb.tableName})');
                 final hasVideoUrl =
                     columns.any((col) => col['name'] == 'videoUrl');
 
@@ -80,9 +81,53 @@ class DbHelper {
               if (oldVersion < 5 && newVersion >= 5) {
                 await db.execute(MacroDb.ddl);
               }
+              if (oldVersion < 6 && newVersion >= 6) {
+                // 查询表结构获取现有列
+                final routeColumns = await db
+                    .rawQuery('PRAGMA table_info(${TpRouteDb.tableName})');
+                final routeHasUniqueId =
+                    routeColumns.any((col) => col['name'] == 'uniqueId');
+
+                if (!routeHasUniqueId) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${TpRouteDb.tableName} ADD COLUMN uniqueId TEXT
+                  ''');
+                }
+
+                final routeIds = await db.query(TpRouteDb.tableName, columns: [
+                  'id'
+                ]).then((value) => value.map((e) => e['id']).toList());
+                for (final id in routeIds) {
+                  await db.update(
+                      TpRouteDb.tableName, {'uniqueId': Ulid().toString()},
+                      where: 'uniqueId is null and id = ?', whereArgs: [id]);
+                }
+
+                final macroColumns = await db
+                    .rawQuery('PRAGMA table_info(${MacroDb.tableName})');
+                final macroHasUniqueId =
+                    macroColumns.any((col) => col['name'] == 'uniqueId');
+
+                if (!macroHasUniqueId) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${MacroDb.tableName} ADD COLUMN uniqueId TEXT
+                  ''');
+                }
+
+                final macroIds = await db.query(MacroDb.tableName, columns: [
+                  'id'
+                ]).then((value) => value.map((e) => e['id']).toList());
+                for (final id in macroIds) {
+                  await db.update(
+                      MacroDb.tableName, {'uniqueId': Ulid().toString()},
+                      where: 'uniqueId is null and id = ?', whereArgs: [id]);
+                }
+              }
             }),
       );
-    } catch (_) {}
+    } catch (e) {
+      print('Error opening database: $e');
+    }
     return _dbOnWindows!;
   }
 }

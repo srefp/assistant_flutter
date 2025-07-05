@@ -147,7 +147,7 @@ class ScriptManagementModel extends ChangeNotifier {
         // 写入数据行
         for (final route in routes) {
           sheet.appendRow(<CellValue>[
-            TextCellValue(route.id?.toString() ?? ''),
+            TextCellValue(route.uniqueId),
             TextCellValue(route.scriptName),
             TextCellValue(route.scriptType),
             TextCellValue(route.ratio),
@@ -195,6 +195,27 @@ class ScriptManagementModel extends ChangeNotifier {
         return;
       }
 
+      // 读取表头并建立列名映射
+      final headerRow = sheet.row(0);
+      final columnIndexMap = <String, int>{};
+      for (int i = 0; i < headerRow.length; i++) {
+        final columnName = headerRow[i]?.value?.toString().trim();
+        if (columnName != null && columnName.isNotEmpty) {
+          columnIndexMap[columnName] = i;
+        }
+      }
+
+      // 通过列名获取对应索引
+      final uniqueIdIndex = columnIndexMap['编号']!;
+      final nameIndex = columnIndexMap['名称']!;
+      final typeIndex = columnIndexMap['类型']!;
+      final ratioIndex = columnIndexMap['比例'];
+      final videoIndex = columnIndexMap['视频'];
+      final authorIndex = columnIndexMap['作者'];
+      final contentIndex = columnIndexMap['脚本']!;
+      final createTimeIndex = columnIndexMap['创建时间'];
+      final updateTimeIndex = columnIndexMap['更新时间'];
+
       // 解析数据（跳过表头行，从第1行开始）
       final List<TpRoute> newRoutes = [];
       for (var rowIndex = 1; rowIndex < sheet.maxRows; rowIndex++) {
@@ -207,24 +228,25 @@ class ScriptManagementModel extends ChangeNotifier {
 
         // 按列顺序解析（与导出时的表头顺序一致）
         newRoutes.add(TpRoute(
-          id: int.tryParse(row[0]?.value?.toString() ?? ''),
-          // 编号（可能为null）
-          scriptName: row[1]?.value?.toString() ?? '',
-          // 名称
-          scriptType: row[2]?.value?.toString() ?? '',
-          // 类型
-          ratio: row[3]?.value?.toString() ?? '',
-          // 比例
-          videoUrl: row[4]?.value?.toString() ?? '',
-          // 视频地址
-          author: row[5]?.value?.toString() ?? '',
-          // 作者
-          content: row[6]?.value?.toString() ?? '',
-          // 脚本内容
-          createdOn: parseDateTimeToMillis(row[7]?.value?.toString()),
-          // 创建时间（转换为毫秒）
-          updatedOn:
-              parseDateTimeToMillis(row[8]?.value?.toString()), // 更新时间（转换为毫秒）
+          uniqueId: row[uniqueIdIndex]?.value?.toString() ?? '',
+          scriptName: row[nameIndex]?.value?.toString() ?? '',
+          scriptType: row[typeIndex]?.value?.toString() ?? '',
+          ratio: ratioIndex != null
+              ? row[ratioIndex]?.value?.toString() ?? ''
+              : '',
+          videoUrl: videoIndex != null
+              ? row[videoIndex]?.value?.toString() ?? ''
+              : '',
+          author: authorIndex != null
+              ? row[authorIndex]?.value?.toString() ?? ''
+              : '',
+          content: row[contentIndex]?.value?.toString() ?? '',
+          createdOn: createTimeIndex != null
+              ? parseDateTimeToMillis(row[createTimeIndex]?.value?.toString())
+              : currentMillis(),
+          updatedOn: updateTimeIndex != null
+              ? parseDateTimeToMillis(row[updateTimeIndex]?.value?.toString())
+              : currentMillis(), // 更新时间（转换为毫秒）
         ));
       }
 
@@ -234,7 +256,7 @@ class ScriptManagementModel extends ChangeNotifier {
         await db.insert(
           TpRouteDb.tableName,
           route.toJson(),
-          conflictAlgorithm: ConflictAlgorithm.ignore, // 冲突时覆盖
+          conflictAlgorithm: ConflictAlgorithm.ignore, // 冲突时忽略
         );
       }
 
@@ -245,5 +267,4 @@ class ScriptManagementModel extends ChangeNotifier {
       dialog(title: '导入失败', content: '导入脚本时出错: $e');
     }
   }
-
 }

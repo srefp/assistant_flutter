@@ -57,9 +57,11 @@ void keyMouseListen(name, down) async {
       } else if (macro.triggerType == MacroTriggerType.toggle) {
         if (down) {
           if (!macro.loopRunning) {
+            print('开始运行');
             macro.loopRunning = true;
             macro.macroFuture ??= Future.doWhile(() async {
               try {
+                print('执行脚本');
                 await runScript(macro.script);
               } catch (e) {
                 macro.loopRunning = false;
@@ -68,8 +70,16 @@ void keyMouseListen(name, down) async {
               return macro.loopRunning && WindowsApp.autoTpModel.active();
             });
           } else {
-            macro.loopRunning = false;
-            macro.macroFuture = null;
+            if (macro.canStop) {
+              print('结束运行');
+              macro.canStop = false;
+              macro.loopRunning = false;
+              macro.macroFuture = null;
+            }
+          }
+        } else {
+          if (macro.loopRunning) {
+            macro.canStop = true;
           }
         }
       }
