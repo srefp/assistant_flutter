@@ -45,6 +45,9 @@ class Macro {
   /// 是否循环执行（开关宏）
   bool loopRunning = false;
 
+  /// 是否正在执行（开关可中断）
+  bool running = false;
+
   /// 是否可以停止（开关宏）
   bool canStop = false;
 

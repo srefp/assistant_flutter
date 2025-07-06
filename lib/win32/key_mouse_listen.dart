@@ -17,6 +17,7 @@ import 'mouse_listen.dart';
 
 bool mapping = true;
 bool clickEntry = true;
+const stopScript = 'stopScript();';
 
 /// 键鼠监听回调
 void keyMouseListen(name, down) async {
@@ -33,17 +34,28 @@ void keyMouseListen(name, down) async {
   for (var macro in WindowsApp.macroModel.macroList) {
     if (macro.status == ProfileStatus.active && macro.triggerKey == name) {
       if (down && macro.triggerType == MacroTriggerType.down) {
-        runScript(macro.script);
+        runScript(macro.script, stoppable: true);
         return;
+      } else if (down && macro.triggerType == MacroTriggerType.downStoppable) {
+        if (macro.running) {
+          macro.running = false;
+          await runScript(stopScript);
+          return;
+        } else {
+          macro.running = true;
+          await runScript(macro.script, stoppable: true);
+          macro.running = false;
+          return;
+        }
       } else if (!down && macro.triggerType == MacroTriggerType.up) {
-        runScript(macro.script);
+        runScript(macro.script, stoppable: true);
         return;
       } else if (macro.triggerType == MacroTriggerType.longDownCycle) {
         if (down) {
           macro.loopRunning = true;
           macro.macroFuture ??= Future.doWhile(() async {
             try {
-              await runScript(macro.script);
+              await runScript(macro.script, stoppable: true);
             } catch (e) {
               macro.loopRunning = false;
               macro.macroFuture = null;
@@ -53,6 +65,7 @@ void keyMouseListen(name, down) async {
         } else {
           macro.loopRunning = false;
           macro.macroFuture = null;
+          await runScript(stopScript);
         }
       } else if (macro.triggerType == MacroTriggerType.toggle) {
         if (down) {
@@ -65,7 +78,7 @@ void keyMouseListen(name, down) async {
             macro.macroFuture ??= Future.doWhile(() async {
               try {
                 print('执行脚本');
-                await runScript(macro.script);
+                await runScript(macro.script, stoppable: true);
               } catch (e) {
                 macro.loopRunning = false;
                 macro.macroFuture = null;
@@ -79,6 +92,7 @@ void keyMouseListen(name, down) async {
               macro.canStart = false;
               macro.loopRunning = false;
               macro.macroFuture = null;
+              await runScript(stopScript);
             }
           }
         } else {
@@ -92,7 +106,7 @@ void keyMouseListen(name, down) async {
         if (down) {
           if (macro.canRunFor2) {
             macro.canRunFor2 = false;
-            await runScript(macro.script);
+            await runScript(macro.script, stoppable: true);
           } else {
             macro.canRunFor2 = true;
             Future.delayed(Duration(milliseconds: 350)).then((value) {
@@ -107,10 +121,12 @@ void keyMouseListen(name, down) async {
           }
           if (macro.longPressStartTime == 0) {
             macro.longPressStartTime = DateTime.now().millisecondsSinceEpoch;
-          } else if (DateTime.now().millisecondsSinceEpoch - macro.longPressStartTime > 1000) {
+          } else if (DateTime.now().millisecondsSinceEpoch -
+                  macro.longPressStartTime >
+              1000) {
             macro.longPressStartTime = 0;
             macro.canRunForLong = false;
-            await runScript(macro.script);
+            await runScript(macro.script, stoppable: true);
           }
         } else {
           macro.longPressStartTime = 0;

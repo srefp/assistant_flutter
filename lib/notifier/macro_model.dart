@@ -127,11 +127,13 @@ class MacroModel extends ChangeNotifier {
     item.status = item.status == ProfileStatus.active
         ? ProfileStatus.disabled
         : ProfileStatus.active;
+    updateMacro(item);
   }
 
   void changeTriggerType(String value) {
     editedMacro?.triggerType = {
       MacroTriggerType.down.resourceId: MacroTriggerType.down,
+      MacroTriggerType.downStoppable.resourceId: MacroTriggerType.downStoppable,
       MacroTriggerType.up.resourceId: MacroTriggerType.up,
       MacroTriggerType.longDownCycle.resourceId: MacroTriggerType.longDownCycle,
       MacroTriggerType.toggle.resourceId: MacroTriggerType.toggle,

@@ -85,14 +85,12 @@ void registerJsFunc() async {
 
   // 鼠标按下
   jsRuntime.onMessage(mDown, (params) async {
-    print('mDown');
     await api.mouseDown();
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
   // 鼠标抬起
   jsRuntime.onMessage(mUp, (params) async {
-    print('mUp');
     await api.mouseUp();
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
@@ -176,17 +174,26 @@ void registerJsFunc() async {
 }
 
 /// 运行js代码
-Future<void> runScript(String code, {bool addAwait = true}) async {
+Future<void> runScript(
+  String code, {
+  bool addAwait = true,
+  bool stoppable = false,
+}) async {
   // 将code中的异步函数添加await
   if (addAwait) {
     for (var key in keys) {
-      code = code.replaceAll('$key(', 'await $key(');
+      if (stoppable) {
+        code = code.replaceAll('$key(',
+            'if (!scriptRunning) { scriptRunning = true; return;} await $key(');
+      } else {
+        code = code.replaceAll('$key(', 'await $key(');
+      }
     }
   }
 
   try {
-    print('code: $code');
-    JsEvalResult result = await jsRuntime.evaluateAsync('(async function() { $code })();');
+    JsEvalResult result = await jsRuntime.evaluateAsync(
+        '${stoppable ? 'scriptRunning = true;' : ''}(async function() { $code })();');
     jsRuntime.executePendingJob();
     await jsRuntime.handlePromise(result);
   } catch (e) {

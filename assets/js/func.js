@@ -1,3 +1,19 @@
+var scriptRunning = true;
+var leftButtonPressed = false;
+var pressedKeys = new Set();
+
+// 终止脚本
+async function stopScript() {
+    scriptRunning = false;
+    if (leftButtonPressed) {
+      leftButtonPressed = false;
+      await sendMessage('mUp', JSON.stringify({'delay': 0}));
+      for (const key of pressedKeys) {
+        await sendMessage('kUp', JSON.stringify({'key': key, 'delay': 0}));
+      }
+    }
+}
+
 // 打印日志
 function log(info) {
     sendMessage('log', JSON.stringify({'info': info}));
@@ -65,11 +81,13 @@ async function moveR3D(coords, delay) {
 
 // 鼠标按下
 async function mDown(delay) {
+    leftButtonPressed = true;
     await sendMessage('mDown', JSON.stringify({'delay': delay}));
 }
 
 // 鼠标抬起
 async function mUp(delay) {
+    leftButtonPressed = false;
     await sendMessage('mUp', JSON.stringify({'delay': delay}));
 }
 
@@ -85,11 +103,13 @@ async function wheel(clicks, delay) {
 
 // 按下
 async function kDown(key, delay) {
+    pressedKeys.add(key);
     await sendMessage('kDown', JSON.stringify({'key': key, 'delay': delay}));
 }
 
 // 按下
 async function kUp(key, delay) {
+    pressedKeys.delete(key);
     await sendMessage('kUp', JSON.stringify({'key': key, 'delay': delay}));
 }
 

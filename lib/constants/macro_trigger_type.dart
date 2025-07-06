@@ -2,6 +2,7 @@ import 'coded_enum.dart';
 
 enum MacroTriggerType implements CodedEnum {
   down(1, '按下'),
+  downStoppable(7, '按下（可中断）'),
   up(2, '抬起'),
   toggle(3, '开关'),
   doubleDown(4, '双击'),

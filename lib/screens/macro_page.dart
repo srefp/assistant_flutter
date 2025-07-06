@@ -12,7 +12,6 @@ import '../components/divider.dart';
 import '../components/title_with_sub.dart';
 import '../components/win_text.dart';
 import '../components/win_text_box.dart';
-import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
 import 'auto_tp_page.dart';
 
