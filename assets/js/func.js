@@ -50,27 +50,27 @@ function cp(text) {
 
 // 移动鼠标
 async function move(coords, delay) {
-    sendMessage('move', JSON.stringify({'coords': coords, 'delay': delay}));
+    await sendMessage('move', JSON.stringify({'coords': coords, 'delay': delay}));
 }
 
 // 相对移动鼠标
 async function moveR(coords, delay) {
-    sendMessage('moveR', JSON.stringify({'coords': coords, 'delay': delay}));
+    await sendMessage('moveR', JSON.stringify({'coords': coords, 'delay': delay}));
 }
 
 // 3D视角下移动鼠标
 async function moveR3D(coords, delay) {
-    sendMessage('moveR3D', JSON.stringify({'coords': coords, 'delay': delay}));
+    await sendMessage('moveR3D', JSON.stringify({'coords': coords, 'delay': delay}));
 }
 
 // 鼠标按下
 async function mDown(delay) {
-    sendMessage('mDown', JSON.stringify({'delay': delay}));
+    await sendMessage('mDown', JSON.stringify({'delay': delay}));
 }
 
 // 鼠标抬起
 async function mUp(delay) {
-    sendMessage('mUp', JSON.stringify({'delay': delay}));
+    await sendMessage('mUp', JSON.stringify({'delay': delay}));
 }
 
 // 按键
@@ -109,6 +109,6 @@ async function tpc(coords, delay) {
 }
 
 // 图片
-function pic(topLeft, bottomRight) {
-    return sendMessage('pic', JSON.stringify({'topLeft': topLeft, 'bottomRight': bottomRight}));
+async function pic(topLeft, bottomRight) {
+    return await sendMessage('pic', JSON.stringify({'topLeft': topLeft, 'bottomRight': bottomRight}));
 }

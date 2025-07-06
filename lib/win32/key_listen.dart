@@ -113,7 +113,7 @@ void eatFood() async {
 }
 
 int lastBPressTime = 0;
-const double keyDoubleClickThreshold = 300;
+const double keyDoubleClickThreshold = 350;
 
 bool foodRecording = false;
 Timer? foodRecordTimer;

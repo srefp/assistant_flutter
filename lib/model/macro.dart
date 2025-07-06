@@ -42,11 +42,23 @@ class Macro {
   /// 任务
   Future? macroFuture;
 
-  /// 是否循环执行
+  /// 是否循环执行（开关宏）
   bool loopRunning = false;
 
-  /// 是否可以停止
+  /// 是否可以停止（开关宏）
   bool canStop = false;
+
+  /// 是否可以开始（开关宏）
+  bool canStart = true;
+
+  /// 是否可以运行（双击宏）
+  bool canRunFor2 = false;
+
+  /// 是否可以运行（长按宏）
+  bool canRunForLong = false;
+
+  /// 长按开始时间
+  int longPressStartTime = 0;
 
   Macro({
     this.id,

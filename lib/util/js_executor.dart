@@ -85,14 +85,14 @@ void registerJsFunc() async {
 
   // 鼠标按下
   jsRuntime.onMessage(mDown, (params) async {
-    SystemControl.refreshRect();
+    print('mDown');
     await api.mouseDown();
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
 
   // 鼠标抬起
   jsRuntime.onMessage(mUp, (params) async {
-    SystemControl.refreshRect();
+    print('mUp');
     await api.mouseUp();
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
@@ -184,7 +184,12 @@ Future<void> runScript(String code, {bool addAwait = true}) async {
     }
   }
 
-  JsEvalResult result = await jsRuntime.evaluateAsync('(async function() { $code })();');
-  jsRuntime.executePendingJob();
-  await jsRuntime.handlePromise(result);
+  try {
+    print('code: $code');
+    JsEvalResult result = await jsRuntime.evaluateAsync('(async function() { $code })();');
+    jsRuntime.executePendingJob();
+    await jsRuntime.handlePromise(result);
+  } catch (e) {
+    print(e);
+  }
 }

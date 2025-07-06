@@ -57,6 +57,9 @@ void keyMouseListen(name, down) async {
       } else if (macro.triggerType == MacroTriggerType.toggle) {
         if (down) {
           if (!macro.loopRunning) {
+            if (!macro.canStart) {
+              return;
+            }
             print('开始运行');
             macro.loopRunning = true;
             macro.macroFuture ??= Future.doWhile(() async {
@@ -73,6 +76,7 @@ void keyMouseListen(name, down) async {
             if (macro.canStop) {
               print('结束运行');
               macro.canStop = false;
+              macro.canStart = false;
               macro.loopRunning = false;
               macro.macroFuture = null;
             }
@@ -80,7 +84,37 @@ void keyMouseListen(name, down) async {
         } else {
           if (macro.loopRunning) {
             macro.canStop = true;
+          } else {
+            macro.canStart = true;
           }
+        }
+      } else if (macro.triggerType == MacroTriggerType.doubleDown) {
+        if (down) {
+          if (macro.canRunFor2) {
+            macro.canRunFor2 = false;
+            await runScript(macro.script);
+          } else {
+            macro.canRunFor2 = true;
+            Future.delayed(Duration(milliseconds: 350)).then((value) {
+              macro.canRunFor2 = false;
+            });
+          }
+        }
+      } else if (macro.triggerType == MacroTriggerType.longDown) {
+        if (down) {
+          if (!macro.canRunForLong) {
+            return;
+          }
+          if (macro.longPressStartTime == 0) {
+            macro.longPressStartTime = DateTime.now().millisecondsSinceEpoch;
+          } else if (DateTime.now().millisecondsSinceEpoch - macro.longPressStartTime > 1000) {
+            macro.longPressStartTime = 0;
+            macro.canRunForLong = false;
+            await runScript(macro.script);
+          }
+        } else {
+          macro.longPressStartTime = 0;
+          macro.canRunForLong = true;
         }
       }
     }

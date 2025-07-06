@@ -216,13 +216,34 @@ class ScriptManagementModel extends ChangeNotifier {
       final createTimeIndex = columnIndexMap['创建时间'];
       final updateTimeIndex = columnIndexMap['更新时间'];
 
+      final List<String> uniqueIds = [];
+      for (var rowIndex = 1; rowIndex < sheet.maxRows; rowIndex++) {
+        final row = sheet.row(rowIndex);
+        if (row.isEmpty) break; // 遇到空行停止
+
+        if (row[uniqueIdIndex] == null || row[uniqueIdIndex]?.value == null) {
+          continue;
+        }
+
+        uniqueIds.add(row[uniqueIdIndex]?.value?.toString() ?? '');
+      }
+
+      final duplicateRows = await db.query(TpRouteDb.tableName,
+          where: 'uniqueId in (${uniqueIds.map((e) => "'$e'").join(',')})');
+
+      if (duplicateRows.isNotEmpty) {
+        // TODO 导入时，存在重复的脚本编号，是否覆盖已有的脚本？
+        dialog(title: '注意', content: '存在重复的脚本编号，是否覆盖已有的脚本？');
+        return;
+      }
+
       // 解析数据（跳过表头行，从第1行开始）
       final List<TpRoute> newRoutes = [];
       for (var rowIndex = 1; rowIndex < sheet.maxRows; rowIndex++) {
         final row = sheet.row(rowIndex);
         if (row.isEmpty) break; // 遇到空行停止
 
-        if (row[1] == null || row[1]?.value == null) {
+        if (row[uniqueIdIndex] == null || row[uniqueIdIndex]?.value == null) {
           continue;
         }
 
