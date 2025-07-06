@@ -1,6 +1,7 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/script_config.dart';
-import 'package:assistant/constants/script_type.dart';
+import 'package:assistant/constants/enum_util.dart';
+import 'package:assistant/constants/script_record_mode.dart';
 import 'package:assistant/db/tp_route_db.dart';
 import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/util/operation_util.dart';
@@ -18,7 +19,7 @@ import '../win32/window.dart';
 
 class ScriptEditorModel with ChangeNotifier {
   /// 选择的目录
-  String? selectedScriptType;
+  ScriptRecordMode? selectedScriptRecordMode;
 
   /// 选择的文件
   String? selectedScriptName;
@@ -44,7 +45,7 @@ class ScriptEditorModel with ChangeNotifier {
 
   void loadScripts() async {
     // 自动选择上次选项，如果没有，则默认选择第一个
-    await autoSelectDir(scriptTypes);
+    await autoSelectDir();
     await autoSelectFile();
 
     controller.text = scriptContent ?? '';
@@ -89,7 +90,7 @@ class ScriptEditorModel with ChangeNotifier {
       code = controller.text;
     }
 
-    if (selectedScriptType == autoTp) {
+    if (selectedScriptRecordMode == ScriptRecordMode.autoTp) {
       var autoTpCode = '';
       for (var element in code.split('\n')) {
         if (element.trim().isEmpty) {
@@ -98,7 +99,7 @@ class ScriptEditorModel with ChangeNotifier {
         autoTpCode += 'await tp({${element.trim()}});\n';
       }
       await runScript(autoTpCode, addAwait: false);
-    } else if (selectedScriptType == autoScript) {
+    } else if (selectedScriptRecordMode == ScriptRecordMode.autoScript) {
       // 将code中的异步函数添加await
       await runScript(code);
     }
@@ -113,13 +114,13 @@ class ScriptEditorModel with ChangeNotifier {
   }
 
   /// 选择脚本类型
-  void selectScriptType(value) async {
-    selectedScriptType = value;
-    box.write(ScriptConfig.keySelectedScriptType, selectedScriptType);
+  void selectScriptType(String value) async {
+    selectedScriptRecordMode = EnumUtil.fromResourceId(value, ScriptRecordMode.values);
+    box.write(ScriptConfig.keySelectedScriptType, selectedScriptRecordMode!.code);
 
     // 加载目录下的文件
-    if (selectedScriptType != null) {
-      scriptNameList = await loadScriptsByType(selectedScriptType!);
+    if (selectedScriptRecordMode != null) {
+      scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
     }
 
     selectFirstFile(scriptNameList);
@@ -133,9 +134,9 @@ class ScriptEditorModel with ChangeNotifier {
     selectedScriptName = value;
     box.write(ScriptConfig.keySelectedScript, selectedScriptName);
 
-    if (selectedScriptType != null && selectedScriptName != null) {
+    if (selectedScriptRecordMode != null && selectedScriptName != null) {
       currentScript = await loadScriptByNameAndType(
-          selectedScriptType!, selectedScriptName!);
+          selectedScriptRecordMode!.resourceId, selectedScriptName!);
       scriptContent = currentScript?.content;
       controller.text = scriptContent ?? '';
       controller.clearHistory();
@@ -146,25 +147,25 @@ class ScriptEditorModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> autoSelectDir(List<String> directories) async {
-    selectedScriptType = box.read(ScriptConfig.keySelectedScriptType);
-    if (selectedScriptType == null) {
-      selectFirstDir(directories);
+  Future<void> autoSelectDir() async {
+    selectedScriptRecordMode = EnumUtil.fromCode(
+      box.read(ScriptConfig.keySelectedScriptType) ??
+          ScriptRecordMode.autoTp.code,
+      ScriptRecordMode.values,
+    );
+    if (selectedScriptRecordMode == null) {
+      selectFirstDir();
     } else {
-      scriptNameList = await loadScriptsByType(selectedScriptType!);
+      scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
       selectFirstFile(scriptNameList);
     }
   }
 
-  Future<void> selectFirstDir(List<String> directories) async {
-    if (directories.isNotEmpty) {
-      selectedScriptType = directories.first;
-    }
+  Future<void> selectFirstDir() async {
+    selectedScriptRecordMode = ScriptRecordMode.autoTp;
 
     // 加载目录下的文件
-    if (selectedScriptType != null) {
-      scriptNameList = await loadScriptsByType(selectedScriptType!);
-    }
+    scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
   }
 
   Future<void> autoSelectFile() async {
@@ -173,10 +174,10 @@ class ScriptEditorModel with ChangeNotifier {
       selectFirstFile(scriptNameList);
     }
 
-    if (selectedScriptType != null && selectedScriptName != null) {
+    if (selectedScriptRecordMode != null && selectedScriptName != null) {
       try {
         currentScript = await loadScriptByNameAndType(
-            selectedScriptType!, selectedScriptName!);
+            selectedScriptRecordMode!.resourceId, selectedScriptName!);
         scriptContent = currentScript?.content;
         controller.text = scriptContent ?? '';
       } catch (_) {}
@@ -188,10 +189,10 @@ class ScriptEditorModel with ChangeNotifier {
       selectedScriptName = files.first;
     }
 
-    if (selectedScriptType != null && selectedScriptName != null) {
+    if (selectedScriptRecordMode != null && selectedScriptName != null) {
       try {
         currentScript = await loadScriptByNameAndType(
-            selectedScriptType!, selectedScriptName!);
+            selectedScriptRecordMode!.resourceId, selectedScriptName!);
         scriptContent = currentScript?.content;
         controller.text = scriptContent ?? '';
       } catch (_) {}
@@ -211,7 +212,8 @@ class ScriptEditorModel with ChangeNotifier {
         offset: controller.codeLines.last.length,
       );
     }
-    await updateScript(selectedScriptType!, selectedScriptName!, content);
+    await updateScript(
+        selectedScriptRecordMode!.resourceId, selectedScriptName!, content);
     isUnsaved = false;
 
     WindowsApp.autoTpModel.loadRoutes();
@@ -387,14 +389,15 @@ class ScriptEditorModel with ChangeNotifier {
   /// 创建脚本
   void createScript() async {
     final scriptName = nameController.text;
-    await addScript(selectedScriptType!, scriptName, '');
+    await addScript(selectedScriptRecordMode!.resourceId, scriptName, '');
     scriptNameList.add(scriptName);
     selectScript(scriptName);
   }
 
   /// 删除脚本
   void deleteScript() async {
-    await deleteScriptByNameAndType(selectedScriptType!, selectedScriptName!);
+    await deleteScriptByNameAndType(
+        selectedScriptRecordMode!.resourceId, selectedScriptName!);
     scriptNameList.remove(selectedScriptName);
     selectFirstFile(scriptNameList);
     box.write(ScriptConfig.keySelectedScript, selectedScriptName);

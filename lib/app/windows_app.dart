@@ -43,7 +43,8 @@ class WindowsApp extends StatefulWidget {
 
   static final autoTpModel = AutoTpModel();
   static final scriptEditorModel = ScriptEditorModel();
-  static final logModel = LogModel();
+  static final logModel = LogModel(WindowsApp.scriptEditorModel.controller,
+      () => WindowsApp.scriptEditorModel.selectedScriptRecordMode!);
   static final recordModel = ScriptRecordModel();
   static final appModel = AppModel();
   static final configModel = ConfigModel();
@@ -270,8 +271,7 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
 
       /// Macro
       GoRoute(
-          path: Routes.macro,
-          builder: (context, state) => const MacroPage()),
+          path: Routes.macro, builder: (context, state) => const MacroPage()),
 
       /// Macro Edit
       GoRoute(

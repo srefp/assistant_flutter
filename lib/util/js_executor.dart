@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 import 'package:flutter_js/flutter_js.dart';
 
 import '../app/windows_app.dart';
@@ -77,6 +80,16 @@ void registerJsFunc() async {
     showToast(params['message'], duration: params['duration']);
   });
 
+  // 鼠标移动
+  jsRuntime.onMessage(move, (params) async {
+    if (params.length == 2) {
+      await KeyMouseUtil.move(params[0], 1, 0);
+    } else if (params.length == 4) {
+      await KeyMouseUtil.move(params[0], params[1], params[2]);
+    }
+    await Future.delayed(Duration(milliseconds: params[3]));
+  });
+
   // 滚轮
   jsRuntime.onMessage(wheel, (params) async {
     await api.scroll(clicks: -params['clicks']);
@@ -86,20 +99,49 @@ void registerJsFunc() async {
   // 鼠标按下
   jsRuntime.onMessage(mDown, (params) async {
     await api.mouseDown();
-    await Future.delayed(Duration(milliseconds: params['delay']));
+    await Future.delayed(Duration(milliseconds: params[0]));
   });
 
   // 鼠标抬起
   jsRuntime.onMessage(mUp, (params) async {
     await api.mouseUp();
-    await Future.delayed(Duration(milliseconds: params['delay']));
+    await Future.delayed(Duration(milliseconds: params[0]));
   });
 
   // 点击
   jsRuntime.onMessage(click, (params) async {
     SystemControl.refreshRect();
-    await KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(params['coords']), params['delay']);
+    if (params[0] == null) {
+      await api.click();
+    } else if (params[0] is int) {
+      await api.click();
+      await Future.delayed(Duration(milliseconds: params[0]));
+    } else if (params[0] is List && params[1] is int) {
+      await KeyMouseUtil.clickAtPoint(
+          convertDynamicListToIntList(params[0]), params[1]);
+    } else if (params[0] is String && params[1] is int) {
+      await api.click(
+        button: {
+          'left': MouseButton.left,
+          'right': MouseButton.right,
+          'middle': MouseButton.middle,
+        }[params[0]]!,
+      );
+      await Future.delayed(Duration(milliseconds: params[1]));
+    } else if (params[0] is String &&
+        params[1] is List &&
+        params[2] is int) {
+      var res = KeyMouseUtil.physicalPos(params[1]);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(
+        button: {
+          'left': MouseButton.left,
+          'right': MouseButton.right,
+          'middle': MouseButton.middle,
+        }[params[0]]!,
+      );
+      await Future.delayed(Duration(milliseconds: params[2]));
+    }
   });
 
   // 按键

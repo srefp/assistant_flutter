@@ -1,13 +1,13 @@
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/record_config.dart';
-import 'package:assistant/constants/script_type.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
+import '../constants/script_record_mode.dart';
 
 class Operation {
   final String func;
@@ -47,7 +47,16 @@ class Operation {
   }
 }
 
+typedef ValueCallback = ScriptRecordMode Function();
+
 class LogModel extends ChangeNotifier {
+
+  late final CodeLineEditingController scriptController;
+
+  late final ValueCallback getScriptRecordMode;
+
+  LogModel(this.scriptController, this.getScriptRecordMode);
+
   final logController = CodeLineEditingController();
 
   final List<Command> commands = [];
@@ -117,15 +126,11 @@ class LogModel extends ChangeNotifier {
   }
 
   void output() {
-    if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
+    if (getScriptRecordMode() == ScriptRecordMode.autoTp) {
       outputAsRoute();
     } else {
       outputAsScript();
     }
-  }
-
-  CodeLineEditingController get scriptController {
-    return WindowsApp.scriptEditorModel.controller;
   }
 
   /// 输出为脚本

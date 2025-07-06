@@ -55,7 +55,7 @@ class TpRoute {
 
   factory TpRoute.fromJson(Map<String, dynamic> json) => TpRoute(
         id: json['id'] as int?,
-        uniqueId: json['uniqueId'] as String,
+        uniqueId: json['uniqueId'] as String? ?? '',
         scriptName: json['scriptName'] as String,
         scriptType: json['scriptType'] as String,
         content: json['content'] as String,

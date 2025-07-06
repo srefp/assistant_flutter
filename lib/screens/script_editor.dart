@@ -1,6 +1,6 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
-import 'package:assistant/constants/script_type.dart';
+import 'package:assistant/constants/script_record_mode.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/util/operation_util.dart';
@@ -33,8 +33,10 @@ class ScriptEditor extends StatelessWidget {
                       width: 100,
                       height: 34,
                       child: HighlightComboBox(
-                        value: model.selectedScriptType,
-                        items: scriptTypes,
+                        value: model.selectedScriptRecordMode?.resourceId,
+                        items: ScriptRecordMode.values
+                            .map((e) => e.resourceId)
+                            .toList(),
                         onChanged: (value) {
                           model.selectScriptType(value);
                         },
@@ -57,12 +59,12 @@ class ScriptEditor extends StatelessWidget {
                         },
                       ),
                     ),
-                    model.selectedScriptType == autoTp
+                    model.selectedScriptRecordMode == ScriptRecordMode.autoTp
                         ? SizedBox(
                             width: 10,
                           )
                         : const SizedBox(),
-                    model.selectedScriptType == autoTp
+                    model.selectedScriptRecordMode == ScriptRecordMode.autoTp
                         ? Consumer<AutoTpModel>(
                             builder: (context, model, child) {
                             return Container(
@@ -95,12 +97,12 @@ class ScriptEditor extends StatelessWidget {
                         },
                       ),
                     ),
-                    model.selectedScriptType == autoScript
+                    model.selectedScriptRecordMode == ScriptRecordMode.autoScript
                         ? SizedBox(
                             width: 10,
                           )
                         : const SizedBox(),
-                    model.selectedScriptType == autoScript
+                    model.selectedScriptRecordMode == ScriptRecordMode.autoScript
                         ? SizedBox(
                             height: 34,
                             width: 76,

@@ -10,7 +10,7 @@ import '../config/auto_tp_config.dart';
 import '../config/hotkey_config.dart';
 import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
-import '../constants/script_type.dart';
+import '../constants/script_record_mode.dart';
 import '../executor/route_executor.dart';
 import '../util/tpc.dart';
 import 'mouse_listen.dart';
@@ -24,7 +24,7 @@ void keyMouseListen(name, down) async {
   listenAll(name, down);
 
   if (WindowsApp.recordModel.isRecording) {
-    if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
+    if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
       recordRoute(name, down);
     } else {
       recordScript(name, down);
@@ -141,7 +141,7 @@ void keyMouseListen(name, down) async {
   }
 
   if (WindowsApp.recordModel.isRecording) {
-    if (WindowsApp.scriptEditorModel.selectedScriptType == autoTp) {
+    if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
       // 获取当前鼠标位置
       List<int> coords =
           KeyMouseUtil.logicalPos(KeyMouseUtil.getMousePosOfWindow());

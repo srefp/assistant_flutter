@@ -1,5 +1,7 @@
 var scriptRunning = true;
 var leftButtonPressed = false;
+var rightButtonPressed = false;
+var middleButtonPressed = false;
 var pressedKeys = new Set();
 
 // 终止脚本
@@ -8,9 +10,9 @@ async function stopScript() {
     if (leftButtonPressed) {
       leftButtonPressed = false;
       await sendMessage('mUp', JSON.stringify({'delay': 0}));
-      for (const key of pressedKeys) {
-        await sendMessage('kUp', JSON.stringify({'key': key, 'delay': 0}));
-      }
+    }
+    for (const key of pressedKeys) {
+      await sendMessage('kUp', JSON.stringify({'key': key, 'delay': 0}));
     }
 }
 
@@ -20,19 +22,8 @@ function log(info) {
 }
 
 // 点击
-async function click(arg1, arg2, arg3) {
-    if (typeof arg1 === 'number') {
-        await sendMessage('click', JSON.stringify({'delay': arg1}));
-    }
-    else if (typeof arg1 === 'object' && typeof arg2 === 'number') {
-        await sendMessage('click', JSON.stringify({'coords': arg1, 'delay': arg2}));
-    }
-    else if (typeof arg1 === 'string' && typeof arg2 === 'number') {
-        await sendMessage('click', JSON.stringify({'type': arg1, 'delay': arg2}));
-    }
-    else if (typeof arg1 === 'string' && typeof arg2 === 'object' && typeof arg3 === 'number') {
-        await sendMessage('click', JSON.stringify({'type': arg1, 'coords': arg2, 'delay': arg3}));
-    }
+async function click() {
+    await sendMessage('click', JSON.stringify([...arguments]));
 }
 
 // 弹出消息
@@ -60,35 +51,47 @@ async function book(delay) {
 }
 
 // 复制粘贴
-function cp(text) {
-    sendMessage('cp', JSON.stringify({'text': text}));
+async function cp(text) {
+    await sendMessage('cp', JSON.stringify({'text': text}));
 }
 
 // 移动鼠标
-async function move(coords, delay) {
-    await sendMessage('move', JSON.stringify({'coords': coords, 'delay': delay}));
+async function move(arg1, arg2, arg3, arg4) {
+    await sendMessage('move', JSON.stringify([arg1, arg2, arg3, arg4]));
 }
 
 // 相对移动鼠标
-async function moveR(coords, delay) {
-    await sendMessage('moveR', JSON.stringify({'coords': coords, 'delay': delay}));
+async function moveR() {
+    await sendMessage('moveR', JSON.stringify(arguments));
 }
 
 // 3D视角下移动鼠标
-async function moveR3D(coords, delay) {
-    await sendMessage('moveR3D', JSON.stringify({'coords': coords, 'delay': delay}));
+async function moveR3D() {
+    await sendMessage('moveR3D', JSON.stringify(arguments));
 }
 
 // 鼠标按下
-async function mDown(delay) {
-    leftButtonPressed = true;
-    await sendMessage('mDown', JSON.stringify({'delay': delay}));
+async function mDown() {
+    if (arguments[0] === 'left') {
+        leftButtonPressed = true;
+    } else if (arguments[0] === 'right') {
+        rightButtonPressed = true;
+    } else if (arguments[0] ==='middle') {
+        middleButtonPressed = true;
+    }
+    await sendMessage('mDown', JSON.stringify([...arguments]));
 }
 
 // 鼠标抬起
-async function mUp(delay) {
-    leftButtonPressed = false;
-    await sendMessage('mUp', JSON.stringify({'delay': delay}));
+async function mUp() {
+    if (arguments[0] === 'left') {
+        leftButtonPressed = false;
+    } else if (arguments[0] === 'right') {
+        rightButtonPressed = false;
+    } else if (arguments[0] === 'middle') {
+        middleButtonPressed = false;
+    }
+    await sendMessage('mUp', JSON.stringify([...arguments]));
 }
 
 // 按键

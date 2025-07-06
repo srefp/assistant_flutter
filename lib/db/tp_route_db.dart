@@ -1,4 +1,6 @@
+import 'package:assistant/auto_gui/system_control.dart';
 import 'package:flutter/services.dart';
+import 'package:ulid/ulid.dart';
 
 import '../model/tp_route.dart';
 import '../util/db_helper.dart';
@@ -94,16 +96,16 @@ Future<void> addScript(
 ) {
   return db.insert(
     TpRouteDb.tableName,
-    {
-      'scriptName': scriptName,
-      'scriptType': scriptType,
-      'content': content,
-      'ratio': '16:9',
-      'remark': '',
-      'author': 'srefp',
-      'orderNum': 1,
-      'createdOn': DateTime.now().millisecondsSinceEpoch,
-      'updatedOn': DateTime.now().millisecondsSinceEpoch,
-    },
+    TpRoute(
+      uniqueId: Ulid().toString(),
+      scriptName: scriptName,
+      scriptType: scriptType,
+      content: content,
+      ratio: SystemControl.ratio.name,
+      remark: '',
+      author: 'srefp',
+      createdOn: DateTime.now().millisecondsSinceEpoch,
+      updatedOn: DateTime.now().millisecondsSinceEpoch,
+    ).toJson(),
   );
 }
