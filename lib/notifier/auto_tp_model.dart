@@ -12,7 +12,6 @@ import 'package:assistant/util/route_util.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
-import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../auto_gui/key_mouse_util.dart';
@@ -465,7 +464,6 @@ showOutDate() {
   if (DateTime.now().isAfter(outDate)) {
     Future.delayed(const Duration(seconds: 5), () {
       windowManager.hide();
-      trayManager.destroy();
       windowManager.destroy();
     });
     dialog(

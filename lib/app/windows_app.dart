@@ -24,7 +24,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tray_manager/tray_manager.dart';
+import 'package:system_tray/system_tray.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../notifier/app_model.dart';
@@ -37,6 +37,7 @@ import '../screens/script_editor.dart';
 import '../screens/settings.dart';
 import '../screens/test_page.dart';
 import '../theme.dart';
+import '../util/window_utils.dart';
 
 class WindowsApp extends StatefulWidget {
   const WindowsApp({super.key});
@@ -61,13 +62,14 @@ final _appTheme = AppTheme();
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class _WindowsAppState extends State<WindowsApp>
-    with TrayListener, WindowListener {
+class _WindowsAppState extends State<WindowsApp> with WindowListener {
+  final SystemTray _systemTray = SystemTray();
+  final Menu _menuMain = Menu();
+
   @override
   void initState() {
     super.initState();
     windowManager.addListener(this);
-    trayManager.addListener(this);
     _initSystemTray();
     initHotKey();
     // verifyClient();
@@ -76,13 +78,7 @@ class _WindowsAppState extends State<WindowsApp>
   @override
   void dispose() {
     windowManager.removeListener(this);
-    trayManager.removeListener(this);
     super.dispose();
-  }
-
-  @override
-  void onTrayIconRightMouseDown() {
-    trayManager.popUpContextMenu();
   }
 
   @override
@@ -200,35 +196,65 @@ class _WindowsAppState extends State<WindowsApp>
     );
   }
 
-  void _initSystemTray() async {
-    await trayManager.setIcon(
-      Platform.isWindows ? 'assets/image/logo.ico' : 'assets/image/logo.png',
-    );
-    trayManager.setToolTip('耕地机');
+  /// 初始化系统托盘
+  Future<void> _initSystemTray() async {
+    // 首先初始化systray菜单，然后添加菜单项
+    await _systemTray.initSystemTray(iconPath: getTrayImagePath('logo'));
+    _systemTray.setToolTip('耕地机');
 
-    Menu menu = Menu(
-      items: [
-        MenuItem(
-          key: 'show_window',
-          label: '显示窗口',
-          onClick: (item) {
-            windowManager.show();
-          },
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          key: 'exit_app',
-          label: '退出',
-          onClick: (item) async {
-            WindowsApp.autoTpModel.stop();
-            await windowManager.hide();
-            trayManager.destroy();
-            exit(0);
-          },
-        ),
-      ],
-    );
-    await trayManager.setContextMenu(menu);
+    // 处理托盘事件
+    _systemTray.registerSystemTrayEventHandler((eventName) {
+      if (eventName == kSystemTrayEventClick) {
+        Platform.isWindows ? _showOrHide() : _systemTray.popUpContextMenu();
+      } else if (eventName == kSystemTrayEventRightClick) {
+        Platform.isWindows ? _systemTray.popUpContextMenu() : _showOrHide();
+      }
+    });
+
+    await _menuMain.buildFrom([
+      MenuItemLabel(
+        label: '显示',
+        onClicked: (menuItem) {
+          showWindow();
+        },
+      ),
+      MenuItemLabel(
+        label: '隐藏',
+        onClicked: (menuItem) {
+          windowManager.hide();
+        },
+      ),
+      MenuItemLabel(
+        label: '退出',
+        onClicked: (menuItem) {
+          closeApp();
+        },
+      ),
+    ]);
+
+    _systemTray.setContextMenu(_menuMain);
+  }
+
+  /// 关闭应用
+  void closeApp() async {
+    WindowsApp.autoTpModel.stop();
+    await windowManager.hide();
+    await _systemTray.destroy();
+    exit(0);
+  }
+
+  void _showOrHide() async {
+    if (await windowManager.isVisible()) {
+      windowManager.hide();
+    } else {
+      showWindow();
+    }
+  }
+
+  /// 显示窗口
+  void showWindow() {
+    windowManager.show();
+    setState(() {});
   }
 
   /// 验证客户端

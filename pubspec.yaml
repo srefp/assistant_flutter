@@ -62,7 +62,7 @@ dependencies:
   highlight: ^0.7.0
   flutter_js: ^0.8.1
   hotkey_manager: ^0.2.3
-  tray_manager: ^0.3.2
+  system_tray: ^2.0.3
   adaptive_scrollbar: ^2.1.2
   cupertino_icons: ^1.0.8
   open_file: ^3.5.10
