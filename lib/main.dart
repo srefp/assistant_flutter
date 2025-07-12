@@ -1,6 +1,7 @@
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
+import 'package:assistant/util/window_utils.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -54,6 +55,7 @@ Future<void> _initApp() async {
     }
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
+      await windowManager.setIcon(getTrayImagePath('logo'));
       await windowManager.setTitleBarStyle(
         TitleBarStyle.hidden,
         windowButtonVisibility: false,

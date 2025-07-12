@@ -19,6 +19,7 @@ import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/screens/script_management_page.dart';
 import 'package:assistant/screens/tool_page.dart';
 import 'package:assistant/util/hot_key.dart';
+import 'package:assistant/win32/mica_enabler.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -252,8 +253,8 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
   }
 
   /// 显示窗口
-  void showWindow() {
-    windowManager.show();
+  void showWindow() async {
+    await windowManager.show();
     setState(() {});
   }
 
