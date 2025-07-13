@@ -8,6 +8,7 @@ import '../app/windows_app.dart';
 import '../components/string_config_row.dart';
 import '../components/title_with_sub.dart';
 import '../components/win_text.dart';
+import '../key_mouse/mouse_button.dart';
 import '../util/key_mouse_name.dart';
 import '../util/search_utils.dart';
 
@@ -253,9 +254,9 @@ class _HotkeyBoxState extends State<HotkeyBox> {
             String text;
             // 可在此添加业务逻辑（如调整配置值）
             if (verticalScroll > 0) {
-              text = 'wheel_down';
+              text = wheelDown;
             } else {
-              text = 'wheel_up';
+              text = wheelUp;
             }
 
             widget.onValueChanged(text);

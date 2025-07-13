@@ -37,6 +37,12 @@ final helpConfigItems = [
     valueCallback: AutoTpConfig.to.isQuickPickEnabled,
   ),
   BoolConfigItem(
+    title: '开启/关闭快捡',
+    subTitle: '快速开启/关闭快捡。',
+    valueKey: AutoTpConfig.keyToggleQuickPickEnabled,
+    valueCallback: AutoTpConfig.to.isToggleQuickPickEnabled,
+  ),
+  BoolConfigItem(
     title: '匀速冲刺',
     subTitle: '默认按 v 可以匀速冲刺；再按 v 停止匀速冲刺，但是还会往前走；按 w 人工接管。',
     valueKey: AutoTpConfig.keyDashEnabled,

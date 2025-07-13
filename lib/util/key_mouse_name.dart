@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:win32/win32.dart';
 
+import '../key_mouse/mouse_button.dart';
+
 // 定义键码到键名的映射
 final Map<int, String> keyCodeToNameMap = {
   VIRTUAL_KEY.VK_OEM_3: '`',
@@ -276,10 +278,10 @@ final Map<String, PhysicalKeyboardKey> stringToPhysicalKeyMap = Map.fromEntries(
     physicalKeyMap.entries.map((entry) => MapEntry(entry.value, entry.key)));
 
 final mouseEventToNameMap = {
-  kBackMouseButton: 'xbutton1',
-  kForwardMouseButton: 'xbutton2',
-  kMiddleMouseButton: 'middle_button',
-  kSecondaryMouseButton: 'right_button',
+  kBackMouseButton: xbutton1,
+  kForwardMouseButton: xbutton2,
+  kMiddleMouseButton: middleButton,
+  kSecondaryMouseButton: rightButton,
 };
 
 String getKeyName(int vkCode) {

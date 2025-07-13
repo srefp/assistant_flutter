@@ -55,6 +55,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyContinuousMode = "continuousMode";
   static const keyRouteIndex = "routeIndex";
   static const keyQuickPickEnabled = "quickPickEnabled";
+  static const keyToggleQuickPickEnabled = "toggleQuickPickEnabled";
   static const keyMapRecordDelay = "mapRecordDelay";
   static const keyClickRecordDelay = "clickRecordDelay";
   static const keyBookRecordDelay = "bookRecordDelay";
@@ -195,6 +196,9 @@ class AutoTpConfig with ConfigStorage {
   int getRouteIndex() => box.read(keyRouteIndex) ?? 0;
 
   bool isQuickPickEnabled() => box.read(keyQuickPickEnabled) ?? true;
+
+  bool isToggleQuickPickEnabled() =>
+      box.read(keyToggleQuickPickEnabled) ?? true;
 
   int getMapRecordDelay() => box.read(keyMapRecordDelay) ?? 550;
 

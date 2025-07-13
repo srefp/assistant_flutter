@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assistant/key_mouse/event_type.dart';
 import 'package:assistant/util/js_executor.dart';
 import 'package:assistant/win32/key_listen.dart';
 import 'package:assistant/win32/toast.dart';
@@ -12,6 +13,7 @@ import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
 import '../constants/script_record_mode.dart';
 import '../executor/route_executor.dart';
+import '../key_mouse/mouse_button.dart';
 import '../util/tpc.dart';
 import 'mouse_listen.dart';
 
@@ -20,14 +22,22 @@ bool clickEntry = true;
 const stopScript = 'stopScript();';
 
 /// 键鼠监听回调
-void keyMouseListen(name, down) async {
+void keyMouseListen(EventType eventType, String name, bool down) async {
   listenAll(name, down);
 
   if (WindowsApp.recordModel.isRecording) {
-    if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
-      recordRoute(name, down);
-    } else {
-      recordScript(name, down);
+    print('eventType: $eventType, name: $name, down: $down');
+    if ((eventType == EventType.mouse && mouseButtonNames.contains(name)) ||
+        (eventType == EventType.keyboard && !mouseButtonNames.contains(name))) {
+      print('记录了');
+      print(WindowsApp.scriptEditorModel.selectedScriptRecordMode);
+      if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
+        print('autoTp');
+        recordRoute(name, down);
+      } else {
+        print('script');
+        recordScript(eventType, name, down);
+      }
     }
   }
 
@@ -149,7 +159,7 @@ void keyMouseListen(name, down) async {
     }
   }
 
-  if (name == 'left_button' && down) {
+  if (name == leftButton && down) {
     // 判断是否是鼠标左键单击
     if (foodRecording) {
       List<int> point = KeyMouseUtil.getMousePosOfWindow();

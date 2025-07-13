@@ -154,6 +154,56 @@ class _AutoTpPageState extends State<AutoTpPage> {
           ),
           CustomSliverBox(
             child: IconCard(
+              icon: Icons.cases_rounded,
+              title: '内置宏配置',
+              subTitle: '内置宏，效率较高，无法修改。',
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 400,
+                          height: 34,
+                          child: WinTextBox(
+                            controller: model.helpSearchController,
+                            placeholder: '搜索内置宏',
+                            onChanged: (value) =>
+                                model.searchDisplayedHelpConfigItems(value),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedHelpConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedHelpConfigItems[index];
+
+                      if (item is BoolConfigItem) {
+                        return BoolConfigRow(
+                          item: item,
+                          lightText: model.helpLightText,
+                        );
+                      } else if (item is StringConfigItem) {
+                        return StringConfigRow(
+                          item: item,
+                          lightText: model.helpLightText,
+                        );
+                      }
+                      return null;
+                    },
+                    shrinkWrap: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CustomSliverBox(
+            child: IconCard(
               icon: Icons.rocket_launch_rounded,
               title: '自动传送',
               subTitle: '依据路线自动传送',
@@ -255,56 +305,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         item: item,
                         lightText: model.gameKeyLightText,
                       );
-                    },
-                    shrinkWrap: true,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CustomSliverBox(
-            child: IconCard(
-              icon: Icons.cases_rounded,
-              title: '其他辅助',
-              subTitle: '其他辅助功能',
-              content: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.helpSearchController,
-                            placeholder: '搜索辅助功能',
-                            onChanged: (value) =>
-                                model.searchDisplayedHelpConfigItems(value),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  divider,
-                  ListView.separated(
-                    separatorBuilder: (context, index) => divider,
-                    itemCount: model.displayedHelpConfigItems.length,
-                    itemBuilder: (context, index) {
-                      final item = model.displayedHelpConfigItems[index];
-
-                      if (item is BoolConfigItem) {
-                        return BoolConfigRow(
-                          item: item,
-                          lightText: model.helpLightText,
-                        );
-                      } else if (item is StringConfigItem) {
-                        return StringConfigRow(
-                          item: item,
-                          lightText: model.helpLightText,
-                        );
-                      }
-                      return null;
                     },
                     shrinkWrap: true,
                   ),

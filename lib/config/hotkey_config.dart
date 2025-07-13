@@ -2,6 +2,7 @@ import 'package:assistant/config/config_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager_platform_interface/src/hotkey.dart';
 
+import '../key_mouse/mouse_button.dart';
 import '../util/key_mouse_name.dart';
 
 class HotkeyConfig with ConfigStorage {
@@ -24,7 +25,7 @@ class HotkeyConfig with ConfigStorage {
 
   String getShowCoordsKey() => box.read(keyShowCoordsKey) ?? 'up';
 
-  String getHalfTp() => box.read(keyHalfTp) ?? 'xbutton2';
+  String getHalfTp() => box.read(keyHalfTp) ?? xbutton2;
 
   String getEatFoodKey() => box.read(keyEatFoodKey) ?? '`';
 
@@ -37,7 +38,7 @@ class HotkeyConfig with ConfigStorage {
   String getTimerDashKey() => box.read(keyTimerDashKey) ?? 'v';
 
   String getToggleQuickPickKey() =>
-      box.read(keyToggleQuickPickKey) ?? 'xbutton1';
+      box.read(keyToggleQuickPickKey) ?? xbutton1;
 
   String getQmTpNext() => box.read(keyQmTpNext)?? 'left';
 

@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:assistant/auto_gui/key_mouse_util.dart';
 import 'package:assistant/config/hotkey_config.dart';
+import 'package:assistant/key_mouse/event_type.dart';
 import 'package:assistant/key_mouse/mouse_event.dart';
 import 'package:assistant/win32/key_mouse_listen.dart';
 
@@ -20,13 +21,13 @@ void mouseListener(MouseEvent event) {
   String mouseName = event.name;
   bool down = event.down;
 
-  keyMouseListen(mouseName, down);
+  keyMouseListen(EventType.mouse, mouseName, down);
 
   List<int> coords = KeyMouseUtil.logicalPos([event.x, event.y]);
 
-  if (WindowsApp.recordModel.isRecording) {
-    recordMouse(event, coords);
-  }
+  // if (WindowsApp.recordModel.isRecording) {
+  //   recordMouse(event, coords);
+  // }
 }
 
 void recordTpc(String name, bool down, List<int> coords) {

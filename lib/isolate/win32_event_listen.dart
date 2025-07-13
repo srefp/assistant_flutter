@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:win32/win32.dart';
 
 import '../key_mouse/keyboard_event.dart';
+import '../key_mouse/mouse_button.dart';
 import '../key_mouse/mouse_event.dart';
 import '../util/key_mouse_name.dart';
 import '../win32/key_listen.dart';
@@ -113,9 +114,6 @@ int mouseBinding(int code, int wParam, int lParam) {
   return CallNextHookEx(mouseHook, code, wParam, lParam);
 }
 
-const xbutton1 = 0x0001;
-const xbutton2 = 0x0002;
-
 class RawMouseEvent {
   final int x;
   final int y;
@@ -125,58 +123,58 @@ class RawMouseEvent {
   RawMouseEvent(this.x, this.y, this.wParam, this.mouseData);
 
   MouseEvent toMouseEvent() {
-    var name = 'left_button';
+    var name = leftButton;
     var type = MouseEventType.leftButtonDown;
     var down = true;
 
     final highWord = HIWORD(mouseData);
 
     if (wParam == WM_LBUTTONDOWN) {
-      name = 'left_button';
+      name = leftButton;
       type = MouseEventType.leftButtonDown;
       down = true;
     } else if (wParam == WM_LBUTTONUP) {
-      name = 'left_button';
+      name = leftButton;
       type = MouseEventType.leftButtonUp;
       down = false;
     } else if (wParam == WM_XBUTTONDOWN) {
       final highWord = HIWORD(mouseData);
-      if (highWord == xbutton1) {
-        name = 'xbutton1';
+      if (highWord == 0x0001) {
+        name = xbutton1;
         type = MouseEventType.x1ButtonDown;
-      } else if (highWord == xbutton2) {
-        name = 'xbutton2';
+      } else if (highWord == 0x0002) {
+        name = xbutton2;
         type = MouseEventType.x2ButtonDown;
       }
       down = true;
     } else if (wParam == WM_XBUTTONUP) {
       final highWord = HIWORD(mouseData);
       if (highWord == xbutton1) {
-        name = 'xbutton1';
+        name = xbutton1;
         type = MouseEventType.x1ButtonUp;
       } else if (highWord == xbutton2) {
-        name = 'xbutton2';
+        name = xbutton2;
         type = MouseEventType.x2ButtonUp;
       }
       down = false;
     } else if (wParam == WM_RBUTTONDOWN) {
-      name = 'right_button';
+      name = rightButton;
       type = MouseEventType.rightButtonDown;
       down = true;
     } else if (wParam == WM_RBUTTONUP) {
-      name = 'right_button';
+      name = rightButton;
       type = MouseEventType.rightButtonUp;
       down = false;
     } else if (wParam == WM_MBUTTONDOWN) {
-      name = 'middle_button';
+      name = middleButton;
       type = MouseEventType.middleButtonDown;
       down = true;
     } else if (wParam == WM_MBUTTONUP) {
-      name = 'middle_button';
+      name = middleButton;
       type = MouseEventType.middleButtonUp;
       down = false;
     } else if (wParam == WM_MOUSEWHEEL) {
-      name = highWord == 120 ? 'wheel_up' : 'wheel_down';
+      name = highWord == 120 ? wheelUp : wheelDown;
       type = highWord == 120 ? MouseEventType.wheelUp : MouseEventType.wheelDown;
       down = true;
     }

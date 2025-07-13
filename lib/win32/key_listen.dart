@@ -7,11 +7,13 @@ import 'package:assistant/config/config_storage.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/executor/route_executor.dart';
+import 'package:assistant/key_mouse/mouse_button.dart';
 import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/win32/toast.dart';
 
 import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
+import '../key_mouse/event_type.dart';
 import '../key_mouse/keyboard_event.dart';
 import 'key_mouse_listen.dart';
 
@@ -24,7 +26,7 @@ void keyboardListener(KeyboardEvent event) {
     return;
   }
 
-  keyMouseListen(event.toString(), event.down);
+  keyMouseListen(EventType.keyboard, event.toString(), event.down);
 }
 
 /// 监听键鼠操作
@@ -44,9 +46,11 @@ void listenAll(String name, bool down) async {
   } else if (name == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
   } else if (name == HotkeyConfig.to.getToggleQuickPickKey()) {
-    final quickPickEnabled = AutoTpConfig.to.isQuickPickEnabled();
-    box.write(AutoTpConfig.keyQuickPickEnabled, !quickPickEnabled);
-    showToast('${quickPickEnabled ? '关闭' : '开启'}快捡');
+    if (AutoTpConfig.to.isToggleQuickPickEnabled()) {
+      final quickPickEnabled = AutoTpConfig.to.isQuickPickEnabled();
+      box.write(AutoTpConfig.keyQuickPickEnabled, !quickPickEnabled);
+      showToast('${quickPickEnabled ? '关闭' : '开启'}快捡');
+    }
   } else if (name == HotkeyConfig.to.getEatFoodKey()) {
     eatFood();
   } else if (name == HotkeyConfig.to.getToPrev()) {
@@ -281,7 +285,7 @@ void recordRoute(String name, bool down) {
 }
 
 /// 记录脚本
-void recordScript(String name, bool down) {
+void recordScript(EventType eventType, String name, bool down) {
   WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
   WindowsApp.logModel.outputAsScript();
 
@@ -304,11 +308,18 @@ void recordScript(String name, bool down) {
     WindowsApp.logModel.outputAsScript();
     WindowsApp.logModel
         .append('moveR3D(${directionDistances['down']}, 10, 5);');
-  } else {
+  } else if (eventType == EventType.keyboard) {
     final func = down ? 'kDown' : 'kUp';
     WindowsApp.logModel.appendOperation(Operation(
       func: func,
       template: "$func('$name', %s);",
+    ));
+  } else if (eventType == EventType.mouse) {
+    final func = down ? 'mDown' : 'mUp';
+    final template = name == leftButton ? "$func(%s);" : "$func('$name', %s);";
+    WindowsApp.logModel.appendOperation(Operation(
+      func: func,
+      template: template,
     ));
   }
 }

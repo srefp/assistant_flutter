@@ -34,6 +34,13 @@ class Operation {
     prevDelay: AutoTpConfig.to.getBookRecordDelay(),
   );
 
+  static Operation mDown = Operation(
+    func: "mDown",
+    coords: [],
+    template: "mDown(%s);",
+    prevDelay: AutoTpConfig.to.getClickRecordDelay(),
+  );
+
   Operation({
     required this.func,
     this.coords = const [0, 0],
@@ -135,6 +142,8 @@ class LogModel extends ChangeNotifier {
 
   /// 输出为脚本
   void outputAsScript() {
+    print('prevOperations: $prevOperations');
+
     if (operationDown) {
       return;
     }
