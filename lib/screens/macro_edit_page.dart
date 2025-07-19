@@ -203,6 +203,22 @@ class MacroEditPage extends StatelessWidget {
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          Row(
+                            children: [
+                              ButtonWithIcon(
+                                text: model.recoding ? '停止' : '录制',
+                                icon: model.recoding
+                                    ? Icons.stop
+                                    : Icons.camera_alt,
+                                onPressed: model.recoding
+                                    ? model.stopRecord
+                                    : model.startRecord,
+                              )
+                            ],
+                          )
                         ],
                       ),
                     ),

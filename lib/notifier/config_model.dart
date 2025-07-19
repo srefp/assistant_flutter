@@ -295,7 +295,11 @@ class _HotkeyBoxState extends State<HotkeyBox> {
           child: Button(
             focusNode: focusNode,
             onPressed: () {
-              focusNode.requestFocus();
+              if (focusNode.hasFocus) {
+                focusNode.unfocus();
+              } else {
+                focusNode.requestFocus();
+              }
             },
             child: WinText(value ?? ''),
           ),

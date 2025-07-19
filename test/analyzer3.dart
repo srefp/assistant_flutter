@@ -55,7 +55,7 @@ List<BlockItem> extractTopLevelBlocks(String code) {
         String block = code.substring(startIdx + 1, endIdx).trim();
 
         // 向前查找名称
-        int nameEnd = startIdx!;
+        int nameEnd = startIdx;
         int nameStart = nameEnd - 1;
 
         // 跳过空格和换行

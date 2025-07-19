@@ -1,7 +1,11 @@
+import 'package:assistant/components/win_text.dart';
 import 'package:assistant/components/win_text_box.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Material, Theme;
+import 'package:provider/provider.dart';
+import 'package:system_theme/system_theme.dart';
 
+import '../theme.dart';
 import '../util/search_utils.dart';
 import 'highlight_text.dart';
 
@@ -27,6 +31,7 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   String _hintText = '';
+  double actualHeight = 0;
 
   @override
   void initState() {
@@ -68,19 +73,13 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
 
-    const double itemHeight = 44;
-    const double maxHeight = 400;
-    final double totalHeight = _filteredItems.length * itemHeight;
-    final double actualHeight =
-        totalHeight < maxHeight ? totalHeight : maxHeight;
-
     return OverlayEntry(
       builder: (context) => Stack(
         children: [
           Positioned.fill(
             child: GestureDetector(
               child: Container(
-                color: Color.fromARGB(100, 50, 50, 50),
+                color: Colors.transparent,
               ),
               onTap: () {
                 _closeDropdown();
@@ -94,7 +93,7 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
               showWhenUnlinked: false,
               offset: Offset(0.0, size.height),
               child: Material(
-                color: Color(0xFF282828),
+                color: componentColor,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: actualHeight,
@@ -105,6 +104,13 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
                               title: HighlightText(
                                 item,
                                 lightText: _controller.text,
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface,
+                                  fontSize: 14,
+                                  fontFamily: fontFamily,
+                                ),
                               ),
                               onPressed: () {
                                 if (item == widget.value) {
@@ -195,6 +201,11 @@ class _HighlightComboBoxState extends State<HighlightComboBox> {
           .where((item) => searchTextList(_controller.text, [item]))
           .toList();
     }
+
+    const double itemHeight = 44;
+    const double maxHeight = 400;
+    final double totalHeight = _filteredItems.length * itemHeight;
+    actualHeight = totalHeight < maxHeight ? totalHeight : maxHeight;
 
     if (_overlayEntry == null) {
       _overlayEntry = _createOverlayEntry();

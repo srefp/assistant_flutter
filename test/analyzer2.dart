@@ -45,7 +45,7 @@ List<Map<String, String>> extractTopLevelBlocks(String code) {
         String block = code.substring(startIdx, endIdx);
 
         // 向前查找名称
-        int nameEnd = startIdx!;
+        int nameEnd = startIdx;
         int nameStart = nameEnd - 1;
 
         // 向前跳过空格和换行

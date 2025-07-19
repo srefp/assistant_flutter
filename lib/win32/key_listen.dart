@@ -7,8 +7,6 @@ import 'package:assistant/config/config_storage.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/hotkey_config.dart';
 import 'package:assistant/executor/route_executor.dart';
-import 'package:assistant/key_mouse/mouse_button.dart';
-import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/win32/toast.dart';
 
 import '../app/windows_app.dart';
@@ -26,7 +24,7 @@ void keyboardListener(KeyboardEvent event) {
     return;
   }
 
-  keyMouseListen(EventType.keyboard, event.toString(), event.down);
+  keyMouseListen(EventType.keyboard, event.toString(), event.down, []);
 }
 
 /// 监听键鼠操作
@@ -208,9 +206,6 @@ void quickPick(String name, bool down) {
 }
 
 /// 全局快捡
-Timer? _globalQuickPickTimer;
-
-/// 全局快捡
 void globalQuickPick(String name, bool down) {
   if (!AutoTpConfig.to.isGlobalQuickPickEnabled()) {
     return;
@@ -267,61 +262,6 @@ Future<void> dash() async {
   await api.keyDown(key: dashKey);
   await Future.delayed(Duration(milliseconds: 20));
   await api.keyUp(key: dashKey);
-}
-
-/// 记录路线
-void recordRoute(String name, bool down) {
-  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
-
-  // 开图键录制
-  if (name != GameKeyConfig.to.getOpenMapKey() &&
-      name != GameKeyConfig.to.getOpenBookKey()) {
-    return;
-  }
-
-  final operation = down ? 'kDown' : 'kUp';
-  WindowsApp.logModel.appendOperation(
-      Operation(func: operation, template: "$operation('$name', %s);"));
-}
-
-/// 记录脚本
-void recordScript(EventType eventType, String name, bool down) {
-  WindowsApp.logModel.appendDelay(WindowsApp.recordModel.getDelay());
-  WindowsApp.logModel.outputAsScript();
-
-  if (name == 'left') {
-    simulateMouseMove('left');
-    WindowsApp.logModel.outputAsScript();
-    WindowsApp.logModel
-        .append('moveR3D(${directionDistances['left']}, 10, 5);');
-  } else if (name == 'up') {
-    simulateMouseMove('up');
-    WindowsApp.logModel.outputAsScript();
-    WindowsApp.logModel.append('moveR3D(${directionDistances['up']}, 10, 5);');
-  } else if (name == 'right') {
-    simulateMouseMove('right');
-    WindowsApp.logModel.outputAsScript();
-    WindowsApp.logModel
-        .append('moveR3D(${directionDistances['right']}, 10, 5);');
-  } else if (name == 'down') {
-    simulateMouseMove('down');
-    WindowsApp.logModel.outputAsScript();
-    WindowsApp.logModel
-        .append('moveR3D(${directionDistances['down']}, 10, 5);');
-  } else if (eventType == EventType.keyboard) {
-    final func = down ? 'kDown' : 'kUp';
-    WindowsApp.logModel.appendOperation(Operation(
-      func: func,
-      template: "$func('$name', %s);",
-    ));
-  } else if (eventType == EventType.mouse) {
-    final func = down ? 'mDown' : 'mUp';
-    final template = name == leftButton ? "$func(%s);" : "$func('$name', %s);";
-    WindowsApp.logModel.appendOperation(Operation(
-      func: func,
-      template: template,
-    ));
-  }
 }
 
 const dist = 20;

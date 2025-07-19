@@ -1,7 +1,6 @@
 import 'package:assistant/constants/enum_util.dart';
 import 'package:assistant/constants/macro_trigger_type.dart';
 import 'package:assistant/constants/profile_status.dart';
-import 'package:ulid/ulid.dart';
 
 import '../util/date_utils.dart';
 

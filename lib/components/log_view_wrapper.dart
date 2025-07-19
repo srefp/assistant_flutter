@@ -1,12 +1,9 @@
 import 'package:assistant/config/setting_config.dart';
-import 'package:assistant/notifier/log_model.dart';
-import 'package:assistant/notifier/script_record_model.dart';
+import 'package:assistant/notifier/record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/javascript.dart';
-
-import 'button_with_icon.dart';
 
 class LogViewWrapper extends StatelessWidget {
   final Widget child;
@@ -35,29 +32,13 @@ class LogView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LogModel>(builder: (context, model, child) {
+    return Consumer<RecordModel>(builder: (context, model, child) {
       return Column(
         children: [
           SizedBox(
             height: 34,
             child: Row(
               children: [
-                Consumer<ScriptRecordModel>(builder: (context, model, child) {
-                  return SizedBox(
-                    height: 34,
-                    child: ButtonWithIcon(
-                      icon: model.isRecording ? Icons.stop : Icons.play_arrow,
-                      text: model.isRecording ? '停止录制' : '开始录制',
-                      onPressed: () {
-                        if (model.isRecording) {
-                          model.stopRecord();
-                        } else {
-                          model.startRecord(context);
-                        }
-                      },
-                    ),
-                  );
-                }),
                 SizedBox(
                   width: 10,
                 ),

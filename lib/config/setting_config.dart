@@ -71,5 +71,5 @@ class SettingConfig with ConfigStorage {
   bool getCaptureManagementMenu() =>
       box.read(keyCaptureManagementMenu) ?? false;
 
-  bool getMacroMenu() => box.read(keyMacroMenu) ?? false;
+  bool getMacroMenu() => box.read(keyMacroMenu) ?? true;
 }

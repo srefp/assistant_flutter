@@ -1,5 +1,6 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/config/dev_config.dart';
 import 'package:assistant/notifier/app_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -38,13 +39,30 @@ class _RootAppState extends State<RootApp> {
         key: const ValueKey(Routes.autoTp),
         icon: const Icon(FluentIcons.rocket, size: iconSize),
         title: Text(
-          '自动传送',
+          '内置宏',
           style: TextStyle(fontFamily: fontFamily),
         ),
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != Routes.autoTp) {
             context.go(Routes.autoTp);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getMacroMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.macro),
+        icon: const Icon(FluentIcons.car, size: iconSize),
+        title: Text(
+          '自定义宏',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.macro) {
+            context.go(Routes.macro);
           }
         },
       ));
@@ -62,40 +80,6 @@ class _RootAppState extends State<RootApp> {
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != Routes.scriptEditor) {
             context.go(Routes.scriptEditor);
-          }
-        },
-      ));
-    }
-
-    if (SettingConfig.to.getRecordMenu()) {
-      routes.add(PaneItem(
-        key: const ValueKey(Routes.record),
-        icon: const Icon(FluentIcons.record_routing, size: iconSize),
-        title: Text(
-          '记录',
-          style: TextStyle(fontFamily: fontFamily),
-        ),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.record) {
-            context.go(Routes.record);
-          }
-        },
-      ));
-    }
-
-    if (SettingConfig.to.getHotkeyMenu()) {
-      routes.add(PaneItem(
-        key: const ValueKey(Routes.config),
-        icon: const Icon(FluentIcons.keyboard_classic, size: iconSize),
-        title: Text(
-          '快捷键',
-          style: TextStyle(fontFamily: fontFamily),
-        ),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.config) {
-            context.go(Routes.config);
           }
         },
       ));
@@ -119,6 +103,40 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
+    if (SettingConfig.to.getHotkeyMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.config),
+        icon: const Icon(FluentIcons.keyboard_classic, size: iconSize),
+        title: Text(
+          '快捷键',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.config) {
+            context.go(Routes.config);
+          }
+        },
+      ));
+    }
+
+    if (SettingConfig.to.getRecordMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.record),
+        icon: const Icon(FluentIcons.record_routing, size: iconSize),
+        title: Text(
+          '记录',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.record) {
+            context.go(Routes.record);
+          }
+        },
+      ));
+    }
+
     if (SettingConfig.to.getCaptureManagementMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.captureManagement),
@@ -132,23 +150,6 @@ class _RootAppState extends State<RootApp> {
           if (GoRouterState.of(context).uri.toString() !=
               Routes.captureManagement) {
             context.go(Routes.captureManagement);
-          }
-        },
-      ));
-    }
-
-    if (SettingConfig.to.getMacroMenu()) {
-      routes.add(PaneItem(
-        key: const ValueKey(Routes.macro),
-        icon: const Icon(FluentIcons.car, size: iconSize),
-        title: Text(
-          '宏',
-          style: TextStyle(fontFamily: fontFamily),
-        ),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.macro) {
-            context.go(Routes.macro);
           }
         },
       ));
@@ -171,7 +172,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getToolMenu()) {
+    if (showTools && SettingConfig.to.getToolMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.tool),
         icon: const Icon(FluentIcons.toolbox, size: iconSize),
@@ -188,7 +189,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getTestMenu()) {
+    if (showTest && SettingConfig.to.getTestMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.test),
         icon: const Icon(FluentIcons.test_case, size: iconSize),

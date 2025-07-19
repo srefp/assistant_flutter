@@ -36,7 +36,7 @@ List<Map<String, String>> extractTopLevelBlocks(String code) {
         String block = code.substring(startIdx, endIdx);
 
         // 向前查找名字
-        int nameEnd = startIdx!;
+        int nameEnd = startIdx;
         int nameStart = nameEnd - 1;
 
         while (nameStart >= 0 &&

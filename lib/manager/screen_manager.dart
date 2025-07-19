@@ -1,9 +1,6 @@
 import 'dart:ffi';
 
 import 'package:assistant/auto_gui/system_control.dart';
-import 'package:assistant/components/dialog.dart';
-import 'package:assistant/config/auto_tp_config.dart';
-import 'package:assistant/win32/toast.dart';
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';

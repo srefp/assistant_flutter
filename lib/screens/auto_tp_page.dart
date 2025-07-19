@@ -74,7 +74,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 12),
               child: WinText(
-                '自动传送',
+                '内置宏',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
@@ -156,7 +156,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.cases_rounded,
               title: '内置宏配置',
-              subTitle: '内置宏，效率较高，无法修改。',
+              subTitle: '内置宏，效率较高，操作逻辑固定。',
               content: Column(
                 children: [
                   Padding(

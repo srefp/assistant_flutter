@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import '../components/button_with_icon.dart';
 import '../components/editor.dart';
-import '../notifier/script_record_model.dart';
 
 class ScriptEditor extends StatelessWidget {
   const ScriptEditor({super.key});
@@ -97,12 +96,14 @@ class ScriptEditor extends StatelessWidget {
                         },
                       ),
                     ),
-                    model.selectedScriptRecordMode == ScriptRecordMode.autoScript
+                    model.selectedScriptRecordMode ==
+                            ScriptRecordMode.autoScript
                         ? SizedBox(
                             width: 10,
                           )
                         : const SizedBox(),
-                    model.selectedScriptRecordMode == ScriptRecordMode.autoScript
+                    model.selectedScriptRecordMode ==
+                            ScriptRecordMode.autoScript
                         ? SizedBox(
                             height: 34,
                             width: 76,
@@ -122,26 +123,23 @@ class ScriptEditor extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    Consumer<ScriptRecordModel>(
-                        builder: (context, model, child) {
-                      return SizedBox(
-                        height: 34,
-                        width: 76,
-                        child: ButtonWithIcon(
-                          icon: model.isRecording
-                              ? Icons.stop
-                              : Icons.fiber_manual_record,
-                          text: model.isRecording ? '停止' : '录制',
-                          onPressed: () {
-                            if (model.isRecording) {
-                              model.stopRecord();
-                            } else {
-                              model.startRecord(context);
-                            }
-                          },
-                        ),
-                      );
-                    }),
+                    SizedBox(
+                      height: 34,
+                      width: 76,
+                      child: ButtonWithIcon(
+                        icon: model.isRecording
+                            ? Icons.stop
+                            : Icons.fiber_manual_record,
+                        text: model.isRecording ? '停止' : '录制',
+                        onPressed: () {
+                          if (model.isRecording) {
+                            model.stopRecord();
+                          } else {
+                            model.startRecord(context);
+                          }
+                        },
+                      ),
+                    ),
                     SizedBox(
                       width: 10,
                     ),

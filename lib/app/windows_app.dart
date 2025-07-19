@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:assistant/app/root_app.dart';
 import 'package:assistant/components/win_text.dart';
+import 'package:assistant/config/dev_config.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/capture_management_model.dart';
 import 'package:assistant/notifier/doc_model.dart';
-import 'package:assistant/notifier/log_model.dart';
 import 'package:assistant/notifier/macro_model.dart';
+import 'package:assistant/notifier/record_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/notifier/script_management_model.dart';
 import 'package:assistant/screens/capture_management_page.dart';
@@ -19,7 +20,6 @@ import 'package:assistant/screens/record_page.dart';
 import 'package:assistant/screens/script_management_page.dart';
 import 'package:assistant/screens/tool_page.dart';
 import 'package:assistant/util/hot_key.dart';
-import 'package:assistant/win32/mica_enabler.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -31,7 +31,6 @@ import 'package:window_manager/window_manager.dart';
 import '../notifier/app_model.dart';
 import '../notifier/auto_tp_model.dart';
 import '../notifier/config_model.dart';
-import '../notifier/script_record_model.dart';
 import '../routes/routes.dart';
 import '../screens/auto_tp_page.dart';
 import '../screens/script_editor.dart';
@@ -45,9 +44,7 @@ class WindowsApp extends StatefulWidget {
 
   static final autoTpModel = AutoTpModel();
   static final scriptEditorModel = ScriptEditorModel();
-  static final logModel = LogModel(WindowsApp.scriptEditorModel.controller,
-      () => WindowsApp.scriptEditorModel.selectedScriptRecordMode!);
-  static final recordModel = ScriptRecordModel();
+  static final logModel = RecordModel.instance;
   static final appModel = AppModel();
   static final configModel = ConfigModel();
   static final docModel = DocModel();
@@ -115,11 +112,6 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
       // 脚本编辑器
       ChangeNotifierProvider(
         create: (context) => WindowsApp.scriptEditorModel,
-      ),
-
-      // 键盘录制器
-      ChangeNotifierProvider(
-        create: (context) => WindowsApp.recordModel,
       ),
 
       // 脚本管理
@@ -275,59 +267,68 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
         child: child,
       );
     },
-    routes: <GoRoute>[
-      /// Auto Tp
-      GoRoute(
-          path: Routes.autoTp, builder: (context, state) => const AutoTpPage()),
+    routes: _buildRoutes(),
+  ),
+]);
 
-      /// Script Editor
-      GoRoute(
-        path: Routes.scriptEditor,
-        builder: (context, state) => const ScriptEditor(),
-      ),
+_buildRoutes() {
+  final routes = <GoRoute>[
+    /// Auto Tp
+    GoRoute(
+        path: Routes.autoTp, builder: (context, state) => const AutoTpPage()),
 
-      /// Script Management
-      GoRoute(
-          path: Routes.scriptManagement,
-          builder: (context, state) => const ScriptManagementPage()),
+    /// Script Editor
+    GoRoute(
+      path: Routes.scriptEditor,
+      builder: (context, state) => const ScriptEditor(),
+    ),
 
-      /// Capture Management
-      GoRoute(
-          path: Routes.captureManagement,
-          builder: (context, state) => const CaptureManagementPage()),
+    /// Script Management
+    GoRoute(
+        path: Routes.scriptManagement,
+        builder: (context, state) => const ScriptManagementPage()),
 
-      /// Macro
-      GoRoute(
-          path: Routes.macro, builder: (context, state) => const MacroPage()),
+    /// Capture Management
+    GoRoute(
+        path: Routes.captureManagement,
+        builder: (context, state) => const CaptureManagementPage()),
 
-      /// Macro Edit
-      GoRoute(
-          path: Routes.macroEdit,
-          builder: (context, state) => const MacroEditPage()),
+    /// Macro
+    GoRoute(path: Routes.macro, builder: (context, state) => const MacroPage()),
 
-      /// Record
-      GoRoute(
-          path: Routes.record, builder: (context, state) => const RecordPage()),
+    /// Macro Edit
+    GoRoute(
+        path: Routes.macroEdit,
+        builder: (context, state) => const MacroEditPage()),
 
-      /// Config
-      GoRoute(
-          path: Routes.config, builder: (context, state) => const ConfigPage()),
+    /// Record
+    GoRoute(
+        path: Routes.record, builder: (context, state) => const RecordPage()),
 
-      /// Doc
-      GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),
+    /// Config
+    GoRoute(
+        path: Routes.config, builder: (context, state) => const ConfigPage()),
 
-      /// Tool
+    /// Doc
+    GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),
+  ];
+
+  if (showTools) {
+    routes.add(
       GoRoute(
         path: Routes.tool,
         builder: (context, state) => const ToolPage(),
       ),
-
-      /// Test
+    );
+  }
+  if (showTest) {
+    routes.add(
       GoRoute(path: Routes.test, builder: (context, state) => const Test()),
+    );
+  }
 
-      /// Settings
-      GoRoute(
-          path: Routes.settings, builder: (context, state) => const Settings()),
-    ],
-  ),
-]);
+  /// Settings
+  routes.add(GoRoute(
+      path: Routes.settings, builder: (context, state) => const Settings()));
+  return routes;
+}

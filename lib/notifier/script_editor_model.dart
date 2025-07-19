@@ -4,6 +4,7 @@ import 'package:assistant/constants/enum_util.dart';
 import 'package:assistant/constants/script_record_mode.dart';
 import 'package:assistant/db/tp_route_db.dart';
 import 'package:assistant/model/tp_route.dart';
+import 'package:assistant/notifier/record_model.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,10 @@ class ScriptEditorModel with ChangeNotifier {
   TpRoute? currentScript;
 
   CodeLineEditingController controller = CodeLineEditingController();
+
   late Function(dynamic) saveFileContent;
+
+  bool isRecording = false;
 
   ScriptEditorModel() {
     loadScripts();
@@ -117,6 +121,7 @@ class ScriptEditorModel with ChangeNotifier {
   void selectScriptType(String value) async {
     selectedScriptRecordMode = EnumUtil.fromResourceId(value, ScriptRecordMode.values);
     box.write(ScriptConfig.keySelectedScriptType, selectedScriptRecordMode!.code);
+    RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
 
     // 加载目录下的文件
     if (selectedScriptRecordMode != null) {
@@ -156,6 +161,7 @@ class ScriptEditorModel with ChangeNotifier {
     if (selectedScriptRecordMode == null) {
       selectFirstDir();
     } else {
+      RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
       scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
       selectFirstFile(scriptNameList);
     }
@@ -163,6 +169,7 @@ class ScriptEditorModel with ChangeNotifier {
 
   Future<void> selectFirstDir() async {
     selectedScriptRecordMode = ScriptRecordMode.autoTp;
+    RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
 
     // 加载目录下的文件
     scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
@@ -433,5 +440,35 @@ class ScriptEditorModel with ChangeNotifier {
             ]);
       }),
     );
+  }
+
+  /// 开始录制
+  void startRecord(BuildContext context) {
+    if (!WindowsApp.autoTpModel.isRunning) {
+      bool started = WindowsApp.autoTpModel.start();
+      if (!started) {
+        return;
+      }
+    }
+
+    ScreenManager.instance.refreshWindowHandle();
+    int? hWnd = ScreenManager.instance.hWnd;
+    if (hWnd != 0) {
+      setForegroundWindow(hWnd);
+    }
+
+    isRecording = true;
+
+    WindowsApp.logModel.registerKeyMouseStream(controller, mode: selectedScriptRecordMode!);
+    notifyListeners();
+  }
+
+  /// 停止录制
+  void stopRecord() {
+    // 停止键盘监听
+    isRecording = false;
+
+    WindowsApp.logModel.unRegisterKeyMouseStream();
+    notifyListeners();
   }
 }

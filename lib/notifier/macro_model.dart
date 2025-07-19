@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:assistant/constants/script_record_mode.dart';
 import 'package:assistant/db/macro_db.dart';
 import 'package:assistant/model/macro.dart';
+import 'package:assistant/notifier/record_model.dart';
 import 'package:excel/excel.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
@@ -63,6 +65,20 @@ class MacroModel extends ChangeNotifier {
   bool _isNew = false;
 
   bool get isNew => _isNew;
+
+  bool recoding = false;
+
+  void startRecord() {
+    RecordModel.instance.registerKeyMouseStream(scriptController, mode: ScriptRecordMode.autoScript);
+    recoding = true;
+    notifyListeners();
+  }
+
+  void stopRecord() {
+    RecordModel.instance.unRegisterKeyMouseStream();
+    recoding = false;
+    notifyListeners();
+  }
 
   set isNew(bool isNew) {
     _isNew = isNew;

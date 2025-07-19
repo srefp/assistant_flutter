@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:assistant/key_mouse/event_type.dart';
+import 'package:assistant/key_mouse/keyboard_event.dart';
+import 'package:assistant/key_mouse/mouse_event.dart';
 import 'package:assistant/util/js_executor.dart';
 import 'package:assistant/win32/key_listen.dart';
 import 'package:assistant/win32/toast.dart';
@@ -11,35 +13,21 @@ import '../config/auto_tp_config.dart';
 import '../config/hotkey_config.dart';
 import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
-import '../constants/script_record_mode.dart';
 import '../executor/route_executor.dart';
 import '../key_mouse/mouse_button.dart';
 import '../util/tpc.dart';
-import 'mouse_listen.dart';
 
 bool mapping = true;
 bool clickEntry = true;
 const stopScript = 'stopScript();';
 
 /// 键鼠监听回调
-void keyMouseListen(EventType eventType, String name, bool down) async {
+void keyMouseListen(
+    EventType eventType, String name, bool down, List<int> coords,
+    {KeyboardEvent? keyEvent, MouseEvent? mouseEvent}) async {
   listenAll(name, down);
 
-  if (WindowsApp.recordModel.isRecording) {
-    print('eventType: $eventType, name: $name, down: $down');
-    if ((eventType == EventType.mouse && mouseButtonNames.contains(name)) ||
-        (eventType == EventType.keyboard && !mouseButtonNames.contains(name))) {
-      print('记录了');
-      print(WindowsApp.scriptEditorModel.selectedScriptRecordMode);
-      if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
-        print('autoTp');
-        recordRoute(name, down);
-      } else {
-        print('script');
-        recordScript(eventType, name, down);
-      }
-    }
-  }
+  WindowsApp.logModel.record(eventType, name, down, coords, mouseEvent);
 
   for (var macro in WindowsApp.macroModel.macroList) {
     if (macro.status == ProfileStatus.active && macro.triggerKey == name) {
@@ -148,15 +136,6 @@ void keyMouseListen(EventType eventType, String name, bool down) async {
 
   if (!down) {
     return;
-  }
-
-  if (WindowsApp.recordModel.isRecording) {
-    if (WindowsApp.scriptEditorModel.selectedScriptRecordMode == ScriptRecordMode.autoTp) {
-      // 获取当前鼠标位置
-      List<int> coords =
-          KeyMouseUtil.logicalPos(KeyMouseUtil.getMousePosOfWindow());
-      recordTpc(name, down, coords);
-    }
   }
 
   if (name == leftButton && down) {
