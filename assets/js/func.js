@@ -56,18 +56,18 @@ async function cp(text) {
 }
 
 // 移动鼠标
-async function move(arg1, arg2, arg3, arg4) {
-    await sendMessage('move', JSON.stringify([arg1, arg2, arg3, arg4]));
+async function move() {
+    await sendMessage('move', JSON.stringify([...arguments]));
 }
 
 // 相对移动鼠标
 async function moveR() {
-    await sendMessage('moveR', JSON.stringify(arguments));
+    await sendMessage('moveR', JSON.stringify([...arguments]));
 }
 
 // 3D视角下移动鼠标
 async function moveR3D() {
-    await sendMessage('moveR3D', JSON.stringify(arguments));
+    await sendMessage('moveR3D', JSON.stringify([...arguments]));
 }
 
 // 鼠标按下

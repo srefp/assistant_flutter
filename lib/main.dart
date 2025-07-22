@@ -13,8 +13,7 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 import 'config/config_storage.dart';
 import 'isolate/win32_event_listen.dart';
 
-const String version = '2025.7.2';
-const String innerVersion = '2025.7.2';
+const String version = '2025.7.3';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';

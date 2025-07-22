@@ -111,13 +111,6 @@ flutter:
     - assets/image/logo.png
     - assets/js/func.js
     - assets/doc/operation.md
-    - assets/pics/1.png
-    - assets/pics/2.png
-    - assets/pics/3.png
-    - assets/pics/4.png
-    - assets/pics/6.png
-    - assets/pics/8.png
-    - assets/pics/character.png
   fonts:
     - family: MiSans
       fonts:

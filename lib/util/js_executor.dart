@@ -90,6 +90,26 @@ void registerJsFunc() async {
     await Future.delayed(Duration(milliseconds: params[3]));
   });
 
+  // 鼠标相对移动
+  jsRuntime.onMessage(moveR, (params) async {
+    if (params.length == 2) {
+      await KeyMouseUtil.moveR(params[0], 1, 0);
+    } else if (params.length == 4) {
+      await KeyMouseUtil.moveR(params[0], params[1], params[2]);
+    }
+    await Future.delayed(Duration(milliseconds: params[3]));
+  });
+
+  // 3D视角的鼠标相对移动
+  jsRuntime.onMessage(moveR3D, (params) async {
+    if (params.length == 2) {
+      await KeyMouseUtil.moveR3D(params[0], 1, 0);
+    } else if (params.length == 4) {
+      await KeyMouseUtil.moveR3D(params[0], params[1], params[2]);
+    }
+    await Future.delayed(Duration(milliseconds: params[3]));
+  });
+
   // 滚轮
   jsRuntime.onMessage(wheel, (params) async {
     await api.scroll(clicks: -params['clicks']);
@@ -111,15 +131,52 @@ void registerJsFunc() async {
   // 点击
   jsRuntime.onMessage(click, (params) async {
     SystemControl.refreshRect();
-    if (params[0] == null) {
-      await api.click();
-    } else if (params[0] is int) {
+
+    // 最少参数：click(10)
+    if (params.length == 1) {
       await api.click();
       await Future.delayed(Duration(milliseconds: params[0]));
-    } else if (params[0] is List && params[1] is int) {
+      return;
+    }
+
+    // 最多参数：click('left', [12345, 12345], 4, 5, 20)
+    if (params.length == 5) {
+      await KeyMouseUtil.move(params[1], 1, 0);
+      await Future.delayed(Duration(milliseconds: 2));
+      await api.click(
+        button: {
+          'left': MouseButton.left,
+          'right': MouseButton.right,
+          'middle': MouseButton.middle,
+        }[params[0]]!,
+        clicks: params[2],
+        interval: Duration(milliseconds: params[3]),
+      );
+      await Future.delayed(Duration(milliseconds: params[4]));
+      return;
+    }
+
+    // 三选一：坐标
+    if (params[0] is List && params[1] is int) {
       await KeyMouseUtil.clickAtPoint(
           convertDynamicListToIntList(params[0]), params[1]);
-    } else if (params[0] is String && params[1] is int) {
+    }
+    // 三选二：坐标+次数
+    else if (params[0] is List &&
+        params[1] is int &&
+        params[2] is int &&
+        params[3] is int) {
+      final res = KeyMouseUtil.physicalPos(params[0]);
+      await api.moveTo(point: Point(res[0], res[1]));
+      await api.click(
+        clicks: params[1],
+        interval: Duration(milliseconds: params[2]),
+      );
+      await Future.delayed(Duration(milliseconds: params[3]));
+    }
+
+    // 三选一：键位
+    else if (params[0] is String && params[1] is int) {
       await api.click(
         button: {
           'left': MouseButton.left,
@@ -128,10 +185,19 @@ void registerJsFunc() async {
         }[params[0]]!,
       );
       await Future.delayed(Duration(milliseconds: params[1]));
-    } else if (params[0] is String &&
-        params[1] is List &&
-        params[2] is int) {
-      var res = KeyMouseUtil.physicalPos(params[1]);
+    }
+    // 三选一：次数
+    else if (params[0] is int && params[1] is int && params[2] is int) {
+      await api.click(
+        clicks: params[0],
+        interval: Duration(milliseconds: params[1]),
+      );
+      await Future.delayed(Duration(milliseconds: params[2]));
+    }
+
+    // 三选二：键位+坐标
+    else if (params[0] is String && params[1] is List && params[2] is int) {
+      final res = KeyMouseUtil.physicalPos(params[1]);
       await api.moveTo(point: Point(res[0], res[1]));
       await api.click(
         button: {
@@ -141,6 +207,22 @@ void registerJsFunc() async {
         }[params[0]]!,
       );
       await Future.delayed(Duration(milliseconds: params[2]));
+    }
+    // 三选二：键位+次数
+    else if (params[0] is String &&
+        params[1] is int &&
+        params[2] is int &&
+        params[3] is int) {
+      await api.click(
+        button: {
+          'left': MouseButton.left,
+          'right': MouseButton.right,
+          'middle': MouseButton.middle,
+        }[params[0]]!,
+        clicks: params[1],
+        interval: Duration(milliseconds: params[2]),
+      );
+      await Future.delayed(Duration(milliseconds: params[3]));
     }
   });
 
@@ -161,11 +243,6 @@ void registerJsFunc() async {
   jsRuntime.onMessage(kUp, (params) async {
     api.keyUp(key: params['key']);
     await Future.delayed(Duration(milliseconds: params['delay']));
-  });
-
-  // 等待
-  jsRuntime.onMessage(wait, (param) async {
-    await Future.delayed(Duration(milliseconds: param));
   });
 
   // 开图
@@ -200,7 +277,7 @@ void registerJsFunc() async {
 
   // 传送
   jsRuntime.onMessage(tp, (params) async {
-    var script = params['params']['script'];
+    final script = params['params']['script'];
     if (script != null) {
       await runScript(script!);
     }
@@ -213,6 +290,15 @@ void registerJsFunc() async {
         convertDynamicListToIntList(params['coords']), params['shortMove']);
     await Future.delayed(Duration(milliseconds: params['delay']));
   });
+
+  // 复制粘贴
+  jsRuntime.onMessage(cp, (params) async {
+    await Clipboard.setData(ClipboardData(text: params['text']));
+    await api.keyDown(key: 'ctrl');
+    await api.keyDown(key: 'v');
+    await api.keyUp(key: 'v');
+    await api.keyUp(key: 'ctrl');
+  });
 }
 
 /// 运行js代码
@@ -223,7 +309,7 @@ Future<void> runScript(
 }) async {
   // 将code中的异步函数添加await
   if (addAwait) {
-    for (var key in keys) {
+    for (final key in keys) {
       if (stoppable) {
         code = code.replaceAll('$key(',
             'if (!scriptRunning) { scriptRunning = true; return;} await $key(');
