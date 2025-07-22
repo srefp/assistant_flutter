@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/util/find_util.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
@@ -33,6 +34,8 @@ const wheel = "wheel";
 const map = "map";
 const book = "book";
 const tpc = "tpc";
+const findColor = "findColor";
+const findPic = "findPic";
 
 const keys = [
   tp,
@@ -298,6 +301,20 @@ void registerJsFunc() async {
     await api.keyDown(key: 'v');
     await api.keyUp(key: 'v');
     await api.keyUp(key: 'ctrl');
+  });
+
+  // 找色
+  jsRuntime.onMessage(findColor, (params) async {
+    final res = await FindUtil.findColor(
+        convertDynamicListToIntList(params[0]), params[1]);
+    return res;
+  });
+
+  // 找图
+  jsRuntime.onMessage(findPic, (params) async {
+    final res = await FindUtil.findPic(
+        convertDynamicListToIntList(params[0]), params[1]);
+    return res;
   });
 }
 

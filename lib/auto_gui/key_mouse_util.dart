@@ -20,7 +20,7 @@ class KeyMouseUtil {
   static Future<void> moveR3D(List<int> distance, int step, int millis) async {
     List<int> prevDistance = [0, 0];
     for (int index = 1; index <= step; index++) {
-      var pos =
+      final pos =
           MathUtil.smoothStepWithPrev(distance, index / step, prevDistance);
       prevDistance = [prevDistance[0] + pos[0], prevDistance[1] + pos[1]];
 
@@ -48,7 +48,7 @@ class KeyMouseUtil {
   }
 
   static Future<void> moveR(List<int> distance, int step, int millis) async {
-    var initialPos = getCurLogicalPos();
+    final initialPos = getCurLogicalPos();
 
     List<int> targetPos = [
       initialPos[0] + distance[0],
@@ -59,7 +59,7 @@ class KeyMouseUtil {
   }
 
   static void moveRWithoutStep(List<int> distance) {
-    var initialPos = getCurLogicalPos();
+    final initialPos = getCurLogicalPos();
     List<int> targetPos = [
       initialPos[0] + distance[0],
       initialPos[1] + distance[1]
@@ -68,23 +68,23 @@ class KeyMouseUtil {
   }
 
   static Future<void> move(List<int> point, int step, int millis) async {
-    var initialPos = getCurLogicalPos();
+    final initialPos = getCurLogicalPos();
     for (int index = 1; index <= step; index++) {
-      var pos = MathUtil.smoothStep(initialPos, point, index / step);
+      final pos = MathUtil.smoothStep(initialPos, point, index / step);
 
-      var res = physicalPos(pos);
+      final res = physicalPos(pos);
       await Simulation.sendInput.mouse.move(res);
       await Future.delayed(Duration(milliseconds: millis));
     }
   }
 
   static Future<void> moveWithoutStep(List<int> point) async {
-    var res = physicalPos(point);
+    final res = physicalPos(point);
     Simulation.sendInput.mouse.move(res);
   }
 
   static Future<void> clickAtPoint(List<int> point, int delay) async {
-    var res = physicalPos(point);
+    final res = physicalPos(point);
     await Simulation.sendInput.mouse.move(res);
     await Future.delayed(Duration(milliseconds: 2));
     await Simulation.sendInput.mouse.leftButtonClick();
@@ -172,7 +172,7 @@ class KeyMouseUtil {
   }
 
   static Future<void> wheel(int rowWheelNum) async {
-    var config = AutoTpConfig.to;
+    final config = AutoTpConfig.to;
     if (rowWheelNum > 0) {
       for (int i = 0; i < rowWheelNum; i++) {
         await Simulation.sendInput.mouse.verticalScroll(-1);
@@ -191,7 +191,7 @@ class KeyMouseUtil {
   }
 
   static void spinMillis([int millis = 1]) {
-    var stopwatch = Stopwatch();
+    final stopwatch = Stopwatch();
     stopwatch.start();
     while (stopwatch.elapsedMilliseconds <= millis) {
       // 这里没有SpinWait的Dart等效实现，简单空循环
@@ -200,9 +200,9 @@ class KeyMouseUtil {
   }
 
   static Future<void> fastDrag(List<int> totalDrag, int shortMove) async {
-    var config = AutoTpConfig.to;
+    final config = AutoTpConfig.to;
 
-    var dragSize = totalDrag.length;
+    final dragSize = totalDrag.length;
 
     for (int index = 0; index < dragSize; index += 4) {
       List<int> drag = [
@@ -261,7 +261,7 @@ class KeyMouseUtil {
       return;
     }
     List<int> virtualPos = KeyMouseUtil.logicalPos(point);
-    var text = '${virtualPos[0]}, ${virtualPos[1]}';
+    final text = '${virtualPos[0]}, ${virtualPos[1]}';
     Clipboard.setData(ClipboardData(text: text));
     showToast('已复制坐标: $text');
   }

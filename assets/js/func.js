@@ -135,3 +135,13 @@ async function tpc(coords, delay) {
 async function pic(topLeft, bottomRight) {
     return await sendMessage('pic', JSON.stringify({'topLeft': topLeft, 'bottomRight': bottomRight}));
 }
+
+// 找色
+async function findColor() {
+    return await sendMessage('findColor', JSON.stringify([...arguments]));
+}
+
+// 找图
+async function findPic() {
+    return await sendMessage('findPic', JSON.stringify([...arguments]));
+}
