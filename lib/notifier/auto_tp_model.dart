@@ -1,4 +1,5 @@
 import 'package:assistant/auto_gui/system_control.dart';
+import 'package:assistant/components/config_row/hotkey_config_row.dart';
 import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/app_config.dart';
@@ -8,17 +9,20 @@ import 'package:assistant/cv/scan.dart';
 import 'package:assistant/dao/crud.dart';
 import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/model/tp_route.dart';
+import 'package:assistant/notifier/config_model.dart';
 import 'package:assistant/util/route_util.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
-import '../components/bool_config_row.dart';
-import '../components/int_config_row.dart';
-import '../components/string_config_row.dart';
+import '../components/config_row/bool_config_row.dart';
+import '../components/config_row/int_config_row.dart';
+import '../components/config_row/string_config_row.dart';
 import '../config/auto_tp_config.dart';
+import '../config/hotkey_config.dart';
 import '../cv/cv.dart';
 import '../db/tp_route_db.dart';
 import '../main.dart';
@@ -30,35 +34,102 @@ import '../win32/window.dart';
 
 /// 辅助功能开启/关闭配置
 final helpConfigItems = [
-  BoolConfigItem(
+  HotkeyConfigItem(
+    type: global,
+    title: '耕地机开关',
+    subTitle: '启动/关闭耕地机',
+    valueKey: HotkeyConfig.keyStartStopKey,
+    valueCallback: HotkeyConfig.to.getStartStopKey,
+    keyItemCallback: HotkeyConfig.to.getStartStopKeyItem,
+    keyDownHandler: (hotKey) {
+      WindowsApp.autoTpModel.startOrStop();
+    },
+  ),
+  HotkeyConfigItem(
+    title: '标点',
+    subTitle: '显示并复制当前鼠标坐标',
+    enabledKey: HotkeyConfig.keyShowCoordsEnabled,
+    enabledCallback: HotkeyConfig.to.isShowCoordsEnabled,
+    valueKey: HotkeyConfig.keyShowCoordsKey,
+    valueCallback: HotkeyConfig.to.getShowCoordsKey,
+  ),
+  HotkeyConfigItem(
+    title: '半自动传送',
+    subTitle: '点锚点并点确认键，然后复位',
+    enabledKey: HotkeyConfig.keyHalfTpEnabled,
+    enabledCallback: HotkeyConfig.to.isHalfTpEnabled,
+    valueKey: HotkeyConfig.keyHalfTp,
+    valueCallback: HotkeyConfig.to.getHalfTp,
+  ),
+  HotkeyConfigItem(
+    title: '上一个点位',
+    subTitle: '上一个点位（不传送）',
+    enabledKey: HotkeyConfig.keyToPrevEnabled,
+    enabledCallback: HotkeyConfig.to.isToPrevEnabled,
+    valueKey: HotkeyConfig.keyToPrev,
+    valueCallback: HotkeyConfig.to.getToPrev,
+  ),
+  HotkeyConfigItem(
+    title: '下一个点位',
+    subTitle: '下一个点位（不传送）',
+    enabledKey: HotkeyConfig.keyToNextEnabled,
+    enabledCallback: HotkeyConfig.to.isToNextEnabled,
+    valueKey: HotkeyConfig.keyToNext,
+    valueCallback: HotkeyConfig.to.getToNext,
+  ),
+  HotkeyConfigItem(
+    title: '全自动传送',
+    subTitle: '按照路线传送到下一个点位',
+    enabledKey: AutoTpConfig.keyAutoTpEnabled,
+    enabledCallback: AutoTpConfig.to.isAutoTpEnabled,
+    valueKey: HotkeyConfig.keyTpNext,
+    valueCallback: HotkeyConfig.to.getTpNext,
+  ),
+  HotkeyConfigItem(
+    title: 'qm全自动传送',
+    subTitle: '开大招，然后按照路线传送到下一个点位',
+    enabledKey: HotkeyConfig.keyQmAutoTpEnabled,
+    enabledCallback: HotkeyConfig.to.isQmAutoTpEnabled,
+    valueKey: HotkeyConfig.keyQmTpNext,
+    valueCallback: HotkeyConfig.to.getQmTpNext,
+  ),
+  HotkeyConfigItem(
     title: '快捡',
     subTitle: '长按F变成快速连发F加滚轮',
-    valueKey: AutoTpConfig.keyQuickPickEnabled,
-    valueCallback: AutoTpConfig.to.isQuickPickEnabled,
+    enabledKey: AutoTpConfig.keyQuickPickEnabled,
+    enabledCallback: AutoTpConfig.to.isQuickPickEnabled,
+    valueKey: HotkeyConfig.keyQuickPickKey,
+    valueCallback: HotkeyConfig.to.getQuickPickKey,
   ),
-  BoolConfigItem(
+  HotkeyConfigItem(
     title: '开启/关闭快捡',
     subTitle: '快速开启/关闭快捡。',
-    valueKey: AutoTpConfig.keyToggleQuickPickEnabled,
-    valueCallback: AutoTpConfig.to.isToggleQuickPickEnabled,
+    enabledKey: AutoTpConfig.keyToggleQuickPickEnabled,
+    enabledCallback: AutoTpConfig.to.isToggleQuickPickEnabled,
+    valueKey: HotkeyConfig.keyToggleQuickPickKey,
+    valueCallback: HotkeyConfig.to.getToggleQuickPickKey,
   ),
-  BoolConfigItem(
+  HotkeyConfigItem(
     title: '匀速冲刺',
     subTitle: '默认按 v 可以匀速冲刺；再按 v 停止匀速冲刺，但是还会往前走；按 w 人工接管。',
-    valueKey: AutoTpConfig.keyDashEnabled,
-    valueCallback: AutoTpConfig.to.isDashEnabled,
+    enabledKey: AutoTpConfig.keyDashEnabled,
+    enabledCallback: AutoTpConfig.to.isDashEnabled,
+    valueKey: HotkeyConfig.keyTimerDashKey,
+    valueCallback: HotkeyConfig.to.getTimerDashKey,
+  ),
+  HotkeyConfigItem(
+    title: '快速吃药',
+    subTitle: '默认按`键快速吃药',
+    enabledKey: AutoTpConfig.keyEatFoodEnabled,
+    enabledCallback: AutoTpConfig.to.isEatFoodEnabled,
+    valueKey: HotkeyConfig.keyEatFoodKey,
+    valueCallback: HotkeyConfig.to.getEatFoodKey,
   ),
   BoolConfigItem(
     title: '记录快速吃药',
     subTitle: '双击b键，进入记录视频坐标模式，点击食品就记录成功，之后单击b完成记录。',
     valueKey: AutoTpConfig.keyFoodRecordEnabled,
     valueCallback: AutoTpConfig.to.isFoodRecordEnabled,
-  ),
-  BoolConfigItem(
-    title: '快速吃药',
-    subTitle: '默认按`键快速吃药',
-    valueKey: AutoTpConfig.keyEatFoodEnabled,
-    valueCallback: AutoTpConfig.to.isEatFoodEnabled,
   ),
   BoolConfigItem(
     title: 'qm时是否冲刺',
@@ -879,6 +950,6 @@ class AutoTpModel extends ChangeNotifier {
     final encodedImage = await encodeImage(capture);
     print('encodedImage: data:image/png;base64,$encodedImage');
 
-    savePickRecord(item.valueKey, encodedImage, capture);
+    savePickRecord(item.valueKey!, encodedImage, capture);
   }
 }

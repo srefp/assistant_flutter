@@ -202,7 +202,7 @@ class RawKeyboardEvent {
     if (GetAsyncKeyState(VIRTUAL_KEY.VK_MENU) & 0x8000 != 0) {
       modifiers.add('alt');
     }
-    if (GetAsyncKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0) {
+    if (GetAsyncKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0 && name != 'shiftleft' && name!='shiftright') {
       modifiers.add('shift');
     }
 

@@ -177,6 +177,8 @@ final logicalKeyMap = {
   LogicalKeyboardKey.shiftRight: 'shiftright',
   LogicalKeyboardKey.space: 'space',
   LogicalKeyboardKey.tab: 'tab',
+  LogicalKeyboardKey.capsLock: 'capslock',
+  LogicalKeyboardKey.numLock: 'numlock',
 };
 
 final physicalKeyMap = {

@@ -10,16 +10,16 @@ import 'package:assistant/win32/toast.dart';
 import '../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../config/auto_tp_config.dart';
-import '../config/hotkey_config.dart';
 import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
-import '../executor/route_executor.dart';
 import '../key_mouse/mouse_button.dart';
-import '../util/tpc.dart';
 
 bool mapping = true;
 bool clickEntry = true;
 const stopScript = 'stopScript();';
+
+/// 全局标志：脚本结束后通知dart将该标志置为false
+bool macroRunning = false;
 
 /// 键鼠监听回调
 void keyMouseListen(
@@ -36,8 +36,8 @@ void keyMouseListen(
         return;
       } else if (down && macro.triggerType == MacroTriggerType.downStoppable) {
         if (macro.running) {
-          macro.running = false;
           await runScript(stopScript);
+          macro.running = false;
           return;
         } else {
           macro.running = true;
@@ -61,9 +61,9 @@ void keyMouseListen(
             return macro.loopRunning && WindowsApp.autoTpModel.active();
           });
         } else {
+          await runScript(stopScript);
           macro.loopRunning = false;
           macro.macroFuture = null;
-          await runScript(stopScript);
         }
       } else if (macro.triggerType == MacroTriggerType.toggle) {
         if (down) {
@@ -86,11 +86,11 @@ void keyMouseListen(
           } else {
             if (macro.canStop) {
               print('结束运行');
+              await runScript(stopScript);
               macro.canStop = false;
               macro.canStart = false;
               macro.loopRunning = false;
               macro.macroFuture = null;
-              await runScript(stopScript);
             }
           }
         } else {
@@ -171,13 +171,5 @@ void keyMouseListen(
       //   }
       //   Future.delayed(Duration(milliseconds: 350)).then((value) => clickEntry = true);
     }
-  }
-
-  if (name == HotkeyConfig.to.getHalfTp() && down) {
-    executeTpc();
-  } else if (name == HotkeyConfig.to.getQmTpNext() && down) {
-    RouteExecutor.tpNext(true);
-  } else if (name == HotkeyConfig.to.getTpNext() && down) {
-    RouteExecutor.tpNext(false);
   }
 }

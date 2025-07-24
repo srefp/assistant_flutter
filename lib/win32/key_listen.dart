@@ -13,6 +13,7 @@ import '../app/windows_app.dart';
 import '../config/game_pos/game_pos_config.dart';
 import '../key_mouse/event_type.dart';
 import '../key_mouse/keyboard_event.dart';
+import '../util/tpc.dart';
 import 'key_mouse_listen.dart';
 
 void keyboardListener(KeyboardEvent event) {
@@ -39,9 +40,11 @@ void listenAll(String name, bool down) async {
 
   // print('name: $name');
 
-  if (name == HotkeyConfig.to.getTpNext()) {
+  if (AutoTpConfig.to.isAutoTpEnabled() &&
+      name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
-  } else if (name == HotkeyConfig.to.getShowCoordsKey()) {
+  } else if (HotkeyConfig.to.isShowCoordsEnabled() &&
+      name == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
   } else if (name == HotkeyConfig.to.getToggleQuickPickKey()) {
     if (AutoTpConfig.to.isToggleQuickPickEnabled()) {
@@ -51,10 +54,18 @@ void listenAll(String name, bool down) async {
     }
   } else if (name == HotkeyConfig.to.getEatFoodKey()) {
     eatFood();
-  } else if (name == HotkeyConfig.to.getToPrev()) {
+  } else if (HotkeyConfig.to.isToPrevEnabled() &&
+      name == HotkeyConfig.to.getToPrev()) {
     RouteExecutor.toPrev();
-  } else if (name == HotkeyConfig.to.getToNext()) {
+  } else if (HotkeyConfig.to.isToNextEnabled() &&
+      name == HotkeyConfig.to.getToNext()) {
     RouteExecutor.toNext();
+  } else if (HotkeyConfig.to.isHalfTpEnabled() &&
+      name == HotkeyConfig.to.getHalfTp()) {
+    executeTpc();
+  } else if (HotkeyConfig.to.isQmAutoTpEnabled() &&
+      name == HotkeyConfig.to.getQmTpNext()) {
+    RouteExecutor.tpNext(true);
   }
 }
 

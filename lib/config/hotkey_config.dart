@@ -20,6 +20,21 @@ class HotkeyConfig with ConfigStorage {
   static const keyTimerDashKey = "timerDashKey";
   static const keyToPrev = "toPrev";
   static const keyToNext = "toNext";
+  static const keyShowCoordsEnabled = "showCoordsEnabled";
+  static const keyHalfTpEnabled = "halfTpEnabled";
+  static const keyToPrevEnabled = "toPrevEnabled";
+  static const keyToNextEnabled = "toNextEnabled";
+  static const keyQmAutoTpEnabled = "qmAutoTpEnabled";
+
+  bool isShowCoordsEnabled() => box.read(keyShowCoordsEnabled) ?? true;
+
+  bool isHalfTpEnabled() => box.read(keyHalfTpEnabled) ?? true;
+
+  bool isToPrevEnabled() => box.read(keyToPrevEnabled) ?? true;
+
+  bool isToNextEnabled() => box.read(keyToNextEnabled) ?? true;
+
+  bool isQmAutoTpEnabled() => box.read(keyQmAutoTpEnabled) ?? true;
 
   String getStartStopKey() => box.read(keyStartStopKey) ?? 'f7';
 
@@ -37,14 +52,13 @@ class HotkeyConfig with ConfigStorage {
 
   String getTimerDashKey() => box.read(keyTimerDashKey) ?? 'v';
 
-  String getToggleQuickPickKey() =>
-      box.read(keyToggleQuickPickKey) ?? xbutton1;
+  String getToggleQuickPickKey() => box.read(keyToggleQuickPickKey) ?? xbutton1;
 
-  String getQmTpNext() => box.read(keyQmTpNext)?? 'left';
+  String getQmTpNext() => box.read(keyQmTpNext) ?? 'left';
 
-  String getToPrev() => box.read(keyToPrev)?? 'subtract';
+  String getToPrev() => box.read(keyToPrev) ?? 'subtract';
 
-  String getToNext() => box.read(keyToNext)?? 'add';
+  String getToNext() => box.read(keyToNext) ?? 'add';
 
   HotKey getStartStopKeyItem() {
     return HotKey(

@@ -1,7 +1,7 @@
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-import '../config/auto_tp_config.dart';
+import '../../config/auto_tp_config.dart';
 
 typedef ValueCallback = int Function();
 

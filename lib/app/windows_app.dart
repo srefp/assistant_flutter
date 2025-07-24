@@ -12,7 +12,6 @@ import 'package:assistant/notifier/record_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/notifier/script_management_model.dart';
 import 'package:assistant/screens/capture_management_page.dart';
-import 'package:assistant/screens/config_page.dart';
 import 'package:assistant/screens/doc_page.dart';
 import 'package:assistant/screens/macro_edit_page.dart';
 import 'package:assistant/screens/macro_page.dart';
@@ -304,10 +303,6 @@ _buildRoutes() {
     /// Record
     GoRoute(
         path: Routes.record, builder: (context, state) => const RecordPage()),
-
-    /// Config
-    GoRoute(
-        path: Routes.config, builder: (context, state) => const ConfigPage()),
 
     /// Doc
     GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),

@@ -291,18 +291,6 @@ class _SettingsState extends State<Settings> with PageMixin {
         ),
       ),
       ConfigRow(
-        title: '快捷键',
-        content: ToggleSwitch(
-          checked: SettingConfig.to.getHotkeyMenu(),
-          onChanged: (value) => {
-            setState(() {
-              SettingConfig.to.save(SettingConfig.keyHotkeyMenu, value);
-              WindowsApp.appModel.changeMenu();
-            })
-          },
-        ),
-      ),
-      ConfigRow(
         title: '测试页面',
         content: ToggleSwitch(
           checked: SettingConfig.to.getTestMenu(),

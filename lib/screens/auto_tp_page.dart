@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:assistant/components/bool_config_row.dart';
+import 'package:assistant/components/config_row/bool_config_row.dart';
 import 'package:assistant/components/button_with_icon.dart';
+import 'package:assistant/components/config_row/hotkey_config_row.dart';
+import 'package:assistant/components/config_row/int_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
-import 'package:assistant/components/int_config_row.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/auto_tp_config.dart';
@@ -14,9 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:superuser/superuser.dart';
 
+import '../components/config_row/game_key_config_row.dart';
+import '../components/config_row/string_config_row.dart';
 import '../components/dialog.dart';
 import '../components/divider.dart';
-import '../components/string_config_row.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
 
@@ -156,7 +158,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.cases_rounded,
               title: '内置宏配置',
-              subTitle: '内置宏，效率较高，操作逻辑固定。',
+              subTitle: '内置宏，效率较高，操作逻辑固定。单击键位按钮可以监听键鼠进行配置，再次单击不再监听。长按后可以输入键位，回车完成。',
               content: Column(
                 children: [
                   Padding(
@@ -193,6 +195,11 @@ class _AutoTpPageState extends State<AutoTpPage> {
                           item: item,
                           lightText: model.helpLightText,
                         );
+                      } else if (item is HotkeyConfigItem) {
+                        return HotkeyConfigRow(
+                          item: item,
+                          lightText: model.helpLightText,
+                        );
                       }
                       return null;
                     },
@@ -209,14 +216,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
               subTitle: '依据路线自动传送',
               content: Column(
                 children: [
-                  BoolConfigRow(
-                    item: BoolConfigItem(
-                      title: '自动传送',
-                      subTitle: '是否开启自动传送',
-                      valueKey: AutoTpConfig.keyAutoTpEnabled,
-                      valueCallback: AutoTpConfig.to.isAutoTpEnabled,
-                    ),
-                  ),
                   Row(
                     children: [
                       Expanded(

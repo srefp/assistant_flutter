@@ -5,9 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
 import '../app/windows_app.dart';
-import '../components/string_config_row.dart';
+import '../components/config_row/string_config_row.dart';
 import '../components/title_with_sub.dart';
 import '../components/win_text.dart';
+import '../components/win_text_box.dart';
 import '../key_mouse/mouse_button.dart';
 import '../util/key_mouse_name.dart';
 import '../util/search_utils.dart';
@@ -108,7 +109,7 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
               global: widget.item.type == global,
               hotKey: widget.item.keyItemCallback?.call(),
               onValueChanged: (value) =>
-                  HotkeyConfig.to.save(widget.item.valueKey, value),
+                  HotkeyConfig.to.save(widget.item.valueKey!, value),
               onGlobalValueChanged: (value) => hotKeyManager.register(
                   widget.item.keyItemCallback!(),
                   keyDownHandler: widget.item.keyDownHandler),
@@ -171,17 +172,21 @@ class HotkeyBox extends StatefulWidget {
 class _HotkeyBoxState extends State<HotkeyBox> {
   late final FocusNode focusNode;
   late String? value;
+  bool editable = false;
+  late final TextEditingController controller;
 
   @override
   void initState() {
     focusNode = FocusNode();
     value = widget.value;
+    controller = TextEditingController(text: value);
     super.initState();
   }
 
   @override
   void dispose() {
     focusNode.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -201,33 +206,23 @@ class _HotkeyBoxState extends State<HotkeyBox> {
     var text = logicalKeyMap[event.logicalKey] ??
         event.logicalKey.keyLabel.toLowerCase();
 
-    if ([
-      'ctrlleft',
-      'ctrlright',
-      'shiftleft',
-      'shiftright',
-      'altleft',
-      'altright'
-    ].contains(text)) {
-      return;
-    }
-
     final modifiers = <String>[];
     // 识别组合键
-    if (HardwareKeyboard.instance.isControlPressed) {
+    if (HardwareKeyboard.instance.isControlPressed && text!='ctrlleft' && text!='ctrlright') {
       modifiers.add('ctrl');
     }
 
-    if (HardwareKeyboard.instance.isShiftPressed) {
+    if (HardwareKeyboard.instance.isShiftPressed && text != 'shiftleft' && text!='shiftright') {
       modifiers.add('shift');
     }
 
-    if (HardwareKeyboard.instance.isAltPressed) {
+    if (HardwareKeyboard.instance.isAltPressed && text!='altleft' && text!='altright') {
       modifiers.add('alt');
     }
 
     text = modifiers.join(' + ') + (modifiers.isNotEmpty ? ' + ' : '') + text;
     widget.onValueChanged(text);
+    controller.text = text;
     value = text;
 
     // 注册新快捷键
@@ -240,8 +235,29 @@ class _HotkeyBoxState extends State<HotkeyBox> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 34,
-      width: 200,
-      child: Listener(
+      width: 186,
+      child: _buildDisplayView(),
+    );
+  }
+
+  _buildDisplayView() {
+    if (editable) {
+      return WinTextBox(
+        controller: controller,
+        onChanged: (value) {
+          widget.onValueChanged(value);
+          setState(() {
+            this.value = value;
+          });
+        },
+        onSubmitted: (value) {
+          setState(() {
+            editable = false;
+          });
+        },
+      );
+    } else {
+      return Listener(
         onPointerSignal: (event) {
           if (!focusNode.hasFocus) {
             return;
@@ -261,6 +277,7 @@ class _HotkeyBoxState extends State<HotkeyBox> {
 
             widget.onValueChanged(text);
             setState(() {
+              controller.text = text;
               value = text;
             });
           }
@@ -273,13 +290,15 @@ class _HotkeyBoxState extends State<HotkeyBox> {
           if (widget.global) {
             return;
           }
-          setState(() {
-            final text = mouseEventToNameMap[event.buttons];
-            if (text != null) {
-              widget.onValueChanged(text);
+
+          final text = mouseEventToNameMap[event.buttons];
+          if (text != null) {
+            widget.onValueChanged(text);
+            setState(() {
+              controller.text = text;
               value = text;
-            }
-          });
+            });
+          }
           return;
         },
         child: Focus(
@@ -294,6 +313,11 @@ class _HotkeyBoxState extends State<HotkeyBox> {
           },
           child: Button(
             focusNode: focusNode,
+            onLongPress: () {
+              setState(() {
+                editable = true;
+              });
+            },
             onPressed: () {
               if (focusNode.hasFocus) {
                 focusNode.unfocus();
@@ -304,7 +328,7 @@ class _HotkeyBoxState extends State<HotkeyBox> {
             child: WinText(value ?? ''),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

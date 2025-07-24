@@ -103,23 +103,6 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (SettingConfig.to.getHotkeyMenu()) {
-      routes.add(PaneItem(
-        key: const ValueKey(Routes.config),
-        icon: const Icon(FluentIcons.keyboard_classic, size: iconSize),
-        title: Text(
-          '快捷键',
-          style: TextStyle(fontFamily: fontFamily),
-        ),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != Routes.config) {
-            context.go(Routes.config);
-          }
-        },
-      ));
-    }
-
     if (SettingConfig.to.getRecordMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.record),
