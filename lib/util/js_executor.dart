@@ -1,11 +1,15 @@
 import 'dart:math';
 
 import 'package:assistant/auto_gui/system_control.dart';
+import 'package:assistant/components/dialog.dart';
+import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/util/find_util.dart';
 import 'package:assistant/util/script_parser.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 import 'package:flutter_js/flutter_js.dart';
 
@@ -57,7 +61,7 @@ const keys = [
   tpc,
 ];
 
-final JavascriptRuntime jsRuntime = getJavascriptRuntime();
+JavascriptRuntime jsRuntime = getJavascriptRuntime(xhr: false);
 
 late String jsFunction;
 
@@ -144,7 +148,7 @@ void registerJsFunc() async {
 
     // 最多参数：click('left', [12345, 12345], 4, 5, 20)
     if (params.length == 5) {
-      await KeyMouseUtil.move(params[1], 1, 0);
+      await KeyMouseUtil.move(convertDynamicListToIntList(params[1]), 1, 0);
       await Future.delayed(Duration(milliseconds: 2));
       await api.click(
         button: {
@@ -160,17 +164,18 @@ void registerJsFunc() async {
     }
 
     // 三选一：坐标
-    if (params[0] is List && params[1] is int) {
+    if (params.length == 2 && params[0] is List && params[1] is int) {
       await KeyMouseUtil.clickAtPoint(
           convertDynamicListToIntList(params[0]), params[1]);
     }
     // 三选二：坐标+次数
-    else if (params[0] is List &&
+    else if (params.length == 4 &&
+        params[0] is List &&
         params[1] is int &&
         params[2] is int &&
         params[3] is int) {
-      final res = KeyMouseUtil.physicalPos(params[0]);
-      await api.moveTo(point: Point(res[0], res[1]));
+      await KeyMouseUtil.move(convertDynamicListToIntList(params[0]), 1, 0);
+      await Future.delayed(Duration(milliseconds: 2));
       await api.click(
         clicks: params[1],
         interval: Duration(milliseconds: params[2]),
@@ -200,8 +205,7 @@ void registerJsFunc() async {
 
     // 三选二：键位+坐标
     else if (params[0] is String && params[1] is List && params[2] is int) {
-      final res = KeyMouseUtil.physicalPos(params[1]);
-      await api.moveTo(point: Point(res[0], res[1]));
+      await KeyMouseUtil.move(convertDynamicListToIntList(params[1]), 1, 0);
       await api.click(
         button: {
           'left': MouseButton.left,
@@ -342,6 +346,16 @@ Future<void> runScript(
     jsRuntime.executePendingJob();
     await jsRuntime.handlePromise(result);
   } catch (e) {
-    print(e);
+    dialog(
+        title: '脚本执行出错',
+        child: SizedBox(
+          height: 120,
+          child: ListView(
+            children: [
+              WinText(e.toString()),
+            ],
+          ),
+        ));
+    jsRuntime.dispose();
   }
 }

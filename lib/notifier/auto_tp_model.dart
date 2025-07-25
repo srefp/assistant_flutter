@@ -6,12 +6,9 @@ import 'package:assistant/config/app_config.dart';
 import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/config/game_pos/game_pos_config.dart';
 import 'package:assistant/cv/scan.dart';
-import 'package:assistant/dao/crud.dart';
 import 'package:assistant/db/pic_record_db.dart';
-import 'package:assistant/model/tp_route.dart';
 import 'package:assistant/notifier/config_model.dart';
 import 'package:assistant/util/route_util.dart';
-import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:window_manager/window_manager.dart';
@@ -24,7 +21,6 @@ import '../components/config_row/string_config_row.dart';
 import '../config/auto_tp_config.dart';
 import '../config/hotkey_config.dart';
 import '../cv/cv.dart';
-import '../db/tp_route_db.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
@@ -136,6 +132,12 @@ final helpConfigItems = [
     subTitle: 'qm时是否冲刺',
     valueKey: AutoTpConfig.keyQmDash,
     valueCallback: AutoTpConfig.to.isQmDash,
+  ),
+  BoolConfigItem(
+    title: '连锄模式',
+    subTitle: '连续锄地模式，如果传送到路线最后一个点位，下一次会传送到第二个点位。',
+    valueKey: AutoTpConfig.keyContinuousMode,
+    valueCallback: AutoTpConfig.to.isContinuousMode,
   ),
   StringConfigItem(
     title: '快速吃药坐标',
@@ -607,24 +609,13 @@ const String curScreen = '当前屏幕';
 const String targetWindow = '指定窗口';
 
 class AutoTpModel extends ChangeNotifier {
-  String? selectedDir;
-  String? selectedFile;
-  int currentRouteIndex = 0;
-  List<BlockItem> tpPoints = [];
   bool isRunning = false;
-  String? currentRoute;
-  List<TpRoute> routes = [];
-  List<String> routeNames = [];
-  String currentPos = '不在路线中';
-  List<String> posList = ['不在路线中'];
-  String? errorMessage;
   var tasks = ScreenManager.getWindowTasks();
 
   AutoTpModel() {
     // 加载js函数
     Future.delayed(Duration(milliseconds: 10), () {
       registerJsFunc();
-      loadRoutes();
       messagePump();
       detectWorldRole();
       loadTasks();
@@ -651,71 +642,6 @@ class AutoTpModel extends ChangeNotifier {
     tasks = ScreenManager.getWindowTasks();
     anchorWindowList = tasks.map((e) => e.name).toList();
     notifyListeners();
-  }
-
-  loadRoutes() async {
-    routes =
-        (await queryDb(TpRouteDb.tableName)).map(TpRoute.fromJson).toList();
-    routeNames = routes.map((e) => e.scriptName).toList();
-    currentRoute = AutoTpConfig.to.getCurrentRoute();
-
-    if (currentRoute != null) {
-      for (var element in routes) {
-        if (element.scriptName == currentRoute) {
-          try {
-            tpPoints = parseTpPoints(element.content);
-            errorMessage = null;
-          } catch (e) {
-            errorMessage = e.toString();
-          }
-          posList = ['不在路线中'];
-          for (var i = 0; i < tpPoints.length; i++) {
-            posList.add(tpPoints[i].name ?? '点位${i + 1}');
-          }
-        }
-      }
-    }
-
-    if (posList.isNotEmpty) {
-      final index = AutoTpConfig.to.getRouteIndex();
-      if (index < posList.length) {
-        currentPos = posList[index];
-      } else {
-        currentPos = posList[0];
-      }
-    }
-    notifyListeners();
-  }
-
-  selectRoute(final String routeName) {
-    for (var element in routes) {
-      if (element.scriptName == routeName) {
-        currentRoute = element.scriptName;
-        tpPoints = parseTpPoints(element.content);
-        AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
-        posList = ['不在路线中'];
-        for (var i = 0; i < tpPoints.length; i++) {
-          posList.add(tpPoints[i].name ?? '点位${i + 1}');
-        }
-
-        if (posList.isNotEmpty) {
-          AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, 0);
-          currentPos = posList[0];
-        }
-        notifyListeners();
-      }
-    }
-  }
-
-  void selectPos(String value) {
-    currentPos = value;
-    AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, posList.indexOf(value));
-    notifyListeners();
-  }
-
-  /// 解析路线内容
-  List<BlockItem> parseTpPoints(String content) {
-    return RouteUtil.parseFile(content);
   }
 
   var helpLightText = '';
@@ -853,21 +779,6 @@ class AutoTpModel extends ChangeNotifier {
       displayedGameKeyConfigItems = filteredList;
     }
 
-    notifyListeners();
-  }
-
-  void setSelectedDir(String dir) {
-    selectedDir = dir;
-    notifyListeners();
-  }
-
-  void setSelectedFile(String file) {
-    selectedFile = file;
-    notifyListeners();
-  }
-
-  void setCurrentRouteIndex(int index) {
-    currentRouteIndex = index;
     notifyListeners();
   }
 

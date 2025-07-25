@@ -13,14 +13,30 @@ import 'package:re_editor/re_editor.dart';
 import '../app/windows_app.dart';
 import '../auto_gui/system_control.dart';
 import '../components/win_text_box.dart';
+import '../config/auto_tp_config.dart';
 import '../config/config_storage.dart';
+import '../dao/crud.dart';
 import '../manager/screen_manager.dart';
 import '../util/js_executor.dart';
+import '../util/route_util.dart';
+import '../util/script_parser.dart';
 import '../win32/window.dart';
 
 class ScriptEditorModel with ChangeNotifier {
   /// 选择的目录
   ScriptRecordMode? selectedScriptRecordMode;
+
+  String? selectedDir;
+  String? selectedFile;
+
+  int currentRouteIndex = 0;
+  List<BlockItem> tpPoints = [];
+  String? currentRoute;
+  List<TpRoute> routes = [];
+  List<String> routeNames = [];
+  String currentPos = '不在路线中';
+  List<String> posList = ['不在路线中'];
+  String? errorMessage;
 
   /// 选择的文件
   String? selectedScriptName;
@@ -44,7 +60,83 @@ class ScriptEditorModel with ChangeNotifier {
   bool isRecording = false;
 
   ScriptEditorModel() {
+    loadRoutes();
     loadScripts();
+  }
+
+  void setSelectedDir(String dir) {
+    selectedDir = dir;
+    notifyListeners();
+  }
+
+  void setSelectedFile(String file) {
+    selectedFile = file;
+    notifyListeners();
+  }
+
+  loadRoutes() async {
+    routes =
+        (await queryDb(TpRouteDb.tableName)).map(TpRoute.fromJson).toList();
+    routeNames = routes.map((e) => e.scriptName).toList();
+    currentRoute = AutoTpConfig.to.getCurrentRoute();
+
+    if (currentRoute != null) {
+      for (var element in routes) {
+        if (element.scriptName == currentRoute) {
+          try {
+            tpPoints = parseTpPoints(element.content);
+            errorMessage = null;
+          } catch (e) {
+            errorMessage = e.toString();
+          }
+          posList = ['不在路线中'];
+          for (var i = 0; i < tpPoints.length; i++) {
+            posList.add(tpPoints[i].name ?? '点位${i + 1}');
+          }
+        }
+      }
+    }
+
+    if (posList.isNotEmpty) {
+      final index = AutoTpConfig.to.getRouteIndex();
+      if (index < posList.length) {
+        currentPos = posList[index];
+      } else {
+        currentPos = posList[0];
+      }
+    }
+    notifyListeners();
+  }
+
+  void selectPos(String value) {
+    currentPos = value;
+    AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, posList.indexOf(value));
+    notifyListeners();
+  }
+
+  /// 解析路线内容
+  List<BlockItem> parseTpPoints(String content) {
+    return RouteUtil.parseFile(content);
+  }
+
+  selectRoute(final String routeName) {
+    for (var element in routes) {
+      if (element.scriptName == routeName) {
+        currentRoute = element.scriptName;
+        tpPoints = parseTpPoints(element.content);
+        AutoTpConfig.to.save(AutoTpConfig.keyCurrentRoute, routeName);
+        posList = ['不在路线中'];
+        for (var i = 0; i < tpPoints.length; i++) {
+          posList.add(tpPoints[i].name ?? '点位${i + 1}');
+        }
+
+        if (posList.isNotEmpty) {
+          AutoTpConfig.to.save(AutoTpConfig.keyRouteIndex, 0);
+          currentPos = posList[0];
+        }
+        notifyListeners();
+      }
+    }
   }
 
   void loadScripts() async {
@@ -119,13 +211,16 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 选择脚本类型
   void selectScriptType(String value) async {
-    selectedScriptRecordMode = EnumUtil.fromResourceId(value, ScriptRecordMode.values);
-    box.write(ScriptConfig.keySelectedScriptType, selectedScriptRecordMode!.code);
+    selectedScriptRecordMode =
+        EnumUtil.fromResourceId(value, ScriptRecordMode.values);
+    box.write(
+        ScriptConfig.keySelectedScriptType, selectedScriptRecordMode!.code);
     RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
 
     // 加载目录下的文件
     if (selectedScriptRecordMode != null) {
-      scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
+      scriptNameList =
+          await loadScriptsByType(selectedScriptRecordMode!.resourceId);
     }
 
     selectFirstFile(scriptNameList);
@@ -147,7 +242,8 @@ class ScriptEditorModel with ChangeNotifier {
       controller.clearHistory();
     }
 
-    WindowsApp.autoTpModel.selectRoute(value);
+    selectRoute(value);
+    loadRoutes();
 
     notifyListeners();
   }
@@ -162,7 +258,8 @@ class ScriptEditorModel with ChangeNotifier {
       selectFirstDir();
     } else {
       RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
-      scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
+      scriptNameList =
+          await loadScriptsByType(selectedScriptRecordMode!.resourceId);
       selectFirstFile(scriptNameList);
     }
   }
@@ -172,7 +269,8 @@ class ScriptEditorModel with ChangeNotifier {
     RecordModel.instance.scriptRecordMode = selectedScriptRecordMode!;
 
     // 加载目录下的文件
-    scriptNameList = await loadScriptsByType(selectedScriptRecordMode!.resourceId);
+    scriptNameList =
+        await loadScriptsByType(selectedScriptRecordMode!.resourceId);
   }
 
   Future<void> autoSelectFile() async {
@@ -223,7 +321,12 @@ class ScriptEditorModel with ChangeNotifier {
         selectedScriptRecordMode!.resourceId, selectedScriptName!, content);
     isUnsaved = false;
 
-    WindowsApp.autoTpModel.loadRoutes();
+    await loadRoutes();
+    tpPoints = parseTpPoints(content);
+    posList = ['不在路线中'];
+    for (var i = 0; i < tpPoints.length; i++) {
+      posList.add(tpPoints[i].name ?? '点位${i + 1}');
+    }
     notifyListeners();
   }
 
@@ -282,9 +385,7 @@ class ScriptEditorModel with ChangeNotifier {
                       const SizedBox(
                         width: 12,
                       ),
-                      Expanded(
-                          child: WinText(
-                              WindowsApp.autoTpModel.errorMessage ?? '')),
+                      Expanded(child: WinText(errorMessage ?? '')),
                     ],
                   ),
                 ),
@@ -459,7 +560,8 @@ class ScriptEditorModel with ChangeNotifier {
 
     isRecording = true;
 
-    WindowsApp.logModel.registerKeyMouseStream(controller, mode: selectedScriptRecordMode!);
+    WindowsApp.logModel
+        .registerKeyMouseStream(controller, mode: selectedScriptRecordMode!);
     notifyListeners();
   }
 

@@ -2,8 +2,6 @@ import 'package:assistant/components/win_text.dart';
 import 'package:assistant/components/win_text_box.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Material, Theme;
-import 'package:provider/provider.dart';
-import 'package:system_theme/system_theme.dart';
 
 import '../theme.dart';
 import '../util/search_utils.dart';

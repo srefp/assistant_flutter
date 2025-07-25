@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:assistant/components/config_row/bool_config_row.dart';
 import 'package:assistant/components/button_with_icon.dart';
+import 'package:assistant/components/config_row/bool_config_row.dart';
 import 'package:assistant/components/config_row/hotkey_config_row.dart';
 import 'package:assistant/components/config_row/int_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/components/win_text_box.dart';
-import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/win32/os_version.dart';
 import 'package:flutter/material.dart';
@@ -204,67 +203,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       return null;
                     },
                     shrinkWrap: true,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CustomSliverBox(
-            child: IconCard(
-              icon: Icons.rocket_launch_rounded,
-              title: '自动传送',
-              subTitle: '依据路线自动传送',
-              content: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TitleWithSub(
-                          title: '路线',
-                          subTitle: '重新选择路线起始位置置零',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 280,
-                        child: HighlightComboBox(
-                          value: model.currentRoute,
-                          items: model.routeNames,
-                          onChanged: (value) {
-                            model.selectRoute(value);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TitleWithSub(
-                          title: '当前位置',
-                          subTitle: '支持选择你现在所在的位置',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 280,
-                        child: HighlightComboBox(
-                          value: model.currentPos,
-                          items: model.posList,
-                          onChanged: (value) {
-                            model.selectPos(value);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  BoolConfigRow(
-                    item: BoolConfigItem(
-                      title: '连锄模式',
-                      subTitle: '连续锄地模式，如果传送到路线最后一个点位，下一次会传送到第二个点位。',
-                      valueKey: AutoTpConfig.keyContinuousMode,
-                      valueCallback: AutoTpConfig.to.isContinuousMode,
-                    ),
                   ),
                 ],
               ),

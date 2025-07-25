@@ -1,7 +1,5 @@
-import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/constants/script_record_mode.dart';
-import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/notifier/script_editor_model.dart';
 import 'package:assistant/util/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -64,23 +62,20 @@ class ScriptEditor extends StatelessWidget {
                           )
                         : const SizedBox(),
                     model.selectedScriptRecordMode == ScriptRecordMode.autoTp
-                        ? Consumer<AutoTpModel>(
-                            builder: (context, model, child) {
-                            return Container(
-                              constraints: BoxConstraints(
-                                minWidth: 100,
-                              ),
-                              width: 280,
-                              height: 34,
-                              child: HighlightComboBox(
-                                value: model.currentPos,
-                                items: model.posList,
-                                onChanged: (value) {
-                                  model.selectPos(value);
-                                },
-                              ),
-                            );
-                          })
+                        ? Container(
+                            constraints: BoxConstraints(
+                              minWidth: 100,
+                            ),
+                            width: 280,
+                            height: 34,
+                            child: HighlightComboBox(
+                              value: model.currentPos,
+                              items: model.posList,
+                              onChanged: (value) {
+                                model.selectPos(value);
+                              },
+                            ),
+                          )
                         : const SizedBox(),
                     SizedBox(
                       width: 10,
@@ -156,7 +151,7 @@ class ScriptEditor extends StatelessWidget {
                   icon: Icon(
                     FluentIcons.info_solid,
                     size: 16,
-                    color: WindowsApp.autoTpModel.errorMessage == null
+                    color: model.errorMessage == null
                         ? null
                         : Colors.red,
                   ),

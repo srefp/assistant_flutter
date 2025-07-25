@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:assistant/constants/ratio.dart';
 import 'package:assistant/manager/screen_manager.dart';
 import 'package:ffi/ffi.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:win32/win32.dart';
 
 class ScreenRect {

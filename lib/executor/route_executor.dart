@@ -12,8 +12,7 @@ class RouteExecutor {
   static AutoTpConfig config = AutoTpConfig.to;
 
   static void toPrev() {
-    print('上一个点位');
-    var tpPoints = WindowsApp.autoTpModel.tpPoints;
+    var tpPoints = WindowsApp.scriptEditorModel.tpPoints;
 
     if (config.getRouteIndex() > 1 &&
         config.getRouteIndex() <= tpPoints.length) {
@@ -23,12 +22,11 @@ class RouteExecutor {
     // 刷新当前位置
     final curPos = tpPoints[config.getRouteIndex() - 1].name ??
         '点位${config.getRouteIndex()}';
-    WindowsApp.autoTpModel.selectPos(curPos);
+    WindowsApp.scriptEditorModel.selectPos(curPos);
   }
 
   static void toNext() {
-    print('下一个点位');
-    var tpPoints = WindowsApp.autoTpModel.tpPoints;
+    var tpPoints = WindowsApp.scriptEditorModel.tpPoints;
 
     if (config.getRouteIndex() >= 0 &&
         config.getRouteIndex() < tpPoints.length) {
@@ -38,7 +36,7 @@ class RouteExecutor {
     // 刷新当前位置
     final curPos = tpPoints[config.getRouteIndex() - 1].name ??
         '点位${config.getRouteIndex()}';
-    WindowsApp.autoTpModel.selectPos(curPos);
+    WindowsApp.scriptEditorModel.selectPos(curPos);
   }
 
   static Future<void> tpNext(bool qm) async {
@@ -53,7 +51,7 @@ class RouteExecutor {
     tpForbidden = true;
 
     try {
-      var tpPoints = WindowsApp.autoTpModel.tpPoints;
+      var tpPoints = WindowsApp.scriptEditorModel.tpPoints;
       if (config.isContinuousMode()) {
         var prevRouteIndex = config.getRouteIndex();
         config.save(
@@ -75,7 +73,7 @@ class RouteExecutor {
         // 刷新当前位置
         final curPos = tpPoints[config.getRouteIndex() - 1].name ??
             '点位${config.getRouteIndex()}';
-        WindowsApp.autoTpModel.selectPos(curPos);
+        WindowsApp.scriptEditorModel.selectPos(curPos);
       } else {
         showToast('当前路线已结束！');
       }

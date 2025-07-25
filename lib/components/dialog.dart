@@ -16,8 +16,8 @@ dialog({
       builder: (context) => ContentDialog(
             title: WinText(title),
             content: child ??
-                SizedBox(
-                  height: height,
+                 SizedBox(
+                 height: height,
                   child: Column(
                     children: [
                       WinText(content),

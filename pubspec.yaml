@@ -60,7 +60,7 @@ dependencies:
   re_highlight: ^0.0.3
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
-  flutter_js: ^0.8.1
+  flutter_js: ^0.8.5
   hotkey_manager: ^0.2.3
   system_tray: ^2.0.3
   adaptive_scrollbar: ^2.1.2
