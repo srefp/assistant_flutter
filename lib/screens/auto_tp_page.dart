@@ -8,6 +8,7 @@ import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/components/win_text_box.dart';
+import 'package:assistant/main.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/win32/os_version.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +107,20 @@ class _AutoTpPageState extends State<AutoTpPage> {
                 shrinkWrap: true,
                 children: [
                   TitleWithSub(
+                    title: '重启',
+                    subTitle: '如果程序内存异常增长，可以重启应用解决',
+                    rightWidget: SizedBox(
+                      height: 34,
+                      child: ButtonWithIcon(
+                        onPressed: () {
+                          restartApp();
+                        },
+                        text: '重启',
+                        icon: Icons.restart_alt,
+                      ),
+                    ),
+                  ),
+                  TitleWithSub(
                     title: '运行方式',
                     subTitle: '选择全局生效或者是在锚定窗口内生效',
                     rightWidget: SizedBox(
@@ -157,7 +172,8 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.cases_rounded,
               title: '内置宏配置',
-              subTitle: '内置宏，效率较高，操作逻辑固定。单击键位按钮可以监听键鼠进行配置，再次单击不再监听。长按后可以输入键位，回车完成。',
+              subTitle:
+                  '内置宏，效率较高，操作逻辑固定。单击键位按钮可以监听键鼠进行配置，再次单击不再监听。长按后可以输入键位，回车完成。',
               content: Column(
                 children: [
                   Padding(

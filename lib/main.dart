@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
@@ -18,15 +20,46 @@ const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
 final DateTime outDate = DateTime(2025, 10, 1);
+const restart = 'restart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kDebugMode) {
-    await WindowsSingleInstance.ensureSingleInstance(args, appId);
+    await WindowsSingleInstance.ensureSingleInstance(
+      args,
+      appId,
+      onSecondWindow: (args) {
+        if (args.isNotEmpty && restart == args.first) {
+          exit(0);
+        }
+      },
+      bringWindowToFront: true,
+    );
   }
   await _initApp();
 
   runApp(const WindowsApp());
+}
+
+/// 重启应用，此方法有问题，原来的程序结束的时候，被新开启的程序也会结束
+void restartApp() async {
+  if (Platform.isWindows) {
+    await Process.start(
+      Platform.resolvedExecutable,
+      [restart],
+      runInShell: true,
+    );
+  }
+  closeApp();
+}
+
+/// 关闭应用
+void closeApp() async {
+  if (Platform.isWindows) {
+    WindowsApp.autoTpModel.stop();
+    await windowManager.hide();
+    exit(0);
+  }
 }
 
 /// 初始化应用
