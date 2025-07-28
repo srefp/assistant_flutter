@@ -9,6 +9,7 @@ class TitleWithSub extends StatelessWidget {
   final Widget rightWidget;
   final String lightText;
   final bool hasSubTitle;
+  final bool subTitleSelectable;
 
   const TitleWithSub({
     super.key,
@@ -17,6 +18,7 @@ class TitleWithSub extends StatelessWidget {
     this.lightText = '',
     this.rightWidget = const SizedBox(),
     this.hasSubTitle = true,
+    this.subTitleSelectable = false,
   });
 
   @override
@@ -57,6 +59,7 @@ class TitleWithSub extends StatelessWidget {
             ),
             HighlightText(
               subTitle,
+              selectable: subTitleSelectable,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w200,

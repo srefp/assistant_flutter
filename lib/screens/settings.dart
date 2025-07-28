@@ -328,6 +328,18 @@ class _SettingsState extends State<Settings> with PageMixin {
         ),
       ),
       ConfigRow(
+        title: '效率',
+        content: ToggleSwitch(
+          checked: SettingConfig.to.getEfficientMenu(),
+          onChanged: (value) => {
+            setState(() {
+              SettingConfig.to.save(SettingConfig.keyEfficientMenu, value);
+              WindowsApp.appModel.changeMenu();
+            })
+          },
+        ),
+      ),
+      ConfigRow(
         title: '文档',
         content: ToggleSwitch(
           checked: SettingConfig.to.getDocMenu(),

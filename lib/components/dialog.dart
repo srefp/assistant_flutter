@@ -14,13 +14,18 @@ dialog({
       barrierDismissible: barrierDismissible,
       context: rootNavigatorKey.currentContext!,
       builder: (context) => ContentDialog(
-            title: WinText(title),
+            title: WinText(
+              title,
+            ),
             content: child ??
-                 SizedBox(
-                 height: height,
+                SizedBox(
+                  height: height,
                   child: Column(
                     children: [
-                      WinText(content),
+                      WinText(
+                        content,
+                        selectable: true,
+                      ),
                     ],
                   ),
                 ),

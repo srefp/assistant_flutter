@@ -11,4 +11,6 @@ class Routes {
   static const captureManagement = '/capture-management';
   static const macro = '/macro';
   static const macroEdit = '/macro/macro-edit';
+  static const efficient = '/efficient';
+  static const efficientEdit = '/efficient/efficient-edit';
 }

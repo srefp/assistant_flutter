@@ -27,6 +27,9 @@ class HighlightText extends StatelessWidget {
   /// 要显示的内容中，需要高亮显示的文字的文本风格
   final TextStyle? lightStyle;
 
+  /// 非高亮时是否可选
+  final bool selectable;
+
   /// 默认普通文本的样式
   final TextStyle _defaultTextStyle = TextStyle(
     fontSize: 14,
@@ -45,6 +48,7 @@ class HighlightText extends StatelessWidget {
     super.key,
     this.lightText = '',
     this.style,
+    this.selectable = false,
   })  : textLower = text.toLowerCase(),
         lightStyle = style?.copyWith(
           color: Colors.orangeAccent,
@@ -57,10 +61,15 @@ class HighlightText extends StatelessWidget {
   Widget build(BuildContext context) {
     // 如果没有需要高亮显示的内容
     if (lightText.isEmpty) {
-      return Text(
-        text.replaceAll('', '\u200B'),
-        style: style ?? _defaultTextStyle,
-      );
+      return selectable
+          ? SelectableText(
+              text.replaceAll('', '\u200B'),
+              style: style ?? _defaultTextStyle,
+            )
+          : Text(
+              text.replaceAll('', '\u200B'),
+              style: style ?? _defaultTextStyle,
+            );
     }
     // 如果有需要高亮显示的内容
     return _lightView();
@@ -98,8 +107,7 @@ class HighlightText extends StatelessWidget {
       final originalTextPart = text.substring(end, end + lightLen);
       // 第一步：添加正常显示的文本
       spans.add(TextSpan(
-          text: text.substring(start, end),
-          style: style ?? _defaultTextStyle));
+          text: text.substring(start, end), style: style ?? _defaultTextStyle));
       // 第二步：添加高亮显示的文本
       spans.add(TextSpan(
           text: originalTextPart, style: lightStyle ?? _defaultLightStyle));

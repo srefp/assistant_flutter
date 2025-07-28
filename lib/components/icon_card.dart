@@ -8,6 +8,7 @@ class IconCard extends StatelessWidget {
   final String subTitle;
   final Widget content;
   final Widget rightWidget;
+  final bool subTitleSelectable;
 
   const IconCard({
     super.key,
@@ -16,6 +17,7 @@ class IconCard extends StatelessWidget {
     this.subTitle = '',
     this.content = const SizedBox(),
     this.rightWidget = const SizedBox(),
+    this.subTitleSelectable = false,
   });
 
   @override
@@ -30,6 +32,7 @@ class IconCard extends StatelessWidget {
         header: TitleWithSub(
           title: title,
           subTitle: subTitle,
+          subTitleSelectable: subTitleSelectable,
           rightWidget: rightWidget,
         ),
         content: content,

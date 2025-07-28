@@ -82,6 +82,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyQmDash = "qmDash";
   static const keyWorldRect = "worldRect";
   static const keyAnchorRect = "anchorRect";
+  static const keyInnerMacroEnabled = "innerMacroEnabled";
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
@@ -246,6 +247,8 @@ class AutoTpConfig with ConfigStorage {
   int getPickUpDelay() => box.read(keyPickUpDelay) ?? 5;
 
   bool isQmDash() => box.read(keyQmDash) ?? true;
+
+  bool isInnerMacroEnabled() => box.read(keyInnerMacroEnabled) ?? false;
 
   String getWorldString() =>
       box.read(keyWorldRect) ?? "62684, 2215, 63315, 3247";

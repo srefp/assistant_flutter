@@ -145,3 +145,13 @@ async function findColor() {
 async function findPic() {
     return await sendMessage('findPic', JSON.stringify([...arguments]));
 }
+
+// 执行shell脚本
+async function sh() {
+    return await sendMessage('sh', JSON.stringify([...arguments]));
+}
+
+// 最大化当前窗口
+async function maxCurrentWindow() {
+    return await sendMessage('maxCurrentWindow', JSON.stringify([]));
+}

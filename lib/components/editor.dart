@@ -35,7 +35,7 @@ class _EditorState extends State<Editor> {
   Widget build(BuildContext context) {
     return CodeAutocomplete(
       promptsBuilder: DefaultCodeAutocompletePromptsBuilder(
-        directPrompts: keys.map((key) => CodeKeywordPrompt(word: key)).toList(),
+        directPrompts: hintKeys.map((key) => CodeKeywordPrompt(word: key)).toList(),
       ),
       viewBuilder: (context, notifier, onSelected) {
         return _DefaultCodeAutocompleteListView(

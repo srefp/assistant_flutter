@@ -138,6 +138,23 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
+    if (SettingConfig.to.getEfficientMenu()) {
+      routes.add(PaneItem(
+        key: const ValueKey(Routes.efficient),
+        icon: const Icon(FluentIcons.lightning_bolt, size: iconSize),
+        title: Text(
+          '效率',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != Routes.efficient) {
+            context.go(Routes.efficient);
+          }
+        },
+      ));
+    }
+
     if (SettingConfig.to.getDocMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.doc),

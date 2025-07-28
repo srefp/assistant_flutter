@@ -30,8 +30,10 @@ import 'package:window_manager/window_manager.dart';
 import '../notifier/app_model.dart';
 import '../notifier/auto_tp_model.dart';
 import '../notifier/config_model.dart';
+import '../notifier/efficient_model.dart';
 import '../routes/routes.dart';
 import '../screens/auto_tp_page.dart';
+import '../screens/efficient_page.dart';
 import '../screens/script_editor.dart';
 import '../screens/settings.dart';
 import '../screens/test_page.dart';
@@ -50,6 +52,7 @@ class WindowsApp extends StatefulWidget {
   static final scriptManagementModel = ScriptManagementModel();
   static final captureManagementModel = CaptureManagementModel();
   static final macroModel = MacroModel();
+  static final efficientModel = EfficientModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -126,6 +129,11 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
       // 宏
       ChangeNotifierProvider(
         create: (context) => WindowsApp.macroModel,
+      ),
+
+      // 效率
+      ChangeNotifierProvider(
+        create: (context) => WindowsApp.efficientModel,
       ),
 
       // 文档
@@ -306,6 +314,11 @@ _buildRoutes() {
 
     /// Doc
     GoRoute(path: Routes.doc, builder: (context, state) => const DocPage()),
+
+    /// Efficient
+    GoRoute(
+        path: Routes.efficient,
+        builder: (context, state) => const EfficientPage()),
   ];
 
   if (showTools) {

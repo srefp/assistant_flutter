@@ -8,9 +8,11 @@ import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
 import 'package:assistant/components/title_with_sub.dart';
 import 'package:assistant/components/win_text_box.dart';
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
 import 'package:assistant/win32/os_version.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:superuser/superuser.dart';
@@ -20,6 +22,7 @@ import '../components/config_row/string_config_row.dart';
 import '../components/dialog.dart';
 import '../components/divider.dart';
 import '../components/win_text.dart';
+import '../config/hotkey_config.dart';
 import '../theme.dart';
 
 bool finishedSettingTheme = false;
@@ -89,6 +92,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
               icon: Icons.play_arrow_rounded,
               title: '耕地机，启动！',
               subTitle: "启动后才能使用各项功能，QQ群660182560",
+              subTitleSelectable: true,
               rightWidget: SizedBox(
                 height: 34,
                 child: ButtonWithIcon(
@@ -174,6 +178,48 @@ class _AutoTpPageState extends State<AutoTpPage> {
               title: '内置宏配置',
               subTitle:
                   '内置宏，效率较高，操作逻辑固定。单击键位按钮可以监听键鼠进行配置，再次单击不再监听。长按后可以输入键位，回车完成。',
+              rightWidget: SizedBox(
+                child: ToggleSwitch(
+                  checked: AutoTpConfig.to.isInnerMacroEnabled(),
+                  onChanged: (value) {
+                    setState(() {
+                      AutoTpConfig.to
+                          .save(AutoTpConfig.keyInnerMacroEnabled, value);
+                      final innerMacroEnabled =
+                          AutoTpConfig.to.isInnerMacroEnabled();
+                      if (!innerMacroEnabled) {
+                        AutoTpConfig.to.save(HotkeyConfig.keyShowCoordsEnabled, false);
+                        AutoTpConfig.to.save(HotkeyConfig.keyHalfTpEnabled, false);
+                        AutoTpConfig.to.save(HotkeyConfig.keyToPrevEnabled, false);
+                        AutoTpConfig.to.save(HotkeyConfig.keyToNextEnabled, false);
+                        AutoTpConfig.to.save(HotkeyConfig.keyQmAutoTpEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyQuickPickEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyToggleQuickPickEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyAutoTpEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyDashEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyEatFoodEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyFoodRecordEnabled, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyQmDash, false);
+                        AutoTpConfig.to.save(AutoTpConfig.keyContinuousMode, false);
+                      } else {
+                        AutoTpConfig.to.save(HotkeyConfig.keyShowCoordsEnabled, true);
+                        AutoTpConfig.to.save(HotkeyConfig.keyHalfTpEnabled, true);
+                        AutoTpConfig.to.save(HotkeyConfig.keyToPrevEnabled, true);
+                        AutoTpConfig.to.save(HotkeyConfig.keyToNextEnabled, true);
+                        AutoTpConfig.to.save(HotkeyConfig.keyQmAutoTpEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyQuickPickEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyToggleQuickPickEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyAutoTpEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyDashEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyEatFoodEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyFoodRecordEnabled, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyQmDash, true);
+                        AutoTpConfig.to.save(AutoTpConfig.keyContinuousMode, true);
+                      }
+                    });
+                  },
+                ),
+              ),
               content: Column(
                 children: [
                   Padding(

@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:io';
 
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:assistant/components/dialog.dart';
@@ -9,9 +9,9 @@ import 'package:assistant/util/find_util.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 import 'package:flutter_js/flutter_js.dart';
+import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
@@ -40,6 +40,32 @@ const book = "book";
 const tpc = "tpc";
 const findColor = "findColor";
 const findPic = "findPic";
+const sh = "sh";
+const maxCurrentWindow = "maxCurrentWindow";
+
+const hintKeys = [
+  tp,
+  wait,
+  move,
+  moveR,
+  moveR3D,
+  drag,
+  mDown,
+  mUp,
+  click,
+  kDown,
+  kUp,
+  press,
+  cp,
+  wheel,
+  map,
+  book,
+  tpc,
+  findColor,
+  findPic,
+  sh,
+  maxCurrentWindow,
+];
 
 const keys = [
   tp,
@@ -109,12 +135,14 @@ void registerJsFunc() async {
 
   // 3D视角的鼠标相对移动
   jsRuntime.onMessage(moveR3D, (params) async {
+    List<int> distance = convertDynamicListToIntList(params[0]);
     if (params.length == 2) {
-      await KeyMouseUtil.moveR3D(params[0], 1, 0);
+      await KeyMouseUtil.moveR3D(distance, 1, 0);
+      await Future.delayed(Duration(milliseconds: params[1]));
     } else if (params.length == 4) {
-      await KeyMouseUtil.moveR3D(params[0], params[1], params[2]);
+      await KeyMouseUtil.moveR3D(distance, params[1], params[2]);
+      await Future.delayed(Duration(milliseconds: params[3]));
     }
-    await Future.delayed(Duration(milliseconds: params[3]));
   });
 
   // 滚轮
@@ -320,6 +348,46 @@ void registerJsFunc() async {
         convertDynamicListToIntList(params[0]), params[1]);
     return res;
   });
+
+  // 执行shell脚本
+  jsRuntime.onMessage(sh, (parameters) async {
+    final params = <String>[];
+    for (var i = 0; i < parameters.length; i++) {
+      params.add(parameters[i].toString());
+    }
+    Process? process;
+    try {
+      process = await Process.start(
+        params[0],
+        params.sublist(1),
+        mode: ProcessStartMode.detached,
+        environment: Platform.environment,
+      );
+    } catch (e) {
+      dialog(
+        title: '错误',
+        child: SizedBox(
+          height: 200,
+          child: ListView(
+            children: [
+              WinText(e.toString()),
+            ],
+          ),
+        ),
+      );
+    }
+    return process?.pid;
+  });
+
+  // 当前窗口最大化
+  jsRuntime.onMessage(maxCurrentWindow, (params) async {
+    // 获取当前前台窗口句柄
+    final hWnd = GetForegroundWindow();
+    if (hWnd == 0) return; // 无前台窗口时返回
+
+    // 调用Win32 API最大化窗口（SW_MAXIMIZE=3）
+    ShowWindow(hWnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+  });
 }
 
 /// 运行js代码
@@ -357,5 +425,6 @@ Future<void> runScript(
           ),
         ));
     jsRuntime.dispose();
+    registerJsFunc();
   }
 }

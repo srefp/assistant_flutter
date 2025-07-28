@@ -5,7 +5,11 @@ import 'package:assistant/config/game_key_config.dart';
 import 'package:assistant/util/js_executor.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:assistant/win32/toast.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
+
+import '../components/dialog.dart';
+import '../components/win_text.dart';
 
 class RouteExecutor {
   static bool tpForbidden = false;
@@ -78,7 +82,17 @@ class RouteExecutor {
         showToast('当前路线已结束！');
       }
     } catch (e) {
-      showToast('脚本执行出错了');
+      dialog(
+        title: '脚本执行出错',
+        child: SizedBox(
+          height: 200,
+          child: ListView(
+            children: [
+              WinText(e.toString()),
+            ],
+          ),
+        ),
+      );
     } finally {
       Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpCooldown()),
           () {

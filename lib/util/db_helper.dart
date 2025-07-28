@@ -1,3 +1,4 @@
+import 'package:assistant/db/efficient_db.dart';
 import 'package:assistant/db/macro_db.dart';
 import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/main.dart';
@@ -43,7 +44,7 @@ class DbHelper {
               await db.execute(TpRouteDb.ddl);
               await db.execute(PicRecordDb.ddl);
               await db.execute(MacroDb.ddl);
-              // await db.execute(await TpRouteDb.initRouteSql);
+              await db.execute(EfficientDb.ddl);
             },
             onUpgrade: (db, oldVersion, newVersion) async {
               if (oldVersion < 2 && newVersion >= 2) {
@@ -122,6 +123,9 @@ class DbHelper {
                       MacroDb.tableName, {'uniqueId': Ulid().toString()},
                       where: 'uniqueId is null and id = ?', whereArgs: [id]);
                 }
+              }
+              if (oldVersion < 7 && newVersion >= 7) {
+                await db.execute(EfficientDb.ddl);
               }
             }),
       );
