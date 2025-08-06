@@ -2,7 +2,7 @@
 
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/config_row.dart';
-import 'package:assistant/config/dev_config.dart';
+import 'package:assistant/config/env_config.dart';
 import 'package:assistant/config/setting_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -353,7 +353,7 @@ class _SettingsState extends State<Settings> with PageMixin {
       ),
     ];
 
-    if (showTools) {
+    if (Env.showTools) {
       menus.add(
         ConfigRow(
           title: '工具',
@@ -370,7 +370,7 @@ class _SettingsState extends State<Settings> with PageMixin {
       );
     }
 
-    if (showLog) {
+    if (Env.showLog) {
       menus.add(
         ConfigRow(
           title: '日志查看',

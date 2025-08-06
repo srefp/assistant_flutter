@@ -1,6 +1,6 @@
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/app/windows_app.dart';
-import 'package:assistant/config/dev_config.dart';
+import 'package:assistant/config/env_config.dart';
 import 'package:assistant/notifier/app_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -172,7 +172,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (showTools && SettingConfig.to.getToolMenu()) {
+    if (Env.showTools && SettingConfig.to.getToolMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.tool),
         icon: const Icon(FluentIcons.toolbox, size: iconSize),
@@ -189,7 +189,7 @@ class _RootAppState extends State<RootApp> {
       ));
     }
 
-    if (showTest && SettingConfig.to.getTestMenu()) {
+    if (Env.showTest && SettingConfig.to.getTestMenu()) {
       routes.add(PaneItem(
         key: const ValueKey(Routes.test),
         icon: const Icon(FluentIcons.test_case, size: iconSize),

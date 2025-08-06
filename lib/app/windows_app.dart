@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:assistant/app/root_app.dart';
 import 'package:assistant/components/win_text.dart';
-import 'package:assistant/config/dev_config.dart';
+import 'package:assistant/config/env_config.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/capture_management_model.dart';
@@ -265,18 +265,22 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
-final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
-  ShellRoute(
-    navigatorKey: _shellNavigatorKey,
-    builder: (context, state, child) {
-      return RootApp(
-        shellContext: _shellNavigatorKey.currentContext,
-        child: child,
-      );
-    },
-    routes: _buildRoutes(),
-  ),
-]);
+final router = GoRouter(
+  navigatorKey: rootNavigatorKey,
+  initialLocation: Env.initialRoute,
+  routes: [
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) {
+        return RootApp(
+          shellContext: _shellNavigatorKey.currentContext,
+          child: child,
+        );
+      },
+      routes: _buildRoutes(),
+    ),
+  ],
+);
 
 _buildRoutes() {
   final routes = <GoRoute>[
@@ -321,7 +325,7 @@ _buildRoutes() {
         builder: (context, state) => const EfficientPage()),
   ];
 
-  if (showTools) {
+  if (Env.showTools) {
     routes.add(
       GoRoute(
         path: Routes.tool,
@@ -329,7 +333,7 @@ _buildRoutes() {
       ),
     );
   }
-  if (showTest) {
+  if (Env.showTest) {
     routes.add(
       GoRoute(path: Routes.test, builder: (context, state) => const Test()),
     );

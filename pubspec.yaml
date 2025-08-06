@@ -38,6 +38,8 @@ dependencies:
     path: D:/codeRepo/AndroidStudioProjects/win32/packages/win32
   windows_single_instance:
     path: D:/codeRepo/AndroidStudioProjects/flutter_windows_single_instance
+  launch_at_startup:
+    path: D:/codeRepo/AndroidStudioProjects/launch_at_startup
   flutter_syntax_view:
     git:
       url: https://github.com/YehudaKremer/flutter_syntax_view.git
