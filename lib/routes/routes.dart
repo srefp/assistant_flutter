@@ -8,7 +8,8 @@ class Routes {
   static const doc = '/doc';
   static const tool = '/tool';
   static const scriptManagement = '/script-management';
-  static const captureManagement = '/capture-management';
+  static const pic = '/pic';
+  static const picEdit = '/pic/pic-edit';
   static const macro = '/macro';
   static const macroEdit = '/macro/macro-edit';
   static const efficient = '/efficient';

@@ -126,6 +126,27 @@ class DbHelper {
               }
               if (oldVersion < 7 && newVersion >= 7) {
                 await db.execute(EfficientDb.ddl);
+
+                // 查询表结构获取现有列
+                final picRecordColumns = await db
+                    .rawQuery('PRAGMA table_info(${PicRecordDb.tableName})');
+                final picRecordHasWidth =
+                picRecordColumns.any((col) => col['name'] == 'width');
+
+                if (!picRecordHasWidth) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN width INTEGER
+                  ''');
+                }
+
+                final picRecordHasHeight =
+                picRecordColumns.any((col) => col['name'] == 'height');
+
+                if (!picRecordHasHeight) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN height INTEGER
+                  ''');
+                }
               }
             }),
       );

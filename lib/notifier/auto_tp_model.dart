@@ -861,6 +861,6 @@ class AutoTpModel extends ChangeNotifier {
     final encodedImage = await encodeImage(capture);
     print('encodedImage: data:image/png;base64,$encodedImage');
 
-    savePickRecord(item.valueKey!, encodedImage, capture);
+    savePickRecord(item.valueKey!, rect.width, rect.height, encodedImage, capture);
   }
 }

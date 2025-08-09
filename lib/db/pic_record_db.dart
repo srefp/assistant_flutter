@@ -12,6 +12,8 @@ class PicRecordDb {
       id integer primary key autoincrement, -- 主键
       picName text, -- 图片名称
       image text, -- 图片路径
+      width integer, -- 宽度
+      height integer, -- 高度
       createdOn integer, -- 创建时间
       updatedOn integer -- 更新时间
     );
@@ -21,9 +23,9 @@ class PicRecordDb {
 final Map<String, PicRecord> picRecordMap = {};
 
 /// 保存截图
-Future<void> savePickRecord(String picName, String image, cv.Mat mat) async {
+Future<void> savePickRecord(String picName, int width, int height, String image, cv.Mat mat) async {
   final picRecord = await loadPicRecord(picName);
-  var newPicRecord = PicRecord(picName: picName, image: image);
+  var newPicRecord = PicRecord(picName: picName, width: width, height: height, image: image);
   newPicRecord.mat = mat;
   picRecordMap[picName] = newPicRecord;
 

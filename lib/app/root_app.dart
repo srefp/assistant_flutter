@@ -122,7 +122,7 @@ class _RootAppState extends State<RootApp> {
 
     if (SettingConfig.to.getCaptureManagementMenu()) {
       routes.add(PaneItem(
-        key: const ValueKey(Routes.captureManagement),
+        key: const ValueKey(Routes.pic),
         icon: const Icon(FluentIcons.picture, size: iconSize),
         title: Text(
           '截图管理',
@@ -131,8 +131,8 @@ class _RootAppState extends State<RootApp> {
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() !=
-              Routes.captureManagement) {
-            context.go(Routes.captureManagement);
+              Routes.pic) {
+            context.go(Routes.pic);
           }
         },
       ));

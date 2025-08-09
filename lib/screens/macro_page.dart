@@ -1,4 +1,5 @@
 import 'package:assistant/components/button_with_icon.dart';
+import 'package:assistant/components/page_title.dart';
 import 'package:assistant/model/macro.dart';
 import 'package:assistant/notifier/macro_model.dart';
 import 'package:assistant/routes/routes.dart';
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../app/windows_app.dart';
 import '../components/divider.dart';
 import '../components/title_with_sub.dart';
-import '../components/win_text.dart';
 import '../components/win_text_box.dart';
 import '../constants/profile_status.dart';
 import 'auto_tp_page.dart';
@@ -24,15 +24,7 @@ class MacroPage extends StatelessWidget {
       return Consumer<MacroModel>(builder: (context, model, child) {
         return CustomScrollView(
           slivers: [
-            CustomSliverBox(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: WinText(
-                  '宏',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+            PageTitle(title: '宏'),
             CustomSliverBox(
               child: Card(
                 child: Column(

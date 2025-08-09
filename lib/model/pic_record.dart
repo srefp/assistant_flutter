@@ -14,6 +14,12 @@ class PicRecord {
   /// 图像
   String image;
 
+  /// 宽度
+  int width;
+
+  /// 高度
+  int height;
+
   /// 图片
   cv.Mat? mat;
 
@@ -27,6 +33,8 @@ class PicRecord {
     this.id,
     required this.picName,
     required this.image,
+    required this.width,
+    required this.height,
     int? createdOn,
     int? updatedOn,
   }) {
@@ -46,6 +54,8 @@ class PicRecord {
         id: json['id'] as int?,
         picName: json['picName'] as String,
         image: json['image'] as String,
+        width: json['width'] as int,
+        height: json['height'] as int,
         createdOn: json['createdOn'] as int?,
         updatedOn: json['updatedOn'] as int?,
       );
@@ -54,11 +64,13 @@ class PicRecord {
         'id': id,
         'picName': picName,
         'image': image,
+        'width': width,
+        'height': height,
         'createdOn': createdOn,
         'updatedOn': updatedOn,
       };
 
   @override
   String toString() =>
-      'PicRecord{id: $id, picName: $picName, image: $image, createdOn: $createdOn, updatedOn: $updatedOn}';
+      'PicRecord{id: $id, picName: $picName, image: $image, width: $width, height: $height, createdOn: $createdOn, updatedOn: $updatedOn}';
 }

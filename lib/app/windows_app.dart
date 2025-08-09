@@ -50,7 +50,7 @@ class WindowsApp extends StatefulWidget {
   static final configModel = ConfigModel();
   static final docModel = DocModel();
   static final scriptManagementModel = ScriptManagementModel();
-  static final captureManagementModel = CaptureManagementModel();
+  static final captureManagementModel = PicModel();
   static final macroModel = MacroModel();
   static final efficientModel = EfficientModel();
 
@@ -301,7 +301,7 @@ _buildRoutes() {
 
     /// Capture Management
     GoRoute(
-        path: Routes.captureManagement,
+        path: Routes.pic,
         builder: (context, state) => const CaptureManagementPage()),
 
     /// Macro
