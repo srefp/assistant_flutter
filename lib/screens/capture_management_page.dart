@@ -69,7 +69,7 @@ class CaptureManagementPage extends StatelessWidget {
                           onPressed: () {
                             model.createNewPic();
                             rootNavigatorKey.currentContext!
-                                .push(Routes.macroEdit);
+                                .push(Routes.picEdit);
                           },
                         ),
                         SizedBox(width: 16),

@@ -8,7 +8,6 @@ import 'package:excel/excel.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:ulid/ulid.dart';
@@ -19,6 +18,7 @@ import '../components/win_text.dart';
 import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
 import '../util/date_utils.dart';
+import '../util/router_util.dart';
 import '../util/search_utils.dart';
 
 class MacroModel extends ChangeNotifier {
@@ -98,7 +98,7 @@ class MacroModel extends ChangeNotifier {
               Button(
                 child: const WinText('取消'),
                 onPressed: () {
-                  rootNavigatorKey.currentContext!.pop();
+                  goBack();
                 },
               ),
               FilledButton(
@@ -110,8 +110,8 @@ class MacroModel extends ChangeNotifier {
                   onPressed: () {
                     deleteMacroById(editedMacro!.id!).then((value) {
                       model.loadMacroList();
-                      rootNavigatorKey.currentContext!.pop();
-                      rootNavigatorKey.currentContext!.pop();
+                      goBack();
+                      goBack();
                     });
                   })
             ]);
@@ -129,7 +129,7 @@ class MacroModel extends ChangeNotifier {
     } else {
       updateMacro(editedMacro!).then((res) => loadMacroList());
     }
-    rootNavigatorKey.currentContext!.pop();
+    goBack();
   }
 
   void onScriptChanged(String script) {}

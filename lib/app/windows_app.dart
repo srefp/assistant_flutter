@@ -34,6 +34,7 @@ import '../notifier/efficient_model.dart';
 import '../routes/routes.dart';
 import '../screens/auto_tp_page.dart';
 import '../screens/efficient_page.dart';
+import '../screens/pic_edit_page.dart';
 import '../screens/script_editor.dart';
 import '../screens/settings.dart';
 import '../screens/test_page.dart';
@@ -303,6 +304,11 @@ _buildRoutes() {
     GoRoute(
         path: Routes.pic,
         builder: (context, state) => const CaptureManagementPage()),
+
+    /// Pic Edit
+    GoRoute(
+        path: Routes.picEdit,
+        builder: (context, state) => const PicEditPage()),
 
     /// Macro
     GoRoute(path: Routes.macro, builder: (context, state) => const MacroPage()),

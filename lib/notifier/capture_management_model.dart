@@ -1,19 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:assistant/model/pic_record.dart';
 import 'package:excel/excel.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 
 import '../components/dialog.dart';
 import '../db/pic_record_db.dart';
 import '../util/date_utils.dart';
+import '../util/router_util.dart';
 import '../util/search_utils.dart';
+import 'package:screen_capturer/screen_capturer.dart';
 
 class PicModel extends ChangeNotifier {
+  Uint8List? imageFile;
+
   final searchController = TextEditingController();
   String lightText = '';
   List<PicRecord> displayedPicList = [];
@@ -237,4 +243,25 @@ class PicModel extends ChangeNotifier {
     nameTextController.text = value.picName;
     notifyListeners();
   }
+
+  void saveThisPic() {
+    goBack();
+  }
+
+  void capturePic() async {
+    await screenCapturer.capture(
+      mode: CaptureMode.region,
+      copyToClipboard: false,
+    );
+
+    await Future.delayed(Duration(milliseconds: 300));
+    final imageBytes = await screenCapturer.readImageFromClipboard();
+
+    if (imageBytes != null) {
+      imageFile = imageBytes;
+      notifyListeners();
+    }
+  }
+
+  void deleteCurrentPic() {}
 }

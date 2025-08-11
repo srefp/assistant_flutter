@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_js
   hotkey_manager_linux
   open_file_linux
+  screen_capturer_linux
   screen_retriever_linux
   system_theme
   system_tray
