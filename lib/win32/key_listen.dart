@@ -43,6 +43,9 @@ void listenAll(String name, bool down) async {
   if (AutoTpConfig.to.isAutoTpEnabled() &&
       name == HotkeyConfig.to.getTpNext()) {
     RouteExecutor.tpNext(false);
+  } else if (HotkeyConfig.to.isToggleRecordEnabled() &&
+      name == HotkeyConfig.to.getToggleRecordKey()) {
+    toggleRecord();
   } else if (HotkeyConfig.to.isShowCoordsEnabled() &&
       name == HotkeyConfig.to.getShowCoordsKey()) {
     KeyMouseUtil.showCoordinate();
@@ -287,4 +290,8 @@ const directionDistances = {
 void simulateMouseMove(String key) async {
   final distance = directionDistances[key] ?? [0, 0];
   await KeyMouseUtil.moveR3D(distance, 10, 5);
+}
+
+void toggleRecord() {
+
 }

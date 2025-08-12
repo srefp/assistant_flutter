@@ -11,8 +11,11 @@ class HotkeyConfig with ConfigStorage {
   static const keyHalfTp = 'halfTp';
   static const keyTpNext = 'tpNext';
   static const keyTpPrev = 'tpPrev';
+  static const keyToggleRecord = 'toggleRecord';
+  static const keyToggleRecordEnabled = 'toggleRecordEnabled';
   static const keyQmTpNext = 'qmTpNext';
   static const keyStartStopKey = 'startStopKey';
+  static const keyRestartKey = 'restartKey';
   static const keyShowCoordsKey = 'showCoordsKey';
   static const keyQuickPickKey = "quickPickKey";
   static const keyToggleQuickPickKey = "toggleQuickPickKey";
@@ -38,6 +41,8 @@ class HotkeyConfig with ConfigStorage {
 
   String getStartStopKey() => box.read(keyStartStopKey) ?? 'f7';
 
+  String getRestartKey() => box.read(keyRestartKey) ?? 'f9';
+
   String getShowCoordsKey() => box.read(keyShowCoordsKey) ?? 'up';
 
   String getHalfTp() => box.read(keyHalfTp) ?? xbutton2;
@@ -60,10 +65,23 @@ class HotkeyConfig with ConfigStorage {
 
   String getToNext() => box.read(keyToNext) ?? 'add';
 
+  String getToggleRecordKey() => box.read(keyToggleRecord) ?? 'middle';
+
+  bool isToggleRecordEnabled() => box.read(keyToggleRecordEnabled) ?? true;
+
   HotKey getStartStopKeyItem() {
     return HotKey(
       identifier: keyStartStopKey,
       key: stringToPhysicalKeyMap[getStartStopKey()] ?? PhysicalKeyboardKey.f7,
+      scope: HotKeyScope.system,
+      modifiers: [],
+    );
+  }
+
+  HotKey getRestartKeyItem() {
+    return HotKey(
+      identifier: keyRestartKey,
+      key: stringToPhysicalKeyMap[getRestartKey()] ?? PhysicalKeyboardKey.f9,
       scope: HotKeyScope.system,
       modifiers: [],
     );

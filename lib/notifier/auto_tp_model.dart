@@ -42,6 +42,25 @@ final helpConfigItems = [
     },
   ),
   HotkeyConfigItem(
+    type: global,
+    title: '重启耕地机',
+    subTitle: '重启耕地机',
+    valueKey: HotkeyConfig.keyRestartKey,
+    valueCallback: HotkeyConfig.to.getRestartKey,
+    keyItemCallback: HotkeyConfig.to.getRestartKeyItem,
+    keyDownHandler: (hotKey) {
+      restartApp();
+    },
+  ),
+  HotkeyConfigItem(
+    title: '录制（暂时不可用）',
+    subTitle: '开始/结束录制',
+    enabledKey: HotkeyConfig.keyToggleRecordEnabled,
+    enabledCallback: HotkeyConfig.to.isToggleRecordEnabled,
+    valueKey: HotkeyConfig.keyToggleRecord,
+    valueCallback: HotkeyConfig.to.getToggleRecordKey,
+  ),
+  HotkeyConfigItem(
     title: '标点',
     subTitle: '显示并复制当前鼠标坐标',
     enabledKey: HotkeyConfig.keyShowCoordsEnabled,

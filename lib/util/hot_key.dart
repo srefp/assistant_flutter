@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
 import '../app/windows_app.dart';
+import '../main.dart';
 
 /// 快捷键
 class KeyItem {
@@ -25,5 +26,8 @@ void initHotKey() async {
   await hotKeyManager.unregisterAll();
   await hotKeyManager.register(HotkeyConfig.to.getStartStopKeyItem(), keyDownHandler: (hotKey) {
     WindowsApp.autoTpModel.startOrStop();
+  });
+  await hotKeyManager.register(HotkeyConfig.to.getRestartKeyItem(), keyDownHandler: (hotKey) {
+    restartApp();
   });
 }
