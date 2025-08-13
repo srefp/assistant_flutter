@@ -9,16 +9,21 @@ import 'package:file_selector_windows/file_selector_windows.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
+import 'package:provider/provider.dart';
+import 'package:screen_capturer/screen_capturer.dart';
 
+import '../app/windows_app.dart';
 import '../components/dialog.dart';
+import '../components/win_text.dart';
 import '../db/pic_record_db.dart';
 import '../util/date_utils.dart';
 import '../util/router_util.dart';
 import '../util/search_utils.dart';
-import 'package:screen_capturer/screen_capturer.dart';
 
 class PicModel extends ChangeNotifier {
   Uint8List? imageFile;
+  int? width;
+  int? height;
 
   final searchController = TextEditingController();
   String lightText = '';
@@ -46,6 +51,13 @@ class PicModel extends ChangeNotifier {
 
   loadPicList() async {
     picList = await loadAllPicRecord();
+    for (var item in picList) {
+      // 将base64字符串解码为Uint8List
+      final bytes = base64Decode(item.image);
+      // 使用OpenCV解码图片
+      final mat = cv.imdecode(bytes, cv.IMREAD_GRAYSCALE);
+      item.mat = mat;
+    }
     displayedPicList = picList;
     notifyListeners();
   }
@@ -59,12 +71,19 @@ class PicModel extends ChangeNotifier {
   bool get isNew => _isNew;
 
   final nameTextController = TextEditingController();
+  final keyTextController = TextEditingController();
+  final commentTextController = TextEditingController();
 
   void selectPic(PicRecord value) {
     _isNew = false;
 
     editedPic = value;
     nameTextController.text = value.picName;
+    keyTextController.text = value.key;
+    commentTextController.text = value.comment;
+    imageFile = base64Decode(value.image);
+    width = value.width;
+    height = value.height;
     notifyListeners();
   }
 
@@ -100,13 +119,12 @@ class PicModel extends ChangeNotifier {
 
       // 表头字段（与Pic属性对应）
       final headers = [
-        '编号',
         '名称',
-        '触发键',
-        '触发类型',
-        '状态',
+        '键',
         '注释',
-        '脚本内容',
+        '图片',
+        '宽度',
+        '高度',
         '创建时间',
         '更新时间'
       ].map((e) => TextCellValue(e)).toList();
@@ -123,6 +141,8 @@ class PicModel extends ChangeNotifier {
       for (final pic in picList) {
         sheet.appendRow([
           TextCellValue(pic.picName),
+          TextCellValue(pic.key),
+          TextCellValue(pic.comment),
           TextCellValue(pic.image),
           TextCellValue(pic.width.toString()),
           TextCellValue(pic.height.toString()),
@@ -176,6 +196,8 @@ class PicModel extends ChangeNotifier {
 
       // 通过列名获取对应索引
       final nameIndex = columnIndexMap['名称']!;
+      final keyIndex = columnIndexMap['键']!;
+      final commentIndex = columnIndexMap['注释']!;
       final imageIndex = columnIndexMap['图片']!;
       final widthIndex = columnIndexMap['宽度']!;
       final heightIndex = columnIndexMap['高度']!;
@@ -195,6 +217,8 @@ class PicModel extends ChangeNotifier {
 
         // 解析行数据（按表头顺序）
         String name = row[nameIndex]?.value?.toString() ?? '';
+        String key = row[keyIndex]?.value?.toString() ?? '';
+        String comment = row[commentIndex]?.value?.toString() ?? '';
         String image = row[imageIndex]?.value?.toString() ?? '';
         int width = int.parse(row[widthIndex]?.value?.toString() ?? '0');
         int height = int.parse(row[heightIndex]?.value?.toString() ?? '0');
@@ -205,6 +229,8 @@ class PicModel extends ChangeNotifier {
 
         newPics.add(PicRecord(
           picName: name,
+          key: key,
+          comment: comment,
           image: image,
           width: width,
           height: height,
@@ -219,8 +245,8 @@ class PicModel extends ChangeNotifier {
         final bytes = base64Decode(pic.image);
         // 使用OpenCV解码图片
         final mat = cv.imdecode(bytes, cv.IMREAD_GRAYSCALE);
-        await savePickRecord(
-            pic.picName, pic.width, pic.height, pic.image, mat); // 调用现有数据库添加方法
+        pic.mat = mat;
+        await savePickRecord(pic); // 调用现有数据库添加方法
       }
 
       loadPicList(); // 刷新图片列表
@@ -230,10 +256,13 @@ class PicModel extends ChangeNotifier {
     }
   }
 
-  void createNewPic() {
+  void createNewPic() async {
     _isNew = true;
+
     PicRecord value = PicRecord(
       picName: '',
+      key: '',
+      comment: '',
       image: '',
       width: 0,
       height: 0,
@@ -241,11 +270,28 @@ class PicModel extends ChangeNotifier {
 
     editedPic = value;
     nameTextController.text = value.picName;
+    keyTextController.text = value.key;
+    commentTextController.text = value.comment;
+    imageFile = null;
+    width = null;
+    height = null;
     notifyListeners();
   }
 
-  void saveThisPic() {
+  void saveThisPic() async {
+    if (editedPic != null && imageFile != null) {
+      editedPic!.image = base64Encode(imageFile!);
+      editedPic!.width = width!;
+      editedPic!.height = height!;
+      editedPic!.createdOn = DateTime.now().millisecondsSinceEpoch;
+      editedPic!.updatedOn = DateTime.now().millisecondsSinceEpoch;
+      editedPic!.picName = nameTextController.text;
+      editedPic!.key = keyTextController.text;
+      editedPic!.comment = commentTextController.text;
+      await savePickRecord(editedPic!);
+    }
     goBack();
+    loadPicList();
   }
 
   void capturePic() async {
@@ -257,11 +303,45 @@ class PicModel extends ChangeNotifier {
     await Future.delayed(Duration(milliseconds: 300));
     final imageBytes = await screenCapturer.readImageFromClipboard();
 
-    if (imageBytes != null) {
-      imageFile = imageBytes;
-      notifyListeners();
-    }
+    final image = await decodeImageFromList(imageBytes!);
+    width = image.width;
+    height = image.height;
+
+    imageFile = imageBytes;
+    notifyListeners();
   }
 
-  void deleteCurrentPic() {}
+  void deleteCurrentPic() async {
+    showDialog(
+      barrierDismissible: true,
+      context: rootNavigatorKey.currentContext!,
+      builder: (context) =>
+          Consumer<PicModel>(builder: (context, model, child) {
+        return ContentDialog(
+            title: WinText('删除图片'),
+            content: WinText('确定要删除图片${editedPic?.picName ?? ''}吗？'),
+            actions: [
+              Button(
+                child: const WinText('取消'),
+                onPressed: () {
+                  goBack();
+                },
+              ),
+              FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.red),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
+                  ),
+                  child: const WinText('确定'),
+                  onPressed: () {
+                    deletePickRecord(editedPic!).then((value) {
+                      model.loadPicList();
+                      goBack();
+                      goBack();
+                    });
+                  })
+            ]);
+      }),
+    );
+  }
 }

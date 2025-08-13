@@ -89,6 +89,54 @@ class PicEditPage extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  WinText(
+                                    '键',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  WinTextBox(
+                                    controller: model.keyTextController,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  WinText(
+                                    '备注',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  WinTextBox(
+                                    minLines: 2,
+                                    maxLines: 2,
+                                    controller: model.commentTextController,
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(

@@ -120,7 +120,8 @@ class PicListRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: TitleWithSub(
-              title: item.picName,
+              title: '${item.picName} 【${item.key}】',
+              subTitle: item.comment,
               lightText: lightText,
               rightWidget: Row(
                 children: [

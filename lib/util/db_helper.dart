@@ -23,7 +23,7 @@ Future<String> getStoragePath() async =>
 
 class DbHelper {
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 6;
+  static const int _version = 7;
 
   /// 在windows平台初始化数据库
   static Future<sqlite_api.Database> getDbOnWindows() async {
@@ -130,6 +130,8 @@ class DbHelper {
                 // 查询表结构获取现有列
                 final picRecordColumns = await db
                     .rawQuery('PRAGMA table_info(${PicRecordDb.tableName})');
+
+                // 添加width列
                 final picRecordHasWidth =
                 picRecordColumns.any((col) => col['name'] == 'width');
 
@@ -139,12 +141,33 @@ class DbHelper {
                   ''');
                 }
 
+                // 添加height列
                 final picRecordHasHeight =
                 picRecordColumns.any((col) => col['name'] == 'height');
 
                 if (!picRecordHasHeight) {
                   await db.database.rawUpdate('''
                     ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN height INTEGER
+                  ''');
+                }
+
+                // 添加key列
+                final picRecordHasKey =
+                picRecordColumns.any((col) => col['name'] == 'key');
+
+                if (!picRecordHasKey) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN key TEXT
+                  ''');
+                }
+
+                // 添加comment列
+                final picRecordHasComment =
+                picRecordColumns.any((col) => col['name'] == 'comment');
+
+                if (!picRecordHasComment) {
+                  await db.database.rawUpdate('''
+                    ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN comment TEXT
                   ''');
                 }
               }

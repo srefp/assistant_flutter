@@ -11,7 +11,9 @@ class PicRecordDb {
     create table if not exists $tableName (
       id integer primary key autoincrement, -- 主键
       picName text, -- 图片名称
-      image text, -- 图片路径
+      key text, -- 图片key
+      comment text, -- 图片注释
+      image text, -- 图片的base64编码
       width integer, -- 宽度
       height integer, -- 高度
       createdOn integer, -- 创建时间
@@ -23,25 +25,20 @@ class PicRecordDb {
 final Map<String, PicRecord> picRecordMap = {};
 
 /// 保存截图
-Future<void> savePickRecord(String picName, int width, int height, String image, cv.Mat mat) async {
-  final picRecord = await loadPicRecord(picName);
-  var newPicRecord = PicRecord(picName: picName, width: width, height: height, image: image);
-  newPicRecord.mat = mat;
-  picRecordMap[picName] = newPicRecord;
+Future<void> savePickRecord(PicRecord picRecord) async {
+  final picRecordInDb = await loadPicRecord(picRecord.key);
+  picRecordMap[picRecord.key] = picRecord;
 
-  if (picRecord != null) {
-    newPicRecord.id = picRecord.id;
-    newPicRecord.createdOn = picRecord.createdOn;
+  if (picRecordInDb != null) {
+    picRecord.id = picRecordInDb.id;
+    picRecord.createdOn = picRecordInDb.createdOn;
     await db.update(
         PicRecordDb.tableName,
-        {
-          'image': image,
-          'updatedOn': currentMillis(),
-        },
+        picRecord.toJson(),
         where: 'id = ?',
         whereArgs: [picRecord.id]);
   } else {
-    await db.insert(PicRecordDb.tableName, newPicRecord.toJson());
+    await db.insert(PicRecordDb.tableName, picRecord.toJson());
   }
 }
 
@@ -53,11 +50,20 @@ Future<List<PicRecord>> loadAllPicRecord() async {
 }
 
 /// 查询截图
-Future<PicRecord?> loadPicRecord(String picName) async {
+Future<PicRecord?> loadPicRecord(String key) async {
   final List<Map<String, Object?>> picRecordList = await db
-      .query(PicRecordDb.tableName, where: 'picName = ?', whereArgs: [picName]);
+      .query(PicRecordDb.tableName, where: 'key = ?', whereArgs: [key]);
   if (picRecordList.isEmpty) {
     return null;
   }
   return PicRecord.fromJson(picRecordList.first);
+}
+
+/// 删除截图
+Future<void> deletePickRecord(PicRecord picRecord) async {
+  await db.delete(
+    PicRecordDb.tableName,
+    where: 'id = ?',
+    whereArgs: [picRecord.id],
+  );
 }

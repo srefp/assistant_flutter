@@ -1,4 +1,5 @@
 import 'package:assistant/auto_gui/key_mouse_util.dart';
+import 'package:assistant/db/pic_record_db.dart';
 import 'package:win32/win32.dart';
 
 class FindUtil {
@@ -39,6 +40,10 @@ class FindUtil {
   }
 
   static Future<bool> findPic(List<int> area, String picKey) async {
+    final picRecord = picRecordMap[picKey];
+    if (picRecord == null) {
+      return false;
+    }
     return false;
   }
 

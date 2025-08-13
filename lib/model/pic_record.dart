@@ -11,6 +11,12 @@ class PicRecord {
   /// 图片名称
   String picName;
 
+  /// 图片key
+  String key;
+
+  /// 备注
+  String comment;
+
   /// 图像
   String image;
 
@@ -32,6 +38,8 @@ class PicRecord {
   PicRecord({
     this.id,
     required this.picName,
+    required this.key,
+    required this.comment,
     required this.image,
     required this.width,
     required this.height,
@@ -53,6 +61,8 @@ class PicRecord {
   factory PicRecord.fromJson(Map<String, dynamic> json) => PicRecord(
         id: json['id'] as int?,
         picName: json['picName'] as String,
+        key: json['key'] as String,
+        comment: json['comment'] as String,
         image: json['image'] as String,
         width: json['width'] as int,
         height: json['height'] as int,
@@ -63,6 +73,8 @@ class PicRecord {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'picName': picName,
+        'key': key,
+        'comment': comment,
         'image': image,
         'width': width,
         'height': height,
@@ -72,5 +84,5 @@ class PicRecord {
 
   @override
   String toString() =>
-      'PicRecord{id: $id, picName: $picName, image: $image, width: $width, height: $height, createdOn: $createdOn, updatedOn: $updatedOn}';
+      'PicRecord{id: $id, picName: $picName, key: $key, comment: $comment, image: $image, width: $width, height: $height, createdOn: $createdOn, updatedOn: $updatedOn}';
 }

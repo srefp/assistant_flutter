@@ -23,6 +23,7 @@ import '../config/hotkey_config.dart';
 import '../cv/cv.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
+import '../model/pic_record.dart';
 import '../util/js_executor.dart';
 import '../util/search_utils.dart';
 import '../win32/message_pump.dart';
@@ -880,6 +881,15 @@ class AutoTpModel extends ChangeNotifier {
     final encodedImage = await encodeImage(capture);
     print('encodedImage: data:image/png;base64,$encodedImage');
 
-    savePickRecord(item.valueKey!, rect.width, rect.height, encodedImage, capture);
+    final newPicRecord = PicRecord(
+      picName: item.valueKey!,
+      key: item.valueKey!,
+      comment: '',
+      width: rect.width,
+      height: rect.height,
+      image: encodedImage,
+    );
+    newPicRecord.mat = capture;
+    savePickRecord(newPicRecord);
   }
 }
