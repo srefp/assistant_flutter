@@ -5,12 +5,15 @@ import 'package:assistant/components/dialog.dart';
 import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
+import 'package:assistant/cv/cv.dart';
+import 'package:assistant/db/pic_record_db.dart';
 import 'package:assistant/util/find_util.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 import 'package:flutter_js/flutter_js.dart';
+import 'package:opencv_dart/opencv.dart' as cv;
 import 'package:win32/win32.dart';
 
 import '../app/windows_app.dart';
@@ -344,9 +347,18 @@ void registerJsFunc() async {
 
   // 找图
   jsRuntime.onMessage(findPic, (params) async {
-    final res = await FindUtil.findPic(
-        convertDynamicListToIntList(params[0]), params[1]);
-    return res;
+    final left = params[0][0];
+    final top = params[0][1];
+    final right = params[0][2];
+    final bottom = params[0][3];
+    final image = captureImageWindows(ScreenRect(left, top, right, bottom));
+    final template = picRecordMap[params[1]]?.mat;
+    if (template == null) {
+      return {'match': -1, 'loc': cv.Point(0, 0)};
+    }
+    final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+    final minMaxLoc = cv.minMaxLoc(result);
+    return {'match': minMaxLoc.$1, 'loc': minMaxLoc.$3};
   });
 
   // 执行shell脚本

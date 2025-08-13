@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../cv/cv.dart';
 import '../util/date_utils.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 
@@ -54,6 +55,9 @@ class PicRecord {
   void setMat() {
     // 将base64字符串解码为Uint8List
     final bytes = base64Decode(image);
+    cv.Mat mat = cv.imdecode(bytes, cv.IMREAD_COLOR);
+    // cv.Mat mat = uint8ListToMat(bytes, width, height);
+    mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
     // 使用OpenCV解码图片
     mat = cv.imdecode(bytes, cv.IMREAD_GRAYSCALE);
   }
