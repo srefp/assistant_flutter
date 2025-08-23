@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:assistant/auto_gui/system_control.dart';
 import 'package:win32/win32.dart';
@@ -144,6 +145,9 @@ class ScreenManager {
   }
 
   static List<Task> getWindowTasks() {
+    if (!Platform.isWindows) {
+      return [];
+    }
     final tasks = TaskManager.tasks ?? [];
     for (final task in tasks) {
       int? mainHandle = TaskManager.getMainHandle(task.pid);

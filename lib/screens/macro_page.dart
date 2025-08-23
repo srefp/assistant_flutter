@@ -1,5 +1,6 @@
 import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/page_title.dart';
+import 'package:assistant/components/search_box.dart';
 import 'package:assistant/model/macro.dart';
 import 'package:assistant/notifier/macro_model.dart';
 import 'package:assistant/routes/routes.dart';
@@ -33,16 +34,12 @@ class MacroPage extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Row(
                         children: [
-                          SizedBox(
-                            width: 400,
-                            height: 34,
-                            child: WinTextBox(
-                              controller: model.searchController,
-                              placeholder: '搜索宏',
-                              onChanged: (value) =>
-                                  model.searchDisplayedDelayConfigItems(value),
-                            ),
-                          )
+                          SearchBox(
+                            searchController: model.searchController,
+                            onChanged: (value) =>
+                                model.searchDisplayedDelayConfigItems(value),
+                            placeholder: '搜索宏',
+                          ),
                         ],
                       ),
                     ),

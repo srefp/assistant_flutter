@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 void messagePump() async {
+  if (!Platform.isWindows) {
+    return;
+  }
   // 必须运行非阻塞消息循环
   final msg = calloc<MSG>();
   await Future.doWhile(() async {

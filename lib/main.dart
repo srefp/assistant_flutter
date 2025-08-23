@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/screens/overlay_window.dart';
 import 'package:assistant/util/db_helper.dart';
 import 'package:assistant/util/path_manage.dart';
 import 'package:assistant/util/window_utils.dart';
-import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
@@ -24,6 +27,7 @@ const restart = 'restart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  initOverlayListening();
   if (!kDebugMode) {
     await WindowsSingleInstance.ensureSingleInstance(
       args,
@@ -39,6 +43,32 @@ void main(List<String> args) async {
   await _initApp();
 
   runApp(const WindowsApp());
+}
+
+void initOverlayListening() {
+  final ReceivePort uiReceivePort = ReceivePort();
+  // 注册UI端口，对应overlay中的_kPortNameHome('UI')
+  IsolateNameServer.registerPortWithName(
+    uiReceivePort.sendPort,
+    'UI', // 必须与overlay中查找的端口名一致
+  );
+
+  // 监听来自overlay的消息
+  uiReceivePort.listen((msg) {
+    print('Received from overlay: $msg');
+    // 处理消息逻辑
+  });
+}
+
+@pragma("vm:entry-point")
+void overlayMain() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: OverlayWindow(),
+    ),
+  );
 }
 
 /// 重启应用，此方法有问题，原来的程序结束的时候，被新开启的程序也会结束
@@ -68,7 +98,7 @@ Future<void> _initApp() async {
   final customPath = await getStoragePath();
   box = GetStorage(appId, customPath);
   // 初始化数据库
-  await initWindowsDb();
+  await initDb();
 
   await initFileManagement();
   if (!kIsWeb &&

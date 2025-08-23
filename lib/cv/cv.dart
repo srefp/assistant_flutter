@@ -16,8 +16,8 @@ Future<String> encodeImage(cv.Mat mat) async {
 
 cv.Mat captureImageWindows(ScreenRect rect) {
   var image = captureImageWin(rect);
-  cv.Mat mat = cv.imdecode(image!, cv.IMREAD_COLOR);
-  // cv.Mat mat = uint8ListToMat(image!, rect.width, rect.height);
+  // cv.Mat mat = cv.imdecode(image!, cv.IMREAD_COLOR);
+  cv.Mat mat = uint8ListToMat(image!, rect.width, rect.height);
   mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
   return mat;
 }

@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:assistant/constants/ratio.dart';
 import 'package:assistant/manager/screen_manager.dart';
@@ -49,6 +50,9 @@ class SystemControl {
   }
 
   static ScreenRect getCaptureRect(int hWnd) {
+    if (!Platform.isWindows) {
+      return ScreenRect(0, 0, 0, 0);
+    }
     if (hWnd == 0) {
       return getScreenRect();
     }

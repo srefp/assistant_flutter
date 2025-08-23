@@ -1,9 +1,13 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 bool isWindows11() {
+  if (!Platform.isWindows) {
+    return false;
+  }
   final versionInfo = calloc<OSVERSIONINFO>(); // 使用 calloc 分配内存
   versionInfo.ref.dwOSVersionInfoSize = sizeOf<OSVERSIONINFO>();
 

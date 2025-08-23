@@ -55,9 +55,11 @@ class PicModel extends ChangeNotifier {
       // 将base64字符串解码为Uint8List
       final bytes = base64Decode(item.image);
       // 使用OpenCV解码图片
-      final mat = cv.imdecode(bytes, cv.IMREAD_GRAYSCALE);
+      final mat = cv.imdecode(bytes, cv.IMREAD_COLOR);
       item.mat = mat;
+      picRecordMap[item.key] = item;
     }
+    print('picRecordMap: $picRecordMap');
     displayedPicList = picList;
     notifyListeners();
   }

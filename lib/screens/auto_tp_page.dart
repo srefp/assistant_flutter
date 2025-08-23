@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/config_row/bool_config_row.dart';
@@ -6,11 +7,12 @@ import 'package:assistant/components/config_row/hotkey_config_row.dart';
 import 'package:assistant/components/config_row/int_config_row.dart';
 import 'package:assistant/components/highlight_combo_box.dart';
 import 'package:assistant/components/icon_card.dart';
+import 'package:assistant/components/search_box.dart';
 import 'package:assistant/components/title_with_sub.dart';
-import 'package:assistant/components/win_text_box.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/main.dart';
 import 'package:assistant/notifier/auto_tp_model.dart';
+import 'package:assistant/util/android/overlay.dart';
 import 'package:assistant/win32/os_version.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +45,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showOutDate();
-      if (!Superuser.isSuperuser || !Superuser.isActivated) {
-        dialog(
-            title: '未以管理员方式启动！',
-            content:
-                '未以管理员方式启动，无法使用游戏检测功能。请通过右下角托盘图标退出程序后，将软件设置为管理员方式启动。具体教程参考gitee下载页面。',
-            height: 100);
+      if (Platform.isWindows) {
+        if (!Superuser.isSuperuser || !Superuser.isActivated) {
+          dialog(
+              title: '未以管理员方式启动！',
+              content:
+                  '未以管理员方式启动，无法使用游戏检测功能。请通过右下角托盘图标退出程序后，将软件设置为管理员方式启动。具体教程参考gitee下载页面。',
+              height: 100);
+        }
       }
     });
   }
@@ -99,10 +103,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
                   icon: model.isRunning ? Icons.stop : Icons.play_arrow,
                   text: model.isRunning ? '停止' : '运行',
                   onPressed: () {
-                    if (model.isRunning) {
-                      model.stop();
+                    if (Platform.isAndroid) {
+                      showOverlay(context);
                     } else {
-                      model.start();
+                      if (model.isRunning) {
+                        model.stop();
+                      } else {
+                        model.start();
+                      }
                     }
                   },
                 ),
@@ -110,64 +118,70 @@ class _AutoTpPageState extends State<AutoTpPage> {
               content: ListView(
                 shrinkWrap: true,
                 children: [
-                  TitleWithSub(
-                    title: '重启',
-                    subTitle: '如果程序内存异常增长，可以重启应用解决',
-                    rightWidget: SizedBox(
-                      height: 34,
-                      child: ButtonWithIcon(
-                        onPressed: () {
-                          restartApp();
-                        },
-                        text: '重启',
-                        icon: Icons.restart_alt,
-                      ),
-                    ),
-                  ),
-                  TitleWithSub(
-                    title: '运行方式',
-                    subTitle: '选择全局生效或者是在锚定窗口内生效',
-                    rightWidget: SizedBox(
-                      width: 280,
-                      child: HighlightComboBox(
-                        value: model.validType,
-                        items: model.validTypeList,
-                        onChanged: (value) {
-                          model.selectValidType(value);
-                        },
-                      ),
-                    ),
-                  ),
-                  TitleWithSub(
-                    title: '锚定窗口',
-                    subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
-                    rightWidget: Row(
-                      children: [
-                        SizedBox(
+                  Platform.isWindows
+                      ? TitleWithSub(
+                          title: '重启',
+                          subTitle: '如果程序内存异常增长，可以重启应用解决',
+                          rightWidget: SizedBox(
                             height: 34,
                             child: ButtonWithIcon(
-                              icon: Icons.refresh,
-                              text: '刷新',
                               onPressed: () {
-                                model.loadTasks();
+                                restartApp();
                               },
-                            )),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        SizedBox(
-                          width: 280,
-                          child: HighlightComboBox(
-                            value: model.anchorWindow,
-                            items: model.anchorWindowList,
-                            onChanged: (value) {
-                              model.selectAnchorWindow(value);
-                            },
+                              text: '重启',
+                              icon: Icons.restart_alt,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        )
+                      : SizedBox(),
+                  Platform.isWindows
+                      ? TitleWithSub(
+                          title: '运行方式',
+                          subTitle: '选择全局生效或者是在锚定窗口内生效',
+                          rightWidget: SizedBox(
+                            width: 280,
+                            child: HighlightComboBox(
+                              value: model.validType,
+                              items: model.validTypeList,
+                              onChanged: (value) {
+                                model.selectValidType(value);
+                              },
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                  Platform.isWindows
+                      ? TitleWithSub(
+                          title: '锚定窗口',
+                          subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
+                          rightWidget: Row(
+                            children: [
+                              SizedBox(
+                                  height: 34,
+                                  child: ButtonWithIcon(
+                                    icon: Icons.refresh,
+                                    text: '刷新',
+                                    onPressed: () {
+                                      model.loadTasks();
+                                    },
+                                  )),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              SizedBox(
+                                width: 280,
+                                child: HighlightComboBox(
+                                  value: model.anchorWindow,
+                                  items: model.anchorWindowList,
+                                  onChanged: (value) {
+                                    model.selectAnchorWindow(value);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox(),
                 ],
               ),
             ),
@@ -188,33 +202,56 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       final innerMacroEnabled =
                           AutoTpConfig.to.isInnerMacroEnabled();
                       if (!innerMacroEnabled) {
-                        AutoTpConfig.to.save(HotkeyConfig.keyShowCoordsEnabled, false);
-                        AutoTpConfig.to.save(HotkeyConfig.keyHalfTpEnabled, false);
-                        AutoTpConfig.to.save(HotkeyConfig.keyToPrevEnabled, false);
-                        AutoTpConfig.to.save(HotkeyConfig.keyToNextEnabled, false);
-                        AutoTpConfig.to.save(HotkeyConfig.keyQmAutoTpEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyQuickPickEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyToggleQuickPickEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyAutoTpEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyDashEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyEatFoodEnabled, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyFoodRecordEnabled, false);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyShowCoordsEnabled, false);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyHalfTpEnabled, false);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyToPrevEnabled, false);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyToNextEnabled, false);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyQmAutoTpEnabled, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyQuickPickEnabled, false);
+                        AutoTpConfig.to.save(
+                            AutoTpConfig.keyToggleQuickPickEnabled, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyAutoTpEnabled, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyDashEnabled, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyEatFoodEnabled, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyFoodRecordEnabled, false);
                         AutoTpConfig.to.save(AutoTpConfig.keyQmDash, false);
-                        AutoTpConfig.to.save(AutoTpConfig.keyContinuousMode, false);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyContinuousMode, false);
                       } else {
-                        AutoTpConfig.to.save(HotkeyConfig.keyShowCoordsEnabled, true);
-                        AutoTpConfig.to.save(HotkeyConfig.keyHalfTpEnabled, true);
-                        AutoTpConfig.to.save(HotkeyConfig.keyToPrevEnabled, true);
-                        AutoTpConfig.to.save(HotkeyConfig.keyToNextEnabled, true);
-                        AutoTpConfig.to.save(HotkeyConfig.keyQmAutoTpEnabled, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyQuickPickEnabled, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyToggleQuickPickEnabled, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyAutoTpEnabled, true);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyShowCoordsEnabled, true);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyHalfTpEnabled, true);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyToPrevEnabled, true);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyToNextEnabled, true);
+                        AutoTpConfig.to
+                            .save(HotkeyConfig.keyQmAutoTpEnabled, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyQuickPickEnabled, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyToggleQuickPickEnabled, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyAutoTpEnabled, true);
                         AutoTpConfig.to.save(AutoTpConfig.keyDashEnabled, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyEatFoodEnabled, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyFoodRecordEnabled, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyEatFoodEnabled, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyFoodRecordEnabled, true);
                         AutoTpConfig.to.save(AutoTpConfig.keyQmDash, true);
-                        AutoTpConfig.to.save(AutoTpConfig.keyContinuousMode, true);
+                        AutoTpConfig.to
+                            .save(AutoTpConfig.keyContinuousMode, true);
                       }
                     });
                   },
@@ -226,16 +263,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.helpSearchController,
-                            placeholder: '搜索内置宏',
-                            onChanged: (value) =>
-                                model.searchDisplayedHelpConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.helpSearchController,
+                          placeholder: '搜索内置宏',
+                          onChanged: (value) =>
+                              model.searchDisplayedHelpConfigItems(value),
+                        ),
                       ],
                     ),
                   ),
@@ -274,23 +307,19 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.gamepad_outlined,
               title: '游戏键位',
-              subTitle: '根据游戏键位修改耕地机键位，键位名称为英文全小写，例如: m ` capslock tab shift',
+              subTitle: '根据游戏键位修改耕地机键位，键位名称为英文全小写，例如: m ` capslock tab shiftleft',
               content: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.gameKeySearchController,
-                            placeholder: '搜索键位',
-                            onChanged: (value) =>
-                                model.searchGameKeyConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.gameKeySearchController,
+                          onChanged: (value) =>
+                              model.searchGameKeyConfigItems(value),
+                          placeholder: '搜索键位',
+                        ),
                       ],
                     ),
                   ),
@@ -322,16 +351,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.delaySearchController,
-                            placeholder: '搜索延迟',
-                            onChanged: (value) =>
-                                model.searchDisplayedDelayConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.delaySearchController,
+                          onChanged: (value) =>
+                              model.searchDisplayedDelayConfigItems(value),
+                          placeholder: '搜索延迟',
+                        ),
                       ],
                     ),
                   ),
@@ -363,16 +388,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.recordDelaySearchController,
-                            placeholder: '搜索延迟',
-                            onChanged: (value) => model
-                                .searchDisplayedRecordDelayConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.recordDelaySearchController,
+                          onChanged: (value) => model
+                              .searchDisplayedRecordDelayConfigItems(value),
+                          placeholder: '搜索延迟',
+                        ),
                       ],
                     ),
                   ),
@@ -404,16 +425,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.coordsSearchController,
-                            placeholder: '搜索标点',
-                            onChanged: (value) =>
-                                model.searchDisplayedCoordsConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.coordsSearchController,
+                          onChanged: (value) =>
+                              model.searchDisplayedCoordsConfigItems(value),
+                          placeholder: '搜索标点',
+                        ),
                       ],
                     ),
                   ),
@@ -445,16 +462,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 400,
-                          height: 34,
-                          child: WinTextBox(
-                            controller: model.matchSearchController,
-                            placeholder: '搜索匹配区域',
-                            onChanged: (value) =>
-                                model.searchDisplayedMatchConfigItems(value),
-                          ),
-                        )
+                        SearchBox(
+                          searchController: model.matchSearchController,
+                          onChanged: (value) =>
+                              model.searchDisplayedMatchConfigItems(value),
+                          placeholder: '搜索匹配区域',
+                        ),
                       ],
                     ),
                   ),

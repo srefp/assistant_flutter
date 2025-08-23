@@ -1,10 +1,12 @@
-import 'package:assistant/components/win_text.dart';
+import 'dart:io';
+
+import 'package:assistant/app/app_title.dart';
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/components/win_text.dart';
 import 'package:assistant/config/env_config.dart';
 import 'package:assistant/notifier/app_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -279,28 +281,10 @@ class _RootAppState extends State<RootApp> {
                 child: WinText(appTitle),
               );
             }
-            return DragToMoveArea(
-              child: SizedBox(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(width: 14),
-                    SvgPicture.asset(
-                      'assets/image/logo.svg',
-                      height: 18,
-                    ),
-                    SizedBox(width: 8),
-                    const WinText(
-                      appTitle,
-                      style: TextStyle(fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return AppTitle();
           }(),
           actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            if (!kIsWeb) const WindowButtons(),
+            if (Platform.isWindows) const WindowButtons(),
           ]),
         ),
         paneBodyBuilder: (item, child) {

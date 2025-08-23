@@ -66,6 +66,7 @@ const hintKeys = [
   tpc,
   findColor,
   findPic,
+  tip,
   sh,
   maxCurrentWindow,
 ];
@@ -88,6 +89,7 @@ const keys = [
   map,
   book,
   tpc,
+  findPic,
 ];
 
 JavascriptRuntime jsRuntime = getJavascriptRuntime(xhr: false);
@@ -352,12 +354,15 @@ void registerJsFunc() async {
     final right = params[0][2];
     final bottom = params[0][3];
     final image = captureImageWindows(ScreenRect(left, top, right, bottom));
+    print('image: $image');
     final template = picRecordMap[params[1]]?.mat;
+    print('template: $template');
     if (template == null) {
       return {'match': -1, 'loc': cv.Point(0, 0)};
     }
     final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
     final minMaxLoc = cv.minMaxLoc(result);
+    print('找图结果：${minMaxLoc.$1}');
     return {'match': minMaxLoc.$1, 'loc': minMaxLoc.$3};
   });
 

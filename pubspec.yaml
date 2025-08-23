@@ -45,8 +45,10 @@ dependencies:
       url: https://github.com/YehudaKremer/flutter_syntax_view.git
   screen_capturer:
     path: D:/codeRepo/AndroidStudioProjects/screen_capturer/packages/screen_capturer
+  flutter_overlay_window:
+    path: D:/codeRepo/AndroidStudioProjects/flutter_overlay_window
   provider: ^6.0.5
-  system_theme: ^2.3.1
+  system_theme: ^3.1.2
   window_manager: ^0.4.3
   flutter_acrylic: ^1.0.0+2
   url_strategy: ^0.2.0

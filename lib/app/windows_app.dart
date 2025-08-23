@@ -71,8 +71,10 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
   void initState() {
     super.initState();
     windowManager.addListener(this);
-    _initSystemTray();
-    initHotKey();
+    if (Platform.isWindows) {
+      _initSystemTray();
+      initHotKey();
+    }
     // verifyClient();
   }
 
