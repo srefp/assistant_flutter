@@ -19,6 +19,7 @@ import 'package:win32/win32.dart';
 import '../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/keyboard.dart';
+import '../auto_gui/operations.dart' show factor;
 import '../config/game_pos/game_pos_config.dart';
 import '../win32/toast.dart';
 import 'data_converter.dart';
@@ -45,6 +46,7 @@ const findColor = "findColor";
 const findPic = "findPic";
 const sh = "sh";
 const maxCurrentWindow = "maxCurrentWindow";
+const moveToCenter = "moveToCenter";
 
 const hintKeys = [
   tp,
@@ -69,6 +71,7 @@ const hintKeys = [
   tip,
   sh,
   maxCurrentWindow,
+  moveToCenter,
 ];
 
 const keys = [
@@ -90,6 +93,7 @@ const keys = [
   book,
   tpc,
   findPic,
+  moveToCenter,
 ];
 
 JavascriptRuntime jsRuntime = getJavascriptRuntime(xhr: false);
@@ -108,6 +112,13 @@ void registerJsFunc() async {
   // 打印日志
   jsRuntime.onMessage('log', (params) {
     WindowsApp.logModel.info(params['info']);
+  });
+
+  // 移动到中心
+  jsRuntime.onMessage(moveToCenter, (params) async {
+
+    // 获取鼠标当前位置
+    await moveTargetToCenter();
   });
 
   // 弹出消息框
@@ -405,6 +416,14 @@ void registerJsFunc() async {
     // 调用Win32 API最大化窗口（SW_MAXIMIZE=3）
     ShowWindow(hWnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
   });
+}
+
+Future<void> moveTargetToCenter() async {
+  // 获取鼠标当前位置
+  final pos = KeyMouseUtil.getCurLogicalPos();
+  final List<int> center = [factor ~/ 2, factor ~/ 2];
+  final List<int> totalDrag = [pos[0], pos[1] - 3000, center[0], center[1] - 3000];
+  await KeyMouseUtil.fastDrag(totalDrag, 20);
 }
 
 /// 运行js代码

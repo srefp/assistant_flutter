@@ -13,9 +13,9 @@ import 'package:win32/win32.dart';
 
 import '../win32/toast.dart';
 import 'math_util.dart';
+import 'operations.dart';
 
 class KeyMouseUtil {
-  static const int factor = 65535;
 
   static Future<void> moveR3D(List<int> distance, int step, int millis) async {
     List<int> prevDistance = [0, 0];
