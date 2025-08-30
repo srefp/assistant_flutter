@@ -83,6 +83,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyWorldRect = "worldRect";
   static const keyAnchorRect = "anchorRect";
   static const keyInnerMacroEnabled = "innerMacroEnabled";
+  static const keyTrayEnabled = "trayEnabled";
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
@@ -267,4 +268,6 @@ class AutoTpConfig with ConfigStorage {
     final coords = RouteUtil.stringToIntList(anchorRect);
     return ScreenRect(coords[0], coords[1], coords[2], coords[3]);
   }
+
+  bool isTrayEnabled() => box.read(keyTrayEnabled) ?? false;
 }

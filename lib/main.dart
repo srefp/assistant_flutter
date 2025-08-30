@@ -18,11 +18,11 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 import 'config/config_storage.dart';
 import 'isolate/win32_event_listen.dart';
 
-const String version = '2025.8.1';
+const String version = '2025.8.2';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
-final DateTime outDate = DateTime(2025, 10, 1);
+final DateTime outDate = DateTime(2025, 12, 1);
 const restart = 'restart';
 
 void main(List<String> args) async {

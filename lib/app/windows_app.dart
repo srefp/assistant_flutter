@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:assistant/app/root_app.dart';
 import 'package:assistant/components/win_text.dart';
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/env_config.dart';
 import 'package:assistant/config/verification_config.dart';
 import 'package:assistant/main.dart';
@@ -24,7 +25,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:system_tray/system_tray.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../notifier/app_model.dart';
@@ -39,7 +39,7 @@ import '../screens/script_editor.dart';
 import '../screens/settings.dart';
 import '../screens/test_page.dart';
 import '../theme.dart';
-import '../util/window_utils.dart';
+import '../util/tray.dart';
 
 class WindowsApp extends StatefulWidget {
   const WindowsApp({super.key});
@@ -64,15 +64,15 @@ final _appTheme = AppTheme();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _WindowsAppState extends State<WindowsApp> with WindowListener {
-  final SystemTray _systemTray = SystemTray();
-  final Menu _menuMain = Menu();
 
   @override
   void initState() {
     super.initState();
     windowManager.addListener(this);
     if (Platform.isWindows) {
-      _initSystemTray();
+      if (AutoTpConfig.to.isTrayEnabled()) {
+        initSystemTray();
+      }
       initHotKey();
     }
     // verifyClient();
@@ -86,8 +86,13 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
 
   @override
   void onWindowClose() async {
+    if (!AutoTpConfig.to.isTrayEnabled()) {
+      closeApp();
+      return;
+    }
+
     bool isPreventClose = await windowManager.isPreventClose();
-    if (isPreventClose && mounted) {
+    if (isPreventClose && mounted && AutoTpConfig.to.isTrayEnabled()) {
       windowManager.hide();
     }
   }
@@ -199,65 +204,12 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
     );
   }
 
-  /// 初始化系统托盘
-  Future<void> _initSystemTray() async {
-    // 首先初始化systray菜单，然后添加菜单项
-    await _systemTray.initSystemTray(iconPath: getTrayImagePath('logo'));
-    _systemTray.setToolTip('耕地机');
-
-    // 处理托盘事件
-    _systemTray.registerSystemTrayEventHandler((eventName) {
-      if (eventName == kSystemTrayEventClick) {
-        Platform.isWindows ? _showOrHide() : _systemTray.popUpContextMenu();
-      } else if (eventName == kSystemTrayEventRightClick) {
-        Platform.isWindows ? _systemTray.popUpContextMenu() : _showOrHide();
-      }
-    });
-
-    await _menuMain.buildFrom([
-      MenuItemLabel(
-        label: '显示',
-        onClicked: (menuItem) {
-          showWindow();
-        },
-      ),
-      MenuItemLabel(
-        label: '隐藏',
-        onClicked: (menuItem) {
-          windowManager.hide();
-        },
-      ),
-      MenuItemLabel(
-        label: '退出',
-        onClicked: (menuItem) {
-          closeApp();
-        },
-      ),
-    ]);
-
-    _systemTray.setContextMenu(_menuMain);
-  }
-
   /// 关闭应用
   void closeApp() async {
     WindowsApp.autoTpModel.stop();
     await windowManager.hide();
-    await _systemTray.destroy();
+    await systemTray.destroy();
     exit(0);
-  }
-
-  void _showOrHide() async {
-    if (await windowManager.isVisible()) {
-      windowManager.hide();
-    } else {
-      showWindow();
-    }
-  }
-
-  /// 显示窗口
-  void showWindow() async {
-    await windowManager.show();
-    setState(() {});
   }
 
   /// 验证客户端

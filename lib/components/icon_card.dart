@@ -9,6 +9,7 @@ class IconCard extends StatelessWidget {
   final Widget content;
   final Widget rightWidget;
   final bool subTitleSelectable;
+  final bool expandEnabled;
 
   const IconCard({
     super.key,
@@ -18,13 +19,20 @@ class IconCard extends StatelessWidget {
     this.content = const SizedBox(),
     this.rightWidget = const SizedBox(),
     this.subTitleSelectable = false,
+    this.expandEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Expander(
+      child: _buildExpander(),
+    );
+  }
+
+  Widget _buildExpander() {
+    if (expandEnabled) {
+      return Expander(
         leading: Icon(
           icon,
           size: 30,
@@ -36,6 +44,26 @@ class IconCard extends StatelessWidget {
           rightWidget: rightWidget,
         ),
         content: content,
+      );
+    }
+    return Card(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 30,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TitleWithSub(
+              title: title,
+              subTitle: subTitle,
+              subTitleSelectable: subTitleSelectable,
+              rightWidget: rightWidget,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:io';
+
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/components/config_row.dart';
+import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/env_config.dart';
 import 'package:assistant/config/setting_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../components/icon_card.dart';
 import '../components/win_text.dart';
 import '../theme.dart';
+import '../util/tray.dart';
 import '../widgets/page.dart';
 import 'auto_tp_page.dart';
 
@@ -232,6 +236,29 @@ class _SettingsState extends State<Settings> with PageMixin {
                     );
                   }),
                 ],
+              ),
+            ),
+          ),
+        if (Platform.isWindows)
+          CustomSliverBox(
+            child: IconCard(
+              expandEnabled: false,
+              icon: Icons.menu,
+              title: '托盘',
+              subTitle: '配置托盘是否显示',
+              rightWidget: ToggleSwitch(
+                checked: AutoTpConfig.to.isTrayEnabled(),
+                onChanged: (value) => {
+                  setState(() {
+                    AutoTpConfig.to.save(AutoTpConfig.keyTrayEnabled, value);
+
+                    if (AutoTpConfig.to.isTrayEnabled()) {
+                      initSystemTray();
+                    } else {
+                      systemTray.destroy();
+                    }
+                  })
+                },
               ),
             ),
           ),
