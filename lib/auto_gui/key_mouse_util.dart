@@ -13,7 +13,7 @@ import 'package:win32/win32.dart';
 
 import '../win32/toast.dart';
 import 'math_util.dart';
-import 'operations.dart';
+import 'operations.dart' show factor;
 
 class KeyMouseUtil {
 

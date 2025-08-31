@@ -47,6 +47,8 @@ dependencies:
     path: D:/codeRepo/AndroidStudioProjects/screen_capturer/packages/screen_capturer
   flutter_overlay_window:
     path: D:/codeRepo/AndroidStudioProjects/flutter_overlay_window
+  efficient_sdk:
+    path: ../packages/efficient_sdk
   provider: ^6.0.5
   system_theme: ^3.1.2
   window_manager: ^0.4.3
@@ -93,6 +95,7 @@ dependencies:
   file_selector_windows: ^0.9.3+4
   file_selector_platform_interface: ^2.6.2
   ulid: ^2.0.1
+  postgres: ^3.4.1
 
 dev_dependencies:
   flutter_test:

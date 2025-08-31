@@ -3,13 +3,18 @@
 import 'dart:io';
 
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/components/button_with_icon.dart';
 import 'package:assistant/components/config_row.dart';
+import 'package:assistant/components/config_row/int_config_row.dart';
+import 'package:assistant/components/config_row/string_config_row.dart';
 import 'package:assistant/config/auto_tp_config.dart';
+import 'package:assistant/config/db_config.dart';
 import 'package:assistant/config/env_config.dart';
 import 'package:assistant/config/setting_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Tooltip, Colors, ButtonStyle;
+import 'package:flutter/material.dart'
+    hide Tooltip, Colors, ButtonStyle, IconButton;
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:provider/provider.dart';
 
@@ -149,9 +154,9 @@ class _SettingsState extends State<Settings> with PageMixin {
 
                         if (kIsWindowEffectsSupported) {
                           final transitionEffect =
-                          appTheme.windowEffect == WindowEffect.mica
-                              ? WindowEffect.tabbed
-                              : WindowEffect.mica;
+                              appTheme.windowEffect == WindowEffect.mica
+                                  ? WindowEffect.tabbed
+                                  : WindowEffect.mica;
 
                           final windowEffect = appTheme.windowEffect;
                           appTheme.windowEffect = transitionEffect;
@@ -259,6 +264,61 @@ class _SettingsState extends State<Settings> with PageMixin {
                     }
                   })
                 },
+              ),
+            ),
+          ),
+        if (Env.showDb)
+          CustomSliverBox(
+            child: IconCard(
+              icon: Icons.dataset,
+              title: '数据库链接',
+              subTitle: '连接postgresql数据库',
+              rightWidget: ButtonWithIcon(
+                icon: Icons.link_rounded,
+                onPressed: () {
+                  WindowsApp.codeGenModel.testConnection();
+                },
+                text: '测试连接',
+              ),
+              content: ListView(
+                shrinkWrap: true,
+                children: [
+                  StringConfigRow(
+                    item: StringConfigItem(
+                      title: 'Host',
+                      valueKey: DbConfig.keyHost,
+                      valueCallback: DbConfig.to.getHost,
+                    ),
+                  ),
+                  IntConfigRow(
+                    item: IntConfigItem(
+                      title: 'Port',
+                      valueKey: DbConfig.keyPort,
+                      valueCallback: DbConfig.to.getPort,
+                    ),
+                  ),
+                  StringConfigRow(
+                    item: StringConfigItem(
+                      title: 'Database',
+                      valueKey: DbConfig.keyDatabase,
+                      valueCallback: DbConfig.to.getDatabase,
+                    ),
+                  ),
+                  StringConfigRow(
+                    item: StringConfigItem(
+                      title: 'Username',
+                      valueKey: DbConfig.keyUsername,
+                      valueCallback: DbConfig.to.getUsername,
+                    ),
+                  ),
+                  StringConfigRow(
+                    item: StringConfigItem(
+                      title: 'Password',
+                      valueKey: DbConfig.keyPassword,
+                      valueCallback: DbConfig.to.getPassword,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

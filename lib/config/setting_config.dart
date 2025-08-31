@@ -24,6 +24,7 @@ class SettingConfig with ConfigStorage {
   static const keyCaptureManagementMenu = 'captureManagementMenu';
   static const keyMacroMenu = 'macroMenu';
   static const keyEfficientMenu = 'efficientMenu';
+  static const keyCodeGenMenu = 'codeGenMenu';
 
   ThemeMode getThemeMode() {
     final index = box.read(keyThemeMode);
@@ -75,4 +76,6 @@ class SettingConfig with ConfigStorage {
   bool getMacroMenu() => box.read(keyMacroMenu) ?? true;
 
   bool getEfficientMenu() => box.read(keyEfficientMenu) ?? false;
+
+  bool getCodeGenMenu() => box.read(keyCodeGenMenu) ?? false;
 }

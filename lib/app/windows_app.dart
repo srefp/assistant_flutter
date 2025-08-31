@@ -29,6 +29,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../notifier/app_model.dart';
 import '../notifier/auto_tp_model.dart';
+import '../notifier/code_gen_model.dart';
 import '../notifier/config_model.dart';
 import '../notifier/efficient_model.dart';
 import '../routes/routes.dart';
@@ -54,6 +55,7 @@ class WindowsApp extends StatefulWidget {
   static final captureManagementModel = PicModel();
   static final macroModel = MacroModel();
   static final efficientModel = EfficientModel();
+  static final codeGenModel = CodeGenModel();
 
   @override
   State<WindowsApp> createState() => _WindowsAppState();
@@ -283,6 +285,7 @@ _buildRoutes() {
     GoRoute(
         path: Routes.efficient,
         builder: (context, state) => const EfficientPage()),
+
   ];
 
   if (Env.showTools) {

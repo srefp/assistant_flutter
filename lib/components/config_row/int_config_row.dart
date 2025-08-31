@@ -13,7 +13,7 @@ class IntConfigItem {
 
   IntConfigItem({
     required this.title,
-    required this.subTitle,
+    this.subTitle = '',
     required this.valueKey,
     required this.valueCallback,
   });
