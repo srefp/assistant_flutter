@@ -169,14 +169,32 @@ void registerJsFunc() async {
 
   // 鼠标按下
   jsRuntime.onMessage(mDown, (params) async {
-    await api.mouseDown();
-    await Future.delayed(Duration(milliseconds: params[0]));
+    if (params.length == 1) {
+      await api.mouseDown();
+      await Future.delayed(Duration(milliseconds: params[0]));
+    } else if (params.length == 2) {
+      await api.mouseDown(button: {
+        'left': MouseButton.left,
+        'right': MouseButton.right,
+        'middle': MouseButton.middle,
+      }[params[0]]!);
+      await Future.delayed(Duration(milliseconds: params[1]));
+    }
   });
 
   // 鼠标抬起
   jsRuntime.onMessage(mUp, (params) async {
-    await api.mouseUp();
-    await Future.delayed(Duration(milliseconds: params[0]));
+    if (params.length == 1) {
+      await api.mouseUp();
+      await Future.delayed(Duration(milliseconds: params[0]));
+    } else if (params.length == 2) {
+      await api.mouseUp(button: {
+        'left': MouseButton.left,
+        'right': MouseButton.right,
+        'middle': MouseButton.middle,
+      }[params[0]]!);
+      await Future.delayed(Duration(milliseconds: params[1]));
+    }
   });
 
   // 点击

@@ -7,11 +7,11 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:win32/win32.dart';
 
-import '../key_mouse/keyboard_event.dart';
-import '../key_mouse/mouse_button.dart';
-import '../key_mouse/mouse_event.dart';
-import '../util/key_mouse_name.dart';
-import '../win32/key_listen.dart';
+import '../../key_mouse/keyboard_event.dart';
+import '../../key_mouse/mouse_button.dart';
+import '../../key_mouse/mouse_event.dart';
+import '../key_mouse_name.dart';
+import '../../win32/key_listen.dart';
 
 late SendPort interpolatePort;
 int eventHook = 0;
@@ -84,16 +84,20 @@ void hookWin(dynamic event, SendPort isolateSendPort) async {
 
 int keyboardBinding(int code, int wParam, int lParam) {
   if (code == HC_ACTION) {
-    final kbs = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
-    if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
-      UnhookWindowsHookEx(eventHook);
-      UnhookWindowsHookEx(keyHook);
-      UnhookWindowsHookEx(mouseHook);
-      PostQuitMessage(0);
-      print('结束了');
+    try {
+      final kbs = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
+      if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
+            UnhookWindowsHookEx(eventHook);
+            UnhookWindowsHookEx(keyHook);
+            UnhookWindowsHookEx(mouseHook);
+            PostQuitMessage(0);
+            print('结束了');
+          }
+      interpolatePort.send(
+              RawKeyboardEvent(kbs.ref.vkCode, wParam == WM_KEYDOWN, kbs.ref.flags));
+    } catch (e) {
+      print(e);
     }
-    interpolatePort.send(
-        RawKeyboardEvent(kbs.ref.vkCode, wParam == WM_KEYDOWN, kbs.ref.flags));
   }
   return CallNextHookEx(keyHook, code, wParam, lParam);
 }
@@ -102,14 +106,18 @@ int keyboardBinding(int code, int wParam, int lParam) {
 int mouseBinding(int code, int wParam, int lParam) {
   //忽略鼠标移动事件
   if (wParam != WM_MOUSEMOVE && code == HC_ACTION) {
-    final mhs = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
-    final event = RawMouseEvent(
-      mhs.ref.pt.x,
-      mhs.ref.pt.y,
-      wParam,
-      mhs.ref.mouseData,
-    );
-    interpolatePort.send(event);
+    try {
+      final mhs = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
+      final event = RawMouseEvent(
+            mhs.ref.pt.x,
+            mhs.ref.pt.y,
+            wParam,
+            mhs.ref.mouseData,
+          );
+      interpolatePort.send(event);
+    } catch (e) {
+      print(e);
+    }
   }
   return CallNextHookEx(mouseHook, code, wParam, lParam);
 }

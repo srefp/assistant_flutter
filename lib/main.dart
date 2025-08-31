@@ -16,9 +16,9 @@ import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'config/config_storage.dart';
-import 'isolate/win32_event_listen.dart';
+import 'util/isolate/win32_event_listen.dart';
 
-const String version = '2025.8.2';
+const String version = '2025.8.3';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
@@ -122,9 +122,9 @@ Future<void> _initApp() async {
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
-      await windowManager.setAlignment(Alignment.center);
       await windowManager.setSize(const Size(1200, 900));
       await windowManager.setMinimumSize(const Size(800, 600));
+      await windowManager.setAlignment(Alignment.center);
 
       await windowManager.show();
       await windowManager.setPreventClose(true);
