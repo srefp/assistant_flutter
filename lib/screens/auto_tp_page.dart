@@ -26,6 +26,7 @@ import '../components/divider.dart';
 import '../components/win_text.dart';
 import '../config/hotkey_config.dart';
 import '../theme.dart';
+import '../util/isolate/win32_event_listen.dart';
 
 bool finishedSettingTheme = false;
 bool win11 = isWindows11();
@@ -107,8 +108,10 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       showOverlay(context);
                     } else {
                       if (model.isRunning) {
+                        stopListen();
                         model.stop();
                       } else {
+                        startListen();
                         model.start();
                       }
                     }

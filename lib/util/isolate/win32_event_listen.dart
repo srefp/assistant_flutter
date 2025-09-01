@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:isolate';
 
+import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/win32/mouse_listen.dart';
 import 'package:easy_isolate/easy_isolate.dart';
 import 'package:ffi/ffi.dart';
@@ -10,8 +11,8 @@ import 'package:win32/win32.dart';
 import '../../key_mouse/keyboard_event.dart';
 import '../../key_mouse/mouse_button.dart';
 import '../../key_mouse/mouse_event.dart';
-import '../key_mouse_name.dart';
 import '../../win32/key_listen.dart';
+import '../key_mouse_name.dart';
 
 late SendPort interpolatePort;
 int eventHook = 0;
@@ -20,9 +21,10 @@ int mouseHook = 0;
 int runNr = 0;
 var worker = Worker();
 
-const EVENT_SYSTEM_MOVESIZESTART = 0x000A;
-const WINEVENT_OUTOFCONTEXT = 0x0000, WINEVENT_SKIPOWNPROCESS = 0x0002;
-const EVENT_SYSTEM_MOVESIZEEND = 0x000B;
+const eventSystemMoveSizeStart = 0x000A;
+const winEventOutOfContext = 0x0000;
+const winEventSkipOwnProcess = 0x0002;
+const eventSystemMoveSizeEnd = 0x000B;
 
 void runWin32EventIsolate() async {
   if (runNr != 0) {
@@ -31,8 +33,14 @@ void runWin32EventIsolate() async {
   runNr++;
   worker = Worker();
   await worker.init(hookWin, hookIsolate);
-  print("Worker restarted.. ${worker.hashCode}");
+}
+
+void startListen() {
   worker.sendMessage(runNr);
+}
+
+void stopListen() {
+  api.keyDown(key: 'f19');
 }
 
 void hookIsolate(
@@ -44,13 +52,13 @@ void hookIsolate(
 
   // 添加键盘钩子
   eventHook = SetWinEventHook(
-      EVENT_SYSTEM_MOVESIZESTART,
-      EVENT_SYSTEM_MOVESIZEEND,
+      eventSystemMoveSizeStart,
+      eventSystemMoveSizeEnd,
       NULL,
       Pointer.fromFunction<EvHookFunc>(sysWinEventHook, 0),
       0,
       0,
-      WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+      winEventOutOfContext | winEventSkipOwnProcess);
 
   // 添加鼠标钩子
   mouseHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_MOUSE_LL,
@@ -86,15 +94,17 @@ int keyboardBinding(int code, int wParam, int lParam) {
   if (code == HC_ACTION) {
     try {
       final kbs = Pointer<KBDLLHOOKSTRUCT>.fromAddress(lParam);
-      if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8) {
-            UnhookWindowsHookEx(eventHook);
-            UnhookWindowsHookEx(keyHook);
-            UnhookWindowsHookEx(mouseHook);
-            PostQuitMessage(0);
-            print('结束了');
-          }
-      interpolatePort.send(
-              RawKeyboardEvent(kbs.ref.vkCode, wParam == WM_KEYDOWN, kbs.ref.flags));
+
+      if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8 ||
+          kbs.ref.vkCode == VIRTUAL_KEY.VK_F19) {
+        UnhookWindowsHookEx(eventHook);
+        UnhookWindowsHookEx(keyHook);
+        UnhookWindowsHookEx(mouseHook);
+        PostQuitMessage(0);
+        print('结束了');
+      }
+      interpolatePort.send(RawKeyboardEvent(
+          kbs.ref.vkCode, wParam == WM_KEYDOWN, kbs.ref.flags));
     } catch (e) {
       print(e);
     }
@@ -109,11 +119,11 @@ int mouseBinding(int code, int wParam, int lParam) {
     try {
       final mhs = Pointer<MSLLHOOKSTRUCT>.fromAddress(lParam);
       final event = RawMouseEvent(
-            mhs.ref.pt.x,
-            mhs.ref.pt.y,
-            wParam,
-            mhs.ref.mouseData,
-          );
+        mhs.ref.pt.x,
+        mhs.ref.pt.y,
+        wParam,
+        mhs.ref.mouseData,
+      );
       interpolatePort.send(event);
     } catch (e) {
       print(e);
@@ -183,7 +193,8 @@ class RawMouseEvent {
       down = false;
     } else if (wParam == WM_MOUSEWHEEL) {
       name = highWord == 120 ? wheelUp : wheelDown;
-      type = highWord == 120 ? MouseEventType.wheelUp : MouseEventType.wheelDown;
+      type =
+          highWord == 120 ? MouseEventType.wheelUp : MouseEventType.wheelDown;
       down = true;
     }
 
@@ -210,7 +221,9 @@ class RawKeyboardEvent {
     if (GetAsyncKeyState(VIRTUAL_KEY.VK_MENU) & 0x8000 != 0) {
       modifiers.add('alt');
     }
-    if (GetAsyncKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0 && name != 'shiftleft' && name!='shiftright') {
+    if (GetAsyncKeyState(VIRTUAL_KEY.VK_SHIFT) & 0x8000 != 0 &&
+        name != 'shiftleft' &&
+        name != 'shiftright') {
       modifiers.add('shift');
     }
 
