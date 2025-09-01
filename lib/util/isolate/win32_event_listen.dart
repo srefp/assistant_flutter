@@ -167,10 +167,10 @@ class RawMouseEvent {
       down = true;
     } else if (wParam == WM_XBUTTONUP) {
       final highWord = HIWORD(mouseData);
-      if (highWord == xbutton1) {
+      if (highWord == 0x0001) {
         name = xbutton1;
         type = MouseEventType.x1ButtonUp;
-      } else if (highWord == xbutton2) {
+      } else if (highWord == 0x0002) {
         name = xbutton2;
         type = MouseEventType.x2ButtonUp;
       }

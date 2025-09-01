@@ -24,7 +24,7 @@ import '../cv/cv.dart';
 import '../main.dart';
 import '../manager/screen_manager.dart';
 import '../model/pic_record.dart';
-import '../util/js_executor.dart';
+import '../util/js/js_executor.dart';
 import '../util/search_utils.dart';
 import '../win32/message_pump.dart';
 import '../win32/window.dart';

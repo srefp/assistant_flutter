@@ -17,7 +17,7 @@ import '../config/auto_tp_config.dart';
 import '../config/config_storage.dart';
 import '../dao/crud.dart';
 import '../manager/screen_manager.dart';
-import '../util/js_executor.dart';
+import '../util/js/js_executor.dart';
 import '../util/route_util.dart';
 import '../util/script_parser.dart';
 import '../win32/window.dart';

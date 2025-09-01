@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:assistant/util/js_executor.dart';
+import 'package:assistant/util/js/js_executor.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:re_editor/re_editor.dart';

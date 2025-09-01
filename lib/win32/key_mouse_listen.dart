@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:assistant/key_mouse/event_type.dart';
 import 'package:assistant/key_mouse/keyboard_event.dart';
 import 'package:assistant/key_mouse/mouse_event.dart';
-import 'package:assistant/util/js_executor.dart';
+import 'package:assistant/util/js/js_executor.dart';
 import 'package:assistant/win32/key_listen.dart';
 import 'package:assistant/win32/toast.dart';
 

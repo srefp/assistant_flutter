@@ -2,7 +2,7 @@ import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/auto_gui/keyboard.dart';
 import 'package:assistant/config/auto_tp_config.dart';
 import 'package:assistant/config/game_key_config.dart';
-import 'package:assistant/util/js_executor.dart';
+import 'package:assistant/util/js/js_executor.dart';
 import 'package:assistant/util/script_parser.dart';
 import 'package:assistant/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
