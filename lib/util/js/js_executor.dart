@@ -5,8 +5,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 
-import '../../auto_gui/key_mouse_util.dart';
-import '../../auto_gui/operations.dart' show factor;
 import 'convenience_register.dart';
 import 'helper_register.dart';
 import 'keyboard_register.dart';
@@ -135,7 +133,7 @@ Future<void> runScript(
     await jsRuntime.handlePromise(result);
   } catch (e) {
     dialog(
-        title: '脚本执行出错',
+        title: '脚本执行出错，建议重启，否则会内存溢出',
         child: SizedBox(
           height: 120,
           child: ListView(
@@ -144,7 +142,5 @@ Future<void> runScript(
             ],
           ),
         ));
-    jsRuntime.dispose();
-    registerJsFunc();
   }
 }

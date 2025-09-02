@@ -12,7 +12,7 @@ class Env {
   static bool showLog = false;
 
   /// 显示数据库
-  static bool showDb = true;
+  static bool showDb = false;
 
   /// 初始路由
   static String initialRoute = Routes.autoTp;

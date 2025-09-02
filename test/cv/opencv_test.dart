@@ -1,0 +1,20 @@
+import 'package:assistant/auto_gui/system_control.dart';
+import 'package:assistant/cv/cv.dart';
+import 'package:opencv_dart/opencv.dart' as cv;
+
+void main() {
+  final rect = ScreenRect(10, 10, 12, 12);
+
+  // 截图
+  final image = captureAsBgra(rect);
+
+  cv.Mat mat = uint8ListToMat(image!, rect.width, rect.height);
+
+  // 灰度图
+  final gray = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
+
+  print(image);
+
+  print(gray);
+
+}

@@ -13,6 +13,7 @@ import '../config/auto_tp_config.dart';
 import '../constants/macro_trigger_type.dart';
 import '../constants/profile_status.dart';
 import '../key_mouse/mouse_button.dart';
+import '../util/cv/cv_helper.dart';
 
 bool mapping = true;
 bool clickEntry = true;
@@ -26,6 +27,19 @@ void keyMouseListen(
     EventType eventType, String name, bool down, List<int> coords,
     {KeyboardEvent? keyEvent, MouseEvent? mouseEvent}) async {
   listenAll(name, down);
+
+  // 记录截图开始位置
+  if (recordMouseDownPos && eventType == EventType.mouse && down) {
+    mouseDownPos = KeyMouseUtil.physicalPos(coords);
+    recordMouseDownPos = false;
+    recordMouseUpPos = true;
+  }
+
+  // 记录截图结束位置
+  if (recordMouseUpPos && eventType == EventType.mouse && !down) {
+    mouseUpPos = KeyMouseUtil.physicalPos(coords);
+    recordMouseUpPos = false;
+  }
 
   WindowsApp.logModel.record(eventType, name, down, coords, mouseEvent);
 

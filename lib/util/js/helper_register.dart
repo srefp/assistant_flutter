@@ -84,21 +84,61 @@ executeShell(parameters) async {
 }
 
 findPicture(params) async {
-  final left = params[0][0];
-  final top = params[0][1];
-  final right = params[0][2];
-  final bottom = params[0][3];
-  final image = captureImageWindows(ScreenRect(left, top, right, bottom));
-  print('image: $image');
+  final leftTop = KeyMouseUtil.physicalPos([params[0][0], params[0][1]]);
+  final rightBottom = KeyMouseUtil.physicalPos([params[0][2], params[0][3]]);
+  final image = captureImageWindows(
+      ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
   final template = picRecordMap[params[1]]?.mat;
-  print('template: $template');
   if (template == null) {
     return {'match': -1, 'loc': cv.Point(0, 0)};
   }
-  final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
-  final minMaxLoc = cv.minMaxLoc(result);
-  print('找图结果：${minMaxLoc.$1}');
-  return {'match': minMaxLoc.$1, 'loc': minMaxLoc.$3};
+
+  if (params.length == 2) {
+    final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+    final minMaxLoc = cv.minMaxLoc(result);
+    final logicDistance =
+        KeyMouseUtil.logicalDistance([minMaxLoc.$4.x, minMaxLoc.$4.y]);
+    return {
+      'match': minMaxLoc.$2,
+      'loc': [params[0][0] + logicDistance[0], params[0][1] + logicDistance[1]],
+      'find': minMaxLoc.$2 > 0.9,
+    };
+  } else if (params.length == 4) {
+    final int interval = params[2];
+    final int totalDuration = params[3];
+
+    assert(interval > 0);
+    assert(totalDuration > 0);
+
+    // 每隔一段间隔时间找一次，指定时长内返回
+    int currentDuration = 0;
+
+    late Map<String, dynamic> res;
+
+    while (currentDuration < totalDuration) {
+      final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+      final minMaxLoc = cv.minMaxLoc(result);
+      final logicDistance =
+          KeyMouseUtil.logicalDistance([minMaxLoc.$4.x, minMaxLoc.$4.y]);
+      res = {
+        'match': minMaxLoc.$2,
+        'loc': [
+          params[0][0] + logicDistance[0],
+          params[0][1] + logicDistance[1]
+        ],
+        'find': minMaxLoc.$2 > 0.9,
+      };
+
+      if (minMaxLoc.$2 > 0.9) {
+        return res;
+      }
+
+      currentDuration += interval;
+      await Future.delayed(Duration(milliseconds: interval));
+    }
+
+    return res;
+  }
 }
 
 findPointColor(params) async {

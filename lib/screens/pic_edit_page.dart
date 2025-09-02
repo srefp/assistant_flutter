@@ -98,7 +98,7 @@ class PicEditPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   WinText(
-                                    '键',
+                                    '键（脚本中按照这个识别！）',
                                     style: TextStyle(fontSize: 16),
                                   ),
                                   SizedBox(

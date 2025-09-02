@@ -3,10 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:assistant/model/pic_record.dart';
+import 'package:assistant/util/cv/cv_helper.dart';
 import 'package:excel/excel.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 import 'package:provider/provider.dart';
@@ -55,7 +56,8 @@ class PicModel extends ChangeNotifier {
       // 将base64字符串解码为Uint8List
       final bytes = base64Decode(item.image);
       // 使用OpenCV解码图片
-      final mat = cv.imdecode(bytes, cv.IMREAD_COLOR);
+      var mat = cv.imdecode(bytes, cv.IMREAD_COLOR);
+      mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
       item.mat = mat;
       picRecordMap[item.key] = item;
     }
@@ -120,16 +122,9 @@ class PicModel extends ChangeNotifier {
       );
 
       // 表头字段（与Pic属性对应）
-      final headers = [
-        '名称',
-        '键',
-        '注释',
-        '图片',
-        '宽度',
-        '高度',
-        '创建时间',
-        '更新时间'
-      ].map((e) => TextCellValue(e)).toList();
+      final headers = ['名称', '键', '注释', '图片', '宽度', '高度', '创建时间', '更新时间']
+          .map((e) => TextCellValue(e))
+          .toList();
       sheet.appendRow(headers);
 
       // 设置表头样式
@@ -297,19 +292,20 @@ class PicModel extends ChangeNotifier {
   }
 
   void capturePic() async {
+    recordMouseDownPos = true;
     await screenCapturer.capture(
       mode: CaptureMode.region,
       copyToClipboard: false,
     );
 
     await Future.delayed(Duration(milliseconds: 300));
-    final imageBytes = await screenCapturer.readImageFromClipboard();
+    final pngList = await screenCapturer.readImageFromClipboard();
 
-    final image = await decodeImageFromList(imageBytes!);
+    final image = await decodeImageFromList(pngList!);
     width = image.width;
     height = image.height;
 
-    imageFile = imageBytes;
+    imageFile = pngList;
     notifyListeners();
   }
 

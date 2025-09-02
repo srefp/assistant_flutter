@@ -15,8 +15,7 @@ Future<String> encodeImage(cv.Mat mat) async {
 }
 
 cv.Mat captureImageWindows(ScreenRect rect) {
-  var image = captureImageWin(rect);
-  // cv.Mat mat = cv.imdecode(image!, cv.IMREAD_COLOR);
+  var image = captureAsBgra(rect);
   cv.Mat mat = uint8ListToMat(image!, rect.width, rect.height);
   mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
   return mat;
@@ -51,7 +50,7 @@ cv.Mat uint8ListToMat(Uint8List bytes, int width, int height,
 }
 
 /// 使用 Win32 API 截取屏幕区域
-Uint8List? captureImageWin(ScreenRect rect) {
+Uint8List? captureAsBgra(ScreenRect rect) {
   final hdcScreen = GetDC(NULL);
   final hdcMem = CreateCompatibleDC(hdcScreen);
 
