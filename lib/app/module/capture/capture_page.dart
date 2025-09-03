@@ -9,6 +9,7 @@ import '../../../component/button_with_icon.dart';
 import '../../../component/divider.dart';
 import '../../../component/page_title.dart';
 import '../../../component/title_with_sub.dart';
+import '../../../helper/cv/cv_helper.dart';
 import '../../routes.dart';
 import '../../windows_app.dart';
 import '../pic/pic_record.dart';
@@ -125,6 +126,19 @@ class PicListRow extends StatelessWidget {
               lightText: lightText,
               rightWidget: Row(
                 children: [
+                  SizedBox(
+                    width: 80,
+                    height: 50,
+                    child: Image.memory(
+                      stringToPngList(item.image),
+                      fit: BoxFit.fitHeight,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        FluentIcons.picture,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
                   IconButton(
                     icon: Icon(
                       Icons.edit,

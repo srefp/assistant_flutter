@@ -300,11 +300,20 @@ class PicModel extends ChangeNotifier {
 
     await Future.delayed(Duration(milliseconds: 300));
 
+    pastePic();
+  }
+
+  void pastePic() async {
     final pngList = await screenCapturer.readImageFromClipboard();
 
-    final image = await decodeImageFromList(pngList!);
-    width = image.width;
-    height = image.height;
+    try {
+      final image = await decodeImageFromList(pngList!);
+      width = image.width;
+      height = image.height;
+    } catch (e) {
+      dialog(title: '粘贴的不是图片！');
+      return;
+    }
 
     imageFile = pngList;
     notifyListeners();

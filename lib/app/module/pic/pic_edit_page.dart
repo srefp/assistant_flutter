@@ -186,6 +186,14 @@ class PicEditPage extends StatelessWidget {
                               icon: Icons.camera,
                               onPressed: model.capturePic,
                             ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            ButtonWithIcon(
+                              text: '粘贴',
+                              icon: Icons.paste,
+                              onPressed: model.pastePic,
+                            ),
                           ],
                         )
                       ],
