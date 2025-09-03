@@ -205,14 +205,6 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
     );
   }
 
-  /// 关闭应用
-  void closeApp() async {
-    WindowsApp.autoTpModel.stop();
-    await windowManager.hide();
-    await systemTray.destroy();
-    exit(0);
-  }
-
   /// 验证客户端
   void verifyClient() {
     Dio().get(VerificationConfig.to.verificationServer());

@@ -61,8 +61,9 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
               onValueChanged: (value) =>
                   HotkeyConfig.to.save(widget.item.valueKey!, value),
               onGlobalValueChanged: (value) => hotKeyManager.register(
-                  widget.item.keyItemCallback!(),
-                  keyDownHandler: widget.item.keyDownHandler),
+                widget.item.keyItemCallback!(),
+                keyDownHandler: widget.item.keyDownHandler,
+              ),
             ),
           if (widget.item.enabledKey != null)
             SizedBox(

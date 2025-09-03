@@ -23,7 +23,6 @@ import '../../../component/divider.dart';
 import '../../../component/text/win_text.dart';
 import '../../../component/theme.dart';
 import '../../../component/title_with_sub.dart';
-import '../../../helper/isolate/win32_event_listen.dart';
 import '../../../helper/win32/os_version.dart';
 import '../../config/auto_tp_config.dart';
 import '../../config/hotkey_config.dart';
@@ -108,13 +107,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     if (Platform.isAndroid) {
                       showOverlay(context);
                     } else {
-                      if (model.isRunning) {
-                        stopListen();
-                        model.stop();
-                      } else {
-                        startListen();
-                        model.start();
-                      }
+                      model.startOrStop();
                     }
                   },
                 ),

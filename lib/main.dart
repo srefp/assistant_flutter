@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:get_storage/get_storage.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
@@ -17,8 +18,9 @@ import 'package:windows_single_instance/windows_single_instance.dart';
 import 'app/config/config_storage.dart';
 import 'app/module/overlay/overlay_window.dart';
 import 'helper/isolate/win32_event_listen.dart';
+import 'helper/windows/tray.dart';
 
-const String version = '2025.9.2';
+const String version = '2025.9.3';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
@@ -55,7 +57,7 @@ void initOverlayListening() {
 
   // 监听来自overlay的消息
   uiReceivePort.listen((msg) {
-    print('Received from overlay: $msg');
+    debugPrint('Received from overlay: $msg');
     // 处理消息逻辑
   });
 }
@@ -71,23 +73,34 @@ void overlayMain() {
   );
 }
 
-/// 重启应用，此方法有问题，原来的程序结束的时候，被新开启的程序也会结束
+/// 重启应用
 void restartApp() async {
+  // 停止监听
+  await stopListen();
+
+  // 注销所有热键
+  await hotKeyManager.unregisterAll();
+
   if (Platform.isWindows) {
     await Process.start(
       Platform.resolvedExecutable,
       [restart],
-      runInShell: true,
     );
   }
+
+  // 关闭应用
   closeApp();
 }
 
 /// 关闭应用
 void closeApp() async {
+  // 停止监听
+  await stopListen();
+
   if (Platform.isWindows) {
     WindowsApp.autoTpModel.stop();
     await windowManager.hide();
+    await systemTray.destroy();
     exit(0);
   }
 }

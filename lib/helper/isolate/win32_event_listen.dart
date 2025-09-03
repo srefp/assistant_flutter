@@ -39,8 +39,8 @@ void startListen() {
   worker.sendMessage(runNr);
 }
 
-void stopListen() {
-  api.keyDown(key: 'f19');
+Future<void> stopListen() async {
+  await api.keyDown(key: 'f19');
 }
 
 void hookIsolate(

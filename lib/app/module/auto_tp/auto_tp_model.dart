@@ -13,6 +13,7 @@ import '../../../component/text/win_text.dart';
 import '../../../helper/auto_gui/key_mouse_util.dart';
 import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/cv/cv.dart';
+import '../../../helper/isolate/win32_event_listen.dart';
 import '../../../helper/js/js_executor.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/search_utils.dart';
@@ -827,13 +828,12 @@ class AutoTpModel extends ChangeNotifier {
 
     isRunning = true;
 
+    startListen();
+
     if (validType == targetWindow && hWnd != 0) {
       setForegroundWindow(hWnd);
       ScreenManager.instance.startListen();
     }
-
-    // keyListerId = listenerBackend.addKeyboardListener(keyboardListener)!;
-    // mouseListerId = listenerBackend.addMouseListener(mouseListener)!;
 
     notifyListeners();
     return true;
@@ -841,9 +841,8 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
+    stopListen();
     ScreenManager.instance.stopListen();
-    // listenerBackend.removeKeyboardListener(keyListerId);
-    // listenerBackend.removeMouseListener(mouseListerId);
 
     notifyListeners();
   }
