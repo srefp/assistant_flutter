@@ -1,0 +1,81 @@
+import 'package:assistant/helper/asset_loader.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart';
+
+import '../../component/theme.dart';
+import '../../helper/win32/os_version.dart';
+import 'config_storage.dart';
+
+class SettingConfig with ConfigStorage {
+  static SettingConfig to = SettingConfig();
+  static const keyThemeMode = 'themeMode';
+  static const keyAccentColorName = 'accentColorName';
+  static const keyTransparentMode = 'transparentMode';
+  static const keyLogShow = 'logShow';
+  static const keyAutoTpMenu = 'autoTpMenu';
+  static const keyScriptMenu = 'scriptMenu';
+  static const keyTestMenu = 'testMenu';
+  static const keyConfigMenu = 'configMenu';
+  static const keyRecordMenu = 'recordMenu';
+  static const keyDocMenu = 'docMenu';
+  static const keyToolMenu = 'toolMenu';
+  static const keyHotkeyMenu = 'hotkeyMenu';
+  static const keyScriptManagementMenu = 'scriptManagementMenu';
+  static const keyCaptureManagementMenu = 'captureManagementMenu';
+  static const keyMacroMenu = 'macroMenu';
+  static const keyEfficientMenu = 'efficientMenu';
+  static const keyCodeGenMenu = 'codeGenMenu';
+
+  ThemeMode getThemeMode() {
+    final index = box.read(keyThemeMode);
+    if (index == null) {
+      return isWindows11() ? ThemeMode.system : ThemeMode.dark;
+    }
+    return getItemFromArr(ThemeMode.values, index) ?? ThemeMode.system;
+  }
+
+  WindowEffect getTransparentMode() {
+    final index = box.read(keyTransparentMode);
+    if (index == null) {
+      return isWindows11() ? WindowEffect.mica : WindowEffect.disabled;
+    }
+    return getItemFromArr(WindowEffect.values, index) ?? WindowEffect.mica;
+  }
+
+  AccentColor getAccentColor() {
+    final index = box.read(keyAccentColorName);
+    if (index == null || index == 0) {
+      return systemAccentColor;
+    }
+    return getItemFromArr(Colors.accentColors, index - 1);
+  }
+
+  bool getLogShow() => box.read(keyLogShow) ?? false;
+
+  bool getAutoTpMenu() => box.read(keyAutoTpMenu) ?? true;
+
+  bool getScriptMenu() => box.read(keyScriptMenu) ?? true;
+
+  bool getTestMenu() => box.read(keyTestMenu) ?? false;
+
+  bool getConfigMenu() => box.read(keyConfigMenu) ?? true;
+
+  bool getRecordMenu() => box.read(keyRecordMenu) ?? false;
+
+  bool getDocMenu() => box.read(keyDocMenu) ?? true;
+
+  bool getToolMenu() => box.read(keyToolMenu) ?? false;
+
+  bool getHotkeyMenu() => box.read(keyHotkeyMenu) ?? true;
+
+  bool getScriptManagementMenu() => box.read(keyScriptManagementMenu) ?? true;
+
+  bool getCaptureManagementMenu() =>
+      box.read(keyCaptureManagementMenu) ?? false;
+
+  bool getMacroMenu() => box.read(keyMacroMenu) ?? true;
+
+  bool getEfficientMenu() => box.read(keyEfficientMenu) ?? false;
+
+  bool getCodeGenMenu() => box.read(keyCodeGenMenu) ?? false;
+}

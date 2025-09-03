@@ -3,10 +3,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:assistant/app/windows_app.dart';
-import 'package:assistant/screens/overlay_window.dart';
-import 'package:assistant/util/db_helper.dart';
-import 'package:assistant/util/path_manage.dart';
-import 'package:assistant/util/window_utils.dart';
+import 'package:assistant/helper/db_helper.dart';
+import 'package:assistant/helper/path_manage.dart';
+import 'package:assistant/helper/windows/window_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -15,8 +14,9 @@ import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
-import 'config/config_storage.dart';
-import 'util/isolate/win32_event_listen.dart';
+import 'app/config/config_storage.dart';
+import 'app/module/overlay/overlay_window.dart';
+import 'helper/isolate/win32_event_listen.dart';
 
 const String version = '2025.9.2';
 const String appId = 'assistant';

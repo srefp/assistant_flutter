@@ -1,4 +1,4 @@
-import 'package:assistant/util/db_helper.dart';
+import 'package:assistant/helper/db_helper.dart';
 
 void main() {
   // 模拟多行输入字符串

@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:assistant/app/app_title.dart';
 import 'package:assistant/app/windows_app.dart';
-import 'package:assistant/components/win_text.dart';
-import 'package:assistant/config/env_config.dart';
-import 'package:assistant/notifier/app_model.dart';
+import 'package:assistant/component/title/app_title.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../config/setting_config.dart';
+import '../component/text/win_text.dart';
 import '../main.dart';
-import '../routes/routes.dart';
+import 'config/env_config.dart';
+import 'config/setting_config.dart';
+import 'module/app/app_model.dart';
+import 'routes.dart';
 
 const double iconSize = 16;
 
@@ -132,8 +132,7 @@ class _RootAppState extends State<RootApp> {
         ),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() !=
-              Routes.pic) {
+          if (GoRouterState.of(context).uri.toString() != Routes.pic) {
             context.go(Routes.pic);
           }
         },
@@ -238,8 +237,8 @@ class _RootAppState extends State<RootApp> {
     int indexOriginal = originalItems
         .where((item) => item.key != null)
         .toList()
-        .indexWhere(
-            (item) => '$location/'.contains('${(item.key as ValueKey).value}/'));
+        .indexWhere((item) =>
+            '$location/'.contains('${(item.key as ValueKey).value}/'));
 
     if (indexOriginal == -1) {
       int indexFooter = footerItems

@@ -1,25 +1,8 @@
 import 'dart:io';
 
 import 'package:assistant/app/root_app.dart';
-import 'package:assistant/components/win_text.dart';
-import 'package:assistant/config/auto_tp_config.dart';
-import 'package:assistant/config/env_config.dart';
-import 'package:assistant/config/verification_config.dart';
+import 'package:assistant/helper/key_mouse/hot_key.dart';
 import 'package:assistant/main.dart';
-import 'package:assistant/notifier/capture_management_model.dart';
-import 'package:assistant/notifier/doc_model.dart';
-import 'package:assistant/notifier/macro_model.dart';
-import 'package:assistant/notifier/record_model.dart';
-import 'package:assistant/notifier/script_editor_model.dart';
-import 'package:assistant/notifier/script_management_model.dart';
-import 'package:assistant/screens/capture_management_page.dart';
-import 'package:assistant/screens/doc_page.dart';
-import 'package:assistant/screens/macro_edit_page.dart';
-import 'package:assistant/screens/macro_page.dart';
-import 'package:assistant/screens/record_page.dart';
-import 'package:assistant/screens/script_management_page.dart';
-import 'package:assistant/screens/tool_page.dart';
-import 'package:assistant/util/hot_key.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -27,20 +10,37 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../notifier/app_model.dart';
-import '../notifier/auto_tp_model.dart';
-import '../notifier/code_gen_model.dart';
-import '../notifier/config_model.dart';
-import '../notifier/efficient_model.dart';
-import '../routes/routes.dart';
-import '../screens/auto_tp_page.dart';
-import '../screens/efficient_page.dart';
-import '../screens/pic_edit_page.dart';
-import '../screens/script_editor.dart';
-import '../screens/settings.dart';
-import '../screens/test_page.dart';
-import '../theme.dart';
-import '../util/tray.dart';
+import '../component/text/win_text.dart';
+import '../component/theme.dart';
+import '../helper/windows/tray.dart';
+import 'config/auto_tp_config.dart';
+import 'config/env_config.dart';
+import 'config/verification_config.dart';
+import 'module/app/app_model.dart';
+import 'module/auto_tp/auto_tp_model.dart';
+import 'module/auto_tp/auto_tp_page.dart';
+import 'module/capture/capture_model.dart';
+import 'module/capture/capture_page.dart';
+import 'module/code_gen/code_gen_model.dart';
+import 'module/config/config_model.dart';
+import 'module/doc/doc_model.dart';
+import 'module/doc/doc_page.dart';
+import 'module/efficient/efficient_model.dart';
+import 'module/efficient/efficient_page.dart';
+import 'module/macro/macro_edit_page.dart';
+import 'module/macro/macro_model.dart';
+import 'module/macro/macro_page.dart';
+import 'module/pic/pic_edit_page.dart';
+import 'module/record/record_model.dart';
+import 'module/record/record_page.dart';
+import 'module/screens/tool_page.dart';
+import 'module/script/script_editor_model.dart';
+import 'module/script/script_editor_page.dart';
+import 'module/script/script_model.dart';
+import 'module/script/script_page.dart';
+import 'module/setting/settings.dart';
+import 'module/test/test_page.dart';
+import 'routes.dart';
 
 class WindowsApp extends StatefulWidget {
   const WindowsApp({super.key});
@@ -66,7 +66,6 @@ final _appTheme = AppTheme();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _WindowsAppState extends State<WindowsApp> with WindowListener {
-
   @override
   void initState() {
     super.initState();
@@ -263,8 +262,7 @@ _buildRoutes() {
 
     /// Pic Edit
     GoRoute(
-        path: Routes.picEdit,
-        builder: (context, state) => const PicEditPage()),
+        path: Routes.picEdit, builder: (context, state) => const PicEditPage()),
 
     /// Macro
     GoRoute(path: Routes.macro, builder: (context, state) => const MacroPage()),
@@ -285,7 +283,6 @@ _buildRoutes() {
     GoRoute(
         path: Routes.efficient,
         builder: (context, state) => const EfficientPage()),
-
   ];
 
   if (Env.showTools) {

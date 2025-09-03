@@ -1,5 +1,6 @@
-import 'package:assistant/auto_gui/system_control.dart';
-import 'package:assistant/cv/cv.dart';
+import 'package:assistant/helper/auto_gui/system_control.dart';
+import 'package:assistant/helper/cv/cv.dart';
+import 'package:flutter/widgets.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 
 void main() {
@@ -13,8 +14,7 @@ void main() {
   // 灰度图
   final gray = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
 
-  print(image);
+  debugPrint(image.toString());
 
-  print(gray);
-
+  debugPrint(gray.toString());
 }
