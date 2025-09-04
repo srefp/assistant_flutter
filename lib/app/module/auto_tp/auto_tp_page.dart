@@ -14,6 +14,7 @@ import '../../../component/box/search_box.dart';
 import '../../../component/button_with_icon.dart';
 import '../../../component/card/icon_card.dart';
 import '../../../component/config_row/bool_config_row.dart';
+import '../../../component/config_row/double_config_row.dart';
 import '../../../component/config_row/game_key_config_row.dart';
 import '../../../component/config_row/hotkey_config_row.dart';
 import '../../../component/config_row/int_config_row.dart';
@@ -452,8 +453,8 @@ class _AutoTpPageState extends State<AutoTpPage> {
           CustomSliverBox(
             child: IconCard(
               icon: Icons.remove_red_eye,
-              title: '匹配区域',
-              subTitle: '游戏中标志图像截图与匹配',
+              title: '识图参数',
+              subTitle: '识图功能相关参数',
               content: Column(
                 children: [
                   Padding(
@@ -475,20 +476,29 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedMatchConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedMatchConfigItems[index];
-                      return StringConfigRow(
-                        item: item,
-                        lightText: model.delayLightText,
-                        rightWidget: SizedBox(
-                          height: 34,
-                          child: ButtonWithIcon(
-                            icon: Icons.remove_red_eye,
-                            text: '截图',
-                            onPressed: () {
-                              model.matchScreenshot(item);
-                            },
+
+                      if (item is DoubleConfigItem) {
+                        return DoubleConfigRow(
+                          item: item,
+                          lightText: model.matchLightText,
+                        );
+                      } else if (item is StringConfigItem) {
+                        return StringConfigRow(
+                          item: item,
+                          lightText: model.delayLightText,
+                          rightWidget: SizedBox(
+                            height: 34,
+                            child: ButtonWithIcon(
+                              icon: Icons.remove_red_eye,
+                              text: '截图',
+                              onPressed: () {
+                                model.matchScreenshot(item);
+                              },
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
+                      return null;
                     },
                     shrinkWrap: true,
                   ),

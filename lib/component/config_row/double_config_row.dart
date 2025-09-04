@@ -1,16 +1,17 @@
+import 'package:assistant/component/model/config_item.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../../app/config/auto_tp_config.dart';
-import '../model/config_item.dart';
 import '../title_with_sub.dart';
 
-class IntConfigItem extends ConfigItem {
-  final int Function() valueCallback;
+typedef ValueCallback = int Function();
 
+class DoubleConfigItem extends ConfigItem {
   @override
   String get valueKey => super.valueKey!;
+  final double Function() valueCallback;
 
-  IntConfigItem({
+  DoubleConfigItem({
     required super.title,
     super.subTitle = '',
     required super.valueKey,
@@ -18,11 +19,11 @@ class IntConfigItem extends ConfigItem {
   });
 }
 
-class IntConfigRow extends StatelessWidget {
-  final IntConfigItem item;
+class DoubleConfigRow extends StatelessWidget {
+  final DoubleConfigItem item;
   final String lightText;
 
-  const IntConfigRow({
+  const DoubleConfigRow({
     super.key,
     required this.item,
     this.lightText = '',

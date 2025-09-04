@@ -146,6 +146,26 @@ async function findPic() {
     return await sendMessage('findPic', JSON.stringify([...arguments]));
 }
 
+// 找图（左上角位置）
+async function findPicLT() {
+    return await sendMessage('findPicLT', JSON.stringify([...arguments]));
+}
+
+// 找图（右上角位置）
+async function findPicRT() {
+    return await sendMessage('findPicRT', JSON.stringify([...arguments]));
+}
+
+// 找图（右下角位置）
+async function findPicRB() {
+    return await sendMessage('findPicRB', JSON.stringify([...arguments]));
+}
+
+// 找图（左下角位置）
+async function findPicLB() {
+    return await sendMessage('findPicLB', JSON.stringify([...arguments]));
+}
+
 // 执行shell脚本
 async function sh() {
     return await sendMessage('sh', JSON.stringify([...arguments]));

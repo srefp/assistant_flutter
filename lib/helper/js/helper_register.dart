@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assistant/app/config/auto_tp_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
@@ -14,6 +15,7 @@ import '../auto_gui/operations.dart';
 import '../auto_gui/system_control.dart';
 import '../cv/cv.dart';
 import '../data_converter.dart';
+import '../date_utils.dart';
 import '../find_util.dart';
 import '../win32/toast.dart';
 import 'js_executor.dart';
@@ -34,8 +36,20 @@ void registerHelper() {
   // 找色
   jsRuntime.onMessage(findColor, findPointColor);
 
-  // 找图
+  // 找图（中心位置）
   jsRuntime.onMessage(findPic, findPicture);
+
+  // 找图（左上角位置）
+  jsRuntime.onMessage(findPicLT, (params) => findPicture(params, corner: lt));
+
+  // 找图（右上角位置）
+  jsRuntime.onMessage(findPicRT, (params) => findPicture(params, corner: rt));
+
+  // 找图（右下角位置）
+  jsRuntime.onMessage(findPicRB, (params) => findPicture(params, corner: rb));
+
+  // 找图（左下角位置）
+  jsRuntime.onMessage(findPicLB, (params) => findPicture(params, corner: lb));
 
   // 执行shell脚本
   jsRuntime.onMessage(sh, executeShell);
@@ -82,14 +96,36 @@ executeShell(parameters) async {
   return process?.pid;
 }
 
-findPicture(params) async {
+const lt = 1;
+const rt = 2;
+const rb = 3;
+const lb = 4;
+
+findPicture(params, {int? corner}) async {
   final leftTop = KeyMouseUtil.physicalPos([params[0][0], params[0][1]]);
   final rightBottom = KeyMouseUtil.physicalPos([params[0][2], params[0][3]]);
   final image = captureImageWindows(
       ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
-  final template = picRecordMap[params[1]]?.mat;
-  if (template == null) {
-    return {'match': -1, 'loc': cv.Point(0, 0)};
+  final picRecord = picRecordMap[params[1]];
+  if (picRecord == null || picRecord.mat == null) {
+    return [-1, [], false];
+  }
+
+  final template = picRecord.mat!;
+  final width = picRecord.width;
+  final height = picRecord.height;
+  final picSize = KeyMouseUtil.logicalDistance([width, height]);
+  final matchThreshold = AutoTpConfig.to.getMatchThreshold();
+
+  List<int> offset = [(picSize[0] / 2).toInt(), (picSize[1] / 2).toInt()];
+  if (corner == lt) {
+    offset = [0, 0];
+  } else if (corner == rt) {
+    offset = [picSize[0], 0];
+  } else if (corner == rb) {
+    offset = [picSize[0], picSize[1]];
+  } else if (corner == lb) {
+    offset = [0, picSize[1]];
   }
 
   if (params.length == 2) {
@@ -97,11 +133,15 @@ findPicture(params) async {
     final minMaxLoc = cv.minMaxLoc(result);
     final logicDistance =
         KeyMouseUtil.logicalDistance([minMaxLoc.$4.x, minMaxLoc.$4.y]);
-    return {
-      'match': minMaxLoc.$2,
-      'loc': [params[0][0] + logicDistance[0], params[0][1] + logicDistance[1]],
-      'find': minMaxLoc.$2 > 0.9,
-    };
+
+    return [
+      minMaxLoc.$2,
+      [
+        params[0][0] + logicDistance[0] + offset[0],
+        params[0][1] + logicDistance[1] + offset[1],
+      ],
+      minMaxLoc.$2 > matchThreshold,
+    ];
   } else if (params.length == 4) {
     final int interval = params[2];
     final int totalDuration = params[3];
@@ -109,30 +149,27 @@ findPicture(params) async {
     assert(interval > 0);
     assert(totalDuration > 0);
 
-    // 每隔一段间隔时间找一次，指定时长内返回
-    int currentDuration = 0;
+    late List<dynamic> res;
 
-    late Map<String, dynamic> res;
-
-    while (currentDuration < totalDuration) {
+    final int startTime = currentMillis();
+    while (currentMillis() - startTime < totalDuration) {
       final result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
       final minMaxLoc = cv.minMaxLoc(result);
       final logicDistance =
           KeyMouseUtil.logicalDistance([minMaxLoc.$4.x, minMaxLoc.$4.y]);
-      res = {
-        'match': minMaxLoc.$2,
-        'loc': [
-          params[0][0] + logicDistance[0],
-          params[0][1] + logicDistance[1]
+      res = [
+        minMaxLoc.$2,
+        [
+          params[0][0] + logicDistance[0] + offset[0],
+          params[0][1] + logicDistance[1] + offset[1],
         ],
-        'find': minMaxLoc.$2 > 0.9,
-      };
+        minMaxLoc.$2 > matchThreshold,
+      ];
 
-      if (minMaxLoc.$2 > 0.9) {
+      if (minMaxLoc.$2 > matchThreshold) {
         return res;
       }
 
-      currentDuration += interval;
       await Future.delayed(Duration(milliseconds: interval));
     }
 

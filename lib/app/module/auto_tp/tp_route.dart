@@ -35,6 +35,9 @@ class TpRoute {
   /// 更新时间
   int? updatedOn;
 
+  /// 排序
+  int? orderNum;
+
   TpRoute({
     this.id,
     required this.uniqueId,
@@ -45,6 +48,7 @@ class TpRoute {
     this.author = '-1',
     this.ratio = '16:9',
     this.videoUrl,
+    this.orderNum,
     int? createdOn,
     int? updatedOn,
   }) {
@@ -63,6 +67,7 @@ class TpRoute {
         author: json['author'] as String,
         ratio: json['ratio'] as String,
         videoUrl: json['videoUrl'] as String?,
+        orderNum: json['orderNum'] as int?,
         createdOn: json['createdOn'] as int?,
         updatedOn: json['updatedOn'] as int?,
       );
@@ -77,11 +82,12 @@ class TpRoute {
         'author': author,
         'ratio': ratio,
         'videoUrl': videoUrl,
+        'orderNum': orderNum,
         'createdOn': createdOn,
         'updatedOn': updatedOn,
       };
 
   @override
   String toString() =>
-      'Route{id: $id, uniqueId: $uniqueId, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, videoUrl: $videoUrl, createdOn: $createdOn, updatedOn: $updatedOn}';
+      'Route{id: $id, uniqueId: $uniqueId, name: $scriptName, content: $content, remark: $remark, author: $author, ratio: $ratio, videoUrl: $videoUrl, orderNum: $orderNum, createdOn: $createdOn, updatedOn: $updatedOn}';
 }

@@ -30,6 +30,10 @@ const book = "book";
 const tpc = "tpc";
 const findColor = "findColor";
 const findPic = "findPic";
+const findPicLT = "findPicLT";
+const findPicRT = "findPicRT";
+const findPicRB = "findPicRB";
+const findPicLB = "findPicLB";
 const sh = "sh";
 const maxCurrentWindow = "maxCurrentWindow";
 const moveToCenter = "moveToCenter";
@@ -54,6 +58,10 @@ const hintKeys = [
   tpc,
   findColor,
   findPic,
+  findPicLT,
+  findPicRT,
+  findPicRB,
+  findPicLB,
   tip,
   sh,
   maxCurrentWindow,
@@ -79,6 +87,10 @@ const keys = [
   book,
   tpc,
   findPic,
+  findPicLT,
+  findPicRT,
+  findPicRB,
+  findPicLB,
   moveToCenter,
 ];
 

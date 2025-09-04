@@ -84,6 +84,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyAnchorRect = "anchorRect";
   static const keyInnerMacroEnabled = "innerMacroEnabled";
   static const keyTrayEnabled = "trayEnabled";
+  static const keyMatchThreshold = "matchThreshold";
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
@@ -270,4 +271,6 @@ class AutoTpConfig with ConfigStorage {
   }
 
   bool isTrayEnabled() => box.read(keyTrayEnabled) ?? false;
+
+  double getMatchThreshold() => box.read(keyMatchThreshold) ?? 0.9;
 }

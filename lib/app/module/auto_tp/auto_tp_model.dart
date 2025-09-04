@@ -1,3 +1,5 @@
+import 'package:assistant/component/config_row/double_config_row.dart';
+import 'package:assistant/component/model/config_item.dart';
 import 'package:assistant/helper/cv/scan.dart';
 import 'package:assistant/helper/route_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -220,17 +222,23 @@ final gameKeyConfigItems = [
   ),
 ];
 
-final matchConfigItems = [
-  StringConfigItem(
-    title: '大世界匹配区域',
-    valueKey: AutoTpConfig.keyWorldRect,
-    valueCallback: AutoTpConfig.to.getWorldString,
+final matchConfigItems = <ConfigItem>[
+  DoubleConfigItem(
+    title: '匹配阈值',
+    subTitle: '匹配分数范围0 - 1，越接近1越匹配',
+    valueKey: AutoTpConfig.keyMatchThreshold,
+    valueCallback: AutoTpConfig.to.getMatchThreshold,
   ),
-  StringConfigItem(
-    title: '锚点匹配区域',
-    valueKey: AutoTpConfig.keyAnchorRect,
-    valueCallback: AutoTpConfig.to.getAnchorString,
-  ),
+  // StringConfigItem(
+  //   title: '大世界匹配区域',
+  //   valueKey: AutoTpConfig.keyWorldRect,
+  //   valueCallback: AutoTpConfig.to.getWorldString,
+  // ),
+  // StringConfigItem(
+  //   title: '锚点匹配区域',
+  //   valueKey: AutoTpConfig.keyAnchorRect,
+  //   valueCallback: AutoTpConfig.to.getAnchorString,
+  // ),
 ];
 
 final delayConfigItems = [
