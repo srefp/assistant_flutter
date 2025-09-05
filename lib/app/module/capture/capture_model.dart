@@ -52,15 +52,20 @@ class PicModel extends ChangeNotifier {
 
   loadPicList() async {
     picList = await loadAllPicRecord();
-    for (var item in picList) {
+    for (final item in picList) {
       // 将base64字符串解码为Uint8List
       final bytes = base64Decode(item.image);
 
       // 使用OpenCV解码图片
-      var mat = cv.imdecode(bytes, cv.IMREAD_COLOR);
-      mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
+      final mat = cv.cvtColor(
+        cv.imdecode(bytes, cv.IMREAD_COLOR),
+        cv.COLOR_BGR2GRAY,
+      );
       item.mat = mat;
       picRecordMap[item.key] = item;
+
+      // 稍微等一下，防止UI卡顿
+      await Future.delayed(Duration.zero);
     }
     displayedPicList = picList;
     notifyListeners();

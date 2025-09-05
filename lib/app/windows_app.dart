@@ -123,6 +123,7 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
       // 脚本编辑器
       ChangeNotifierProvider(
         create: (context) => WindowsApp.scriptEditorModel,
+        lazy: false,
       ),
 
       // 脚本管理
@@ -133,11 +134,13 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
       // 截图管理
       ChangeNotifierProvider(
         create: (context) => WindowsApp.captureManagementModel,
+        lazy: false,
       ),
 
       // 宏
       ChangeNotifierProvider(
         create: (context) => WindowsApp.macroModel,
+        lazy: false,
       ),
 
       // 效率
