@@ -129,11 +129,11 @@ Future<void> runScript(
   // 将code中的异步函数添加await
   if (addAwait) {
     for (final key in keys) {
-      if (stoppable) {
-        code = code.replaceAll('$key(',
-            'if (!scriptRunning) { scriptRunning = true; return;} await $key(');
-      } else {
+      if (!stoppable || key.startsWith('find')) {
         code = code.replaceAll('$key(', 'await $key(');
+      } else {
+        code = code.replaceAll('$key(',
+            'if (!scriptRunning) {scriptRunning = true; return;} await $key(');
       }
     }
   }

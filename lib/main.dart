@@ -20,7 +20,7 @@ import 'app/module/overlay/overlay_window.dart';
 import 'helper/isolate/win32_event_listen.dart';
 import 'helper/windows/tray.dart';
 
-const String version = '2025.9.7';
+const String version = '2025.9.8';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
