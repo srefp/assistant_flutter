@@ -178,9 +178,32 @@ findPicture(params, {int? corner}) async {
 }
 
 findPointColor(params) async {
-  final res = await FindUtil.findColor(
-      convertDynamicListToIntList(params[0]), params[1]);
-  return res;
+  if (params.length == 2) {
+    final res = await FindUtil.findColor(
+        convertDynamicListToIntList(params[0]), params[1]);
+    return res;
+  } else if (params.length == 4) {
+    final int interval = params[2];
+    final int totalDuration = params[3];
+
+    assert(interval > 0);
+    assert(totalDuration > 0);
+
+    late bool res;
+
+    final int startTime = currentMillis();
+    while (currentMillis() - startTime < totalDuration) {
+      res = await FindUtil.findColor(
+          convertDynamicListToIntList(params[0]), params[1]);
+      if (res) {
+        return res;
+      }
+
+      await Future.delayed(Duration(milliseconds: interval));
+    }
+
+    return res;
+  }
 }
 
 copyAndPaste(params) async {
