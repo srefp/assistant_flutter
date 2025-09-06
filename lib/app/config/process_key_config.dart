@@ -1,7 +1,7 @@
 import 'config_storage.dart';
 
-class GameKeyConfig with ConfigStorage {
-  static final GameKeyConfig to = GameKeyConfig();
+class ProcessKeyConfig with ConfigStorage {
+  static final ProcessKeyConfig to = ProcessKeyConfig();
 
   static final String keyOpenMapKey = 'openMapKey';
   static final String keyOpenBookKey = 'openBookKey';

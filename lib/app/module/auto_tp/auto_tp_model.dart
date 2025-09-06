@@ -24,8 +24,8 @@ import '../../../helper/win32/window.dart';
 import '../../../main.dart';
 import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
-import '../../config/game_key_config.dart';
-import '../../config/game_pos/game_pos_config.dart';
+import '../../config/process_key_config.dart';
+import '../../config/process_pos/process_pos_config.dart';
 import '../../config/hotkey_config.dart';
 import '../../dao/pic_record_db.dart';
 import '../../windows_app.dart';
@@ -170,55 +170,55 @@ final helpConfigItems = [
   ),
 ];
 
-/// 游戏键位配置
-final gameKeyConfigItems = [
+/// 窗口键位配置
+final processKeyConfigItems = [
   StringConfigItem(
     title: '开图',
     subTitle: '打开/关闭地图的键位',
-    valueKey: GameKeyConfig.keyOpenMapKey,
-    valueCallback: GameKeyConfig.to.getOpenMapKey,
+    valueKey: ProcessKeyConfig.keyOpenMapKey,
+    valueCallback: ProcessKeyConfig.to.getOpenMapKey,
   ),
   StringConfigItem(
     title: '开书',
     subTitle: '打开/关闭书的键位',
-    valueKey: GameKeyConfig.keyOpenBookKey,
-    valueCallback: GameKeyConfig.to.getOpenBookKey,
+    valueKey: ProcessKeyConfig.keyOpenBookKey,
+    valueCallback: ProcessKeyConfig.to.getOpenBookKey,
   ),
   StringConfigItem(
     title: '联机',
     subTitle: '联机的键位',
-    valueKey: GameKeyConfig.keyOnlineKey,
-    valueCallback: GameKeyConfig.to.getOnlineKey,
+    valueKey: ProcessKeyConfig.keyOnlineKey,
+    valueCallback: ProcessKeyConfig.to.getOnlineKey,
   ),
   StringConfigItem(
     title: '冲刺',
     subTitle: '冲刺的键位',
-    valueKey: GameKeyConfig.keyDashKey,
-    valueCallback: GameKeyConfig.to.getDashKey,
+    valueKey: ProcessKeyConfig.keyDashKey,
+    valueCallback: ProcessKeyConfig.to.getDashKey,
   ),
   StringConfigItem(
     title: '背包',
     subTitle: '打开/关闭背包的键位',
-    valueKey: GameKeyConfig.keyBagKey,
-    valueCallback: GameKeyConfig.to.getBagKey,
+    valueKey: ProcessKeyConfig.keyBagKey,
+    valueCallback: ProcessKeyConfig.to.getBagKey,
   ),
   StringConfigItem(
     title: '前进',
     subTitle: '向前走的键位',
-    valueKey: GameKeyConfig.keyForwardKey,
-    valueCallback: GameKeyConfig.to.getForwardKey,
+    valueKey: ProcessKeyConfig.keyForwardKey,
+    valueCallback: ProcessKeyConfig.to.getForwardKey,
   ),
   StringConfigItem(
     title: '捡东西',
     subTitle: '捡东西的键位',
-    valueKey: GameKeyConfig.keyPickKey,
-    valueCallback: GameKeyConfig.to.getPickKey,
+    valueKey: ProcessKeyConfig.keyPickKey,
+    valueCallback: ProcessKeyConfig.to.getPickKey,
   ),
   StringConfigItem(
     title: '放大招',
     subTitle: '放大招的键位',
-    valueKey: GameKeyConfig.keyQKey,
-    valueCallback: GameKeyConfig.to.getQKey,
+    valueKey: ProcessKeyConfig.keyQKey,
+    valueCallback: ProcessKeyConfig.to.getQKey,
   ),
 ];
 
@@ -485,8 +485,8 @@ final coordsConfigItems = [
   StringConfigItem(
     title: '确认',
     subTitle: '确认按钮的位置',
-    valueKey: GamePosConfig.keyConfirmPos,
-    valueCallback: GamePosConfig.to.getConfirmPos,
+    valueKey: ProcessPosConfig.keyConfirmPos,
+    valueCallback: ProcessPosConfig.to.getConfirmPos,
   ),
   StringConfigItem(
     title: '重置拖动条',
@@ -533,8 +533,8 @@ final coordsConfigItems = [
   StringConfigItem(
     title: '食物',
     subTitle: '食物按钮的位置',
-    valueKey: GamePosConfig.keyFoodPos,
-    valueCallback: GamePosConfig.to.getFoodPos,
+    valueKey: ProcessPosConfig.keyFoodPos,
+    valueCallback: ProcessPosConfig.to.getFoodPos,
   ),
   StringConfigItem(
     title: '锚点多选一',
@@ -664,7 +664,7 @@ class AutoTpModel extends ChangeNotifier {
 
   bool active() {
     return isRunning &&
-        (validType == curScreen || ScreenManager.instance.isGameActive());
+        (validType == curScreen || ScreenManager.instance.isWindowActive());
   }
 
   loadTasks() {
@@ -781,9 +781,9 @@ class AutoTpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  var gameKeyLightText = '';
-  var displayedGameKeyConfigItems = gameKeyConfigItems;
-  final gameKeySearchController = TextEditingController();
+  var processKeyLightText = '';
+  var displayedProcessKeyConfigItems = processKeyConfigItems;
+  final processKeySearchController = TextEditingController();
 
   String? anchorWindow = AutoTpConfig.to.getAnchorWindow();
 
@@ -793,19 +793,19 @@ class AutoTpModel extends ChangeNotifier {
 
   List<String> validTypeList = [curScreen, targetWindow];
 
-  void searchGameKeyConfigItems(String searchValue) {
-    gameKeyLightText = searchValue;
+  void searchProcessKeyConfigItems(String searchValue) {
+    processKeyLightText = searchValue;
     if (searchValue.isEmpty) {
-      displayedGameKeyConfigItems = gameKeyConfigItems;
+      displayedProcessKeyConfigItems = processKeyConfigItems;
       notifyListeners();
       return;
     }
-    final filteredList = gameKeyConfigItems
+    final filteredList = processKeyConfigItems
         .where(
             (item) => searchTextList(searchValue, [item.title, item.subTitle]))
         .toList();
     if (filteredList.isNotEmpty) {
-      displayedGameKeyConfigItems = filteredList;
+      displayedProcessKeyConfigItems = filteredList;
     }
 
     notifyListeners();
@@ -830,7 +830,7 @@ class AutoTpModel extends ChangeNotifier {
     SystemControl.refreshRect();
 
     if (validType == targetWindow && hWnd == 0) {
-      dialog(title: '错误', content: '游戏窗口未启动!');
+      dialog(title: '错误', content: '进程窗口未启动!');
       return false;
     }
 

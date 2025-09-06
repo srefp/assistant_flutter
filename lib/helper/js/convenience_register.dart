@@ -1,6 +1,6 @@
 import '../../app/config/auto_tp_config.dart';
-import '../../app/config/game_key_config.dart';
-import '../../app/config/game_pos/game_pos_config.dart';
+import '../../app/config/process_key_config.dart';
+import '../../app/config/process_pos/process_pos_config.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/operations.dart';
 import '../auto_gui/system_control.dart';
@@ -33,13 +33,13 @@ tpConfirm(params) async {
   await KeyMouseUtil.clickAtPoint(convertDynamicListToIntList(params['coords']),
       AutoTpConfig.to.getTpcDelay());
   await KeyMouseUtil.clickAtPoint(
-      convertDynamicListToIntList(GamePosConfig.to.getConfirmPosIntList()),
+      convertDynamicListToIntList(ProcessPosConfig.to.getConfirmPosIntList()),
       params['delay']);
 }
 
 openBook(params) async {
-  api.keyDown(key: GameKeyConfig.to.getOpenBookKey());
-  api.keyUp(key: GameKeyConfig.to.getOpenBookKey());
+  api.keyDown(key: ProcessKeyConfig.to.getOpenBookKey());
+  api.keyUp(key: ProcessKeyConfig.to.getOpenBookKey());
   await Future.delayed(Duration(milliseconds: params['delay']));
   if (!crusade) {
     crusade = true;
@@ -49,7 +49,7 @@ openBook(params) async {
 }
 
 openMap(params) async {
-  api.keyDown(key: GameKeyConfig.to.getOpenMapKey());
-  api.keyUp(key: GameKeyConfig.to.getOpenMapKey());
+  api.keyDown(key: ProcessKeyConfig.to.getOpenMapKey());
+  api.keyUp(key: ProcessKeyConfig.to.getOpenMapKey());
   await Future.delayed(Duration(milliseconds: params['delay']));
 }

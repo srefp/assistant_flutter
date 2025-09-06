@@ -1,5 +1,5 @@
 import '../../app/config/auto_tp_config.dart';
-import '../../app/config/game_pos/game_pos_config.dart';
+import '../../app/config/process_pos/process_pos_config.dart';
 
 /// 键鼠操作
 class Operation {
@@ -10,9 +10,9 @@ class Operation {
 
   static Operation confirm = Operation(
       func: "click",
-      coords: GamePosConfig.to.getConfirmPosIntList(),
+      coords: ProcessPosConfig.to.getConfirmPosIntList(),
       template:
-          "click(${GamePosConfig.to.getConfirmPos()[0]}, ${GamePosConfig.to.getConfirmPos()[1]}, %s);",
+          "click(${ProcessPosConfig.to.getConfirmPos()[0]}, ${ProcessPosConfig.to.getConfirmPos()[1]}, %s);",
       prevDelay: AutoTpConfig.to.getClickRecordDelay());
 
   static Operation openMap = Operation(

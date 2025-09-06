@@ -10,7 +10,7 @@ import '../../../helper/key_mouse/mouse_event.dart';
 import '../../../helper/record/operation.dart';
 import '../../../helper/win32/key_listen.dart';
 import '../../config/auto_tp_config.dart';
-import '../../config/game_key_config.dart';
+import '../../config/process_key_config.dart';
 import '../../config/hotkey_config.dart';
 import '../../config/record_config.dart';
 import '../../windows_app.dart';
@@ -129,8 +129,8 @@ class RecordModel extends ChangeNotifier {
     }
 
     // 开图键录制
-    if (name != GameKeyConfig.to.getOpenMapKey() &&
-        name != GameKeyConfig.to.getOpenBookKey()) {
+    if (name != ProcessKeyConfig.to.getOpenMapKey() &&
+        name != ProcessKeyConfig.to.getOpenBookKey()) {
       return;
     }
 
@@ -223,11 +223,11 @@ class RecordModel extends ChangeNotifier {
       var element = prevOperations[index];
       if (!startKeyFound) {
         if (element.template
-            .contains("press('${GameKeyConfig.to.getOpenMapKey()}'")) {
+            .contains("press('${ProcessKeyConfig.to.getOpenMapKey()}'")) {
           element = Operation.openMap;
           startKeyFound = true;
         } else if (element.template
-            .contains("press('${GameKeyConfig.to.getOpenBookKey()}'")) {
+            .contains("press('${ProcessKeyConfig.to.getOpenBookKey()}'")) {
           element = Operation.openBook;
           startKeyFound = true;
         }

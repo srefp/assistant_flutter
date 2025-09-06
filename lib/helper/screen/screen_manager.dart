@@ -134,8 +134,8 @@ class ScreenManager {
     }
   }
 
-  /// 判断游戏窗口是否置顶
-  bool isGameActive() {
+  /// 判断进程窗口是否置顶
+  bool isWindowActive() {
     var hWnd = GetForegroundWindow();
     if (ScreenManager.instance.hWnd == 0) {
       return true;

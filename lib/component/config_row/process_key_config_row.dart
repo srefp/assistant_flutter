@@ -7,11 +7,11 @@ import '../box/win_text_box.dart';
 import '../dialog.dart';
 import '../title_with_sub.dart';
 
-class GameKeyConfigRow extends StatelessWidget {
+class ProcessKeyConfigRow extends StatelessWidget {
   final StringConfigItem item;
   final String lightText;
 
-  const GameKeyConfigRow({
+  const ProcessKeyConfigRow({
     super.key,
     required this.item,
     this.lightText = '',

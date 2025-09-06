@@ -60,11 +60,11 @@ class SystemControl {
     }
 
     var windowRect = getWindowRect(hWnd);
-    var gameScreenRect = getGameScreenRect(hWnd);
+    var processScreenRect = getProcessScreenRect(hWnd);
     var left = windowRect.left;
-    var top = windowRect.top + windowRect.height - gameScreenRect.height;
-    var right = left + gameScreenRect.width;
-    var bottom = top + gameScreenRect.height;
+    var top = windowRect.top + windowRect.height - processScreenRect.height;
+    var right = left + processScreenRect.width;
+    var bottom = top + processScreenRect.height;
     return ScreenRect(left, top, right, bottom);
   }
 
@@ -91,7 +91,7 @@ class SystemControl {
   }
 
   // 新增方法，根据窗口句柄获取ClientRect
-  static ScreenRect getGameScreenRect(int hWnd) {
+  static ScreenRect getProcessScreenRect(int hWnd) {
     final rect = calloc<RECT>();
     // 调用GetClientRect获取窗口客户区矩形
     final success = GetClientRect(hWnd, rect);

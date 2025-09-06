@@ -15,9 +15,9 @@ import '../../../component/button_with_icon.dart';
 import '../../../component/card/icon_card.dart';
 import '../../../component/config_row/bool_config_row.dart';
 import '../../../component/config_row/double_config_row.dart';
-import '../../../component/config_row/game_key_config_row.dart';
 import '../../../component/config_row/hotkey_config_row.dart';
 import '../../../component/config_row/int_config_row.dart';
+import '../../../component/config_row/process_key_config_row.dart';
 import '../../../component/config_row/string_config_row.dart';
 import '../../../component/dialog.dart';
 import '../../../component/divider.dart';
@@ -52,7 +52,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
           dialog(
               title: '未以管理员方式启动！',
               content:
-                  '未以管理员方式启动，无法使用游戏检测功能。请通过右下角托盘图标退出程序后，将软件设置为管理员方式启动。具体教程参考gitee下载页面。',
+                  '未以管理员方式启动，无法使用窗口检测功能。请通过右下角托盘图标退出程序后，将软件设置为管理员方式启动。具体教程参考gitee下载页面。',
               height: 100);
         }
       }
@@ -304,9 +304,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
           CustomSliverBox(
             child: IconCard(
               icon: Icons.gamepad_outlined,
-              title: '游戏键位',
+              title: '进程键位',
               subTitle:
-                  '根据游戏键位修改耕地机键位，键位名称为英文全小写，例如: m ` capslock tab shiftleft',
+                  '根据进程键位修改耕地机键位，键位名称为英文全小写，例如: m ` capslock tab shiftleft',
               content: Column(
                 children: [
                   Padding(
@@ -314,9 +314,9 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     child: Row(
                       children: [
                         SearchBox(
-                          searchController: model.gameKeySearchController,
+                          searchController: model.processKeySearchController,
                           onChanged: (value) =>
-                              model.searchGameKeyConfigItems(value),
+                              model.searchProcessKeyConfigItems(value),
                           placeholder: '搜索键位',
                         ),
                       ],
@@ -325,12 +325,12 @@ class _AutoTpPageState extends State<AutoTpPage> {
                   divider,
                   ListView.separated(
                     separatorBuilder: (context, index) => divider,
-                    itemCount: model.displayedGameKeyConfigItems.length,
+                    itemCount: model.displayedProcessKeyConfigItems.length,
                     itemBuilder: (context, index) {
-                      final item = model.displayedGameKeyConfigItems[index];
-                      return GameKeyConfigRow(
+                      final item = model.displayedProcessKeyConfigItems[index];
+                      return ProcessKeyConfigRow(
                         item: item,
-                        lightText: model.gameKeyLightText,
+                        lightText: model.processKeyLightText,
                       );
                     },
                     shrinkWrap: true,
@@ -417,7 +417,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.pin_drop,
               title: '关键位置标点',
-              subTitle: '自动识别您的游戏/屏幕分辨率，当前游戏/屏幕：${model.getScreen()}',
+              subTitle: '自动识别您的窗口/屏幕分辨率，当前窗口/屏幕：${model.getScreen()}',
               content: Column(
                 children: [
                   Padding(

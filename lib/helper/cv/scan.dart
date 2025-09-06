@@ -29,7 +29,7 @@ void detectWorldRole() async {
       }
 
       // 检测世界角色
-      var res = await GamePicInfo.to.world.scan();
+      var res = await ProcessPicInfo.to.world.scan();
       debugPrint('检测世界角色：${res.maxMatchValue}');
       if (res.maxMatchValue >= matchThreshold) {
         debugPrint('大世界');
@@ -39,12 +39,12 @@ void detectWorldRole() async {
   });
 }
 
-class GamePicInfo {
-  static final to = GamePicInfo();
+class ProcessPicInfo {
+  static final to = ProcessPicInfo();
   final PicItem world;
   final PicItem anchorConfirm;
 
-  GamePicInfo()
+  ProcessPicInfo()
       : world =
             PicItem(AutoTpConfig.keyWorldRect, AutoTpConfig.to.getWorldRect()),
         anchorConfirm = PicItem(

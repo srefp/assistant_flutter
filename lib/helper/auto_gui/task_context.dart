@@ -7,9 +7,9 @@ class TaskContext {
     return _instance;
   }
 
-  int gameHandle = 0;
+  int processHandle = 0;
 
-  setGameHandle(int handle) {
-    gameHandle = handle;
+  setProcessHandle(int handle) {
+    processHandle = handle;
   }
 }

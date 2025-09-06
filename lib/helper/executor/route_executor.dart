@@ -5,7 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 
 import '../../app/config/auto_tp_config.dart';
-import '../../app/config/game_key_config.dart';
+import '../../app/config/process_key_config.dart';
 import '../../component/dialog.dart';
 import '../../component/text/win_text.dart';
 import '../auto_gui/operations.dart';
@@ -103,15 +103,15 @@ class RouteExecutor {
 
   static Future<void> executeStep(BlockItem tpPoint, bool qmParam) async {
     if (qmParam) {
-      await api.keyDown(key: GameKeyConfig.to.getForwardKey());
-      await api.keyUp(key: GameKeyConfig.to.getForwardKey());
+      await api.keyDown(key: ProcessKeyConfig.to.getForwardKey());
+      await api.keyUp(key: ProcessKeyConfig.to.getForwardKey());
       if (AutoTpConfig.to.isQmDash()) {
         await api.click(button: MouseButton.right);
       }
       await Future.delayed(
           Duration(milliseconds: AutoTpConfig.to.getQmDashDelay()));
-      await api.keyDown(key: GameKeyConfig.to.getQKey());
-      await api.keyUp(key: GameKeyConfig.to.getQKey());
+      await api.keyDown(key: ProcessKeyConfig.to.getQKey());
+      await api.keyUp(key: ProcessKeyConfig.to.getQKey());
       await Future.delayed(
           Duration(milliseconds: AutoTpConfig.to.getQmQDelay()));
     }

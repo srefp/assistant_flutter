@@ -172,12 +172,12 @@ void keyMouseListen(
       //   var now = DateTime.now();
       //   print('开始检测锚点');
       //   while (DateTime.now().difference(now).inMilliseconds < 350) {
-      //     var res = await GamePicInfo.to.anchorConfirm.scan();
+      //     var res = await ProcessPicInfo.to.anchorConfirm.scan();
       //     print('确认锚点：${res.maxMatchValue}');
       //     if (res.maxMatchValue >= matchThreshold) {
       //       print('点击123789');
       //       await KeyMouseUtil.clickAtPoint(
-      //           GamePosConfig.to.getConfirmPosIntList(), 0);
+      //           ProcessPosConfig.to.getConfirmPosIntList(), 0);
       //       await Future.delayed(Duration(milliseconds: 100));
       //       api.moveTo(point: currentPos!);
       //       break;

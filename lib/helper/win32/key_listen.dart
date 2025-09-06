@@ -4,8 +4,8 @@ import 'package:assistant/helper/win32/toast.dart';
 
 import '../../app/config/auto_tp_config.dart';
 import '../../app/config/config_storage.dart';
-import '../../app/config/game_key_config.dart';
-import '../../app/config/game_pos/game_pos_config.dart';
+import '../../app/config/process_key_config.dart';
+import '../../app/config/process_pos/process_pos_config.dart';
 import '../../app/config/hotkey_config.dart';
 import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
@@ -101,14 +101,14 @@ void eatFood() async {
     foodRecordTimer = null;
   }
 
-  api.keyDown(key: GameKeyConfig.to.getBagKey());
+  api.keyDown(key: ProcessKeyConfig.to.getBagKey());
   await Future.delayed(Duration(milliseconds: 20));
-  api.keyUp(key: GameKeyConfig.to.getBagKey());
+  api.keyUp(key: ProcessKeyConfig.to.getBagKey());
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getOpenBagDelay()));
 
   if (!foodSelected) {
-    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getFoodPosIntList(), 120);
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getFoodPosIntList(), 120);
     foodSelected = true;
   }
 
@@ -117,13 +117,13 @@ void eatFood() async {
     var foodPos = [foodList[index], foodList[index + 1]];
     await KeyMouseUtil.clickAtPoint(
         foodPos, AutoTpConfig.to.getClickFoodDelay());
-    await KeyMouseUtil.clickAtPoint(GamePosConfig.to.getConfirmPosIntList(),
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getConfirmPosIntList(),
         AutoTpConfig.to.getEatFoodDelay());
   }
 
-  api.keyDown(key: GameKeyConfig.to.getBagKey());
+  api.keyDown(key: ProcessKeyConfig.to.getBagKey());
   await Future.delayed(Duration(milliseconds: 20));
-  api.keyUp(key: GameKeyConfig.to.getBagKey());
+  api.keyUp(key: ProcessKeyConfig.to.getBagKey());
 
   await Future.delayed(Duration(milliseconds: 300));
 }
@@ -159,7 +159,7 @@ void recordFood(String name, bool down) async {
               milliseconds: AutoTpConfig.to.getOpenBagDelay(),
             ), () async {
           await KeyMouseUtil.clickAtPoint(
-              GamePosConfig.to.getFoodPosIntList(), 100);
+              ProcessPosConfig.to.getFoodPosIntList(), 100);
           foodSelected = true;
         });
 
@@ -204,10 +204,10 @@ void quickPick(String name, bool down) {
           _fKeyTimer = null;
           return;
         }
-        api.keyDown(key: GameKeyConfig.to.getPickKey());
+        api.keyDown(key: ProcessKeyConfig.to.getPickKey());
         await Future.delayed(
             Duration(milliseconds: AutoTpConfig.to.getPickDownDelay()));
-        api.keyUp(key: GameKeyConfig.to.getPickKey());
+        api.keyUp(key: ProcessKeyConfig.to.getPickKey());
         await Future.delayed(
             Duration(milliseconds: AutoTpConfig.to.getPickUpDelay()));
         api.scroll(clicks: -1);
@@ -235,7 +235,7 @@ void timerDash(String name, bool down) async {
     return;
   }
 
-  if (name == GameKeyConfig.to.getForwardKey() && down) {
+  if (name == ProcessKeyConfig.to.getForwardKey() && down) {
     if (_dashTimer != null) {
       showToast('停止冲刺');
       _dashTimer?.cancel();
@@ -255,7 +255,7 @@ void timerDash(String name, bool down) async {
     } else {
       showToast('开始冲刺');
       await dash();
-      api.keyDown(key: GameKeyConfig.to.getForwardKey());
+      api.keyDown(key: ProcessKeyConfig.to.getForwardKey());
       _dashTimer ??= Timer.periodic(
           Duration(milliseconds: AutoTpConfig.to.getDashIntervalDelay()),
           (timer) async {
@@ -272,7 +272,7 @@ void timerDash(String name, bool down) async {
 }
 
 Future<void> dash() async {
-  final dashKey = GameKeyConfig.to.getDashKey();
+  final dashKey = ProcessKeyConfig.to.getDashKey();
   await api.keyDown(key: dashKey);
   await Future.delayed(Duration(milliseconds: 20));
   await api.keyUp(key: dashKey);
