@@ -25,6 +25,7 @@ import '../../../component/text/win_text.dart';
 import '../../../component/theme.dart';
 import '../../../component/title_with_sub.dart';
 import '../../../helper/win32/os_version.dart';
+import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
 import '../../config/hotkey_config.dart';
 import 'auto_tp_model.dart';
@@ -138,6 +139,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
                       subTitle: '开启响应模拟键鼠操作后，会对模拟的键鼠操作进行响应。一般用于远程解决问题。',
                       valueKey: AutoTpConfig.keyAllowMockKey,
                       valueCallback: AutoTpConfig.to.isAllowMockKey,
+                    ),
+                  ),
+                  BoolConfigRow(
+                    item: BoolConfigItem(
+                      title: '启动时自动切换窗口',
+                      subTitle: '点了启动就自动切到监听的窗口',
+                      valueKey: AppConfig.keyToWindowAfterStarted,
+                      valueCallback: AppConfig.to.getToWindowAfterStarted,
                     ),
                   ),
                   Platform.isWindows

@@ -24,13 +24,14 @@ import '../../../helper/win32/window.dart';
 import '../../../main.dart';
 import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
+import '../../config/hotkey_config.dart';
 import '../../config/process_key_config.dart';
 import '../../config/process_pos/process_pos_config.dart';
-import '../../config/hotkey_config.dart';
 import '../../dao/pic_record_db.dart';
 import '../../windows_app.dart';
 import '../config/config_model.dart';
 import '../pic/pic_record.dart';
+import 'eula.dart';
 
 /// 辅助功能开启/关闭配置
 final helpConfigItems = [
@@ -581,12 +582,51 @@ showOutDate() {
     );
     return;
   } else {
-    if (!AppConfig.to.getOutDateNotificationDisabled()) {
+    if (!AppConfig.to.getEulaNotificationDisabled()) {
       dialog(
         title: '注意',
         child: OutOfDateNotification(),
+        barrierDismissible: false,
+        actions: [
+          Row(
+            children: [
+              NoMoreNotification(),
+              SizedBox(
+                width: 8,
+              ),
+              WinText('不再提醒'),
+            ],
+          ),
+          FilledButton(
+            child: const WinText('同意并开始使用'),
+            onPressed: () {
+              Navigator.pop(rootNavigatorKey.currentContext!); // 关闭模态框
+            },
+          ),
+        ],
       );
     }
+  }
+}
+
+class NoMoreNotification extends StatefulWidget {
+  const NoMoreNotification({super.key});
+
+  @override
+  State<NoMoreNotification> createState() => _NoMoreNotificationState();
+}
+
+class _NoMoreNotificationState extends State<NoMoreNotification> {
+  @override
+  Widget build(BuildContext context) {
+    return Checkbox(
+      checked: AppConfig.to.getEulaNotificationDisabled(),
+      onChanged: (value) {
+        setState(() {
+          AppConfig.to.save(AppConfig.keyEulaNotificationDisabled, value);
+        });
+      },
+    );
   }
 }
 
@@ -603,31 +643,13 @@ class _OutOfDateNotificationState extends State<OutOfDateNotification> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
-      child: Column(
+      height: 320,
+      child: ListView(
         children: [
           WinText(
-              '该版本耕地机为预览版本，到${DateFormat('yyyy-MM-dd HH:mm:ss').format(outDate)}停止使用!'),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              Checkbox(
-                checked: AppConfig.to.getOutDateNotificationDisabled(),
-                onChanged: (value) {
-                  setState(() {
-                    AppConfig.to
-                        .save(AppConfig.keyOutDateNotificationDisabled, value);
-                  });
-                },
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              WinText('不再提醒'),
-            ],
-          ),
+              '该版本耕地机为预览版本，到${DateFormat('yyyy-MM-dd HH:mm:ss').format(outDate)}停止使用!\n'
+              ''),
+          WinText(eula),
         ],
       ),
     );
@@ -839,7 +861,9 @@ class AutoTpModel extends ChangeNotifier {
     startListen();
 
     if (validType == targetWindow && hWnd != 0) {
-      setForegroundWindow(hWnd);
+      if (AppConfig.to.getToWindowAfterStarted()) {
+        setForegroundWindow(hWnd);
+      }
       ScreenManager.instance.startListen();
     }
 

@@ -3,6 +3,8 @@
 import 'dart:io';
 
 import 'package:assistant/app/windows_app.dart';
+import 'package:assistant/component/component.dart';
+import 'package:assistant/helper/file_utils.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
@@ -10,13 +12,11 @@ import 'package:flutter/material.dart'
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:provider/provider.dart';
 
-import '../../../component/box/custom_sliver_box.dart';
 import '../../../component/button_with_icon.dart';
 import '../../../component/card/icon_card.dart';
 import '../../../component/config_row/base_config_row.dart';
 import '../../../component/config_row/int_config_row.dart';
 import '../../../component/config_row/string_config_row.dart';
-import '../../../component/text/win_text.dart';
 import '../../../component/theme.dart';
 import '../../../component/widgets/page.dart';
 import '../../../helper/windows/tray.dart';
@@ -267,6 +267,53 @@ class _SettingsState extends State<Settings> with PageMixin {
               ),
             ),
           ),
+        CustomSliverBox(
+          child: IconCard(
+            icon: Icons.dataset,
+            title: '相关网站',
+            subTitle: '更新，提issue',
+            content: ListView(
+              shrinkWrap: true,
+              children: [
+                TitleWithSub(
+                  title: '更新',
+                  subTitle: 'github，有时可能无法正常访问',
+                  rightWidget: ButtonWithIcon(
+                    icon: Icons.download,
+                    onPressed: () {
+                      openUrl(
+                          'https://github.com/srefp/assistant-docs/releases');
+                    },
+                    text: '访问',
+                  ),
+                ),
+                TitleWithSub(
+                  title: '更新',
+                  subTitle: 'gitee，需要下载分卷压缩的所有文件',
+                  rightWidget: ButtonWithIcon(
+                    icon: Icons.download,
+                    onPressed: () {
+                      openUrl(
+                          'https://gitee.com/srefp/assistant-docs/releases');
+                    },
+                    text: '访问',
+                  ),
+                ),
+                TitleWithSub(
+                  title: '提issue',
+                  subTitle: '遇到问题可以提issue，最好包括问题产生的原因，描述的越具体越好。',
+                  rightWidget: ButtonWithIcon(
+                    icon: Icons.bug_report,
+                    onPressed: () {
+                      openUrl('https://gitee.com/srefp/assistant-docs/issues');
+                    },
+                    text: '访问',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         if (Env.showDb)
           CustomSliverBox(
             child: IconCard(

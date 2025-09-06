@@ -9,6 +9,7 @@ import '../../../helper/auto_gui/key_mouse_util.dart';
 import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/win32/toast.dart';
+import '../../config/app_config.dart';
 
 class Test extends StatelessWidget {
   const Test({super.key});
@@ -104,6 +105,14 @@ class Test extends StatelessWidget {
                   debugPrint(colorMat.toString());
                 },
               ),
+            ),
+            SizedBox(width: 16),
+            SizedBox(
+              width: 120,
+              child: Button(child: WinText('显示许可协议'), onPressed: () {
+                AppConfig.to
+                    .save(AppConfig.keyEulaNotificationDisabled, false);
+              }),
             ),
           ],
         ),

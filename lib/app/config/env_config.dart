@@ -6,7 +6,7 @@ class Env {
   static bool showTools = false;
 
   /// 显示测试菜单
-  static bool showTest = false;
+  static bool showTest = true;
 
   /// 显示日志菜单
   static bool showLog = false;

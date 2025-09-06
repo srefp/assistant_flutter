@@ -9,6 +9,7 @@ dialog({
   barrierDismissible = true,
   Widget? child,
   double height = 50,
+  List<Widget>? actions,
 }) {
   showDialog(
       barrierDismissible: barrierDismissible,
@@ -29,13 +30,14 @@ dialog({
                     ],
                   ),
                 ),
-            actions: [
-              FilledButton(
-                child: const WinText('确定'),
-                onPressed: () {
-                  Navigator.pop(context); // 关闭模态框
-                },
-              ),
-            ],
+            actions: actions ??
+                [
+                  FilledButton(
+                    child: const WinText('确定'),
+                    onPressed: () {
+                      Navigator.pop(context); // 关闭模态框
+                    },
+                  ),
+                ],
           ));
 }
