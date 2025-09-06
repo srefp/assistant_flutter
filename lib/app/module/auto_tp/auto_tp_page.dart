@@ -132,6 +132,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
                           ),
                         )
                       : SizedBox(),
+                  BoolConfigRow(
+                    item: BoolConfigItem(
+                      title: '响应模拟键鼠操作',
+                      subTitle: '开启响应模拟键鼠操作后，会对模拟的键鼠操作进行响应。一般用于远程解决问题。',
+                      valueKey: AutoTpConfig.keyAllowMockKey,
+                      valueCallback: AutoTpConfig.to.isAllowMockKey,
+                    ),
+                  ),
                   Platform.isWindows
                       ? TitleWithSub(
                           title: '运行方式',

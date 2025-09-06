@@ -21,7 +21,7 @@ void keyboardListener(KeyboardEvent event) {
     return;
   }
 
-  if (event.mocked) {
+  if (event.mocked && !AutoTpConfig.to.isAllowMockKey()) {
     return;
   }
 
