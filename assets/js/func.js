@@ -3,6 +3,7 @@ var leftButtonPressed = false;
 var rightButtonPressed = false;
 var middleButtonPressed = false;
 var pressedKeys = new Set();
+var m, l, f;
 
 // 终止脚本
 async function stopScript() {
