@@ -36,6 +36,10 @@
 
 
 
+另外有`moveAsync, moveRAsync, moveR3DAsync, wheelAsync, mDownAsync, mUpAsync, clickAsync, dragAsync`表示对应操作的异步版本，只管发送指令，完全不等待指令返回，可能会出现“吞指令”的情况。
+
+
+
 ### 2、特殊的函数
 
 脚本兼容性考虑。

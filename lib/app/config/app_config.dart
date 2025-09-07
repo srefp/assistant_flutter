@@ -9,6 +9,7 @@ class AppConfig with ConfigStorage {
   static const keyFirstInstall = 'firstInstall';
   static const keyEulaNotificationDisabled = 'eulaNotificationDisabled';
   static const keyToWindowAfterStarted = 'toWindowAfterStarted';
+  static const keyBackgroundKeyMouse = 'backgroundKeyMouse';
 
   String getDirPath() =>
       box.read(keyDirPath) ?? join('C:', 'Program Files', 'Assistant');
@@ -24,4 +25,7 @@ class AppConfig with ConfigStorage {
 
   /// 是否启动后自动跳转到窗口
   bool getToWindowAfterStarted() => box.read(keyToWindowAfterStarted) ?? true;
+
+  /// 是否后台键鼠操作
+  bool isBackgroundKeyMouse() => box.read(keyBackgroundKeyMouse) ?? false;
 }

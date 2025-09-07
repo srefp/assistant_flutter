@@ -13,6 +13,7 @@ import '../../../helper/route_util.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/script_parser.dart';
 import '../../../helper/win32/window.dart';
+import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
 import '../../config/config_storage.dart';
 import '../../config/script_config.dart';
@@ -178,7 +179,9 @@ class ScriptEditorModel with ChangeNotifier {
     ScreenManager.instance.refreshWindowHandle();
     int? hWnd = ScreenManager.instance.hWnd;
     if (hWnd != 0) {
-      setForegroundWindow(hWnd);
+      if (AppConfig.to.getToWindowAfterStarted()) {
+        setForegroundWindow(hWnd);
+      }
     }
 
     String code = controller.selectedText;

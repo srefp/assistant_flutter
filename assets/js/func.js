@@ -22,11 +22,6 @@ function log(info) {
     sendMessage('log', JSON.stringify({'info': info}));
 }
 
-// 点击
-async function click() {
-    await sendMessage('click', JSON.stringify([...arguments]));
-}
-
 // 弹出消息
 function tip(message, duration) {
     sendMessage('tip', JSON.stringify({'message': message, 'duration': duration}));
@@ -54,6 +49,11 @@ async function book(delay) {
 // 复制粘贴
 async function cp(text) {
     await sendMessage('cp', JSON.stringify({'text': text}));
+}
+
+// 点击
+async function click() {
+    await sendMessage('click', JSON.stringify([...arguments]));
 }
 
 // 移动鼠标
@@ -95,14 +95,73 @@ async function mUp() {
     await sendMessage('mUp', JSON.stringify([...arguments]));
 }
 
-// 按键
-async function press(key, delay) {
-    await sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
-}
-
 // 滚轮
 async function wheel(clicks, delay) {
     await sendMessage('wheel', JSON.stringify({'clicks': clicks, 'delay': delay}));
+}
+
+// 拖动
+async function drag(coords, shortMove, delay) {
+    await sendMessage('drag', JSON.stringify({'coords': coords, 'shortMove': shortMove, 'delay': delay}));
+}
+
+// 点击
+async function clickAsync() {
+    await sendMessage('clickAsync', JSON.stringify([...arguments]));
+}
+
+// 移动鼠标
+async function moveAsync() {
+    await sendMessage('moveAsync', JSON.stringify([...arguments]));
+}
+
+// 相对移动鼠标
+async function moveRAsync() {
+    await sendMessage('moveRAsync', JSON.stringify([...arguments]));
+}
+
+// 3D视角下移动鼠标
+async function moveR3DAsync() {
+    await sendMessage('moveR3DAsync', JSON.stringify([...arguments]));
+}
+
+// 鼠标按下
+async function mDownAsync() {
+    if (arguments[0] === 'left') {
+        leftButtonPressed = true;
+    } else if (arguments[0] === 'right') {
+        rightButtonPressed = true;
+    } else if (arguments[0] ==='middle') {
+        middleButtonPressed = true;
+    }
+    await sendMessage('mDownAsync', JSON.stringify([...arguments]));
+}
+
+// 鼠标抬起
+async function mUpAsync() {
+    if (arguments[0] === 'left') {
+        leftButtonPressed = false;
+    } else if (arguments[0] === 'right') {
+        rightButtonPressed = false;
+    } else if (arguments[0] === 'middle') {
+        middleButtonPressed = false;
+    }
+    await sendMessage('mUpAsync', JSON.stringify([...arguments]));
+}
+
+// 滚轮
+async function wheelAsync(clicks, delay) {
+    await sendMessage('wheelAsync', JSON.stringify({'clicks': clicks, 'delay': delay}));
+}
+
+// 拖动
+async function dragAsync(coords, shortMove, delay) {
+    await sendMessage('dragAsync', JSON.stringify({'coords': coords, 'shortMove': shortMove, 'delay': delay}));
+}
+
+// 按键
+async function press(key, delay) {
+    await sendMessage('press', JSON.stringify({'key': key, 'delay': delay}));
 }
 
 // 按下
@@ -115,11 +174,6 @@ async function kDown(key, delay) {
 async function kUp(key, delay) {
     pressedKeys.delete(key);
     await sendMessage('kUp', JSON.stringify({'key': key, 'delay': delay}));
-}
-
-// 拖动
-async function drag(coords, shortMove, delay) {
-    await sendMessage('drag', JSON.stringify({'coords': coords, 'shortMove': shortMove, 'delay': delay}));
 }
 
 // 传送

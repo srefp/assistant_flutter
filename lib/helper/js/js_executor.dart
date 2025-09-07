@@ -14,17 +14,25 @@ const tp = "tp";
 const tip = "tip";
 const wait = "wait";
 const move = "move";
+const moveAsync = "moveAsync";
 const moveR = "moveR";
+const moveRAsync = "moveRAsync";
 const moveR3D = "moveR3D";
+const moveR3DAsync = "moveR3DAsync";
 const drag = "drag";
+const dragAsync = "dragAsync";
 const mDown = "mDown";
+const mDownAsync = "mDownAsync";
 const mUp = "mUp";
+const mUpAsync = "mUpAsync";
 const click = "click";
+const clickAsync = "clickAsync";
 const kDown = "kDown";
 const kUp = "kUp";
 const press = "press";
 const cp = "cp";
 const wheel = "wheel";
+const wheelAsync = "wheelAsync";
 const map = "map";
 const book = "book";
 const tpc = "tpc";
@@ -41,18 +49,26 @@ const moveToCenter = "moveToCenter";
 const hintKeys = [
   tp,
   wait,
+  click,
   move,
   moveR,
   moveR3D,
-  drag,
   mDown,
   mUp,
-  click,
+  drag,
+  wheel,
+  clickAsync,
+  moveAsync,
+  moveRAsync,
+  moveR3DAsync,
+  mDownAsync,
+  mUpAsync,
+  dragAsync,
+  wheelAsync,
   kDown,
   kUp,
   press,
   cp,
-  wheel,
   map,
   book,
   tpc,
@@ -71,18 +87,26 @@ const hintKeys = [
 const keys = [
   tp,
   wait,
+  click,
   move,
   moveR,
   moveR3D,
-  drag,
   mDown,
   mUp,
-  click,
+  drag,
+  wheel,
+  clickAsync,
+  moveAsync,
+  moveRAsync,
+  moveR3DAsync,
+  mDownAsync,
+  mUpAsync,
+  dragAsync,
+  wheelAsync,
   kDown,
   kUp,
   press,
   cp,
-  wheel,
   map,
   book,
   tpc,

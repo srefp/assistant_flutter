@@ -143,6 +143,14 @@ class _AutoTpPageState extends State<AutoTpPage> {
                   ),
                   BoolConfigRow(
                     item: BoolConfigItem(
+                      title: '后台键鼠操作',
+                      subTitle: '开启后，后台发送键鼠事件（部分操作可用，建设中...）',
+                      valueKey: AppConfig.keyBackgroundKeyMouse,
+                      valueCallback: AppConfig.to.isBackgroundKeyMouse,
+                    ),
+                  ),
+                  BoolConfigRow(
+                    item: BoolConfigItem(
                       title: '启动时自动切换窗口',
                       subTitle: '点了启动就自动切到监听的窗口',
                       valueKey: AppConfig.keyToWindowAfterStarted,

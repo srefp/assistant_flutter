@@ -9,7 +9,9 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 import 'package:win32/win32.dart';
 
+import '../../app/config/app_config.dart';
 import '../../app/config/auto_tp_config.dart';
+import '../screen/screen_manager.dart';
 import '../win32/toast.dart';
 import 'math_util.dart';
 import 'operations.dart' show api, factor;
@@ -83,10 +85,19 @@ class KeyMouseUtil {
 
   static Future<void> clickAtPoint(List<int> point, int delay) async {
     final res = physicalPos(point);
-    await Simulation.sendInput.mouse.move(res);
-    await Future.delayed(Duration(milliseconds: 2));
-    await Simulation.sendInput.mouse.leftButtonClick();
-    await Future.delayed(Duration(milliseconds: delay));
+    if (AppConfig.to.isBackgroundKeyMouse()) {
+      final lParam = (res[1] << 16) | (res[0] & 0xFFFF);
+      PostMessage(ScreenManager.instance.hWnd, WM_ACTIVATE, 1, 0);
+      PostMessage(ScreenManager.instance.hWnd, WM_LBUTTONDOWN, 0, lParam);
+      await Future.delayed(Duration(milliseconds: 100));
+      PostMessage(ScreenManager.instance.hWnd, WM_LBUTTONUP, 0, lParam);
+      await Future.delayed(Duration(milliseconds: delay));
+    } else {
+      await Simulation.sendInput.mouse.move(res);
+      await Future.delayed(Duration(milliseconds: 1));
+      await Simulation.sendInput.mouse.leftButtonClick();
+      await Future.delayed(Duration(milliseconds: delay));
+    }
   }
 
   static Future<void> clickRight() async {

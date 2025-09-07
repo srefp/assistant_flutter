@@ -218,7 +218,7 @@ showTip(params) async {
   if (params['duration'] == null) {
     params['duration'] = 3000;
   }
-  showToast(params['message'], duration: params['duration']);
+  await showToast(params['message'], duration: params['duration']);
 }
 
 echoLog(params) {
