@@ -1,11 +1,9 @@
-import 'dart:math';
 import 'dart:ui';
 
-import 'package:assistant/helper/screen/screen_manager.dart';
 import 'package:flutter_auto_gui_windows/flutter_auto_gui_windows.dart';
 import 'package:win32/win32.dart';
 
-import '../../app/config/app_config.dart';
+import '../screen/screen_manager.dart';
 
 final _api = FlutterAutoGuiWindows();
 
@@ -23,8 +21,13 @@ class Mouse {
         offset: Size(distance[0].toDouble(), distance[1].toDouble()));
   }
 
-  Future<void> move(List<int> res) async {
-    await _api.moveTo(point: Point(res[0], res[1]));
+  void move(List<int> logicalPos) {
+    // 鼠标事件标志：绝对坐标 + 移动
+    const int flags = MOUSE_EVENT_FLAGS.MOUSEEVENTF_ABSOLUTE |
+        MOUSE_EVENT_FLAGS.MOUSEEVENTF_MOVE;
+
+    // 调用win32的mouse_event函数
+    mouseEvent(flags, logicalPos[0], logicalPos[1], 0, 0);
   }
 
   Future<void> leftButtonClick() async {

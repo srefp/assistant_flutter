@@ -72,15 +72,13 @@ class KeyMouseUtil {
     for (int index = 1; index <= step; index++) {
       final pos = MathUtil.smoothStep(initialPos, point, index / step);
 
-      final res = physicalPos(pos);
-      await Simulation.sendInput.mouse.move(res);
+      Simulation.sendInput.mouse.move(pos);
       await Future.delayed(Duration(milliseconds: millis));
     }
   }
 
-  static Future<void> moveWithoutStep(List<int> point) async {
-    final res = physicalPos(point);
-    Simulation.sendInput.mouse.move(res);
+  static void moveWithoutStep(List<int> point) {
+    Simulation.sendInput.mouse.move(point);
   }
 
   static Future<void> clickAtPoint(List<int> point, int delay) async {
@@ -88,20 +86,20 @@ class KeyMouseUtil {
     if (AppConfig.to.isBackgroundKeyMouse()) {
       final lParam = (res[1] << 16) | (res[0] & 0xFFFF);
       PostMessage(ScreenManager.instance.hWnd, WM_ACTIVATE, 1, 0);
+      PostMessage(ScreenManager.instance.hWnd, WM_MOUSEMOVE, 0, lParam);
       PostMessage(ScreenManager.instance.hWnd, WM_LBUTTONDOWN, 0, lParam);
       await Future.delayed(Duration(milliseconds: 100));
       PostMessage(ScreenManager.instance.hWnd, WM_LBUTTONUP, 0, lParam);
       await Future.delayed(Duration(milliseconds: delay));
     } else {
-      await Simulation.sendInput.mouse.move(res);
-      await Future.delayed(Duration(milliseconds: 1));
+      Simulation.sendInput.mouse.move(point);
       await Simulation.sendInput.mouse.leftButtonClick();
       await Future.delayed(Duration(milliseconds: delay));
     }
   }
 
   static Future<void> clickRight() async {
-    Simulation.sendInput.mouse.rightButtonClick();
+    await Simulation.sendInput.mouse.rightButtonClick();
   }
 
   static List<int> getCurLogicalPos() {

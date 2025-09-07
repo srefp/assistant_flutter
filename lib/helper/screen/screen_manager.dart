@@ -37,6 +37,13 @@ typedef WinEventProcDart = void Function(
   int dwmsEventTime,
 );
 
+/// 鼠标事件
+final mouseEvent = _user32.lookupFunction<
+    Void Function(Uint32 dwFlags, Uint32 dx, Uint32 dy, Uint32 dwData,
+        UintPtr dwExtraInfo),
+    void Function(int dwFlags, int dx, int dy, int dwData,
+        int dwExtraInfo)>('mouse_event');
+
 final setWinEventHook = _user32.lookupFunction<
     IntPtr Function(
         Uint32 eventMin,

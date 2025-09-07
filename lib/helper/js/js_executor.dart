@@ -8,6 +8,7 @@ import '../../component/text/win_text.dart';
 import 'convenience_register.dart';
 import 'helper_register.dart';
 import 'keyboard_register.dart';
+import 'mouse_async_register.dart';
 import 'mouse_register.dart';
 
 const tp = "tp";
@@ -133,6 +134,9 @@ void registerJsFunc() async {
 
   // 注册鼠标函数
   registerMouseFunc();
+
+  // 注册异步鼠标函数
+  registerMouseAsyncFunc();
 
   // 注册键盘函数
   registerKeyboardFunc();

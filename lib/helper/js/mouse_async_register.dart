@@ -69,7 +69,8 @@ mouseClickAsync(params) async {
   // 三选一：坐标
   if (params.length == 2 && params[0] is List && params[1] is int) {
     KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(params[0]), params[1]);
+        convertDynamicListToIntList(params[0]), 0);
+    await Future.delayed(Duration(milliseconds: params[1]));
   }
   // 三选二：坐标+次数
   else if (params.length == 4 &&
