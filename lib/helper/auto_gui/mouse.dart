@@ -35,8 +35,12 @@ class Mouse {
         pos[1] * 65535 ~/ screenHeight, 0, 0);
   }
 
+  void leftMoveAndClick(List<int> pos) {
+    apiLeftMoveAndClick(pos[1], pos[2]);
+  }
+
   void leftButtonClick() {
-    sendInputLeftButtonClick();
+    apiLeftClick();
   }
 
   void mouseEventLeftButtonClick() {
