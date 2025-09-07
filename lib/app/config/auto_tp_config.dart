@@ -86,6 +86,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyTrayEnabled = "trayEnabled";
   static const keyMatchThreshold = "matchThreshold";
   static const keyAllowMockKey = "allowMockKey";
+  static const keyBatchClickInterval = "batchClickInterval";
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
@@ -276,4 +277,6 @@ class AutoTpConfig with ConfigStorage {
   double getMatchThreshold() => box.read(keyMatchThreshold) ?? 0.9;
 
   bool isAllowMockKey() => box.read(keyAllowMockKey) ?? false;
+
+  int getBatchClickInterval() => box.read(keyBatchClickInterval) ?? 12;
 }

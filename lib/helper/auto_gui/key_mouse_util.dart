@@ -72,13 +72,15 @@ class KeyMouseUtil {
     for (int index = 1; index <= step; index++) {
       final pos = MathUtil.smoothStep(initialPos, point, index / step);
 
-      Simulation.sendInput.mouse.move(pos);
+      final res = physicalPos(pos);
+      Simulation.sendInput.mouse.move(res);
       await Future.delayed(Duration(milliseconds: millis));
     }
   }
 
   static void moveWithoutStep(List<int> point) {
-    Simulation.sendInput.mouse.move(point);
+    final res = physicalPos(point);
+    Simulation.sendInput.mouse.move(res);
   }
 
   static Future<void> clickAtPoint(List<int> point, int delay) async {
@@ -92,9 +94,8 @@ class KeyMouseUtil {
       PostMessage(ScreenManager.instance.hWnd, WM_LBUTTONUP, 0, lParam);
       await Future.delayed(Duration(milliseconds: delay));
     } else {
-      Simulation.sendInput.mouse.move(point);
-      await Simulation.sendInput.mouse.leftButtonClick();
-      await Future.delayed(Duration(milliseconds: delay));
+      Simulation.sendInput.mouse.move(res);
+      Simulation.sendInput.mouse.leftButtonClick();
     }
   }
 

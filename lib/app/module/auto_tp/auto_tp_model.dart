@@ -244,6 +244,12 @@ final matchConfigItems = <ConfigItem>[
 
 final delayConfigItems = [
   IntConfigItem(
+    title: '批量点击间隔',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyBatchClickInterval,
+    valueCallback: AutoTpConfig.to.getBatchClickInterval,
+  ),
+  IntConfigItem(
     title: '自动冲刺间隔',
     subTitle: '',
     valueKey: AutoTpConfig.keyDashIntervalDelay,

@@ -1,3 +1,4 @@
+import 'package:assistant/app/config/auto_tp_config.dart';
 import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 
 import '../auto_gui/key_mouse_util.dart';
@@ -68,8 +69,15 @@ mouseClick(params) async {
 
   // 三选一：坐标
   if (params.length == 2 && params[0] is List && params[1] is int) {
-    await KeyMouseUtil.clickAtPoint(
-        convertDynamicListToIntList(params[0]), params[1]);
+    final coords = convertDynamicListToIntList(params[0]);
+    final totalSize = coords.length;
+
+    for (int index = 0; index < totalSize; index += 2) {
+      KeyMouseUtil.clickAtPoint([coords[index], coords[index + 1]], params[1]);
+      await Future.delayed(
+          Duration(milliseconds: AutoTpConfig.to.getBatchClickInterval()));
+    }
+    await Future.delayed(Duration(milliseconds: params[1]));
   }
 
   // 三选二：坐标+次数
