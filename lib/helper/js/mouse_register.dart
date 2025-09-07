@@ -78,7 +78,7 @@ mouseClick(params) async {
       params[2] is int &&
       params[3] is int) {
     await KeyMouseUtil.move(convertDynamicListToIntList(params[0]), 1, 0);
-    await Future.delayed(Duration(milliseconds: 2));
+    await Future.delayed(Duration(milliseconds: 1));
     await api.click(
       clicks: params[1],
       interval: Duration(milliseconds: params[2]),
@@ -183,19 +183,23 @@ moveRelative3D(params) async {
 }
 
 moveRelative(params) async {
+  List<int> distance = convertDynamicListToIntList(params[0]);
   if (params.length == 2) {
-    await KeyMouseUtil.moveR(params[0], 1, 0);
+    await KeyMouseUtil.moveR(distance, 1, 0);
+    await Future.delayed(Duration(milliseconds: params[1]));
   } else if (params.length == 4) {
-    await KeyMouseUtil.moveR(params[0], params[1], params[2]);
+    await KeyMouseUtil.moveR(distance, params[1], params[2]);
+    await Future.delayed(Duration(milliseconds: params[3]));
   }
-  await Future.delayed(Duration(milliseconds: params[3]));
 }
 
 moveMouse(params) async {
+  List<int> distance = convertDynamicListToIntList(params[0]);
   if (params.length == 2) {
-    await KeyMouseUtil.move(params[0], 1, 0);
+    await KeyMouseUtil.move(distance, 1, 0);
+    await Future.delayed(Duration(milliseconds: params[1]));
   } else if (params.length == 4) {
-    await KeyMouseUtil.move(params[0], params[1], params[2]);
+    await KeyMouseUtil.move(distance, params[1], params[2]);
+    await Future.delayed(Duration(milliseconds: params[3]));
   }
-  await Future.delayed(Duration(milliseconds: params[3]));
 }
