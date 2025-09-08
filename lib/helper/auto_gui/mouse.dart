@@ -36,7 +36,7 @@ class Mouse {
   }
 
   void leftMoveAndClick(List<int> pos) {
-    apiLeftMoveAndClick(pos[1], pos[2]);
+    apiLeftMoveAndClick(pos[0], pos[1]);
   }
 
   void leftButtonClick() {

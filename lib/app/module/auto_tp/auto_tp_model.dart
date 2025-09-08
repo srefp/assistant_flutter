@@ -244,6 +244,30 @@ final matchConfigItems = <ConfigItem>[
 
 final delayConfigItems = [
   IntConfigItem(
+    title: '包传送的半自动传送，第一个延迟，点击锚点后，需要等待的毫秒数',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyTpcPlusFirstDelay,
+    valueCallback: AutoTpConfig.to.getTpcPlusFirstDelay,
+  ),
+  IntConfigItem(
+    title: '包传送的半自动传送，第二个延迟，点击传送按钮后，需要等待的毫秒数',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyTpcPlusSecondDelay,
+    valueCallback: AutoTpConfig.to.getTpcPlusSecondDelay,
+  ),
+  IntConfigItem(
+    title: '包传送的半自动传送，第三个延迟，点击锚点后，需要等待的毫秒数',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyTpcPlusThirdDelay,
+    valueCallback: AutoTpConfig.to.getTpcPlusThirdDelay,
+  ),
+  IntConfigItem(
+    title: '包传送的半自动传送，第四个延迟，点击弹出的选项后，需要等待的毫秒数',
+    subTitle: '',
+    valueKey: AutoTpConfig.keyTpcPlusFourthDelay,
+    valueCallback: AutoTpConfig.to.getTpcPlusFourthDelay,
+  ),
+  IntConfigItem(
     title: '批量点击间隔',
     subTitle: '',
     valueKey: AutoTpConfig.keyBatchClickInterval,
@@ -494,6 +518,12 @@ final coordsConfigItems = [
     subTitle: '确认按钮的位置',
     valueKey: ProcessPosConfig.keyConfirmPos,
     valueCallback: ProcessPosConfig.to.getConfirmPos,
+  ),
+  StringConfigItem(
+    title: '锚点多选',
+    subTitle: '多个锚点离得比较近时，点击后弹出的第一个选项的位置',
+    valueKey: ProcessPosConfig.keySelectPos,
+    valueCallback: ProcessPosConfig.to.getSelectPos,
   ),
   StringConfigItem(
     title: '重置拖动条',

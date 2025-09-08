@@ -22,15 +22,19 @@ abstract class ProcessPosConfig with ConfigStorage {
   }
 
   static String keyFoodPos = "foodPos${SystemControl.ratio.name}";
-
   static String keyConfirmPos = "confirmPos${SystemControl.ratio.name}";
+  static String keySelectPos = "selectPos${SystemControl.ratio.name}";
 
   String getFoodPos();
 
   String getConfirmPos();
 
+  String getSelectPos();
+
   List<int> getConfirmPosIntList() =>
       RouteUtil.stringToIntList(getConfirmPos());
 
   List<int> getFoodPosIntList() => RouteUtil.stringToIntList(getFoodPos());
+
+  List<int> getSelectPosIntList() => RouteUtil.stringToIntList(getSelectPos());
 }

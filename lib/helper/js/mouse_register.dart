@@ -8,6 +8,9 @@ import '../data_converter.dart';
 import 'js_executor.dart';
 
 void registerMouseFunc() {
+  // 获取鼠标位置
+  jsRuntime.onMessage(findMousePos, getMousePos);
+
   // 鼠标移动
   jsRuntime.onMessage(move, moveMouse);
 
@@ -73,7 +76,7 @@ mouseClick(params) async {
     final totalSize = coords.length;
 
     for (int index = 0; index < totalSize; index += 2) {
-      KeyMouseUtil.clickAtPoint([coords[index], coords[index + 1]], params[1]);
+      KeyMouseUtil.clickAtPoint([coords[index], coords[index + 1]], 0);
       await Future.delayed(
           Duration(milliseconds: AutoTpConfig.to.getBatchClickInterval()));
     }
@@ -211,4 +214,8 @@ moveMouse(params) async {
     await KeyMouseUtil.move(distance, params[1], params[2]);
     await Future.delayed(Duration(milliseconds: params[3]));
   }
+}
+
+getMousePos(params) async {
+  return KeyMouseUtil.getCurLogicalPos();
 }

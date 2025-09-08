@@ -87,6 +87,18 @@ class AutoTpConfig with ConfigStorage {
   static const keyMatchThreshold = "matchThreshold";
   static const keyAllowMockKey = "allowMockKey";
   static const keyBatchClickInterval = "batchClickInterval";
+  static const keyTpcPlusFirstDelay = "tpcPlusFirstDelay";
+  static const keyTpcPlusSecondDelay = "tpcPlusSecondDelay";
+  static const keyTpcPlusThirdDelay = "tpcPlusThirdDelay";
+  static const keyTpcPlusFourthDelay = "tpcPlusFourthDelay";
+
+  int getTpcPlusFirstDelay() => box.read(keyTpcPlusFirstDelay) ?? 60;
+
+  int getTpcPlusSecondDelay() => box.read(keyTpcPlusSecondDelay) ?? 60;
+
+  int getTpcPlusThirdDelay() => box.read(keyTpcPlusThirdDelay) ?? 400;
+
+  int getTpcPlusFourthDelay() => box.read(keyTpcPlusFourthDelay) ?? 80;
 
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;

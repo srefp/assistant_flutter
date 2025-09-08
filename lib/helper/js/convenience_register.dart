@@ -17,6 +17,9 @@ void registerConvenience() {
   // 传送确认
   jsRuntime.onMessage(tpc, tpConfirm);
 
+  // 包传送的传送确认
+  jsRuntime.onMessage(tpcPlus, tpConfirmPlus);
+
   // 传送
   jsRuntime.onMessage(tp, tpByParams);
 }
@@ -33,8 +36,26 @@ tpConfirm(params) async {
   await KeyMouseUtil.clickAtPoint(convertDynamicListToIntList(params['coords']),
       AutoTpConfig.to.getTpcDelay());
   await KeyMouseUtil.clickAtPoint(
-      convertDynamicListToIntList(ProcessPosConfig.to.getConfirmPosIntList()),
-      params['delay']);
+      ProcessPosConfig.to.getConfirmPosIntList(), params['delay']);
+}
+
+// 包传送的传送确认
+tpConfirmPlus(params) async {
+  SystemControl.refreshRect();
+
+  // 直接传
+  await KeyMouseUtil.clickAtPoint(
+      convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcPlusFirstDelay());
+  await KeyMouseUtil.clickAtPoint(
+      ProcessPosConfig.to.getConfirmPosIntList(), AutoTpConfig.to.getTpcPlusSecondDelay());
+
+  // 二选一
+  await KeyMouseUtil.clickAtPoint(
+      convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcPlusThirdDelay());
+  await KeyMouseUtil.clickAtPoint(
+      ProcessPosConfig.to.getSelectPosIntList(), AutoTpConfig.to.getTpcPlusFourthDelay());
+  await KeyMouseUtil.clickAtPoint(
+      ProcessPosConfig.to.getConfirmPosIntList(), params['delay']);
 }
 
 openBook(params) async {

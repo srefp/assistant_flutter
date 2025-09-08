@@ -10,4 +10,8 @@ class ProcessPosConfig1610 extends ProcessPosConfig {
   @override
   String getConfirmPos() =>
       box.read(ProcessPosConfig.keyConfirmPos) ?? "51347, 61395";
+
+  @override
+  String getSelectPos() =>
+      box.read(ProcessPosConfig.keySelectPos) ?? "51347, 61395";
 }

@@ -14,6 +14,7 @@ import 'mouse_register.dart';
 const tp = "tp";
 const tip = "tip";
 const wait = "wait";
+const findMousePos = "findMousePos";
 const move = "move";
 const moveAsync = "moveAsync";
 const moveR = "moveR";
@@ -37,6 +38,7 @@ const wheelAsync = "wheelAsync";
 const map = "map";
 const book = "book";
 const tpc = "tpc";
+const tpcPlus = "tpcPlus";
 const findColor = "findColor";
 const findPic = "findPic";
 const findPicLT = "findPicLT";
@@ -49,8 +51,11 @@ const moveToCenter = "moveToCenter";
 
 const hintKeys = [
   tp,
+  tpc,
+  tpcPlus,
   wait,
   click,
+  findMousePos,
   move,
   moveR,
   moveR3D,
@@ -72,7 +77,6 @@ const hintKeys = [
   cp,
   map,
   book,
-  tpc,
   findColor,
   findPic,
   findPicLT,
@@ -87,6 +91,9 @@ const hintKeys = [
 
 const keys = [
   tp,
+  tpc,
+  tpcPlus,
+  findMousePos,
   wait,
   click,
   move,
@@ -110,7 +117,6 @@ const keys = [
   cp,
   map,
   book,
-  tpc,
   findPic,
   findPicLT,
   findPicRT,

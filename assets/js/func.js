@@ -105,6 +105,11 @@ async function drag(coords, shortMove, delay) {
     await sendMessage('drag', JSON.stringify({'coords': coords, 'shortMove': shortMove, 'delay': delay}));
 }
 
+// 获取鼠标当前位置
+async function findMousePos() {
+    return await sendMessage('findMousePos', '[]');
+}
+
 // 点击
 async function clickAsync() {
     await sendMessage('clickAsync', JSON.stringify([...arguments]));
@@ -184,6 +189,11 @@ async function tp(params, remember, delay) {
 // 传送确认
 async function tpc(coords, delay) {
     await sendMessage('tpc', JSON.stringify({'coords': coords, 'delay': delay}));
+}
+
+// 包传送的传送确认
+async function tpcPlus(coords, delay) {
+    await sendMessage('tpcPlus', JSON.stringify({'coords': coords, 'delay': delay}));
 }
 
 // 图片

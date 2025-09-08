@@ -96,6 +96,9 @@ class KeyMouseUtil {
     } else {
       Simulation.sendInput.mouse.move(res);
       Simulation.sendInput.mouse.leftButtonClick();
+      if (delay != 0) {
+        await Future.delayed(Duration(milliseconds: delay));
+      }
     }
   }
 
