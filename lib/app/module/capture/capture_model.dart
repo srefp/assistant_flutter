@@ -8,7 +8,6 @@ import 'package:file_selector_platform_interface/file_selector_platform_interfac
 import 'package:file_selector_windows/file_selector_windows.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Image;
 import 'package:flutter/services.dart';
-import 'package:opencv_dart/opencv.dart' as cv;
 import 'package:provider/provider.dart';
 import 'package:screen_capturer/screen_capturer.dart';
 
@@ -52,6 +51,9 @@ class PicModel extends ChangeNotifier {
 
   loadPicList() async {
     picList = await loadAllPicRecord();
+    for (final pic in picList) {
+      pic.setMat();
+    }
     displayedPicList = picList;
     notifyListeners();
   }
@@ -231,7 +233,7 @@ class PicModel extends ChangeNotifier {
         await savePickRecord(pic); // 调用现有数据库添加方法
       }
 
-      loadPicList(); // 刷新图片列表
+      loadPicList();
       dialog(title: '导入成功', content: '成功导入${newPics.length}条图片');
     } catch (e) {
       dialog(title: '导入失败', content: '导入图片时出错: $e');

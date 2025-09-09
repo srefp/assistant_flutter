@@ -24,7 +24,6 @@ import '../../config/auto_tp_config.dart';
 import '../../config/hotkey_config.dart';
 import '../../config/process_key_config.dart';
 import '../../config/process_pos/process_pos_config.dart';
-import '../../dao/pic_record_db.dart';
 import '../../windows_app.dart';
 import '../config/config_model.dart';
 import 'eula.dart';
@@ -701,18 +700,7 @@ class AutoTpModel extends ChangeNotifier {
       registerJsFunc();
       detectWorldRole();
       loadTasks();
-
-      // 加载所有图片
-      loadAllPics();
     });
-  }
-
-  loadAllPics() async {
-    final pics = await loadAllPicRecord();
-    for (var element in pics) {
-      element.setMat();
-      picRecordMap[element.picName] = element;
-    }
   }
 
   bool active() {

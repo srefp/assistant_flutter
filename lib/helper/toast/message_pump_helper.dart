@@ -117,7 +117,6 @@ void _winEventProc(int hWinEventHook, int event, int hWnd, int idObject,
       break;
     case eventObjectDestroy:
       toastSendPort.send('windowClose');
-
       break;
   }
 }

@@ -3,6 +3,7 @@ import 'package:opencv_dart/opencv.dart' as cv;
 
 import '../../../helper/cv/cv.dart';
 import '../../../helper/date_utils.dart';
+import '../../dao/pic_record_db.dart';
 
 /// 图片记录
 class PicRecord {
@@ -56,6 +57,7 @@ class PicRecord {
     final bytes = pngToBgra(stringToPngList(image));
     cv.Mat mat = uint8ListToMat(bytes, width, height);
     this.mat = cv.cvtColor(mat, cv.COLOR_BGR2GRAY);
+    picRecordMap[key] = this;
   }
 
   factory PicRecord.fromJson(Map<String, dynamic> json) => PicRecord(
