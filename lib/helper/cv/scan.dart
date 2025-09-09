@@ -65,12 +65,6 @@ class PicItem {
       return ScanResult(-1, cv.Point(0, 0));
     }
 
-    final encodedImage = await encodeImage(capture);
-    print('encodedImage: data:image/png;base64,$encodedImage');
-
-    final encodedTemplate = await encodeImage(imageItem.mat!);
-    print('encodedTemplate: data:image/png;base64,$encodedTemplate');
-
     final image = imageItem.mat!;
     final result = cv.matchTemplate(capture, image, cv.TM_CCOEFF_NORMED);
     final minMaxLoc = cv.minMaxLoc(result);

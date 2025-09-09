@@ -511,16 +511,6 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         return StringConfigRow(
                           item: item,
                           lightText: model.delayLightText,
-                          rightWidget: SizedBox(
-                            height: 34,
-                            child: ButtonWithIcon(
-                              icon: Icons.remove_red_eye,
-                              text: '截图',
-                              onPressed: () {
-                                model.matchScreenshot(item);
-                              },
-                            ),
-                          ),
                         );
                       }
                       return null;

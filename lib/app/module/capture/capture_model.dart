@@ -52,21 +52,6 @@ class PicModel extends ChangeNotifier {
 
   loadPicList() async {
     picList = await loadAllPicRecord();
-    for (final item in picList) {
-      // 将base64字符串解码为Uint8List
-      final bytes = base64Decode(item.image);
-
-      // 使用OpenCV解码图片
-      final mat = cv.cvtColor(
-        cv.imdecode(bytes, cv.IMREAD_COLOR),
-        cv.COLOR_BGR2GRAY,
-      );
-      item.mat = mat;
-      picRecordMap[item.key] = item;
-
-      // 稍微等一下，防止UI卡顿
-      await Future.delayed(Duration.zero);
-    }
     displayedPicList = picList;
     notifyListeners();
   }
@@ -243,11 +228,6 @@ class PicModel extends ChangeNotifier {
 
       // 批量导入到数据库（假设pic_db支持批量添加）
       for (var pic in newPics) {
-        // 将base64字符串解码为Uint8List
-        final bytes = base64Decode(pic.image);
-        // 使用OpenCV解码图片
-        final mat = cv.imdecode(bytes, cv.IMREAD_GRAYSCALE);
-        pic.mat = mat;
         await savePickRecord(pic); // 调用现有数据库添加方法
       }
 

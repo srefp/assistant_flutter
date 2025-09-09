@@ -21,7 +21,7 @@ import 'app/module/overlay/overlay_window.dart';
 import 'helper/isolate/win32_event_listen.dart';
 import 'helper/windows/tray.dart';
 
-const String version = '2025.9.9.1';
+const String version = '2025.9.9.2';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
@@ -76,9 +76,6 @@ void overlayMain() {
 
 /// 重启应用
 void restartApp() async {
-  // 停止监听
-  await stopListen();
-
   // 注销所有热键
   await hotKeyManager.unregisterAll();
 
@@ -95,12 +92,13 @@ void restartApp() async {
 
 /// 关闭应用
 void closeApp() async {
-  // 停止监听
-  await stopListen();
-
   if (Platform.isWindows) {
-    WindowsApp.autoTpModel.stop();
     await windowManager.hide();
+
+    // 停止相关isolate
+    WindowsApp.autoTpModel.stop();
+    stopToastListen();
+
     await systemTray.destroy();
     exit(0);
   }

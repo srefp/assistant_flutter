@@ -1,7 +1,6 @@
 import 'package:assistant/component/config_row/double_config_row.dart';
 import 'package:assistant/component/model/config_item.dart';
 import 'package:assistant/helper/cv/scan.dart';
-import 'package:assistant/helper/route_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:window_manager/window_manager.dart';
@@ -12,13 +11,12 @@ import '../../../component/config_row/int_config_row.dart';
 import '../../../component/config_row/string_config_row.dart';
 import '../../../component/dialog.dart';
 import '../../../component/text/win_text.dart';
-import '../../../helper/auto_gui/key_mouse_util.dart';
 import '../../../helper/auto_gui/system_control.dart';
-import '../../../helper/cv/cv.dart';
 import '../../../helper/isolate/win32_event_listen.dart';
 import '../../../helper/js/js_executor.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/search_utils.dart';
+import '../../../helper/toast/message_pump_helper.dart';
 import '../../../helper/win32/window.dart';
 import '../../../main.dart';
 import '../../config/app_config.dart';
@@ -29,7 +27,6 @@ import '../../config/process_pos/process_pos_config.dart';
 import '../../dao/pic_record_db.dart';
 import '../../windows_app.dart';
 import '../config/config_model.dart';
-import '../pic/pic_record.dart';
 import 'eula.dart';
 
 /// 辅助功能开启/关闭配置
@@ -903,7 +900,12 @@ class AutoTpModel extends ChangeNotifier {
       if (AppConfig.to.getToWindowAfterStarted()) {
         setForegroundWindow(hWnd);
       }
-      ScreenManager.instance.startListen();
+
+      if (ScreenManager.instance.hWnd != 0 &&
+          ScreenManager.instance.task != null) {
+        startListenWindow(
+            ScreenManager.instance.hWnd, ScreenManager.instance.task!.pid);
+      }
     }
 
     notifyListeners();
@@ -912,8 +914,8 @@ class AutoTpModel extends ChangeNotifier {
 
   void stop() {
     isRunning = false;
-    stopListen();
-    ScreenManager.instance.stopListen();
+    stopListenWindow();
+    stopKeyMouseListen();
 
     notifyListeners();
   }
@@ -936,30 +938,5 @@ class AutoTpModel extends ChangeNotifier {
     validType = value;
     AutoTpConfig.to.save(AutoTpConfig.keyValidType, value);
     notifyListeners();
-  }
-
-  void matchScreenshot(StringConfigItem item) async {
-    debugPrint('截图 ${item.valueKey}');
-
-    final stringValue = item.valueCallback();
-    final coords = RouteUtil.stringToIntList(stringValue);
-    var rect = ScreenRect(coords[0], coords[1], coords[2], coords[3]);
-    rect = KeyMouseUtil.convertToPhysicalRect(rect);
-
-    // 指定区域截图并使用Base64编码转换成字符串
-    final capture = captureImageWindows(rect);
-    final encodedImage = await encodeImage(capture);
-    debugPrint('encodedImage: data:image/png;base64,$encodedImage');
-
-    final newPicRecord = PicRecord(
-      picName: item.valueKey!,
-      key: item.valueKey!,
-      comment: '',
-      width: rect.width,
-      height: rect.height,
-      image: encodedImage,
-    );
-    newPicRecord.mat = capture;
-    savePickRecord(newPicRecord);
   }
 }

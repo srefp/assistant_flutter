@@ -34,7 +34,7 @@ void startKeyMouseListen() {
   _worker.sendMessage(0);
 }
 
-Future<void> stopListen() async {
+Future<void> stopKeyMouseListen() async {
   await api.keyDown(key: 'f19');
 }
 

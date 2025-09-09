@@ -24,6 +24,7 @@ final Map<String, PicRecord> picRecordMap = {};
 
 /// 保存截图
 Future<void> savePickRecord(PicRecord picRecord) async {
+  picRecord.setMat();
   final picRecordInDb = await loadPicRecord(picRecord.key);
   picRecordMap[picRecord.key] = picRecord;
 

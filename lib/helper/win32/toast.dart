@@ -4,6 +4,7 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '../toast/message_pump_helper.dart';
+import '../toast/message_type.dart';
 
 // 定义定时器 ID
 const timerId = 1;
@@ -11,7 +12,8 @@ const timerId = 1;
 // 修改showToast方法
 Future<void> showToast(String message, {int duration = 3000}) async {
   toastWorker.sendMessage({
-    'message': message,
+    'type': toast,
+    'msg': message,
     'duration': duration,
   });
 }

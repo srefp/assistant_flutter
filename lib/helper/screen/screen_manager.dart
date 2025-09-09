@@ -1,10 +1,9 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:assistant/helper/toast/message_pump_helper.dart';
 import 'package:win32/win32.dart';
 
-import '../../app/windows_app.dart';
-import '../auto_gui/system_control.dart';
 import '../win32/models.dart';
 import '../win32/task_manager.dart';
 import '../win32/window.dart';
@@ -69,52 +68,9 @@ final unhookWinEvent = _user32.lookupFunction<
 class ScreenManager {
   static ScreenManager? _instance;
 
-  int _hook = 0; // 添加事件钩子引用
-
   static ScreenManager get instance {
     _instance ??= ScreenManager._internal();
     return _instance!;
-  }
-
-  // 添加窗口事件监听
-  void startListen() {
-    _hook = setWinEventHook(
-        eventSystemMoveSizeEnd,
-        eventObjectDestroy,
-        // 窗口销毁事件
-        0,
-        Pointer.fromFunction(_winEventProc),
-        task?.pid ?? 0,
-        0,
-        winEventOutOfContext | winEventSkipOwnProcess);
-  }
-
-  // 停止监听
-  void stopListen() {
-    if (_hook != 0) {
-      unhookWinEvent(_hook);
-      _hook = 0;
-    }
-  }
-
-  // 窗口事件回调处理
-  static void _winEventProc(int hWinEventHook, int event, int hWnd,
-      int idObject, int idChild, int dwEventThread, int dwmsEventTime) {
-    // 仅处理目标窗口的事件
-    if (hWnd != instance.hWnd) return;
-
-    switch (event) {
-      case eventSystemMoveSizeEnd:
-        // 触发窗口移动后，重新计算窗口矩形
-        SystemControl.refreshRect();
-        break;
-      case eventObjectDestroy:
-        instance.task = null;
-
-        // 触发窗口关闭后的处理
-        WindowsApp.autoTpModel.stop();
-        break;
-    }
   }
 
   ScreenManager._internal();
@@ -137,7 +93,7 @@ class ScreenManager {
 
     if (hWnd == 0) {
       // 添加窗口丢失处理
-      stopListen();
+      stopListenWindow();
     }
   }
 
