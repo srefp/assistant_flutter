@@ -66,11 +66,8 @@ Future<void> showToast(String message, {int duration = 3000}) async {
   ShowWindow(hWnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
 
   // 设置窗口扩展样式为 WS_EX_TRANSPARENT
-  SetWindowLongPtr(
-      hWnd,
-      WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
-      GetWindowLongPtr(hWnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE) |
-          WINDOW_EX_STYLE.WS_EX_TRANSPARENT);
+  SetWindowLongPtr(hWnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+      WINDOW_EX_STYLE.WS_EX_LAYERED | WINDOW_EX_STYLE.WS_EX_TRANSPARENT);
 
   // 将窗口置于最顶层
   SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0,
