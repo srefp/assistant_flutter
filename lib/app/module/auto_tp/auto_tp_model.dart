@@ -489,8 +489,8 @@ final recordDelayConfigItems = [
   IntConfigItem(
     title: '开书操作',
     subTitle: '开书延迟',
-    valueKey: AutoTpConfig.keyClickRecordDelay,
-    valueCallback: AutoTpConfig.to.getClickRecordDelay,
+    valueKey: AutoTpConfig.keyBookRecordDelay,
+    valueCallback: AutoTpConfig.to.getBookRecordDelay,
   ),
   IntConfigItem(
     title: '拖动操作',
@@ -889,6 +889,11 @@ class AutoTpModel extends ChangeNotifier {
 
     if (validType == targetWindow && hWnd == 0) {
       dialog(title: '错误', content: '进程窗口未启动!');
+      return false;
+    }
+
+    if (SystemControl.rect.width <= 0 || SystemControl.rect.height <= 0) {
+      dialog(title: '错误', content: '窗口识别异常，请重试!');
       return false;
     }
 

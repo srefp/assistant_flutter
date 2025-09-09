@@ -403,7 +403,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
           ),
           CustomSliverBox(
             child: IconCard(
-              icon: Icons.access_time_outlined,
+              icon: Icons.emergency_recording,
               title: '录制参数',
               subTitle: '录制路线时，默认的操作延迟 以及 其他操作参数',
               content: Column(
