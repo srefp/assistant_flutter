@@ -3,10 +3,20 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
+import '../toast/message_pump_helper.dart';
+
 // 定义定时器 ID
 const timerId = 1;
 
+// 修改showToast方法
 Future<void> showToast(String message, {int duration = 3000}) async {
+  toastWorker.sendMessage({
+    'message': message,
+    'duration': duration,
+  });
+}
+
+Future<void> showToastMethod(String message, {int duration = 3000}) async {
   // 获取当前鼠标位置
   final point = calloc<POINT>();
   GetCursorPos(point);

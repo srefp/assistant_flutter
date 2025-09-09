@@ -18,8 +18,7 @@ late SendPort interpolatePort;
 int eventHook = 0;
 int keyHook = 0;
 int mouseHook = 0;
-int runNr = 0;
-var worker = Worker();
+var _worker = Worker();
 
 const eventSystemMoveSizeStart = 0x000A;
 const winEventOutOfContext = 0x0000;
@@ -27,25 +26,20 @@ const winEventSkipOwnProcess = 0x0002;
 const eventSystemMoveSizeEnd = 0x000B;
 
 void runWin32EventIsolate() async {
-  if (runNr != 0) {
-    worker.dispose(immediate: true);
-  }
-  runNr++;
-  worker = Worker();
-  await worker.init(hookWin, hookIsolate);
+  _worker = Worker();
+  await _worker.init(_hookMainHandler, hookIsolateHandler);
 }
 
-void startListen() {
-  worker.sendMessage(runNr);
+void startKeyMouseListen() {
+  _worker.sendMessage(0);
 }
 
 Future<void> stopListen() async {
   await api.keyDown(key: 'f19');
 }
 
-void hookIsolate(
+void hookIsolateHandler(
     dynamic data, SendPort mainSendPort, SendErrorFunction onSendError) {
-  runNr = data;
   interpolatePort = mainSendPort;
   final hInstance = GetModuleHandle(nullptr);
 
@@ -73,7 +67,7 @@ void hookIsolate(
 
 final keyFunc = Pointer.fromFunction<HOOKPROC>(keyboardBinding, 0);
 
-void hookWin(dynamic event, SendPort isolateSendPort) async {
+void _hookMainHandler(dynamic event, SendPort isolateSendPort) async {
   if (event is RawKeyboardEvent) {
     KeyboardEvent keyboardEvent = event.toKeyboardEvent();
 

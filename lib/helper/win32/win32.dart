@@ -4,7 +4,6 @@ export 'cursor_util.dart';
 export 'process_listen.dart';
 export 'key_listen.dart';
 export 'keyboard_input.dart';
-export 'message_pump.dart';
 export 'mica_enabler.dart';
 export 'models.dart';
 export 'mouse_listen.dart';

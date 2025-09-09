@@ -19,7 +19,6 @@ import '../../../helper/isolate/win32_event_listen.dart';
 import '../../../helper/js/js_executor.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/search_utils.dart';
-import '../../../helper/win32/message_pump.dart';
 import '../../../helper/win32/window.dart';
 import '../../../main.dart';
 import '../../config/app_config.dart';
@@ -703,7 +702,6 @@ class AutoTpModel extends ChangeNotifier {
     // 加载js函数
     Future.delayed(Duration(milliseconds: 10), () {
       registerJsFunc();
-      messagePump();
       detectWorldRole();
       loadTasks();
 
@@ -899,7 +897,7 @@ class AutoTpModel extends ChangeNotifier {
 
     isRunning = true;
 
-    startListen();
+    startKeyMouseListen();
 
     if (validType == targetWindow && hWnd != 0) {
       if (AppConfig.to.getToWindowAfterStarted()) {

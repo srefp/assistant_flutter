@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/helper/db_helper.dart';
 import 'package:assistant/helper/path_manage.dart';
+import 'package:assistant/helper/toast/message_pump_helper.dart';
 import 'package:assistant/helper/windows/window_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -144,6 +145,8 @@ Future<void> _initApp() async {
       await windowManager.setSkipTaskbar(false);
 
       runWin32EventIsolate();
+      await runToastIsolate();
+      startToastListen();
     });
   }
 }
