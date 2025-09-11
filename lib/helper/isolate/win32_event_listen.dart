@@ -18,6 +18,7 @@ late SendPort interpolatePort;
 int eventHook = 0;
 int keyHook = 0;
 int mouseHook = 0;
+int runNr = 0;
 var _worker = Worker();
 
 const eventSystemMoveSizeStart = 0x000A;
@@ -31,15 +32,24 @@ void runWin32EventIsolate() async {
 }
 
 void startKeyMouseListen() {
-  _worker.sendMessage(0);
+  if (runNr > 0) {
+    return;
+  }
+  _worker.sendMessage(runNr++);
 }
 
 Future<void> stopKeyMouseListen() async {
+  runNr--;
   await api.keyDown(key: 'f19');
 }
 
 void hookIsolateHandler(
     dynamic data, SendPort mainSendPort, SendErrorFunction onSendError) {
+  runNr = data;
+  if (runNr != 0) {
+    return;
+  }
+
   interpolatePort = mainSendPort;
   final hInstance = GetModuleHandle(nullptr);
 

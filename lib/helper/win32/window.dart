@@ -4,6 +4,15 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 import 'package:window_manager/window_manager.dart';
 
+/// 根据窗口句柄取pid
+int getPidByWindowHandle(int hWnd) {
+  final pid = calloc<Uint32>();
+  GetWindowThreadProcessId(hWnd, pid);
+  final pidValue = pid.value;
+  calloc.free(pid);
+  return pidValue;
+}
+
 /// 获取窗口标题
 String? getWindowTitle(int hWnd) {
   return using((arena) {

@@ -689,6 +689,7 @@ class _OutOfDateNotificationState extends State<OutOfDateNotification> {
 
 const String curScreen = '当前屏幕';
 const String targetWindow = '指定窗口';
+const String windowHandle = '窗口句柄';
 
 class AutoTpModel extends ChangeNotifier {
   bool isRunning = false;
@@ -700,6 +701,8 @@ class AutoTpModel extends ChangeNotifier {
       registerJsFunc();
       detectWorldRole();
       loadTasks();
+
+      validType = AutoTpConfig.to.getValidType();
     });
   }
 
@@ -825,14 +828,19 @@ class AutoTpModel extends ChangeNotifier {
   var processKeyLightText = '';
   var displayedProcessKeyConfigItems = processKeyConfigItems;
   final processKeySearchController = TextEditingController();
+  final windowHandleController = TextEditingController(
+    text: ScreenManager
+        .instance.foregroundWindowHandle
+        .toString(),
+  );
 
   String? anchorWindow = AutoTpConfig.to.getAnchorWindow();
 
   List<String> anchorWindowList = [];
 
-  String validType = AutoTpConfig.to.getValidType();
+  String validType = curScreen;
 
-  List<String> validTypeList = [curScreen, targetWindow];
+  List<String> validTypeList = [curScreen, targetWindow, windowHandle];
 
   void searchProcessKeyConfigItems(String searchValue) {
     processKeyLightText = searchValue;
@@ -864,9 +872,11 @@ class AutoTpModel extends ChangeNotifier {
   int mouseListerId = 0;
 
   bool start() {
-    final String? windowTitle = AutoTpConfig.to.getAnchorWindow();
+    if (AutoTpConfig.to.getValidType() == targetWindow) {
+      final String? windowTitle = AutoTpConfig.to.getAnchorWindow();
+      ScreenManager.instance.refreshWindowHandle(windowTitle: windowTitle);
+    }
 
-    ScreenManager.instance.refreshWindowHandle(windowTitle: windowTitle);
     int hWnd = ScreenManager.instance.hWnd;
     SystemControl.refreshRect();
 
@@ -884,15 +894,18 @@ class AutoTpModel extends ChangeNotifier {
 
     startKeyMouseListen();
 
-    if (validType == targetWindow && hWnd != 0) {
+    if (validType == targetWindow || validType == windowHandle && hWnd != 0) {
       if (AppConfig.to.getToWindowAfterStarted()) {
         setForegroundWindow(hWnd);
       }
 
-      if (ScreenManager.instance.hWnd != 0 &&
+      if (validType == targetWindow &&
+          ScreenManager.instance.hWnd != 0 &&
           ScreenManager.instance.task != null) {
         startListenWindow(
             ScreenManager.instance.hWnd, ScreenManager.instance.task!.pid);
+      } else if (validType == windowHandle && hWnd != 0) {
+        startListenWindow(hWnd, getPidByWindowHandle(hWnd));
       }
     }
 

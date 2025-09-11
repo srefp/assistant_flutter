@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:assistant/app/config/auto_tp_config.dart';
+import 'package:assistant/app/module/auto_tp/auto_tp_model.dart';
 import 'package:assistant/helper/toast/message_pump_helper.dart';
 import 'package:win32/win32.dart';
 
@@ -77,7 +79,11 @@ class ScreenManager {
 
   Task? task;
 
-  int get hWnd => task?.hWnd ?? 0;
+  int foregroundWindowHandle = 0;
+
+  int get hWnd => AutoTpConfig.to.getValidType() == windowHandle
+      ? foregroundWindowHandle
+      : (task?.hWnd ?? 0);
 
   /// 判断窗口是否存在
   bool isWindowExist() {

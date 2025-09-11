@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:assistant/helper/android/overlay.dart';
+import 'package:assistant/helper/isolate/win32_event_listen.dart';
+import 'package:assistant/helper/win32/mouse_listen.dart';
 import 'package:assistant/main.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:superuser/superuser.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../../component/box/custom_sliver_box.dart';
 import '../../../component/box/highlight_combo_box.dart';
@@ -24,6 +27,7 @@ import '../../../component/divider.dart';
 import '../../../component/text/win_text.dart';
 import '../../../component/theme.dart';
 import '../../../component/title_with_sub.dart';
+import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/win32/os_version.dart';
 import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
@@ -173,38 +177,73 @@ class _AutoTpPageState extends State<AutoTpPage> {
                           ),
                         )
                       : SizedBox(),
-                  Platform.isWindows
-                      ? TitleWithSub(
-                          title: '锚定窗口',
-                          subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
-                          rightWidget: Row(
-                            children: [
-                              SizedBox(
-                                  height: 34,
-                                  child: ButtonWithIcon(
-                                    icon: Icons.refresh,
-                                    text: '刷新',
-                                    onPressed: () {
-                                      model.loadTasks();
-                                    },
-                                  )),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              SizedBox(
-                                width: 280,
-                                child: HighlightComboBox(
-                                  value: model.anchorWindow,
-                                  items: model.anchorWindowList,
-                                  onChanged: (value) {
-                                    model.selectAnchorWindow(value);
-                                  },
-                                ),
-                              ),
-                            ],
+                  if (Platform.isWindows && model.validType == targetWindow)
+                    TitleWithSub(
+                      title: '锚定窗口',
+                      subTitle: '锚定窗口后，键鼠操作只在窗口内有效',
+                      rightWidget: Row(
+                        children: [
+                          SizedBox(
+                              height: 34,
+                              child: ButtonWithIcon(
+                                icon: Icons.refresh,
+                                text: '刷新',
+                                onPressed: () {
+                                  model.loadTasks();
+                                },
+                              )),
+                          SizedBox(
+                            width: 12,
                           ),
-                        )
-                      : SizedBox(),
+                          SizedBox(
+                            width: 280,
+                            child: HighlightComboBox(
+                              value: model.anchorWindow,
+                              items: model.anchorWindowList,
+                              onChanged: (value) {
+                                model.selectAnchorWindow(value);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (Platform.isWindows && model.validType == windowHandle)
+                    TitleWithSub(
+                      title: '窗口句柄',
+                      subTitle: '点击获取按钮后单击你想要的窗口即可，句柄是动态的，关闭后需要重新获取。',
+                      rightWidget: Row(
+                        children: [
+                          SizedBox(
+                              height: 34,
+                              child: ButtonWithIcon(
+                                icon: Icons.window,
+                                text: '获取',
+                                onPressed: () async {
+                                  await windowManager.minimize();
+                                  startKeyMouseListen();
+                                  gettingWindowHandle = true;
+                                },
+                              )),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          SizedBox(
+                            width: 280,
+                            child: NumberBox(
+                              value:
+                                  ScreenManager.instance.foregroundWindowHandle,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  ScreenManager
+                                      .instance.foregroundWindowHandle = value;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
