@@ -27,11 +27,10 @@ void executeTpc() async {
   var currentPos = await api.position();
 
   api.click(clicks: 1);
-  await Future.delayed(Duration(milliseconds: 2));
+  await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
   var point = ProcessPosConfig.to.getConfirmPosIntList();
   var res = KeyMouseUtil.physicalPos(point);
   api.moveTo(point: Point(res[0], res[1]));
-  await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
   api.click(clicks: 1);
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getTpcRetryDelay()));

@@ -1,6 +1,5 @@
 import 'dart:ffi';
 
-import 'package:assistant/helper/isolate/win32_event_listen.dart';
 import 'package:assistant/helper/screen/screen_manager.dart';
 import 'package:assistant/helper/win32/toast.dart';
 import 'package:win32/win32.dart';
