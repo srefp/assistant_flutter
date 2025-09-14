@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:assistant/component/model/config_item.dart';
 import 'package:assistant/helper/android/overlay.dart';
 import 'package:assistant/helper/isolate/win32_event_listen.dart';
 import 'package:assistant/helper/win32/mouse_listen.dart';
@@ -396,6 +397,40 @@ class _AutoTpPageState extends State<AutoTpPage> {
                         item: item,
                         lightText: model.processKeyLightText,
                       );
+                    },
+                    shrinkWrap: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CustomSliverBox(
+            child: IconCard(
+              icon: Icons.code,
+              title: '脚本设置',
+              subTitle: '设置脚本运行相关配置',
+              content: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        SearchBox(
+                          searchController: model.scriptSearchController,
+                          onChanged: (value) =>
+                              model.searchDisplayedScriptConfigItems(value),
+                          placeholder: '搜索配置',
+                        ),
+                      ],
+                    ),
+                  ),
+                  divider,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => divider,
+                    itemCount: model.displayedScriptConfigItems.length,
+                    itemBuilder: (context, index) {
+                      final item = model.displayedScriptConfigItems[index];
+                      return renderItem(item, model.scriptLightText);
                     },
                     shrinkWrap: true,
                   ),

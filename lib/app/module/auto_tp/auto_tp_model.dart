@@ -1,5 +1,7 @@
+import 'package:assistant/component/config_row/coded_enum_config_row.dart';
 import 'package:assistant/component/config_row/double_config_row.dart';
 import 'package:assistant/component/model/config_item.dart';
+import 'package:assistant/constant/script_engine.dart';
 import 'package:assistant/helper/cv/scan.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
@@ -235,6 +237,28 @@ final matchConfigItems = <ConfigItem>[
   //   valueKey: AutoTpConfig.keyAnchorRect,
   //   valueCallback: AutoTpConfig.to.getAnchorString,
   // ),
+];
+
+final scriptConfigItems = [
+  BoolConfigItem(
+    title: '运行脚本时自动启动',
+    subTitle: '运行脚本时自动键鼠监听，如果不是运行键鼠操作相关函数，可关闭',
+    valueKey: AppConfig.keyStartWhenRunScript,
+    valueCallback: AppConfig.to.isStartWhenRunScript,
+  ),
+  BoolConfigItem(
+    title: '允许引入外部脚本',
+    subTitle: '引入外部脚本 // import lib ...',
+    valueKey: AppConfig.keyAllowImportScript,
+    valueCallback: AppConfig.to.isAllowImportScript,
+  ),
+  CodedEnumConfigItem(
+    title: '默认脚本引擎',
+    subTitle: '默认使用的脚本引擎',
+    items: ScriptEngine.values,
+    valueKey: AppConfig.keyDefaultScriptEngine,
+    valueCallback: AppConfig.to.getDefaultScriptEngine,
+  ),
 ];
 
 final delayConfigItems = [
@@ -734,6 +758,27 @@ class AutoTpModel extends ChangeNotifier {
         .toList();
     if (filteredList.isNotEmpty) {
       displayedHelpConfigItems = filteredList;
+    }
+    notifyListeners();
+  }
+
+  var scriptLightText = '';
+  var displayedScriptConfigItems = scriptConfigItems;
+  final scriptSearchController = TextEditingController();
+
+  void searchDisplayedScriptConfigItems(String searchValue) {
+    scriptLightText = searchValue;
+    if (searchValue.isEmpty) {
+      displayedScriptConfigItems = scriptConfigItems;
+      notifyListeners();
+      return;
+    }
+    final filteredList = scriptConfigItems
+        .where(
+            (item) => searchTextList(searchValue, [item.title, item.subTitle]))
+        .toList();
+    if (filteredList.isNotEmpty) {
+      displayedScriptConfigItems = filteredList;
     }
     notifyListeners();
   }

@@ -169,7 +169,7 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 运行js代码
   void runJs(BuildContext context) async {
-    if (!WindowsApp.autoTpModel.isRunning) {
+    if (AppConfig.to.isStartWhenRunScript() && !WindowsApp.autoTpModel.isRunning) {
       WindowsApp.autoTpModel.start();
     }
 
@@ -200,7 +200,7 @@ class ScriptEditorModel with ChangeNotifier {
       await runScript(autoTpCode, addAwait: false);
     } else if (selectedScriptRecordMode == ScriptRecordMode.autoScript) {
       // 将code中的异步函数添加await
-      await runScript(code);
+      await runScript(code, libEnabled: AppConfig.to.isAllowImportScript());
     }
 
     isRunning = false;
@@ -388,7 +388,7 @@ class ScriptEditorModel with ChangeNotifier {
                       const SizedBox(
                         width: 12,
                       ),
-                      Expanded(child: WinText(errorMessage ?? '')),
+                      Expanded(child: WinText(errorMessage ?? '无')),
                     ],
                   ),
                 ),

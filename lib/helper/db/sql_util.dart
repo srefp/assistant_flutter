@@ -2,7 +2,7 @@ import 'package:assistant/app/windows_app.dart';
 import 'package:assistant/helper/extensions/string_extension.dart';
 
 /// 查询表信息的sql
-const String selectTableNameSql = '''
+const String selectTableNameSql = r'''
 select cols.column_name,    
        cols.udt_name,     
        cols.is_nullable,
@@ -15,33 +15,34 @@ from information_schema.columns cols
                and pgd.objoid = (select c.oid				  
                                  from pg_catalog.pg_class c				  
                                  where c.relname = cols.table_name)
-where table_name = @tableName
+where table_name = $1
   and table_schema = 'public';
 ''';
 
-/// 生成代码
-void genCode(String tableName, String templateFilePath, String targetDir) {
-  // final info = getInfo(tableName);
-}
-
-getInfo(String tableName) {
-  return executeQuery(selectTableNameSql, tableName);
-}
-
-executeQuery(String sql, String tableName) async {
-  final connection = WindowsApp.codeGenModel.connection;
+Future<Map<String, dynamic>> executeQuery(String sql, String tableName) async {
+  final connection = await WindowsApp.codeGenModel.connection;
   List<GenColumn> columns = [];
 
   final rows = await connection.execute(sql, parameters: [tableName]);
   for (var row in rows) {
-    // columns.add(GenColumn(
-    //   columnName: row[0],
-    //   columnType: row[1],
-    //   identity: row[3],
-    //   columnDefault: row[4],
-    //   nullable: row[2],
-    //   columnComment: row[5],
-    // ));
+    columns.add(GenColumn(
+      columnName: row[0] as String,
+      columnType: row[1] as String,
+      identity: row[3] as String,
+      columnDefault: row[4] as String?,
+      nullable: row[2] as String,
+      columnComment: row[5] as String?,
+    ));
+  }
+
+  return GenTable(tableName: tableName, columns: columns).toMap();
+}
+
+Future<dynamic> executeInsert(String sql) async {
+  final connection = await WindowsApp.codeGenModel.connection;
+  final result = await connection.execute(sql);
+  if (result.isNotEmpty) {
+    return result.single.first;
   }
 }
 
@@ -60,6 +61,21 @@ class GenTable {
         tableCamelBigName = tableName.underLineToCamel.firstToUpper,
         comment = getComment(tableName),
         apiName = getApi(tableName);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'table_name': tableName,
+      'tableName': tableCamelName,
+      'TableName': tableCamelBigName,
+      'comment': comment,
+      'apiName': apiName,
+      'columns': columns
+          .map(
+              (e) => e.toMap(notLast: columns.indexOf(e) != columns.length - 1))
+          .toList(),
+      'year': DateTime.now().year,
+    };
+  }
 }
 
 class GenColumn {
@@ -92,6 +108,24 @@ class GenColumn {
   @override
   String toString() {
     return 'GenColumn{columnName: $columnName, columnType: $columnType, nullable: $nullable, identity: $identity, columnDefault: $columnDefault, columnComment: $columnComment}';
+  }
+
+  toMap({required bool notLast}) {
+    return {
+      'column_name': columnName,
+      'columnName': columnCamelName,
+      'sqlStrRes': sqlStrRes,
+      'pk': pk,
+      'notPk': !pk,
+      'nullable': nullable,
+      'notNullable': !nullable,
+      'columnType': columnType,
+      'columnNull': nullable && columnDefault == null,
+      'identity': identity,
+      'columnDefault': columnDefault,
+      'columnComment': columnComment,
+      'notLast': notLast,
+    };
   }
 }
 

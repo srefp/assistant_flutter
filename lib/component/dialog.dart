@@ -8,7 +8,7 @@ dialog({
   String content = '',
   barrierDismissible = true,
   Widget? child,
-  double height = 50,
+  double height = 180,
   List<Widget>? actions,
 }) {
   showDialog(
@@ -21,7 +21,7 @@ dialog({
             content: child ??
                 SizedBox(
                   height: height,
-                  child: Column(
+                  child: ListView(
                     children: [
                       WinText(
                         content,

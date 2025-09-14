@@ -8,7 +8,6 @@ class EnumUtil {
 
   static T fromResourceId<T extends CodedEnum>(
       String resourceId, List<T> list) {
-    return list.firstWhere((element) => element.resourceId == resourceId,
-        orElse: () => list.first);
+    return list.firstWhere((element) => element.resourceId == resourceId);
   }
 }

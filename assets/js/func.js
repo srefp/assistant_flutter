@@ -240,3 +240,65 @@ async function sh() {
 async function maxCurrentWindow() {
     return await sendMessage('maxCurrentWindow', JSON.stringify([]));
 }
+
+// 数据库
+function plusMills() {
+    return sendMessage('plusMills', JSON.stringify([...arguments]));
+}
+
+function plusSeconds() {
+    return sendMessage('plusSeconds', JSON.stringify([...arguments]));
+}
+
+function plusMinutes() {
+    return sendMessage('plusMinutes', JSON.stringify([...arguments]));
+}
+
+function plusHours() {
+    return sendMessage('plusHours', JSON.stringify([...arguments]));
+}
+
+function plusDays() {
+    return sendMessage('plusDays', JSON.stringify([...arguments]));
+}
+
+function plusWeeks() {
+    return sendMessage('plusWeeks', JSON.stringify([...arguments]));
+}
+
+function plusMonths() {
+    return sendMessage('plusMonths', JSON.stringify([...arguments]));
+}
+
+function plusYears() {
+    return sendMessage('plusYears', JSON.stringify([...arguments]));
+}
+
+function getInfo() {
+    return sendMessage('getInfo', JSON.stringify([...arguments]));
+}
+
+function gen() {
+    return sendMessage('gen', JSON.stringify([...arguments]));
+}
+
+// 随机数
+function randInt() {
+    return sendMessage('randInt', JSON.stringify([...arguments]));
+}
+
+function randDouble() {
+    return sendMessage('randDouble', JSON.stringify([...arguments]));
+}
+
+function executeSql() {
+    return sendMessage('executeSql', JSON.stringify([...arguments]));
+}
+
+function getSqlStr() {
+    return sendMessage('getSqlStr', JSON.stringify([...arguments]));
+}
+
+function now() {
+    return sendMessage('now', JSON.stringify([...arguments]));
+}

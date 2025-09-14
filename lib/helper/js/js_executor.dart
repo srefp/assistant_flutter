@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:assistant/helper/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_js/flutter_js.dart';
 import '../../component/dialog.dart';
 import '../../component/text/win_text.dart';
 import 'convenience_register.dart';
+import 'data_processing_register.dart';
 import 'helper_register.dart';
 import 'keyboard_register.dart';
 import 'mouse_async_register.dart';
@@ -48,6 +51,8 @@ const findPicLB = "findPicLB";
 const sh = "sh";
 const maxCurrentWindow = "maxCurrentWindow";
 const moveToCenter = "moveToCenter";
+const getInfo = "getInfo";
+const executeSql = "executeSql";
 
 const hintKeys = [
   tp,
@@ -123,6 +128,10 @@ const keys = [
   findPicRB,
   findPicLB,
   moveToCenter,
+
+  // 数据处理
+  getInfo,
+  executeSql,
 ];
 
 JavascriptRuntime jsRuntime = getJavascriptRuntime(xhr: false);
@@ -152,14 +161,27 @@ void registerJsFunc() async {
 
   // 注册帮助类函数
   registerHelper();
+
+  // 注册数据库函数
+  registerDataProcessing();
 }
+
+final Set<String> importedLib = {};
+
+final libRegex = '// *import lib (.*)';
 
 /// 运行js代码
 Future<void> runScript(
   String code, {
   bool addAwait = true,
   bool stoppable = false,
+  bool libEnabled = false,
 }) async {
+  if (libEnabled) {
+    code = await loadLib(code);
+    importedLib.clear();
+  }
+
   // 将code中的异步函数添加await
   if (addAwait) {
     for (final key in keys) {
@@ -173,6 +195,7 @@ Future<void> runScript(
   }
 
   try {
+    print('code: $code');
     JsEvalResult result = await jsRuntime.evaluateAsync(
         '${stoppable ? 'scriptRunning = true;' : ''}(async function() { $code })();');
     jsRuntime.executePendingJob();
@@ -189,4 +212,27 @@ Future<void> runScript(
           ),
         ));
   }
+}
+
+loadLib(String code) async {
+  final libs = RegExp(libRegex).allMatches(code);
+  for (final lib in libs) {
+    final libFile = lib.group(1)!;
+    List<String> filteredLines = [];
+    if (!importedLib.contains(libFile)) {
+      importedLib.add(libFile);
+      List<String> lines = File(libFile).readAsLinesSync();
+      for (var line in lines) {
+        if (line.startsWith('import')) {
+          continue;
+        }
+        if (line.startsWith('export')) {
+          line = line.replaceFirst('export', '');
+        }
+        filteredLines.add(line);
+      }
+    }
+    code = filteredLines.join('\n') + code;
+  }
+  return code;
 }
