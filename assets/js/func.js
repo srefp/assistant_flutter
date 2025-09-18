@@ -231,8 +231,14 @@ async function findPicLB() {
     return await sendMessage('findPicLB', JSON.stringify([...arguments]));
 }
 
+// 跳过下一个点位
 function skipNext() {
     return sendMessage('skipNext', JSON.stringify([]));
+}
+
+// 根据名称去往指定点位
+function toByName(name) {
+    return sendMessage('toByName', JSON.stringify([name]));
 }
 
 // 执行shell脚本

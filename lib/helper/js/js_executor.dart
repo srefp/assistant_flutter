@@ -49,6 +49,7 @@ const findPicRT = "findPicRT";
 const findPicRB = "findPicRB";
 const findPicLB = "findPicLB";
 const skipNext = "skipNext";
+const toByName = "toByName";
 const sh = "sh";
 const maxCurrentWindow = "maxCurrentWindow";
 const moveToCenter = "moveToCenter";
@@ -92,6 +93,7 @@ const hintKeys = [
   tip,
   sh,
   skipNext,
+  toByName,
   maxCurrentWindow,
   moveToCenter,
 ];

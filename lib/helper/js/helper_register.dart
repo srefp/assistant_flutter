@@ -55,6 +55,9 @@ void registerHelper() {
   // 跳过下一个点位
   jsRuntime.onMessage(skipNext, skipNextPoint);
 
+  // 跳转到指定点位
+  jsRuntime.onMessage(toByName, toPointByName);
+
   // 执行shell脚本
   jsRuntime.onMessage(sh, executeShell);
 
@@ -245,4 +248,9 @@ Future<void> moveTargetToCenter(params) async {
 /// 跳过下一个点位
 skipNextPoint(params) async {
   RouteExecutor.toNext();
+}
+
+/// 跳转到指定点位
+toPointByName(params) async {
+  RouteExecutor.toByName(params[0]);
 }

@@ -29,6 +29,16 @@ class RouteExecutor {
     WindowsApp.scriptEditorModel.selectPos(curPos);
   }
 
+  static void toByName(String name) {
+    var tpPoints = WindowsApp.scriptEditorModel.tpPoints;
+    for (var i = 0; i < tpPoints.length; i++) {
+      if (tpPoints[i].name == name) {
+        config.save(AutoTpConfig.keyRouteIndex, i + 1);
+        break;
+      }
+    }
+  }
+
   static void toNext() {
     var tpPoints = WindowsApp.scriptEditorModel.tpPoints;
 
