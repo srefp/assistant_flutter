@@ -316,7 +316,6 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 保存脚本
   saveScript(String text) async {
-    print('保存了脚本');
     var content = text;
     if (content.isNotEmpty && !content.endsWith('\n')) {
       content += '\n';
@@ -352,7 +351,7 @@ class ScriptEditorModel with ChangeNotifier {
     loadVariable();
     dialog(
       barrierDismissible: false,
-      title: '预定义变量（重启耕地机后生效）',
+      title: '预定义变量',
       width: 500,
       height: 400,
       child: SizedBox(
@@ -383,6 +382,9 @@ class ScriptEditorModel with ChangeNotifier {
   /// 保存变量
   void saveVariable() {
     box.write(ScriptConfig.keyVariable, variableController.text);
+
+    // 重新注册预定义变量
+    jsRuntime.evaluate(ScriptConfig.to.getVariable());
     back();
   }
 
