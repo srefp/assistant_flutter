@@ -1,4 +1,5 @@
 import 'package:assistant/app/module/script/script_editor_model.dart';
+import 'package:assistant/component/button/tip_icon_button.dart';
 import 'package:assistant/helper/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -144,25 +145,23 @@ class ScriptEditor extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                width: 34,
-                height: 34,
-                child: IconButton(
-                  icon: Icon(
-                    FluentIcons.info_solid,
-                    size: 16,
-                    color: model.errorMessage == null ? null : Colors.red,
-                  ),
-                  onPressed: () => model.showScriptInfo(context),
-                ),
-              )
+              TipIconButton(
+                tip: '预定义变量',
+                icon: FluentIcons.code,
+                onPressed: () => model.showVariable(),
+              ),
+              TipIconButton(
+                tip: '脚本信息',
+                icon: FluentIcons.info_solid,
+                color: model.errorMessage == null ? null : Colors.red,
+                onPressed: () => model.showScriptInfo(),
+              ),
             ],
           ),
           Expanded(
             flex: 1,
             child: Editor(
               controller: model.controller,
-              onContentChanged: model.saveScript,
             ),
           ),
         ],

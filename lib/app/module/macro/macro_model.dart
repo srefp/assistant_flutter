@@ -133,8 +133,6 @@ class MacroModel extends ChangeNotifier {
     goBack();
   }
 
-  void onScriptChanged(String script) {}
-
   void changeTriggerKey(key) {
     editedMacro?.triggerKey = key;
     notifyListeners();

@@ -5,6 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 
+import '../../app/config/script_config.dart';
 import '../../component/dialog.dart';
 import '../../component/text/win_text.dart';
 import 'convenience_register.dart';
@@ -150,6 +151,9 @@ void registerJsFunc() async {
 
   // 注册所有函数
   jsRuntime.evaluate(jsFunction);
+
+  // 注册预定义变量
+  jsRuntime.evaluate(ScriptConfig.to.getVariable());
 
   // 注册鼠标函数
   registerMouseFunc();

@@ -1,3 +1,5 @@
+import 'package:assistant/component/dialog.dart';
+import 'package:assistant/component/editor/editor.dart';
 import 'package:assistant/helper/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +11,9 @@ import '../../../constant/enum_util.dart';
 import '../../../constant/script_record_mode.dart';
 import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/js/js_executor.dart';
+import '../../../helper/route/route_helper.dart';
 import '../../../helper/route_util.dart';
+import '../../../helper/router_util.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/script_parser.dart';
 import '../../../helper/win32/window.dart';
@@ -55,6 +59,7 @@ class ScriptEditorModel with ChangeNotifier {
   TpRoute? currentScript;
 
   CodeLineEditingController controller = CodeLineEditingController();
+  CodeLineEditingController variableController = CodeLineEditingController();
 
   late Function(dynamic) saveFileContent;
 
@@ -63,6 +68,7 @@ class ScriptEditorModel with ChangeNotifier {
   ScriptEditorModel() {
     loadRoutes();
     loadScripts();
+    loadVariable();
   }
 
   void setSelectedDir(String dir) {
@@ -169,7 +175,8 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 运行js代码
   void runJs(BuildContext context) async {
-    if (AppConfig.to.isStartWhenRunScript() && !WindowsApp.autoTpModel.isRunning) {
+    if (AppConfig.to.isStartWhenRunScript() &&
+        !WindowsApp.autoTpModel.isRunning) {
       WindowsApp.autoTpModel.start();
     }
 
@@ -309,6 +316,7 @@ class ScriptEditorModel with ChangeNotifier {
 
   /// 保存脚本
   saveScript(String text) async {
+    print('保存了脚本');
     var content = text;
     if (content.isNotEmpty && !content.endsWith('\n')) {
       content += '\n';
@@ -339,16 +347,72 @@ class ScriptEditorModel with ChangeNotifier {
     notifyListeners();
   }
 
+  /// 显示变量
+  void showVariable() {
+    loadVariable();
+    dialog(
+      barrierDismissible: false,
+      title: '预定义变量（重启耕地机后生效）',
+      width: 500,
+      height: 400,
+      child: SizedBox(
+        child: Editor(controller: variableController),
+      ),
+      actions: [
+        Button(
+          child: const WinText('取消'),
+          onPressed: () {
+            goBack();
+          },
+        ),
+        FilledButton(
+          child: const WinText('保存'),
+          onPressed: () {
+            saveVariable();
+          },
+        ),
+      ],
+    );
+  }
+
+  /// 加载变量
+  void loadVariable() {
+    variableController.text = ScriptConfig.to.getVariable();
+  }
+
+  /// 保存变量
+  void saveVariable() {
+    box.write(ScriptConfig.keyVariable, variableController.text);
+    back();
+  }
+
   /// 显示脚本信息的模态框
-  void showScriptInfo(BuildContext context) {
-    showDialog(
+  void showScriptInfo() {
+    dialog(
       barrierDismissible: true,
-      context: context,
-      builder: (context) =>
-          Consumer<ScriptEditorModel>(builder: (context, model, child) {
-        return ContentDialog(
-          title: WinText('脚本信息'),
-          content: Padding(
+      title: '脚本信息',
+      actions: [
+        FilledButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Colors.red),
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+          ),
+          onPressed: () {
+            back();
+            showDeleteScriptModel();
+          },
+          child: const WinText('删除'),
+        ),
+        Button(
+          child: const WinText('关闭'),
+          onPressed: () {
+            back();
+          },
+        ),
+      ],
+      child: Consumer<ScriptEditorModel>(
+        builder: (context, model, child) {
+          return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: SizedBox(
               height: 200,
@@ -394,28 +458,9 @@ class ScriptEditorModel with ChangeNotifier {
                 ),
               ]),
             ),
-          ),
-          actions: [
-            FilledButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.red),
-                foregroundColor: WidgetStateProperty.all(Colors.white),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                showDeleteScriptModel(context);
-              },
-              child: const WinText('删除'),
-            ),
-            Button(
-              child: const WinText('关闭'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 
@@ -515,34 +560,30 @@ class ScriptEditorModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void showDeleteScriptModel(BuildContext context) {
-    showDialog(
+  void showDeleteScriptModel() {
+    dialog(
+      title: '删除脚本',
       barrierDismissible: true,
-      context: context,
-      builder: (context) =>
-          Consumer<ScriptEditorModel>(builder: (context, model, child) {
-        return ContentDialog(
-            title: WinText('删除脚本'),
-            content: WinText('确定要删除脚本${currentScript?.scriptName}吗？'),
-            actions: [
-              Button(
-                child: const WinText('取消'),
-                onPressed: () {
-                  Navigator.pop(context); // 关闭模态框
-                },
-              ),
-              FilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.red),
-                    foregroundColor: WidgetStateProperty.all(Colors.white),
-                  ),
-                  child: const WinText('确定'),
-                  onPressed: () {
-                    model.deleteScript();
-                    Navigator.pop(context); // 关闭模态框
-                  })
-            ]);
-      }),
+      actions: [
+        Button(
+          child: const WinText('取消'),
+          onPressed: () {
+            back();
+          },
+        ),
+        FilledButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Colors.red),
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+          ),
+          child: const WinText('确定'),
+          onPressed: () {
+            deleteScript();
+            back();
+          },
+        ),
+      ],
+      child: WinText('确定要删除脚本${currentScript?.scriptName}吗？'),
     );
   }
 

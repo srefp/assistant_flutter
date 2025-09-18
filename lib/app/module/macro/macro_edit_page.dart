@@ -195,7 +195,6 @@ class MacroEditPage extends StatelessWidget {
                                       height: 300,
                                       child: Editor(
                                         controller: model.scriptController,
-                                        onContentChanged: model.onScriptChanged,
                                       ),
                                     ),
                                   ],

@@ -12,12 +12,10 @@ import 'editor_panel.dart';
 /// 代码编辑器
 class Editor extends StatefulWidget {
   final CodeLineEditingController controller;
-  final Function(String) onContentChanged;
 
   const Editor({
     super.key,
     required this.controller,
-    required this.onContentChanged,
   });
 
   @override
