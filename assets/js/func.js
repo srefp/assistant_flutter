@@ -231,6 +231,10 @@ async function findPicLB() {
     return await sendMessage('findPicLB', JSON.stringify([...arguments]));
 }
 
+function skipNext() {
+    return sendMessage('skipNext', JSON.stringify([]));
+}
+
 // 执行shell脚本
 async function sh() {
     return await sendMessage('sh', JSON.stringify([...arguments]));

@@ -48,6 +48,7 @@ const findPicLT = "findPicLT";
 const findPicRT = "findPicRT";
 const findPicRB = "findPicRB";
 const findPicLB = "findPicLB";
+const skipNext = "skipNext";
 const sh = "sh";
 const maxCurrentWindow = "maxCurrentWindow";
 const moveToCenter = "moveToCenter";
@@ -90,6 +91,7 @@ const hintKeys = [
   findPicLB,
   tip,
   sh,
+  skipNext,
   maxCurrentWindow,
   moveToCenter,
 ];
@@ -195,7 +197,6 @@ Future<void> runScript(
   }
 
   try {
-    print('code: $code');
     JsEvalResult result = await jsRuntime.evaluateAsync(
         '${stoppable ? 'scriptRunning = true;' : ''}(async function() { $code })();');
     jsRuntime.executePendingJob();

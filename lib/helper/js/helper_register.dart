@@ -16,6 +16,7 @@ import '../auto_gui/system_control.dart';
 import '../cv/cv.dart';
 import '../data_converter.dart';
 import '../date_utils.dart';
+import '../executor/route_executor.dart';
 import '../find_util.dart';
 import '../win32/toast.dart';
 import 'js_executor.dart';
@@ -50,6 +51,9 @@ void registerHelper() {
 
   // 找图（左下角位置）
   jsRuntime.onMessage(findPicLB, (params) => findPicture(params, corner: lb));
+
+  // 跳过下一个点位
+  jsRuntime.onMessage(skipNext, skipNextPoint);
 
   // 执行shell脚本
   jsRuntime.onMessage(sh, executeShell);
@@ -236,4 +240,9 @@ Future<void> moveTargetToCenter(params) async {
     center[1] - 3000
   ];
   await KeyMouseUtil.fastDrag(totalDrag, 20);
+}
+
+/// 跳过下一个点位
+skipNextPoint(params) async {
+  RouteExecutor.toNext();
 }
