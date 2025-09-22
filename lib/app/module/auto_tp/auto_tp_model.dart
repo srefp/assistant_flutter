@@ -311,10 +311,16 @@ final delayConfigItems = [
     valueCallback: AutoTpConfig.to.getTpcDelay,
   ),
   IntConfigItem(
+    title: '半自动传送延迟',
+    subTitle: '半自动传送时，移动到右下方按钮后，需要等待的毫秒数',
+    valueKey: AutoTpConfig.keyMoveToConfirmDelay,
+    valueCallback: AutoTpConfig.to.getMoveToConfirmDelay,
+  ),
+  IntConfigItem(
     title: '半自动传送鼠标重试延迟',
     subTitle: '半自动传送时，副本锚点响应慢，需要等待一定的毫秒后，再次重试点击确认按钮',
     valueKey: AutoTpConfig.keyTpcRetryDelay,
-    valueCallback: AutoTpConfig.to.getTpcBackDelay,
+    valueCallback: AutoTpConfig.to.getTpcRetryDelay,
   ),
   IntConfigItem(
     title: '半自动传送鼠标归位延迟',
@@ -874,9 +880,7 @@ class AutoTpModel extends ChangeNotifier {
   var displayedProcessKeyConfigItems = processKeyConfigItems;
   final processKeySearchController = TextEditingController();
   final windowHandleController = TextEditingController(
-    text: ScreenManager
-        .instance.foregroundWindowHandle
-        .toString(),
+    text: ScreenManager.instance.foregroundWindowHandle.toString(),
   );
 
   String? anchorWindow = AutoTpConfig.to.getAnchorWindow();

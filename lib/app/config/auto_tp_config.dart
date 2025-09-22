@@ -10,6 +10,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyWindowTitles = "windowTitles";
   static const keyCustomWindowTitle = "customWindowTitle";
   static const keyTpcDelay = "tpcDelay";
+  static const keyMoveToConfirmDelay = "moveToConfirmDelay";
   static const keyTpcCooldown = "tpcCooldown";
   static const keyTpcBackDelay = "tpcBackDelay";
   static const keyBossDrawerDelay = "bossDrawerDelay";
@@ -108,9 +109,11 @@ class AutoTpConfig with ConfigStorage {
     return box.read(keyAnchorWindow);
   }
 
-  int getTpcDelay() => box.read(keyTpcDelay) ?? 10;
+  int getTpcDelay() => box.read(keyTpcDelay) ?? 20;
 
-  int getTpcRetryDelay() => box.read(keyTpcRetryDelay) ?? 30;
+  int getMoveToConfirmDelay() => box.read(keyMoveToConfirmDelay) ?? 5;
+
+  int getTpcRetryDelay() => box.read(keyTpcRetryDelay) ?? 60;
 
   int getTpcBackDelay() => box.read(keyTpcBackDelay) ?? 30;
 

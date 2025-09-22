@@ -23,37 +23,34 @@ void executeTpc() async {
   Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcCooldown()))
       .then((value) => allowTpc = true);
 
-  // 获取当前鼠标位置
   var currentPos = await api.position();
 
+  // 1. 点击当前位置
   api.click(clicks: 1);
+
   await Future.delayed(Duration(milliseconds: AutoTpConfig.to.getTpcDelay()));
   var point = ProcessPosConfig.to.getConfirmPosIntList();
   var res = KeyMouseUtil.physicalPos(point);
+
+  // 2. 移动鼠标到确认按钮
   api.moveTo(point: Point(res[0], res[1]));
+  await Future.delayed(
+      Duration(milliseconds: AutoTpConfig.to.getMoveToConfirmDelay()));
+
+  // 3. 点击确认按钮
   api.click(clicks: 1);
+
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getTpcRetryDelay()));
+
+  // 4. 重试点击确认按钮
   api.click(clicks: 1);
 
   await Future.delayed(
       Duration(milliseconds: AutoTpConfig.to.getTpcBackDelay()));
-  // 复位
+
+  // 4. 复位
   api.moveTo(point: currentPos!);
-
-  // await _api.click(clicks: 2);
-  // var point = AutoTpConfig.to.getConfirmPosIntList();
-  // var res = KeyMouseUtil.physicalPos(point);
-  // await _api.moveTo(point: Point(res[0], res[1]));
-  // await _api.click(clicks: 1);
-  // await _api.click(clicks: 1);
-  // await Future.delayed(Duration(milliseconds: 90));
-  // await _api.click(clicks: 1);
-
-  // await KeyMouseUtil.click();
-  // await KeyMouseUtil.clickAtPoint(RecordConfig.to.getConfirmPosition());
-  // await KeyMouseUtil.click();
-  // await KeyMouseUtil.clickAtPoint(RecordConfig.to.getConfirmPosition());
 }
 
 const anchor = 'anchor';
