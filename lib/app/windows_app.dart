@@ -22,7 +22,6 @@ import 'module/auto_tp/auto_tp_page.dart';
 import 'module/capture/capture_model.dart';
 import 'module/capture/capture_page.dart';
 import 'module/code_gen/code_gen_model.dart';
-import 'module/config/config_model.dart';
 import 'module/doc/doc_model.dart';
 import 'module/doc/doc_page.dart';
 import 'module/efficient/efficient_model.dart';
@@ -49,7 +48,6 @@ class WindowsApp extends StatefulWidget {
   static final scriptEditorModel = ScriptEditorModel();
   static final logModel = RecordModel.instance;
   static final appModel = AppModel();
-  static final configModel = ConfigModel();
   static final docModel = DocModel();
   static final scriptManagementModel = ScriptManagementModel();
   static final captureManagementModel = PicModel();
@@ -103,11 +101,6 @@ class _WindowsAppState extends State<WindowsApp> with WindowListener {
       // APP配置
       ChangeNotifierProvider(
         create: (context) => WindowsApp.appModel,
-      ),
-
-      // 配置
-      ChangeNotifierProvider(
-        create: (context) => WindowsApp.configModel,
       ),
 
       // 自动传送

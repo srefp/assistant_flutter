@@ -18,7 +18,6 @@ import '../../../component/box/search_box.dart';
 import '../../../component/button_with_icon.dart';
 import '../../../component/card/icon_card.dart';
 import '../../../component/config_row/bool_config_row.dart';
-import '../../../component/config_row/double_config_row.dart';
 import '../../../component/config_row/hotkey_config_row.dart';
 import '../../../component/config_row/int_config_row.dart';
 import '../../../component/config_row/process_key_config_row.dart';
@@ -28,6 +27,7 @@ import '../../../component/divider.dart';
 import '../../../component/text/win_text.dart';
 import '../../../component/theme.dart';
 import '../../../component/title_with_sub.dart';
+import '../../../helper/key_mouse/hot_key.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/win32/os_version.dart';
 import '../../config/app_config.dart';
@@ -103,7 +103,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.play_arrow_rounded,
               title: '耕地机，启动！',
-              subTitle: "启动后才能使用各项功能，QQ群660182560",
+              subTitle: "启动后才能使用各项功能，启动/停止有3s的防抖，QQ群660182560",
               subTitleSelectable: true,
               rightWidget: SizedBox(
                 height: 34,
@@ -111,11 +111,13 @@ class _AutoTpPageState extends State<AutoTpPage> {
                   icon: model.isRunning ? Icons.stop : Icons.play_arrow,
                   text: model.isRunning ? '停止' : '运行',
                   onPressed: () {
-                    if (Platform.isAndroid) {
-                      showOverlay(context);
-                    } else {
-                      model.startOrStop();
-                    }
+                    startOrStopDebounce(() {
+                      if (Platform.isAndroid) {
+                        showOverlay(context);
+                      } else {
+                        model.startOrStop();
+                      }
+                    });
                   },
                 ),
               ),
@@ -575,19 +577,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
                     itemCount: model.displayedMatchConfigItems.length,
                     itemBuilder: (context, index) {
                       final item = model.displayedMatchConfigItems[index];
-
-                      if (item is DoubleConfigItem) {
-                        return DoubleConfigRow(
-                          item: item,
-                          lightText: model.matchLightText,
-                        );
-                      } else if (item is StringConfigItem) {
-                        return StringConfigRow(
-                          item: item,
-                          lightText: model.delayLightText,
-                        );
-                      }
-                      return null;
+                      return renderItem(item, model.matchLightText);
                     },
                     shrinkWrap: true,
                   ),

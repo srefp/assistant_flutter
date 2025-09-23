@@ -72,7 +72,12 @@ void keyMouseListen(
               macro.loopRunning = false;
               macro.macroFuture = null;
             }
-            return macro.loopRunning && WindowsApp.autoTpModel.active();
+            final shouldRunning = macro.loopRunning && WindowsApp.autoTpModel.active();
+            if (!shouldRunning) {
+              macro.loopRunning = false;
+              macro.macroFuture = null;
+            }
+            return shouldRunning;
           });
         } else {
           await runScript(stopScript);
@@ -95,7 +100,12 @@ void keyMouseListen(
                 macro.loopRunning = false;
                 macro.macroFuture = null;
               }
-              return macro.loopRunning && WindowsApp.autoTpModel.active();
+              final shouldRunning = macro.loopRunning && WindowsApp.autoTpModel.active();
+              if (!shouldRunning) {
+                macro.loopRunning = false;
+                macro.macroFuture = null;
+              }
+              return shouldRunning;
             });
           } else {
             if (macro.canStop) {

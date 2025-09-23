@@ -1,4 +1,5 @@
 import 'package:assistant/component/config_row/bool_config_row.dart';
+import 'package:assistant/component/config_row/double_config_row.dart';
 import 'package:assistant/component/config_row/int_config_row.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -30,6 +31,11 @@ Widget renderItem(ConfigItem item, String lightText) {
     );
   } else if (item is StringConfigItem) {
     return StringConfigRow(
+      item: item,
+      lightText: lightText,
+    );
+  } else if (item is DoubleConfigItem) {
+    return DoubleConfigRow(
       item: item,
       lightText: lightText,
     );

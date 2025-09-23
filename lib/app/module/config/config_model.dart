@@ -9,76 +9,10 @@ import '../../../component/text/win_text.dart';
 import '../../../component/title_with_sub.dart';
 import '../../../helper/key_mouse/key_mouse_name.dart';
 import '../../../helper/key_mouse/mouse_button.dart';
-import '../../../helper/search_utils.dart';
 import '../../config/hotkey_config.dart';
-import '../../windows_app.dart';
 
 const global = 1;
 const listen = 2;
-
-/// 快捷键配置
-final hotkeyConfigItems = [
-  StringConfigItem(
-    type: global,
-    keyItemCallback: HotkeyConfig.to.getStartStopKeyItem,
-    keyDownHandler: (hotKey) {
-      WindowsApp.autoTpModel.startOrStop();
-    },
-    title: '启动/关闭耕地机',
-    valueKey: HotkeyConfig.keyStartStopKey,
-    valueCallback: HotkeyConfig.to.getStartStopKey,
-  ),
-  StringConfigItem(
-    title: '显示并复制当前鼠标坐标',
-    valueKey: HotkeyConfig.keyShowCoordsKey,
-    valueCallback: HotkeyConfig.to.getShowCoordsKey,
-  ),
-  StringConfigItem(
-    title: '半自动传送',
-    valueKey: HotkeyConfig.keyHalfTp,
-    valueCallback: HotkeyConfig.to.getHalfTp,
-  ),
-  StringConfigItem(
-    title: '上一个点位（不传送）',
-    valueKey: HotkeyConfig.keyToPrev,
-    valueCallback: HotkeyConfig.to.getToPrev,
-  ),
-  StringConfigItem(
-    title: '下一个点位（不传送）',
-    valueKey: HotkeyConfig.keyToNext,
-    valueCallback: HotkeyConfig.to.getToNext,
-  ),
-  StringConfigItem(
-    title: '全自动传送',
-    valueKey: HotkeyConfig.keyTpNext,
-    valueCallback: HotkeyConfig.to.getTpNext,
-  ),
-  StringConfigItem(
-    title: 'qm全自动传送',
-    valueKey: HotkeyConfig.keyQmTpNext,
-    valueCallback: HotkeyConfig.to.getQmTpNext,
-  ),
-  StringConfigItem(
-    title: '匀速冲刺',
-    valueKey: HotkeyConfig.keyTimerDashKey,
-    valueCallback: HotkeyConfig.to.getTimerDashKey,
-  ),
-  StringConfigItem(
-    title: '一键吃药',
-    valueKey: HotkeyConfig.keyEatFoodKey,
-    valueCallback: HotkeyConfig.to.getEatFoodKey,
-  ),
-  StringConfigItem(
-    title: '快捡',
-    valueKey: HotkeyConfig.keyQuickPickKey,
-    valueCallback: HotkeyConfig.to.getQuickPickKey,
-  ),
-  StringConfigItem(
-    title: '开启/关闭快捡',
-    valueKey: HotkeyConfig.keyToggleQuickPickKey,
-    valueCallback: HotkeyConfig.to.getToggleQuickPickKey,
-  ),
-];
 
 class HotkeyConfigRow extends StatefulWidget {
   final StringConfigItem item;
@@ -118,34 +52,6 @@ class _HotkeyConfigRowState extends State<HotkeyConfigRow> {
         ),
       ),
     );
-  }
-}
-
-class ConfigModel extends ChangeNotifier {
-  var lightText = '';
-  var displayedConfigItems = hotkeyConfigItems;
-  final searchController = TextEditingController();
-
-  void searchConfigItems(String searchValue) {
-    lightText = searchValue;
-    if (searchValue.isEmpty) {
-      displayedConfigItems = hotkeyConfigItems;
-      notifyListeners();
-      return;
-    }
-    final filteredList = hotkeyConfigItems
-        .where(
-            (item) => searchTextList(searchValue, [item.title, item.subTitle]))
-        .toList();
-    if (filteredList.isNotEmpty) {
-      displayedConfigItems = filteredList;
-    }
-
-    notifyListeners();
-  }
-
-  void updateConfig() {
-    notifyListeners();
   }
 }
 

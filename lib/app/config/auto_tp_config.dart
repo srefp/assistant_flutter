@@ -1,3 +1,4 @@
+import 'package:assistant/helper/extensions/string_extension.dart';
 import 'package:assistant/helper/route_util.dart';
 
 import '../../helper/auto_gui/system_control.dart';
@@ -92,6 +93,16 @@ class AutoTpConfig with ConfigStorage {
   static const keyTpcPlusSecondDelay = "tpcPlusSecondDelay";
   static const keyTpcPlusThirdDelay = "tpcPlusThirdDelay";
   static const keyTpcPlusFourthDelay = "tpcPlusFourthDelay";
+  static const keyTpDetectThreshold = "tpDetectThreshold";
+  static const keyTpDetectInterval = "tpDetectInterval";
+  static const keyTpDetectArea = "tpDetectArea";
+  static const keyTpDetectEnabled = "tpDetectEnabled";
+  static const keyWorldDetectEnabled = "worldDetectEnabled";
+  static const keyWorldDetectArea = "worldDetectArea";
+  static const keyWorldDetectThreshold = "worldDetectThreshold";
+  static const keyWorldDetectInterval = "worldDetectInterval";
+
+  int getWorldDetectInterval() => box.read(keyWorldDetectInterval) ?? 200;
 
   int getTpcPlusFirstDelay() => box.read(keyTpcPlusFirstDelay) ?? 60;
 
@@ -101,6 +112,20 @@ class AutoTpConfig with ConfigStorage {
 
   int getTpcPlusFourthDelay() => box.read(keyTpcPlusFourthDelay) ?? 80;
 
+  bool isTpDetectEnabled() => box.read(keyTpDetectEnabled) ?? true;
+
+  bool isWorldDetectEnabled() => box.read(keyWorldDetectEnabled) ?? true;
+
+  String getTpDetectArea() =>
+      box.read(keyTpDetectArea) ?? '48890, 58735, 54199, 63167';
+
+  String getWorldDetectArea() =>
+      box.read(keyWorldDetectArea) ?? '61472, 849, 64374, 4097';
+
+  List<int> getIntTpDetectArea() => getTpDetectArea().getIntList;
+
+  List<int> getIntWorldDetectArea() => getWorldDetectArea().getIntList;
+
   String getValidType() {
     return box.read(keyValidType) ?? curScreen;
   }
@@ -108,6 +133,12 @@ class AutoTpConfig with ConfigStorage {
   String? getAnchorWindow() {
     return box.read(keyAnchorWindow);
   }
+
+  double getTpDetectThreshold() => box.read(keyTpDetectThreshold) ?? 0.8;
+
+  double getWorldDetectThreshold() => box.read(keyWorldDetectThreshold) ?? 0.9;
+
+  int getTpDetectInterval() => box.read(keyTpDetectInterval) ?? 5;
 
   int getTpcDelay() => box.read(keyTpcDelay) ?? 20;
 

@@ -3,6 +3,7 @@ import 'package:assistant/component/config_row/double_config_row.dart';
 import 'package:assistant/component/model/config_item.dart';
 import 'package:assistant/constant/script_engine.dart';
 import 'package:assistant/helper/cv/scan.dart';
+import 'package:assistant/helper/win32/toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:window_manager/window_manager.dart';
@@ -16,6 +17,7 @@ import '../../../component/text/win_text.dart';
 import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/isolate/win32_event_listen.dart';
 import '../../../helper/js/js_executor.dart';
+import '../../../helper/key_mouse/hot_key.dart';
 import '../../../helper/screen/screen_manager.dart';
 import '../../../helper/search_utils.dart';
 import '../../../helper/toast/message_pump_helper.dart';
@@ -40,7 +42,7 @@ final helpConfigItems = [
     valueCallback: HotkeyConfig.to.getStartStopKey,
     keyItemCallback: HotkeyConfig.to.getStartStopKeyItem,
     keyDownHandler: (hotKey) {
-      WindowsApp.autoTpModel.startOrStop();
+      startOrStopDebounce(() => WindowsApp.autoTpModel.startOrStop(tip: true));
     },
   ),
   HotkeyConfigItem(
@@ -226,6 +228,54 @@ final matchConfigItems = <ConfigItem>[
     subTitle: '匹配分数范围0 - 1，越接近1越匹配',
     valueKey: AutoTpConfig.keyMatchThreshold,
     valueCallback: AutoTpConfig.to.getMatchThreshold,
+  ),
+  BoolConfigItem(
+    title: '是否开启识图半自动',
+    subTitle: '识图半自动通过识图进行半自动传送',
+    valueKey: AutoTpConfig.keyTpDetectEnabled,
+    valueCallback: AutoTpConfig.to.isTpDetectEnabled,
+  ),
+  DoubleConfigItem(
+    title: '识图半自动 - 匹配阈值',
+    subTitle: '匹配分数范围0 - 1，越接近1越匹配',
+    valueKey: AutoTpConfig.keyTpDetectThreshold,
+    valueCallback: AutoTpConfig.to.getTpDetectThreshold,
+  ),
+  IntConfigItem(
+    title: '识图半自动 - 匹配间隔',
+    subTitle: '识图半自动匹配间隔，单位毫秒',
+    valueKey: AutoTpConfig.keyTpDetectInterval,
+    valueCallback: AutoTpConfig.to.getTpDetectInterval,
+  ),
+  StringConfigItem(
+    title: '识图半自动 - 匹配区域',
+    subTitle: '识图半自动匹配区域，格式：x1, y1, x2, y2',
+    valueKey: AutoTpConfig.keyTpDetectArea,
+    valueCallback: AutoTpConfig.to.getTpDetectArea,
+  ),
+  BoolConfigItem(
+    title: '识图半自动 - 是否开启大世界检测',
+    subTitle: '识图半自动通过识图进行半自动传送',
+    valueKey: AutoTpConfig.keyWorldDetectEnabled,
+    valueCallback: AutoTpConfig.to.isWorldDetectEnabled,
+  ),
+  DoubleConfigItem(
+    title: '识图半自动 - 大世界检测匹配阈值',
+    subTitle: '匹配分数范围0 - 1，越接近1越匹配',
+    valueKey: AutoTpConfig.keyWorldDetectThreshold,
+    valueCallback: AutoTpConfig.to.getWorldDetectThreshold,
+  ),
+  IntConfigItem(
+    title: '识图半自动 - 大世界匹配间隔',
+    subTitle: '识图半自动 - 大世界匹配间隔，单位毫秒',
+    valueKey: AutoTpConfig.keyWorldDetectInterval,
+    valueCallback: AutoTpConfig.to.getWorldDetectInterval,
+  ),
+  StringConfigItem(
+    title: '识图半自动 - 大世界检测匹配区域',
+    subTitle: '识图半自动 - 大世界检测匹配区域，格式：x1, y1, x2, y2',
+    valueKey: AutoTpConfig.keyWorldDetectArea,
+    valueCallback: AutoTpConfig.to.getWorldDetectArea,
   ),
   // StringConfigItem(
   //   title: '大世界匹配区域',
@@ -729,7 +779,6 @@ class AutoTpModel extends ChangeNotifier {
     // 加载js函数
     Future.delayed(Duration(milliseconds: 10), () {
       registerJsFunc();
-      detectWorldRole();
       loadTasks();
 
       validType = AutoTpConfig.to.getValidType();
@@ -909,18 +958,18 @@ class AutoTpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startOrStop() {
+  void startOrStop({bool tip = false}) {
     if (isRunning) {
-      stop();
+      stop(tip: tip);
     } else {
-      start();
+      start(tip: tip);
     }
   }
 
   int keyListerId = 0;
   int mouseListerId = 0;
 
-  bool start() {
+  bool start({bool tip = false}) {
     if (AutoTpConfig.to.getValidType() == targetWindow) {
       final String? windowTitle = AutoTpConfig.to.getAnchorWindow();
       ScreenManager.instance.refreshWindowHandle(windowTitle: windowTitle);
@@ -958,15 +1007,23 @@ class AutoTpModel extends ChangeNotifier {
       }
     }
 
+    startWorldDetect();
+    if (tip) {
+      showToast('耕地机已启动');
+    }
+
     notifyListeners();
     return true;
   }
 
-  void stop() {
+  void stop({bool tip = false}) {
     isRunning = false;
     stopListenWindow();
     stopKeyMouseListen();
 
+    if (tip) {
+      showToast('耕地机已停止');
+    }
     notifyListeners();
   }
 

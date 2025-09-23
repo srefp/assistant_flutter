@@ -1,6 +1,6 @@
 import 'package:assistant/component/dialog.dart';
 import 'package:assistant/component/editor/editor.dart';
-import 'package:assistant/helper/operation_util.dart';
+import 'package:assistant/helper/helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
@@ -12,10 +12,7 @@ import '../../../constant/script_record_mode.dart';
 import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/js/js_executor.dart';
 import '../../../helper/route/route_helper.dart';
-import '../../../helper/route_util.dart';
-import '../../../helper/router_util.dart';
 import '../../../helper/screen/screen_manager.dart';
-import '../../../helper/script_parser.dart';
 import '../../../helper/win32/window.dart';
 import '../../config/app_config.dart';
 import '../../config/auto_tp_config.dart';
@@ -177,7 +174,7 @@ class ScriptEditorModel with ChangeNotifier {
   void runJs(BuildContext context) async {
     if (AppConfig.to.isStartWhenRunScript() &&
         !WindowsApp.autoTpModel.isRunning) {
-      WindowsApp.autoTpModel.start();
+      startOrStopDebounce(() => WindowsApp.autoTpModel.start());
     }
 
     isRunning = true;
@@ -592,7 +589,10 @@ class ScriptEditorModel with ChangeNotifier {
   /// 开始录制
   void startRecord(BuildContext context) {
     if (!WindowsApp.autoTpModel.isRunning) {
-      bool started = WindowsApp.autoTpModel.start();
+      bool started = false;
+      startOrStopDebounce(() {
+        started = WindowsApp.autoTpModel.start();
+      });
       if (!started) {
         return;
       }

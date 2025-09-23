@@ -1,5 +1,7 @@
 import 'dart:ffi';
 
+import 'package:assistant/helper/cv/scan.dart';
+import 'package:assistant/helper/helper.dart';
 import 'package:assistant/helper/screen/screen_manager.dart';
 import 'package:assistant/helper/win32/toast.dart';
 import 'package:win32/win32.dart';
@@ -26,11 +28,16 @@ void mouseListener(MouseEvent event) async {
     // 获取窗口句柄
     ScreenManager.instance.foregroundWindowHandle = GetForegroundWindow();
     showToast('获取到窗口句柄: ${ScreenManager.instance.foregroundWindowHandle}');
-    WindowsApp.autoTpModel.start();
+    startOrStopDebounce(() => WindowsApp.autoTpModel.start());
   }
 
   if (!WindowsApp.autoTpModel.active()) {
     return;
+  }
+
+  // 识图半自动
+  if (mapOpened && event.name == 'left_button' && !event.down) {
+    startTpDetect();
   }
 
   // print('event: ${event.name}, down: ${event.down} x: ${event.x}, y: ${event.y} type: ${event.type}');

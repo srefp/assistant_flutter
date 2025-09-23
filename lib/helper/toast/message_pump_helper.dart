@@ -63,8 +63,10 @@ void _toastIsolateHandler(
     showToastMethod(message['msg'], duration: message['duration']);
   } else if (type == startListenWindowLifeCycle) {
     instanceHWnd = message['hWnd'];
+    debugPrint('添加监听窗口...');
     listenWindowClose(message['pid']);
   } else if (type == stopListenWindowLifeCycle) {
+    debugPrint('移除监听窗口...');
     stopListen();
   }
 
@@ -72,6 +74,10 @@ void _toastIsolateHandler(
 }
 
 void listenWindowClose(int pid) {
+  if (winEventHook != 0) {
+    return;
+  }
+
   winEventHook = setWinEventHook(
       eventSystemMoveSizeEnd,
       eventObjectDestroy,
@@ -90,6 +96,8 @@ void stopListen() {
     winEventHook = 0;
   }
 }
+
+int windowListenRunNr = 0;
 
 // 添加窗口事件监听
 void startListenWindow(int hWnd, int pid) {

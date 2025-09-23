@@ -1,6 +1,5 @@
 import 'package:assistant/app/module/script/script_editor_model.dart';
 import 'package:assistant/component/button/tip_icon_button.dart';
-import 'package:assistant/helper/operation_util.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Icons;
 import 'package:provider/provider.dart';
@@ -108,11 +107,11 @@ class ScriptEditor extends StatelessWidget {
                                   ? Icons.stop
                                   : Icons.play_arrow,
                               text: model.isRunning ? '停止' : '运行',
-                              onPressed: throttle(() async {
+                              onPressed: () {
                                 model.isRunning
                                     ? model.stopJs()
                                     : model.runJs(context);
-                              }),
+                              },
                             ),
                           )
                         : const SizedBox(),

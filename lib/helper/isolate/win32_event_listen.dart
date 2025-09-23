@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:isolate';
 
+import 'package:assistant/helper/helper.dart';
 import 'package:easy_isolate/easy_isolate.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +16,6 @@ import '../win32/key_listen.dart';
 import '../win32/mouse_listen.dart';
 
 late SendPort interpolatePort;
-int eventHook = 0;
 int keyHook = 0;
 int mouseHook = 0;
 int runNr = 0;
@@ -27,7 +27,6 @@ const winEventSkipOwnProcess = 0x0002;
 const eventSystemMoveSizeEnd = 0x000B;
 
 void runWin32EventIsolate() async {
-  _worker = Worker();
   await _worker.init(_hookMainHandler, hookIsolateHandler);
 }
 
@@ -39,8 +38,8 @@ void startKeyMouseListen() {
 }
 
 Future<void> stopKeyMouseListen() async {
-  runNr--;
   await api.keyDown(key: 'f19');
+  runNr--;
 }
 
 void hookIsolateHandler(
@@ -53,26 +52,33 @@ void hookIsolateHandler(
   interpolatePort = mainSendPort;
   final hInstance = GetModuleHandle(nullptr);
 
-  // 添加键盘钩子
-  eventHook = SetWinEventHook(
-      eventSystemMoveSizeStart,
-      eventSystemMoveSizeEnd,
-      NULL,
-      Pointer.fromFunction<EvHookFunc>(sysWinEventHook, 0),
-      0,
-      0,
-      winEventOutOfContext | winEventSkipOwnProcess);
-
   // 添加鼠标钩子
-  mouseHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_MOUSE_LL,
-      Pointer.fromFunction<HOOKPROC>(mouseBinding, 0), hInstance, 0);
-  keyHook =
-      SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD_LL, keyFunc, hInstance, 0);
+  startMouseListening(hInstance);
+
+  // 添加键盘钩子
+  startKeyboardListening(hInstance);
+
   final msg = calloc<MSG>();
   GetMessage(msg, NULL, 0, 0);
 
   // 释放内存
   free(msg);
+}
+
+void startKeyboardListening(int hInstance) {
+  if (keyHook != 0) {
+    return;
+  }
+  keyHook =
+      SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD_LL, keyFunc, hInstance, 0);
+}
+
+void startMouseListening(int hInstance) {
+  if (mouseHook != 0) {
+    return;
+  }
+  mouseHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_MOUSE_LL,
+      Pointer.fromFunction<HOOKPROC>(mouseBinding, 0), hInstance, 0);
 }
 
 final keyFunc = Pointer.fromFunction<HOOKPROC>(keyboardBinding, 0);
@@ -99,9 +105,14 @@ int keyboardBinding(int code, int wParam, int lParam) {
 
       if (kDebugMode && kbs.ref.vkCode == VIRTUAL_KEY.VK_F8 ||
           kbs.ref.vkCode == VIRTUAL_KEY.VK_F19) {
-        UnhookWindowsHookEx(eventHook);
-        UnhookWindowsHookEx(keyHook);
-        UnhookWindowsHookEx(mouseHook);
+        if (keyHook != 0) {
+          UnhookWindowsHookEx(keyHook);
+          keyHook = 0;
+        }
+        if (mouseHook != 0) {
+          UnhookWindowsHookEx(mouseHook);
+          mouseHook = 0;
+        }
         PostQuitMessage(0);
         debugPrint('键鼠监听结束');
       }
@@ -233,15 +244,6 @@ class RawKeyboardEvent {
 
     return KeyboardEvent(name, down, mocked, modifiers);
   }
-}
-
-int sysWinEventHook(int hWinEventHook, int event, int hWnd, int idObject,
-    int idChild, int idEventThread, int dwmsEventTime) {
-  final length = GetWindowTextLength(hWnd);
-  final title = wsalloc(length);
-  GetWindowText(hWnd, title, length);
-  free(title);
-  return 1;
 }
 
 // #region (collapsed) [dlls]
