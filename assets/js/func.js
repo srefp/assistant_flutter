@@ -188,12 +188,12 @@ async function tp(params, remember, delay) {
 
 // 传送确认
 async function tpc(coords, delay) {
-    await sendMessage('tpc', JSON.stringify({'coords': coords, 'delay': delay}));
+    await sendMessage('tpc', JSON.stringify([...arguments]));
 }
 
 // 包传送的传送确认
 async function tpcPlus(coords, delay) {
-    await sendMessage('tpcPlus', JSON.stringify({'coords': coords, 'delay': delay}));
+    await sendMessage('tpcPlus', JSON.stringify([...arguments]));
 }
 
 // 图片

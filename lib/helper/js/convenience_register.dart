@@ -33,29 +33,64 @@ tpByParams(params) async {
 
 tpConfirm(params) async {
   SystemControl.refreshRect();
-  await KeyMouseUtil.clickAtPoint(convertDynamicListToIntList(params['coords']),
-      AutoTpConfig.to.getTpcDelay());
-  await KeyMouseUtil.clickAtPoint(
-      ProcessPosConfig.to.getConfirmPosIntList(), params['delay']);
+  if (params.length == 2) {
+    await KeyMouseUtil.clickAtPoint(
+        convertDynamicListToIntList(params[0]), AutoTpConfig.to.getTpcDelay());
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[1]);
+  } else if (params.length == 3) {
+    await KeyMouseUtil.clickAtPoint(
+        convertDynamicListToIntList(params[0]), params[1]);
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[2]);
+  }
 }
 
 // 包传送的传送确认
 tpConfirmPlus(params) async {
   SystemControl.refreshRect();
 
-  // 直接传
-  await KeyMouseUtil.clickAtPoint(
-      convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcPlusFirstDelay());
-  await KeyMouseUtil.clickAtPoint(
-      ProcessPosConfig.to.getConfirmPosIntList(), AutoTpConfig.to.getTpcPlusSecondDelay());
+  final pos = convertDynamicListToIntList(params[0]);
+  if (params.length == 2) {
+    // 直接传
+    await KeyMouseUtil.clickAtPoint(
+        pos, AutoTpConfig.to.getTpcPlusFirstDelay());
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getConfirmPosIntList(),
+        AutoTpConfig.to.getTpcPlusSecondDelay());
 
-  // 二选一
-  await KeyMouseUtil.clickAtPoint(
-      convertDynamicListToIntList(params['coords']), AutoTpConfig.to.getTpcPlusThirdDelay());
-  await KeyMouseUtil.clickAtPoint(
-      ProcessPosConfig.to.getSelectPosIntList(), AutoTpConfig.to.getTpcPlusFourthDelay());
-  await KeyMouseUtil.clickAtPoint(
-      ProcessPosConfig.to.getConfirmPosIntList(), params['delay']);
+    // 二选一
+    await KeyMouseUtil.clickAtPoint(
+        pos, AutoTpConfig.to.getTpcPlusThirdDelay());
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getSelectPosIntList(),
+        AutoTpConfig.to.getTpcPlusFourthDelay());
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[1]);
+  } else if (params.length == 3) {
+    // 直接传
+    await KeyMouseUtil.clickAtPoint(pos, params[1]);
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getConfirmPosIntList(),
+        AutoTpConfig.to.getTpcPlusSecondDelay());
+
+    // 二选一
+    await KeyMouseUtil.clickAtPoint(
+        pos, AutoTpConfig.to.getTpcPlusThirdDelay());
+    await KeyMouseUtil.clickAtPoint(ProcessPosConfig.to.getSelectPosIntList(),
+        AutoTpConfig.to.getTpcPlusFourthDelay());
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[2]);
+  } else if (params.length == 6) {
+    // 直接传
+    await KeyMouseUtil.clickAtPoint(pos, params[1]);
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[2]);
+
+    // 二选一
+    await KeyMouseUtil.clickAtPoint(pos, params[3]);
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getSelectPosIntList(), params[4]);
+    await KeyMouseUtil.clickAtPoint(
+        ProcessPosConfig.to.getConfirmPosIntList(), params[5]);
+  }
 }
 
 openBook(params) async {
