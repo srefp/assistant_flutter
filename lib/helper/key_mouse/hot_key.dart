@@ -21,7 +21,7 @@ class KeyItem {
   });
 }
 
-final startOrStopDebounce = LeadingDebounce(duration: Duration(milliseconds: 3200));
+final startOrStopDebounce = LeadingDebounce(duration: Duration.zero);
 
 /// 注册快捷键
 void initHotKey() async {
@@ -29,7 +29,7 @@ void initHotKey() async {
   await hotKeyManager.unregisterAll();
   await hotKeyManager.register(HotkeyConfig.to.getStartStopKeyItem(),
       keyDownHandler: (hotKey) {
-    startOrStopDebounce(() => WindowsApp.autoTpModel.startOrStop(tip: true));
+    startOrStopDebounce(() => WindowsApp.autoTpModel.startOrStop(tip: false));
   });
   await hotKeyManager.register(HotkeyConfig.to.getRestartKeyItem(),
       keyDownHandler: (hotKey) {

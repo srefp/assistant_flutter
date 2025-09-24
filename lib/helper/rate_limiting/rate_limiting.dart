@@ -13,6 +13,9 @@ class LeadingDebounce {
   void call(VoidCallback action) {
     if (!_isOnCooldown) {
       action(); // 立即执行
+      if (duration == Duration.zero) {
+        return;
+      }
       _isOnCooldown = true;
       _timer = Timer(duration, () {
         _isOnCooldown = false;

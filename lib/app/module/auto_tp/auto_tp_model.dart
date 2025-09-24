@@ -42,7 +42,7 @@ final helpConfigItems = [
     valueCallback: HotkeyConfig.to.getStartStopKey,
     keyItemCallback: HotkeyConfig.to.getStartStopKeyItem,
     keyDownHandler: (hotKey) {
-      startOrStopDebounce(() => WindowsApp.autoTpModel.startOrStop(tip: true));
+      startOrStopDebounce(() => WindowsApp.autoTpModel.startOrStop(tip: false));
     },
   ),
   HotkeyConfigItem(
@@ -1009,7 +1009,7 @@ class AutoTpModel extends ChangeNotifier {
 
     startWorldDetect();
     if (tip) {
-      showToast('耕地机已启动');
+      showToast('耕地机已启动', duration: 800);
     }
 
     notifyListeners();
@@ -1022,7 +1022,7 @@ class AutoTpModel extends ChangeNotifier {
     stopKeyMouseListen();
 
     if (tip) {
-      showToast('耕地机已停止');
+      showToast('耕地机已停止', duration: 800);
     }
     notifyListeners();
   }
