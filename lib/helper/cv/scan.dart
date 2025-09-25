@@ -10,9 +10,110 @@ import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/system_control.dart';
 
-bool detectOpen = true;
+Future? multiTpDetectFuture;
+bool multiTpDetectRunning = false;
+int multiTpDetectCount = 0;
+const multiTpDetectTotal = 20;
 
-const matchThreshold = 0.2;
+/// 多选检测
+void startMultiTpDetect() async {
+  if (!AutoTpConfig.to.isTpDetectEnabled()) {
+    return;
+  }
+
+  debugPrint('开始多选检测传送按钮');
+  multiTpDetectRunning = true;
+  multiTpDetectCount = 0;
+  final multiTpDetectArea = AutoTpConfig.to.getIntMultiTpDetectArea();
+
+  await Future.delayed(Duration(milliseconds: 200));
+
+  multiTpDetectFuture ??= Future.doWhile(() async {
+    await Future.delayed(
+        Duration(milliseconds: AutoTpConfig.to.getTpDetectInterval()));
+
+    if (!WindowsApp.autoTpModel.active()) {
+      return true;
+    }
+
+    final startTime = DateTime.now();
+
+    final rect = multiTpDetectArea;
+    final leftTop = KeyMouseUtil.physicalPos([rect[0], rect[1]]);
+    final rightBottom = KeyMouseUtil.physicalPos([rect[2], rect[3]]);
+    final image = captureImageWindows(
+        ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
+
+    final multiTpPic = findPictureWithMultiLocation([
+      multiTpDetectArea,
+      'bzd-multi-tp',
+      AutoTpConfig.to.getMultiTpDetectThreshold(),
+      image,
+    ]);
+
+    final multiGodPic = findPictureWithMultiLocation([
+      multiTpDetectArea,
+      'bzd-multi-god',
+      AutoTpConfig.to.getMultiTpDetectThreshold(),
+      image,
+    ]);
+
+    final multiNewMoonPic = findPictureWithMultiLocation([
+      multiTpDetectArea,
+      'bzd-multi-moon',
+      AutoTpConfig.to.getMultiTpDetectThreshold(),
+      image,
+    ]);
+
+    final multiInstancePic = findPictureWithMultiLocation([
+      multiTpDetectArea,
+      'bzd-multi-instance',
+      AutoTpConfig.to.getMultiTpDetectThreshold(),
+      image,
+    ]);
+
+    final multiRes =
+        await Future.wait([multiTpPic, multiGodPic, multiNewMoonPic, multiInstancePic]);
+
+    // 合并multiRes
+    final res = <List<int>>[];
+
+    print('multiRes: $multiRes');
+    for (var e in multiRes) {
+      for (var p in e) {
+        res.add(p);
+      }
+    }
+
+    print('多选检测传送按钮：$res');
+    if (res.isNotEmpty) {
+      // 找到纵坐标最小的点
+      final minY = res.map((e) => e[1]).reduce((a, b) => a < b ? a : b);
+      final minYPoint = res.firstWhere((e) => e[1] == minY);
+
+      await Future.delayed(Duration(milliseconds: 150));
+      await KeyMouseUtil.clickAtPoint(
+          convertDynamicListToIntList(minYPoint), 100);
+      startTpDetect();
+    }
+
+    final endTime = DateTime.now();
+    debugPrint('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
+
+    final shouldRunning =
+        multiTpDetectRunning && multiTpDetectCount++ < multiTpDetectTotal;
+    if (!shouldRunning) {
+      stopMultiTpDetect();
+    }
+    return shouldRunning;
+  });
+}
+
+stopMultiTpDetect() {
+  // debugPrint('停止多选检测传送按钮');
+  multiTpDetectRunning = false;
+  multiTpDetectFuture = null;
+}
 
 bool mapOpened = false;
 Future? tpDetectFuture;
@@ -114,6 +215,8 @@ stopWorldDetect() {
   worldDetectRunning = false;
   worldDetectFuture = null;
 }
+
+const matchThreshold = 0.2;
 
 Future<void> detectWorldRole() async {
   debugPrint('开始检测世界角色');

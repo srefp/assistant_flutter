@@ -23,17 +23,13 @@ class PicRecordDb {
 final Map<String, PicRecord> picRecordMap = {};
 
 /// 保存截图
-Future<void> savePickRecord(PicRecord picRecord) async {
+Future<void> savePicRecord(PicRecord picRecord) async {
   picRecord.setMat();
-  final picRecordInDb = await loadPicRecord(picRecord.key);
-
-  if (picRecordInDb != null) {
-    picRecord.id = picRecordInDb.id;
-    picRecord.createdOn = picRecordInDb.createdOn;
+  if (picRecord.id != null) {
     await db.update(PicRecordDb.tableName, picRecord.toJson(),
         where: 'id = ?', whereArgs: [picRecord.id]);
   } else {
-    await db.insert(PicRecordDb.tableName, picRecord.toJson());
+    picRecord.id = await db.insert(PicRecordDb.tableName, picRecord.toJson());
   }
 }
 
@@ -42,16 +38,6 @@ Future<List<PicRecord>> loadAllPicRecord() async {
   final List<Map<String, Object?>> picRecordList =
       await db.query(PicRecordDb.tableName);
   return picRecordList.map((e) => PicRecord.fromJson(e)).toList();
-}
-
-/// 查询截图
-Future<PicRecord?> loadPicRecord(String key) async {
-  final List<Map<String, Object?>> picRecordList =
-      await db.query(PicRecordDb.tableName, where: 'key = ?', whereArgs: [key]);
-  if (picRecordList.isEmpty) {
-    return null;
-  }
-  return PicRecord.fromJson(picRecordList.first);
 }
 
 /// 删除截图

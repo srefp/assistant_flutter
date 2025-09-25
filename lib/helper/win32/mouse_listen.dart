@@ -37,6 +37,7 @@ void mouseListener(MouseEvent event) async {
 
   // 识图半自动
   if (mapOpened && event.name == 'left_button' && !event.down) {
+    startMultiTpDetect();
     startTpDetect();
   }
 

@@ -108,6 +108,62 @@ const rt = 2;
 const rb = 3;
 const lb = 4;
 
+Future<List> findPictureWithMultiLocation(params, {int? corner}) async {
+  final rect = params[0];
+  final templateName = params[1];
+  final threshold = params[2];
+  final image = params[3];
+
+  final picRecord = picRecordMap[templateName];
+  if (picRecord == null || picRecord.mat == null) {
+    return [-1, [], false];
+  }
+
+  final template = picRecord.mat!;
+  final width = picRecord.width;
+  final height = picRecord.height;
+  final picSize = KeyMouseUtil.logicalDistance([width, height]);
+
+  List<int> offset = [(picSize[0] / 2).toInt(), (picSize[1] / 2).toInt()];
+  if (corner == lt) {
+    offset = [0, 0];
+  } else if (corner == rt) {
+    offset = [picSize[0], 0];
+  } else if (corner == rb) {
+    offset = [picSize[0], picSize[1]];
+  } else if (corner == lb) {
+    offset = [0, picSize[1]];
+  }
+
+  final resultMat = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+
+  final thresholdMat =
+      cv.threshold(resultMat, threshold, 1.1, cv.THRESH_BINARY);
+
+  // 获取所有匹配位置
+  final locations = cv.findNonZero(thresholdMat.$2);
+
+  List<List<int>> results = [];
+
+  // 收集所有匹配结果
+  for (var i = 0; i < locations.rows; i++) {
+    final byteList = locations.row(i).data;
+    // 解析前4个字节为x坐标（小端序）
+    final x =
+        byteList[0] | byteList[1] << 8 | byteList[2] << 16 | byteList[3] << 24;
+    // 解析后4个字节为y坐标（小端序）
+    final y =
+        byteList[4] | byteList[5] << 8 | byteList[6] << 16 | byteList[7] << 24;
+
+    final logicPos = KeyMouseUtil.logicalDistance([x, y]);
+
+    results.add(
+        [rect[0] + logicPos[0] + offset[0], rect[1] + logicPos[1] + offset[1]]);
+  }
+
+  return results;
+}
+
 findPicture(params, {int? corner}) async {
   final leftTop = KeyMouseUtil.physicalPos([params[0][0], params[0][1]]);
   final rightBottom = KeyMouseUtil.physicalPos([params[0][2], params[0][3]]);

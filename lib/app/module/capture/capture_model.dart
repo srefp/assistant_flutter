@@ -230,7 +230,7 @@ class PicModel extends ChangeNotifier {
 
       // 批量导入到数据库（假设pic_db支持批量添加）
       for (var pic in newPics) {
-        await savePickRecord(pic); // 调用现有数据库添加方法
+        await savePicRecord(pic); // 调用现有数据库添加方法
       }
 
       loadPicList();
@@ -272,7 +272,7 @@ class PicModel extends ChangeNotifier {
       editedPic!.picName = nameTextController.text;
       editedPic!.key = keyTextController.text;
       editedPic!.comment = commentTextController.text;
-      await savePickRecord(editedPic!);
+      await savePicRecord(editedPic!);
     }
     goBack();
     loadPicList();
