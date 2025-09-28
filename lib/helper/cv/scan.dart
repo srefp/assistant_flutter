@@ -9,6 +9,7 @@ import '../../app/dao/pic_record_db.dart';
 import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/system_control.dart';
+import '../log/log_util.dart';
 
 Future? multiTpDetectFuture;
 bool multiTpDetectRunning = false;
@@ -72,20 +73,20 @@ void startMultiTpDetect() async {
       image,
     ]);
 
-    final multiRes =
-        await Future.wait([multiTpPic, multiGodPic, multiNewMoonPic, multiInstancePic]);
+    final multiRes = await Future.wait(
+        [multiTpPic, multiGodPic, multiNewMoonPic, multiInstancePic]);
 
     // 合并multiRes
     final res = <List<int>>[];
 
-    print('multiRes: $multiRes');
+    appLog.info('multiRes: $multiRes');
     for (var e in multiRes) {
       for (var p in e) {
         res.add(p);
       }
     }
 
-    print('多选检测传送按钮：$res');
+    appLog.info('多选检测传送按钮：$res');
     if (res.isNotEmpty) {
       // 找到纵坐标最小的点
       final minY = res.map((e) => e[1]).reduce((a, b) => a < b ? a : b);
@@ -98,7 +99,7 @@ void startMultiTpDetect() async {
     }
 
     final endTime = DateTime.now();
-    debugPrint('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
+    appLog.info('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
 
     final shouldRunning =
         multiTpDetectRunning && multiTpDetectCount++ < multiTpDetectTotal;
@@ -110,7 +111,7 @@ void startMultiTpDetect() async {
 }
 
 stopMultiTpDetect() {
-  // debugPrint('停止多选检测传送按钮');
+  appLog.info('停止多选检测传送按钮');
   multiTpDetectRunning = false;
   multiTpDetectFuture = null;
 }
@@ -127,7 +128,7 @@ void startTpDetect() async {
     return;
   }
 
-  // debugPrint('开始检测传送按钮');
+  appLog.info('开始检测传送按钮');
   tpDetectRunning = true;
   tpDetectCount = 0;
   final tpDetectArea = AutoTpConfig.to.getIntTpDetectArea();
@@ -140,16 +141,16 @@ void startTpDetect() async {
       return true;
     }
 
-    // debugPrint('检测中...');
+    appLog.info('传送按钮循环检测中...');
 
     final startTime = DateTime.now();
     final res = await findPicture([tpDetectArea, 'bzd-confirm']);
     final endTime = DateTime.now();
-    debugPrint('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
+    appLog.info('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
 
-    debugPrint('检测传送按钮：${res[0]}');
+    appLog.info('检测传送按钮：${res[0]}');
     if (res[0] >= AutoTpConfig.to.getTpDetectThreshold()) {
-      // debugPrint('检测到传送按钮');
+      appLog.info('检测到传送按钮');
 
       await KeyMouseUtil.clickAtPoint(convertDynamicListToIntList(res[1]), 100);
       stopTpDetect();
@@ -165,7 +166,7 @@ void startTpDetect() async {
 }
 
 void stopTpDetect() {
-  // debugPrint('停止检测传送按钮');
+  appLog.info('停止检测传送按钮');
   tpDetectRunning = false;
   tpDetectFuture = null;
 }
@@ -194,9 +195,9 @@ void startWorldDetect({int worldDetectTotal = 10}) {
 
     final res = await findPicture([worldDetectArea, 'bzd-world']);
 
-    // debugPrint('检测大世界头像：${res[0]}');
+    appLog.info('检测大世界头像：${res[0]}');
     if (res[0] >= AutoTpConfig.to.getWorldDetectThreshold()) {
-      // debugPrint('检测到大世界头像');
+      appLog.info('检测到大世界头像');
       mapOpened = false;
     } else {
       mapOpened = true;

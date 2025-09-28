@@ -105,6 +105,7 @@ class AutoTpConfig with ConfigStorage {
   static const keyMultiTpDetectThreshold = "multiTpDetectThreshold";
   static const keyMultiTpDetectInterval = "multiTpDetectInterval";
   static const keyMultiTpDetectEnabled = "multiTpDetectEnabled";
+  static const keyLogEnabled = "logEnabled";
 
   int getWorldDetectInterval() => box.read(keyWorldDetectInterval) ?? 200;
 
@@ -121,6 +122,8 @@ class AutoTpConfig with ConfigStorage {
   bool isMultiTpDetectEnabled() => box.read(keyMultiTpDetectEnabled) ?? true;
 
   bool isWorldDetectEnabled() => box.read(keyWorldDetectEnabled) ?? true;
+
+  bool isLogEnabled() => box.read(keyLogEnabled) ?? true;
 
   String getTpDetectArea() =>
       box.read(keyTpDetectArea) ?? '48890, 58735, 54199, 63167';

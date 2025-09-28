@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 
+import '../../app/config/auto_tp_config.dart';
 import '../../component/text/win_text.dart';
 import '../date_utils.dart';
 import '../file_utils.dart';
@@ -48,6 +49,9 @@ class LogUtil {
       '${getNowMilliSecString()}  $level : $msg';
 
   void _processAndWrite(String msg, String level, [bool toFile = true]) {
+    if (!AutoTpConfig.to.isLogEnabled()) {
+      return;
+    }
     msg = _process(msg, level);
     debugPrint('[$loggerName] $msg');
     if (toFile) {

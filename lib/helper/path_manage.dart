@@ -169,8 +169,8 @@ Future<Directory> getDocumentDir() async {
 Future<void> initFileManagement() async {
   if (Platform.isWindows) {
     baseDirPath = FileInfoConfig.to.getBaseDirPath();
-    logDirPath = join((await getDocumentDir()).path, 'Efficient', 'log');
-    logFilePath = join(logDirPath, '${getNowLogString()}.log');
+    logDirPath = join((await getDocumentDir()).path, 'Assistant', 'log');
+    logFilePath = 'assistant_record.log';
   } else {
     Directory directory = await getApplicationDocumentsDirectory();
     baseDirPath = join(directory.path, 'file_management');
