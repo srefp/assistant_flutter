@@ -12,6 +12,7 @@ class StringConfigItem extends ConfigItem {
   final HotKey Function()? keyItemCallback;
   final HotKeyHandler? keyDownHandler;
   final String Function() valueCallback;
+  final double width;
 
   StringConfigItem({
     this.type = listen,
@@ -21,6 +22,7 @@ class StringConfigItem extends ConfigItem {
     required this.valueCallback,
     this.keyItemCallback,
     this.keyDownHandler,
+    this.width = 200,
   });
 }
 
@@ -56,7 +58,7 @@ class StringConfigRow extends StatelessWidget {
           ),
           SizedBox(
             height: 34,
-            width: 200,
+            width: item.width,
             child: WinTextBox(
               controller: TextEditingController(text: item.valueCallback()),
               onChanged: (value) => AutoTpConfig.to.save(item.valueKey!, value),

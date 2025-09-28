@@ -17,7 +17,7 @@ const multiTpDetectTotal = 20;
 
 /// 多选检测
 void startMultiTpDetect() async {
-  if (!AutoTpConfig.to.isTpDetectEnabled()) {
+  if (!AutoTpConfig.to.isMultiTpDetectEnabled()) {
     return;
   }
 
@@ -30,7 +30,7 @@ void startMultiTpDetect() async {
 
   multiTpDetectFuture ??= Future.doWhile(() async {
     await Future.delayed(
-        Duration(milliseconds: AutoTpConfig.to.getTpDetectInterval()));
+        Duration(milliseconds: AutoTpConfig.to.getMultiTpDetectInterval()));
 
     if (!WindowsApp.autoTpModel.active()) {
       return true;
@@ -176,7 +176,7 @@ int worldDetectCount = 0;
 
 /// 检测大世界
 void startWorldDetect({int worldDetectTotal = 10}) {
-  if (!AutoTpConfig.to.isTpDetectEnabled()) {
+  if (!AutoTpConfig.to.isWorldDetectEnabled()) {
     return;
   }
 

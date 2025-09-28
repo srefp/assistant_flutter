@@ -252,6 +252,7 @@ final matchConfigItems = <ConfigItem>[
     subTitle: '识图半自动匹配区域，格式：x1, y1, x2, y2',
     valueKey: AutoTpConfig.keyTpDetectArea,
     valueCallback: AutoTpConfig.to.getTpDetectArea,
+    width: 220,
   ),
   BoolConfigItem(
     title: '识图半自动 - 是否开启大世界检测',
@@ -276,6 +277,32 @@ final matchConfigItems = <ConfigItem>[
     subTitle: '识图半自动 - 大世界检测匹配区域，格式：x1, y1, x2, y2',
     valueKey: AutoTpConfig.keyWorldDetectArea,
     valueCallback: AutoTpConfig.to.getWorldDetectArea,
+    width: 220,
+  ),
+  BoolConfigItem(
+    title: '识图半自动 - 是否开启锚点多选检测',
+    subTitle: '识图半自动通过识图进行半自动传送',
+    valueKey: AutoTpConfig.keyMultiTpDetectEnabled,
+    valueCallback: AutoTpConfig.to.isMultiTpDetectEnabled,
+  ),
+  DoubleConfigItem(
+    title: '识图半自动 - 锚点多选匹配阈值',
+    subTitle: '匹配分数范围0 - 1，越接近1越匹配',
+    valueKey: AutoTpConfig.keyMultiTpDetectThreshold,
+    valueCallback: AutoTpConfig.to.getMultiTpDetectThreshold,
+  ),
+  IntConfigItem(
+    title: '识图半自动 - 锚点多选匹配间隔',
+    subTitle: '识图半自动 - 锚点多选匹配间隔，单位毫秒',
+    valueKey: AutoTpConfig.keyMultiTpDetectInterval,
+    valueCallback: AutoTpConfig.to.getMultiTpDetectInterval,
+  ),
+  StringConfigItem(
+    title: '识图半自动 - 锚点多选检测匹配区域',
+    subTitle: '识图半自动 - 锚点多选检测匹配区域，格式：x1, y1, x2, y2',
+    valueKey: AutoTpConfig.keyMultiTpDetectArea,
+    valueCallback: AutoTpConfig.to.getMultiTpDetectArea,
+    width: 220,
   ),
   // StringConfigItem(
   //   title: '大世界匹配区域',

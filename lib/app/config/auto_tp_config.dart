@@ -103,6 +103,8 @@ class AutoTpConfig with ConfigStorage {
   static const keyWorldDetectInterval = "worldDetectInterval";
   static const keyMultiTpDetectArea = "multiTpDetectArea";
   static const keyMultiTpDetectThreshold = "multiTpDetectThreshold";
+  static const keyMultiTpDetectInterval = "multiTpDetectInterval";
+  static const keyMultiTpDetectEnabled = "multiTpDetectEnabled";
 
   int getWorldDetectInterval() => box.read(keyWorldDetectInterval) ?? 200;
 
@@ -116,6 +118,8 @@ class AutoTpConfig with ConfigStorage {
 
   bool isTpDetectEnabled() => box.read(keyTpDetectEnabled) ?? true;
 
+  bool isMultiTpDetectEnabled() => box.read(keyMultiTpDetectEnabled) ?? true;
+
   bool isWorldDetectEnabled() => box.read(keyWorldDetectEnabled) ?? true;
 
   String getTpDetectArea() =>
@@ -124,7 +128,7 @@ class AutoTpConfig with ConfigStorage {
   List<int> getIntTpDetectArea() => getTpDetectArea().getIntList;
 
   String getMultiTpDetectArea() =>
-      box.read(keyMultiTpDetectArea) ?? '42847, 34907, 53602, 58007';
+      box.read(keyMultiTpDetectArea) ?? '42847, 24907, 53602, 58007';
 
   List<int> getIntMultiTpDetectArea() => getMultiTpDetectArea().getIntList;
 
@@ -143,7 +147,10 @@ class AutoTpConfig with ConfigStorage {
 
   double getTpDetectThreshold() => box.read(keyTpDetectThreshold) ?? 0.8;
 
-  double getMultiTpDetectThreshold() => box.read(keyMultiTpDetectThreshold) ?? 0.86;
+  double getMultiTpDetectThreshold() =>
+      box.read(keyMultiTpDetectThreshold) ?? 0.86;
+
+  int getMultiTpDetectInterval() => box.read(keyMultiTpDetectInterval) ?? 5;
 
   double getWorldDetectThreshold() => box.read(keyWorldDetectThreshold) ?? 0.9;
 
