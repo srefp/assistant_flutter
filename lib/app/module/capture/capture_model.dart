@@ -13,6 +13,7 @@ import 'package:screen_capturer/screen_capturer.dart';
 
 import '../../../component/dialog.dart';
 import '../../../component/text/win_text.dart';
+import '../../../helper/auto_gui/system_control.dart';
 import '../../../helper/date_utils.dart';
 import '../../../helper/router_util.dart';
 import '../../../helper/search_utils.dart';
@@ -114,9 +115,17 @@ class PicModel extends ChangeNotifier {
       );
 
       // 表头字段（与Pic属性对应）
-      final headers = ['名称', '键', '注释', '图片', '宽度', '高度', '创建时间', '更新时间']
-          .map((e) => TextCellValue(e))
-          .toList();
+      final headers = [
+        '名称',
+        '键',
+        '注释',
+        '图片',
+        '宽度',
+        '高度',
+        '来源窗口高度',
+        '创建时间',
+        '更新时间'
+      ].map((e) => TextCellValue(e)).toList();
       sheet.appendRow(headers);
 
       // 设置表头样式
@@ -135,6 +144,7 @@ class PicModel extends ChangeNotifier {
           TextCellValue(pic.image),
           TextCellValue(pic.width.toString()),
           TextCellValue(pic.height.toString()),
+          TextCellValue(pic.sourceHeight.toString()),
           TextCellValue(getFormattedDateTimeFromMillis(pic.createdOn)),
           TextCellValue(getFormattedDateTimeFromMillis(pic.updatedOn)),
         ].map((e) => e as CellValue).toList());
@@ -190,6 +200,7 @@ class PicModel extends ChangeNotifier {
       final imageIndex = columnIndexMap['图片']!;
       final widthIndex = columnIndexMap['宽度']!;
       final heightIndex = columnIndexMap['高度']!;
+      final sourceHeightIndex = columnIndexMap['来源窗口高度']!;
       final createTimeIndex = columnIndexMap['创建时间']!;
       final updateTimeIndex = columnIndexMap['更新时间']!;
 
@@ -211,6 +222,8 @@ class PicModel extends ChangeNotifier {
         String image = row[imageIndex]?.value?.toString() ?? '';
         int width = int.parse(row[widthIndex]?.value?.toString() ?? '0');
         int height = int.parse(row[heightIndex]?.value?.toString() ?? '0');
+        int sourceHeight =
+            int.parse(row[sourceHeightIndex]?.value?.toString() ?? '0');
         int? createdOn =
             parseDateTimeToMillis(row[createTimeIndex]?.value?.toString());
         int? updatedOn =
@@ -223,6 +236,7 @@ class PicModel extends ChangeNotifier {
           image: image,
           width: width,
           height: height,
+          sourceHeight: sourceHeight,
           createdOn: createdOn,
           updatedOn: updatedOn,
         ));
@@ -250,6 +264,7 @@ class PicModel extends ChangeNotifier {
       image: '',
       width: 0,
       height: 0,
+      sourceHeight: SystemControl.rect.height,
     );
 
     editedPic = value;
@@ -263,16 +278,24 @@ class PicModel extends ChangeNotifier {
   }
 
   void saveThisPic() async {
+    bool success = true;
     if (editedPic != null && imageFile != null) {
       editedPic!.image = base64Encode(imageFile!);
       editedPic!.width = width!;
       editedPic!.height = height!;
-      editedPic!.createdOn = DateTime.now().millisecondsSinceEpoch;
+      if (editedPic!.id == null) {
+        editedPic!.createdOn = DateTime.now().millisecondsSinceEpoch;
+      }
       editedPic!.updatedOn = DateTime.now().millisecondsSinceEpoch;
       editedPic!.picName = nameTextController.text;
       editedPic!.key = keyTextController.text;
       editedPic!.comment = commentTextController.text;
-      await savePicRecord(editedPic!);
+      success = await savePicRecord(editedPic!);
+    }
+
+    if (!success) {
+      dialog(title: '错误', content: '保存失败，键冲突！');
+      return;
     }
     goBack();
     loadPicList();

@@ -1,3 +1,4 @@
+import 'package:assistant/app/dao/pic_record_db.dart';
 import 'package:assistant/component/config_row/coded_enum_config_row.dart';
 import 'package:assistant/component/config_row/double_config_row.dart';
 import 'package:assistant/component/model/config_item.dart';
@@ -1010,6 +1011,9 @@ class AutoTpModel extends ChangeNotifier {
 
     int hWnd = ScreenManager.instance.hWnd;
     SystemControl.refreshRect();
+
+    // 重新调整图片缩放
+    resizePicRecord(SystemControl.rect.height);
 
     if (validType == targetWindow && hWnd == 0) {
       dialog(title: '错误', content: '进程窗口未启动!');

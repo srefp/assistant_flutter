@@ -135,4 +135,19 @@ void onUpgrade(db, oldVersion, newVersion) async {
                   ''');
     }
   }
+  if (oldVersion < 8 && newVersion >= 8) {
+    // 查询表结构获取现有列
+    final picRecordColumns =
+        await db.rawQuery('PRAGMA table_info(${PicRecordDb.tableName})');
+
+    // 添加sourceHeight列
+    final picRecordHasSourceHeight =
+        picRecordColumns.any((col) => col['name'] == 'sourceHeight');
+
+    if (!picRecordHasSourceHeight) {
+      await db.database.rawUpdate('''
+                    ALTER TABLE ${PicRecordDb.tableName} ADD COLUMN sourceHeight INTEGER
+                  ''');
+    }
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:assistant/helper/cv/cv.dart';
 import 'package:assistant/helper/data_converter.dart';
 import 'package:assistant/helper/js/helper_register.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
 
 import '../../app/config/auto_tp_config.dart';
@@ -22,7 +21,11 @@ void startMultiTpDetect() async {
     return;
   }
 
-  debugPrint('开始多选检测传送按钮');
+  // 重新缩放图片
+  SystemControl.refreshRect();
+  resizePicRecord(SystemControl.rect.height);
+
+  appLog.info('开始多选检测传送按钮');
   multiTpDetectRunning = true;
   multiTpDetectCount = 0;
   final multiTpDetectArea = AutoTpConfig.to.getIntMultiTpDetectArea();
@@ -128,6 +131,10 @@ void startTpDetect() async {
     return;
   }
 
+  // 重新缩放图片
+  SystemControl.refreshRect();
+  resizePicRecord(SystemControl.rect.height);
+
   appLog.info('开始检测传送按钮');
   tpDetectRunning = true;
   tpDetectCount = 0;
@@ -181,6 +188,10 @@ void startWorldDetect({int worldDetectTotal = 10}) {
     return;
   }
 
+  // 重新缩放图片
+  SystemControl.refreshRect();
+  resizePicRecord(SystemControl.rect.height);
+
   worldDetectRunning = true;
   worldDetectCount = 0;
   final worldDetectArea = AutoTpConfig.to.getIntWorldDetectArea();
@@ -220,7 +231,7 @@ stopWorldDetect() {
 const matchThreshold = 0.2;
 
 Future<void> detectWorldRole() async {
-  debugPrint('开始检测世界角色');
+  appLog.info('开始检测世界角色');
 
   await Future.doWhile(() async {
     // 1s的启动时间
@@ -233,9 +244,9 @@ Future<void> detectWorldRole() async {
 
       // 检测世界角色
       var res = await ProcessPicInfo.to.world.scan();
-      debugPrint('检测世界角色：${res.maxMatchValue}');
+      appLog.info('检测世界角色：${res.maxMatchValue}');
       if (res.maxMatchValue >= matchThreshold) {
-        debugPrint('大世界');
+        appLog.info('大世界');
       }
     }
     return true;

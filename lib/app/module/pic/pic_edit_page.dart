@@ -110,6 +110,32 @@ class PicEditPage extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  WinText(
+                                    '截图来源的窗口高度',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  NumberBox(
+                                    value: model.editedPic!.sourceHeight,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        model.editedPic!.sourceHeight = value;
+                                      }
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(

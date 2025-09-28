@@ -23,7 +23,7 @@ Future<String> getStoragePath() async =>
 class DbHelper {
   static sqlite_api.Database? _dbOnAndroid;
   static sqlite_api.Database? _dbOnWindows;
-  static const int _version = 7;
+  static const int _version = 8;
 
   /// 获取数据库
   static Future<sqlite_api.Database> getDb() async {
