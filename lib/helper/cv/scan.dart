@@ -17,7 +17,8 @@ const multiTpDetectTotal = 20;
 
 /// 多选检测
 void startMultiTpDetect() async {
-  if (!AutoTpConfig.to.isMultiTpDetectEnabled()) {
+  if (!AutoTpConfig.to.isMultiTpDetectEnabled() &&
+      multiTpDetectFuture != null) {
     return;
   }
 
@@ -31,6 +32,12 @@ void startMultiTpDetect() async {
   final multiTpDetectArea = AutoTpConfig.to.getIntMultiTpDetectArea();
 
   await Future.delayed(Duration(milliseconds: 200));
+
+  // 查询图片中所有以 bzd-multi 开图的key
+  final multiTpDetectKeys =
+      picRecordMap.keys.where((key) => key.startsWith('bzd-multi')).toList();
+
+  appLog.info('所有多选模板key：$multiTpDetectKeys');
 
   multiTpDetectFuture ??= Future.doWhile(() async {
     await Future.delayed(
@@ -48,41 +55,20 @@ void startMultiTpDetect() async {
     final image = captureImageWindows(
         ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
 
-    final multiTpPic = findPictureWithMultiLocation([
-      multiTpDetectArea,
-      'bzd-multi-tp',
-      AutoTpConfig.to.getMultiTpDetectThreshold(),
-      image,
-    ]);
+    final multiTpDetectFutureList = multiTpDetectKeys
+        .map((key) => findPictureWithMultiLocation([
+              multiTpDetectArea,
+              key,
+              AutoTpConfig.to.getMultiTpDetectThreshold(),
+              image,
+            ]))
+        .toList();
 
-    final multiGodPic = findPictureWithMultiLocation([
-      multiTpDetectArea,
-      'bzd-multi-god',
-      AutoTpConfig.to.getMultiTpDetectThreshold(),
-      image,
-    ]);
-
-    final multiNewMoonPic = findPictureWithMultiLocation([
-      multiTpDetectArea,
-      'bzd-multi-moon',
-      AutoTpConfig.to.getMultiTpDetectThreshold(),
-      image,
-    ]);
-
-    final multiInstancePic = findPictureWithMultiLocation([
-      multiTpDetectArea,
-      'bzd-multi-instance',
-      AutoTpConfig.to.getMultiTpDetectThreshold(),
-      image,
-    ]);
-
-    final multiRes = await Future.wait(
-        [multiTpPic, multiGodPic, multiNewMoonPic, multiInstancePic]);
+    final multiRes = await Future.wait(multiTpDetectFutureList);
 
     // 合并multiRes
     final res = <List<int>>[];
 
-    appLog.info('multiRes: $multiRes');
     for (var e in multiRes) {
       for (var p in e) {
         res.add(p);
@@ -98,11 +84,12 @@ void startMultiTpDetect() async {
       await Future.delayed(Duration(milliseconds: 150));
       await KeyMouseUtil.clickAtPoint(
           convertDynamicListToIntList(minYPoint), 100);
+      multiTpDetectRunning = false;
       startTpDetect();
     }
 
     final endTime = DateTime.now();
-    appLog.info('检测传送按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
+    appLog.info('检测多选按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
 
     final shouldRunning =
         multiTpDetectRunning && multiTpDetectCount++ < multiTpDetectTotal;
@@ -194,6 +181,7 @@ void startWorldDetect({int worldDetectTotal = 10}) {
 
   worldDetectRunning = true;
   worldDetectCount = 0;
+  bool prevMapOpened = mapOpened;
   final worldDetectArea = AutoTpConfig.to.getIntWorldDetectArea();
 
   worldDetectFuture ??= Future.doWhile(() async {
@@ -214,8 +202,9 @@ void startWorldDetect({int worldDetectTotal = 10}) {
       mapOpened = true;
     }
 
-    final shouldRunning =
-        worldDetectRunning && worldDetectCount++ < worldDetectTotal;
+    final shouldRunning = prevMapOpened == mapOpened &&
+        worldDetectRunning &&
+        worldDetectCount++ < worldDetectTotal;
     if (!shouldRunning) {
       stopWorldDetect();
     }

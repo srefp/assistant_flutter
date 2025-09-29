@@ -231,8 +231,14 @@ final matchConfigItems = <ConfigItem>[
     valueCallback: AutoTpConfig.to.getMatchThreshold,
   ),
   BoolConfigItem(
-    title: '是否打印日志',
-    subTitle: '打印日志的开关',
+    title: '模拟点击操作是否触发识图半自动传送',
+    subTitle: '关闭后，只有手动点击操作才会触发识图半自动传送',
+    valueKey: AutoTpConfig.keyDetectWhenMock,
+    valueCallback: AutoTpConfig.to.isDetectWhenMock,
+  ),
+  BoolConfigItem(
+    title: '是否打印识图日志',
+    subTitle: '打印识图日志的开关',
     valueKey: AutoTpConfig.keyLogEnabled,
     valueCallback: AutoTpConfig.to.isLogEnabled,
   ),

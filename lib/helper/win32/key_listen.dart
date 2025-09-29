@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:assistant/helper/cv/scan.dart';
+import 'package:assistant/helper/helper.dart';
 import 'package:assistant/helper/win32/toast.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 
 import '../../app/config/auto_tp_config.dart';
 import '../../app/config/config_storage.dart';
@@ -15,10 +15,7 @@ import '../auto_gui/operations.dart';
 import '../executor/route_executor.dart';
 import '../key_mouse/event_type.dart';
 import '../key_mouse/keyboard_event.dart';
-import '../key_mouse/tpc.dart';
 import 'key_mouse_listen.dart';
-
-Timer? mapCloseFuture;
 
 void keyboardListener(KeyboardEvent event) {
   if (!WindowsApp.autoTpModel.active()) {
@@ -26,11 +23,11 @@ void keyboardListener(KeyboardEvent event) {
   }
 
   if (event.name == ProcessKeyConfig.to.getOpenMapKey() && event.down) {
-    startWorldDetect();
-    debugPrint('开始检测大世界');
-    if (mapCloseFuture != null) {
-      mapCloseFuture?.cancel();
-      mapCloseFuture = null;
+    bool detect = !AutoTpConfig.to.isDetectWhenMock() || !event.mocked;
+
+    if (detect) {
+      startWorldDetect();
+      appLog.info('开始检测大世界');
     }
   }
 

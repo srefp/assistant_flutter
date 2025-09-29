@@ -39,12 +39,6 @@ void resizePicRecord(int windowHeight) async {
 
   appLog.info('重新调整截图大小，当前窗口高度: $windowHeight');
 
-  // 重新读取图片
-  final picList = await loadAllPicRecord();
-  for (final pic in picList) {
-    pic.setMat();
-  }
-
   // 批量缩放图片
   for (final picRecord in picRecordMap.values) {
     // 图片为空或窗口高度与截图来源高度相同，无需缩放
@@ -53,6 +47,8 @@ void resizePicRecord(int windowHeight) async {
         windowHeight == picRecord.sourceHeight) {
       continue;
     }
+
+    picRecord.setMat();
 
     picRecord.mat =
         resize(picRecord.mat!, windowHeight / picRecord.sourceHeight);
