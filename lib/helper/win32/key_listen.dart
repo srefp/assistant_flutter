@@ -23,7 +23,7 @@ void keyboardListener(KeyboardEvent event) {
   }
 
   if (event.name == ProcessKeyConfig.to.getOpenMapKey() && event.down) {
-    bool detect = !AutoTpConfig.to.isDetectWhenMock() || !event.mocked;
+    final detect = !AutoTpConfig.to.isDetectWhenMock() || !event.mocked;
 
     if (detect) {
       startWorldDetect();

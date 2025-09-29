@@ -107,8 +107,11 @@ class AutoTpConfig with ConfigStorage {
   static const keyMultiTpDetectEnabled = "multiTpDetectEnabled";
   static const keyLogEnabled = "logEnabled";
   static const keyDetectWhenMock = "detectWhenMock";
+  static const keyCloseDetectWhenJs = "closeDetectWhenJs";
 
-  bool isDetectWhenMock() => box.read(keyDetectWhenMock) ?? true;
+  bool isCloseDetectWhenJs() => box.read(keyCloseDetectWhenJs) ?? true;
+
+  bool isDetectWhenMock() => box.read(keyDetectWhenMock) ?? false;
 
   int getWorldDetectInterval() => box.read(keyWorldDetectInterval) ?? 200;
 

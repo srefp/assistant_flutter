@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:assistant/app/config/auto_tp_config.dart';
+import 'package:assistant/helper/helper.dart';
 import 'package:assistant/helper/script_parser.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -202,6 +204,19 @@ Future<void> runScript(
     }
   }
 
+  // 记录是否开启识图半自动
+  final enabledWorldDetect = AutoTpConfig.to.isWorldDetectEnabled();
+  final enabledTpDetect = AutoTpConfig.to.isTpDetectEnabled();
+  final enabledMultiTpDetect = AutoTpConfig.to.isMultiTpDetectEnabled();
+
+  if (AutoTpConfig.to.isCloseDetectWhenJs()) {
+    // 禁止识图半自动
+    appLog.info('运行脚本时关闭了识图半自动');
+    AutoTpConfig.to.save(AutoTpConfig.keyWorldDetectEnabled, false);
+    AutoTpConfig.to.save(AutoTpConfig.keyTpDetectEnabled, false);
+    AutoTpConfig.to.save(AutoTpConfig.keyMultiTpDetectEnabled, false);
+  }
+
   try {
     JsEvalResult result = await jsRuntime.evaluateAsync(
         '${stoppable ? 'scriptRunning = true;' : ''}(async function() { $code })();');
@@ -218,6 +233,14 @@ Future<void> runScript(
             ],
           ),
         ));
+  } finally {
+    // 恢复是否开启识图半自动
+    appLog.info('恢复了识图半自动');
+    AutoTpConfig.to
+        .save(AutoTpConfig.keyWorldDetectEnabled, enabledWorldDetect);
+    AutoTpConfig.to.save(AutoTpConfig.keyTpDetectEnabled, enabledTpDetect);
+    AutoTpConfig.to
+        .save(AutoTpConfig.keyMultiTpDetectEnabled, enabledMultiTpDetect);
   }
 }
 

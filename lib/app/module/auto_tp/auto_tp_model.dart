@@ -230,11 +230,17 @@ final matchConfigItems = <ConfigItem>[
     valueKey: AutoTpConfig.keyMatchThreshold,
     valueCallback: AutoTpConfig.to.getMatchThreshold,
   ),
+  // BoolConfigItem(
+  //   title: '模拟点击操作是否触发识图半自动传送',
+  //   subTitle: '关闭后，只有手动点击操作才会触发识图半自动传送',
+  //   valueKey: AutoTpConfig.keyDetectWhenMock,
+  //   valueCallback: AutoTpConfig.to.isDetectWhenMock,
+  // ),
   BoolConfigItem(
-    title: '模拟点击操作是否触发识图半自动传送',
-    subTitle: '关闭后，只有手动点击操作才会触发识图半自动传送',
-    valueKey: AutoTpConfig.keyDetectWhenMock,
-    valueCallback: AutoTpConfig.to.isDetectWhenMock,
+    title: '运行全自动脚本时关闭半自动识图',
+    subTitle: '运行全自动脚本时关闭半自动识图，脚本运行完毕后恢复半自动识图',
+    valueKey: AutoTpConfig.keyCloseDetectWhenJs,
+    valueCallback: AutoTpConfig.to.isCloseDetectWhenJs,
   ),
   BoolConfigItem(
     title: '是否打印识图日志',

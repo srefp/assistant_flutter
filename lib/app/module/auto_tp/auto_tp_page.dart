@@ -103,7 +103,7 @@ class _AutoTpPageState extends State<AutoTpPage> {
             child: IconCard(
               icon: Icons.play_arrow_rounded,
               title: '耕地机，启动！',
-              subTitle: "启动后才能使用各项功能，启动/停止有1s的防抖，QQ群660182560",
+              subTitle: "启动后才能使用各项功能，QQ群660182560",
               subTitleSelectable: true,
               rightWidget: SizedBox(
                 height: 34,
