@@ -55,14 +55,16 @@ void startMultiTpDetect() async {
     final image = captureImageWindows(
         ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
 
-    final multiTpDetectFutureList = multiTpDetectKeys
-        .map((key) => findPictureWithMultiLocation([
-              multiTpDetectArea,
-              key,
-              AutoTpConfig.to.getMultiTpDetectThreshold(),
-              image,
-            ]))
-        .toList();
+    final multiTpDetectFutureList = multiTpDetectKeys.map((key) {
+      bool mask = key == 'bzd-multi-instance';
+      return findPictureWithMultiLocation([
+        multiTpDetectArea,
+        key,
+        AutoTpConfig.to.getMultiTpDetectThreshold(),
+        image,
+        mask,
+      ]);
+    }).toList();
 
     final multiRes = await Future.wait(multiTpDetectFutureList);
 

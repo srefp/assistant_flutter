@@ -230,6 +230,12 @@ final matchConfigItems = <ConfigItem>[
     valueKey: AutoTpConfig.keyMatchThreshold,
     valueCallback: AutoTpConfig.to.getMatchThreshold,
   ),
+  StringConfigItem(
+    title: '触发键位',
+    subTitle: '触发自动传送的键位，使用英文逗号分割，游戏开图键位设置中的键位也能触发',
+    valueKey: AutoTpConfig.keyTpDetectTriggerKeys,
+    valueCallback: AutoTpConfig.to.getTpDetectTriggerKeys,
+  ),
   // BoolConfigItem(
   //   title: '模拟点击操作是否触发识图半自动传送',
   //   subTitle: '关闭后，只有手动点击操作才会触发识图半自动传送',

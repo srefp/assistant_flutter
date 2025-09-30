@@ -22,7 +22,9 @@ void keyboardListener(KeyboardEvent event) {
     return;
   }
 
-  if (event.name == ProcessKeyConfig.to.getOpenMapKey() && event.down) {
+  if ((event.name == ProcessKeyConfig.to.getOpenMapKey() ||
+          AutoTpConfig.to.getTpDetectTriggerKeysList().contains(event.name)) &&
+      event.down) {
     final detect = !AutoTpConfig.to.isDetectWhenMock() || !event.mocked;
 
     if (detect) {

@@ -108,6 +108,12 @@ class AutoTpConfig with ConfigStorage {
   static const keyLogEnabled = "logEnabled";
   static const keyDetectWhenMock = "detectWhenMock";
   static const keyCloseDetectWhenJs = "closeDetectWhenJs";
+  static const keyTpDetectTriggerKeys = "tpDetectTriggerKeys";
+
+  String getTpDetectTriggerKeys() => box.read(keyTpDetectTriggerKeys) ?? 'm';
+
+  List<String> getTpDetectTriggerKeysList() =>
+      getTpDetectTriggerKeys().split(',').map((key) => key.trim()).toList();
 
   bool isCloseDetectWhenJs() => box.read(keyCloseDetectWhenJs) ?? true;
 
