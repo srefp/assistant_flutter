@@ -1,6 +1,5 @@
 import 'dart:ffi';
 
-import 'package:assistant/helper/cv/scan.dart';
 import 'package:assistant/helper/helper.dart';
 import 'package:assistant/helper/screen/screen_manager.dart';
 import 'package:assistant/helper/win32/toast.dart';
@@ -9,6 +8,8 @@ import 'package:window_manager/window_manager.dart';
 
 import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
+import '../detect/multi_tp_detect.dart';
+import '../detect/tp_detect.dart';
 import '../key_mouse/event_type.dart';
 import '../key_mouse/mouse_event.dart';
 import 'key_mouse_listen.dart';

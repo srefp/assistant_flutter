@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:assistant/helper/cv/scan.dart';
 import 'package:assistant/helper/helper.dart';
 import 'package:assistant/helper/win32/toast.dart';
 
@@ -12,6 +11,7 @@ import '../../app/config/process_pos/process_pos_config.dart';
 import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
 import '../auto_gui/operations.dart';
+import '../detect/world_detect.dart';
 import '../executor/route_executor.dart';
 import '../key_mouse/event_type.dart';
 import '../key_mouse/keyboard_event.dart';
