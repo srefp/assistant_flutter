@@ -234,6 +234,8 @@ Future<void> runScript(
           ),
         ));
   } finally {
+    await Future.delayed(const Duration(seconds: 2));
+
     // 恢复是否开启识图半自动
     appLog.info('恢复了识图半自动');
     AutoTpConfig.to
