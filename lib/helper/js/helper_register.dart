@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:assistant/app/config/auto_tp_config.dart';
+import 'package:assistant/helper/image/image_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:opencv_dart/opencv.dart' as cv;
@@ -108,18 +109,21 @@ const rt = 2;
 const rb = 3;
 const lb = 4;
 
+const largeHeight = 2000;
+
 Future<List> findPictureWithMultiLocation(params, {int? corner}) async {
   final rect = params[0];
   final templateName = params[1];
   final threshold = params[2];
-  final image = params[3];
+  var image = params[3];
+  final bool mask = params[4];
 
   final picRecord = picRecordMap[templateName];
   if (picRecord == null || picRecord.mat == null) {
     return [-1, [], false];
   }
 
-  final template = picRecord.mat!;
+  var template = picRecord.mat!;
   final width = picRecord.width;
   final height = picRecord.height;
   final picSize = KeyMouseUtil.logicalDistance([width, height]);
@@ -135,10 +139,33 @@ Future<List> findPictureWithMultiLocation(params, {int? corner}) async {
     offset = [0, picSize[1]];
   }
 
-  final resultMat = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+  if (picRecord.sourceHeight > largeHeight) {
+    template = resize(template, 0.5);
+    image = resize(image, 0.5);
+  }
+
+  var resultMat = mask
+      ? cv.matchTemplate(
+          image,
+          template,
+          cv.TM_CCOEFF_NORMED,
+          mask: cv
+              .threshold(
+                template,
+                0,
+                255,
+                cv.THRESH_BINARY,
+              )
+              .$2,
+        )
+      : cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED);
+
+  if (picRecord.sourceHeight > largeHeight) {
+    resultMat = resize(resultMat, 2);
+  }
 
   final thresholdMat =
-      cv.threshold(resultMat, threshold, 1.1, cv.THRESH_BINARY);
+      cv.threshold(resultMat, threshold, 1.0, cv.THRESH_BINARY);
 
   // 获取所有匹配位置
   final locations = cv.findNonZero(thresholdMat.$2);

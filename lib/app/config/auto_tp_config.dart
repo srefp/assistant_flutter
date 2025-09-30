@@ -109,6 +109,9 @@ class AutoTpConfig with ConfigStorage {
   static const keyDetectWhenMock = "detectWhenMock";
   static const keyCloseDetectWhenJs = "closeDetectWhenJs";
   static const keyTpDetectTriggerKeys = "tpDetectTriggerKeys";
+  static const keyDetectMultiClickDelay = "detectMultiClickDelay";
+
+  int getDetectMultiClickDelay() => box.read(keyDetectMultiClickDelay) ?? 150;
 
   String getTpDetectTriggerKeys() => box.read(keyTpDetectTriggerKeys) ?? 'm';
 
@@ -143,7 +146,7 @@ class AutoTpConfig with ConfigStorage {
   List<int> getIntTpDetectArea() => getTpDetectArea().getIntList;
 
   String getMultiTpDetectArea() =>
-      box.read(keyMultiTpDetectArea) ?? '42847, 24907, 53602, 58007';
+      box.read(keyMultiTpDetectArea) ?? '42847, 31907, 53602, 58007';
 
   List<int> getIntMultiTpDetectArea() => getMultiTpDetectArea().getIntList;
 

@@ -8,6 +8,7 @@ import '../auto_gui/system_control.dart';
 import '../data_converter.dart';
 import '../js/helper_register.dart';
 import '../log/log_util.dart';
+import 'multi_tp_detect.dart';
 
 bool mapOpened = false;
 Future? tpDetectFuture;
@@ -56,6 +57,7 @@ void startTpDetect() async {
     final shouldRunning = tpDetectRunning && tpDetectCount++ < tpDetectTotal;
     if (!shouldRunning) {
       stopTpDetect();
+      stopMultiTpDetect();
       startWorldDetect(worldDetectTotal: 30);
     }
     return shouldRunning;

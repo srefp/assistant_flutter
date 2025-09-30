@@ -56,7 +56,7 @@ void startMultiTpDetect() async {
         ScreenRect(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]));
 
     final multiTpDetectFutureList = multiTpDetectKeys.map((key) {
-      bool mask = key == 'bzd-multi-instance';
+      bool mask = key.startsWith('bzd-multi-instance');
       return findPictureWithMultiLocation([
         multiTpDetectArea,
         key,
@@ -77,21 +77,22 @@ void startMultiTpDetect() async {
       }
     }
 
+    final endTime = DateTime.now();
+    appLog.info('检测多选按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
+
     appLog.info('多选检测传送按钮：$res');
     if (res.isNotEmpty) {
       // 找到纵坐标最小的点
       final minY = res.map((e) => e[1]).reduce((a, b) => a < b ? a : b);
       final minYPoint = res.firstWhere((e) => e[1] == minY);
 
-      await Future.delayed(Duration(milliseconds: 150));
+      await Future.delayed(
+          Duration(milliseconds: AutoTpConfig.to.getDetectMultiClickDelay()));
       await KeyMouseUtil.clickAtPoint(
-          convertDynamicListToIntList(minYPoint), 100);
+          convertDynamicListToIntList(minYPoint), 0);
       multiTpDetectRunning = false;
       startTpDetect();
     }
-
-    final endTime = DateTime.now();
-    appLog.info('检测多选按钮耗时：${endTime.difference(startTime).inMilliseconds}ms');
 
     final shouldRunning =
         multiTpDetectRunning && multiTpDetectCount++ < multiTpDetectTotal;

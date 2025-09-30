@@ -329,6 +329,12 @@ final matchConfigItems = <ConfigItem>[
     valueCallback: AutoTpConfig.to.getMultiTpDetectArea,
     width: 220,
   ),
+  IntConfigItem(
+    title: '识图半自动 - 锚点多选检测 - 检测完成后等待的毫秒数',
+    subTitle: '识图半自动 - 锚点多选检测完成后，需要等待一些时长再点击',
+    valueKey: AutoTpConfig.keyDetectMultiClickDelay,
+    valueCallback: AutoTpConfig.to.getDetectMultiClickDelay,
+  ),
   // StringConfigItem(
   //   title: '大世界匹配区域',
   //   valueKey: AutoTpConfig.keyWorldRect,
