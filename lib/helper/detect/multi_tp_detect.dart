@@ -17,7 +17,7 @@ const multiTpDetectTotal = 20;
 
 /// 多选检测
 void startMultiTpDetect() async {
-  if (!AutoTpConfig.to.isMultiTpDetectEnabled() &&
+  if (!AutoTpConfig.to.isMultiTpDetectEnabled() ||
       multiTpDetectFuture != null) {
     return;
   }
