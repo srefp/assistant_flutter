@@ -25,7 +25,7 @@ const String version = '2025.10.8.1';
 const String appId = 'assistant';
 const int versionCode = 1;
 const String appTitle = '耕地机 v$version';
-final DateTime outDate = DateTime(2100, 12, 1);
+final DateTime outDate = DateTime(9999, 12, 1);
 const restart = 'restart';
 
 void main(List<String> args) async {
