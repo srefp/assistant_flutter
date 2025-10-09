@@ -1,3 +1,4 @@
+import 'package:assistant/app/config/config.dart';
 import 'package:assistant/helper/detect/tp_detect.dart';
 
 import '../../app/config/auto_tp_config.dart';
@@ -17,7 +18,8 @@ const multiTpDetectTotal = 20;
 
 /// 多选检测
 void startMultiTpDetect() async {
-  if (!AutoTpConfig.to.isMultiTpDetectEnabled() ||
+  if (!HotkeyConfig.to.isAllTpDetectEnabled() ||
+      !AutoTpConfig.to.isMultiTpDetectEnabled() ||
       multiTpDetectFuture != null) {
     return;
   }

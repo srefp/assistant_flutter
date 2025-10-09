@@ -28,6 +28,12 @@ class HotkeyConfig with ConfigStorage {
   static const keyToPrevEnabled = "toPrevEnabled";
   static const keyToNextEnabled = "toNextEnabled";
   static const keyQmAutoTpEnabled = "qmAutoTpEnabled";
+  static const keyAllTpDetectEnabled = "allTpDetectEnabled";
+  static const keyAllTpDetectToggleKey = "allTpDetectToggleKey";
+
+  bool isAllTpDetectEnabled() => box.read(keyAllTpDetectEnabled) ?? false;
+
+  String getAllTpDetectToggleKey() => box.read(keyAllTpDetectToggleKey) ?? 'f10';
 
   bool isShowCoordsEnabled() => box.read(keyShowCoordsEnabled) ?? true;
 

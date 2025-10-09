@@ -211,7 +211,6 @@ Future<void> runScript(
 
   if (AutoTpConfig.to.isCloseDetectWhenJs()) {
     // 禁止识图半自动
-    appLog.info('运行脚本时关闭了识图半自动');
     AutoTpConfig.to.save(AutoTpConfig.keyWorldDetectEnabled, false);
     AutoTpConfig.to.save(AutoTpConfig.keyTpDetectEnabled, false);
     AutoTpConfig.to.save(AutoTpConfig.keyMultiTpDetectEnabled, false);
@@ -237,7 +236,6 @@ Future<void> runScript(
     await Future.delayed(const Duration(seconds: 2));
 
     // 恢复是否开启识图半自动
-    appLog.info('恢复了识图半自动');
     AutoTpConfig.to
         .save(AutoTpConfig.keyWorldDetectEnabled, enabledWorldDetect);
     AutoTpConfig.to.save(AutoTpConfig.keyTpDetectEnabled, enabledTpDetect);

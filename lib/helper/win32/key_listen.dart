@@ -81,7 +81,16 @@ void listenAll(String name, bool down) async {
   } else if (HotkeyConfig.to.isQmAutoTpEnabled() &&
       name == HotkeyConfig.to.getQmTpNext()) {
     RouteExecutor.tpNext(true);
+  } else if (name == HotkeyConfig.to.getAllTpDetectToggleKey()) {
+    toggleAllTpDetect();
   }
+}
+
+void toggleAllTpDetect() {
+  final allTpDetectEnabled = HotkeyConfig.to.isAllTpDetectEnabled();
+  box.write(HotkeyConfig.keyAllTpDetectEnabled, !allTpDetectEnabled);
+  showToast('${allTpDetectEnabled ? '关闭' : '开启'}全图识图');
+  WindowsApp.autoTpModel.refreshApp();
 }
 
 bool foodSelected = false;

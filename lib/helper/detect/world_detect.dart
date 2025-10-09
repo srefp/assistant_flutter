@@ -1,6 +1,7 @@
 import 'package:assistant/helper/detect/tp_detect.dart';
 
 import '../../app/config/auto_tp_config.dart';
+import '../../app/config/hotkey_config.dart';
 import '../../app/dao/pic_record_db.dart';
 import '../../app/windows_app.dart';
 import '../auto_gui/system_control.dart';
@@ -13,7 +14,8 @@ int worldDetectCount = 0;
 
 /// 检测大世界
 void startWorldDetect({int worldDetectTotal = 10}) {
-  if (!AutoTpConfig.to.isWorldDetectEnabled()) {
+  if (!HotkeyConfig.to.isAllTpDetectEnabled() ||
+      !AutoTpConfig.to.isWorldDetectEnabled()) {
     return;
   }
 

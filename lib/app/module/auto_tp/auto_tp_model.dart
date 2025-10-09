@@ -58,6 +58,14 @@ final helpConfigItems = [
     },
   ),
   HotkeyConfigItem(
+    title: '开启/关闭识图半自动',
+    subTitle: '识图半自动的前置开关，开了以后识图半自动各自的开关才会生效',
+    enabledKey: HotkeyConfig.keyAllTpDetectEnabled,
+    enabledCallback: HotkeyConfig.to.isAllTpDetectEnabled,
+    valueKey: HotkeyConfig.keyAllTpDetectToggleKey,
+    valueCallback: HotkeyConfig.to.getAllTpDetectToggleKey,
+  ),
+  HotkeyConfigItem(
     title: '录制（暂时不可用）',
     subTitle: '开始/结束录制',
     enabledKey: HotkeyConfig.keyToggleRecordEnabled,
@@ -841,6 +849,10 @@ class AutoTpModel extends ChangeNotifier {
 
       validType = AutoTpConfig.to.getValidType();
     });
+  }
+
+  void refreshApp() {
+    notifyListeners();
   }
 
   bool active() {

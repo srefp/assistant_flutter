@@ -138,7 +138,7 @@ class AutoTpConfig with ConfigStorage {
 
   bool isWorldDetectEnabled() => box.read(keyWorldDetectEnabled) ?? true;
 
-  bool isLogEnabled() => box.read(keyLogEnabled) ?? true;
+  bool isLogEnabled() => box.read(keyLogEnabled) ?? false;
 
   String getTpDetectArea() =>
       box.read(keyTpDetectArea) ?? '48890, 58735, 54199, 63167';

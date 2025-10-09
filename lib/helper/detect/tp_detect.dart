@@ -1,6 +1,7 @@
 import 'package:assistant/helper/detect/world_detect.dart';
 
 import '../../app/config/auto_tp_config.dart';
+import '../../app/config/hotkey_config.dart';
 import '../../app/dao/pic_record_db.dart';
 import '../../app/windows_app.dart';
 import '../auto_gui/key_mouse_util.dart';
@@ -18,7 +19,8 @@ const tpDetectTotal = 20;
 
 /// 检测传送
 void startTpDetect() async {
-  if (!AutoTpConfig.to.isTpDetectEnabled()) {
+  if (!HotkeyConfig.to.isAllTpDetectEnabled() ||
+      !AutoTpConfig.to.isTpDetectEnabled()) {
     return;
   }
 
